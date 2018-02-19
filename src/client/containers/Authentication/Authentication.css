@@ -1,0 +1,16 @@
+.Authentication {
+  display: flex;
+  height: 100vh;
+  flex-grow: 1;
+}
+.LeftPane {
+  display: flex;
+  flex-grow: 3;
+  border-right: 1px solid #9e9e9e;
+  background:linear-gradient(to bottom, purple 25%, black 100%)
+}
+
+.RightPane {
+  display: flex;
+  flex-grow: 1;
+}

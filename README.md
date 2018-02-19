@@ -1,2 +1,1 @@
-# TempleStarter
-TempleStarter
+# temple

@@ -1,0 +1,16 @@
+.App {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.routeWrapper {
+  display: flex;
+  flex-grow: 1;
+}
+ 
+.routeWrapper > div {
+  display: flex;
+  flex-grow: 1;
+}

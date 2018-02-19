@@ -1,0 +1,65 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
+// import Input from 'material-ui/Input';
+import purple from 'material-ui/colors/purple';
+import TextField from 'material-ui/TextField/TextField';
+
+const styles = theme => ({
+  inputInkbar: {
+    '&:after': {
+      backgroundColor: purple[500],
+    },
+  },
+  textFieldRoot: {
+    padding: 0,
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+    height: 'auto',
+  },
+  textFieldInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    width: 'calc(100% - 24px)',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+  },
+  textFieldFormLabel: {
+    fontSize: 18,
+  },
+});
+
+function TextBox(props) {
+  const { classes, label, value, changed, disabled, multiline } = props;
+  return (
+    <TextField
+      placeholder={label}
+      InputProps={{
+        disableUnderline: true,
+        classes: {
+          root: classes.textFieldRoot,
+          input: classes.textFieldInput,
+        },
+      }}
+      value={value}
+      onChange={changed}
+      disabled={disabled}
+      margin='dense'
+      type={props.type ? props.type : 'input'}
+      multiline={multiline}
+    />
+  );
+}
+
+TextBox.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(TextBox);
