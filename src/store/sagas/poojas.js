@@ -4,6 +4,7 @@ import axios from '../../axios/poojas';
 
 export function* addPoojaSaga(action) {
   try {
+    yield put(actions.addPoojaStarted());
     const token = localStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to add Pooja' };
@@ -28,6 +29,7 @@ export function* addPoojaSaga(action) {
 
 export function* getPoojaDetailsSaga(action) {
   try {
+    yield put(actions.getPoojaDetailsStarted());
     const token = localStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to get Pooja Details' };

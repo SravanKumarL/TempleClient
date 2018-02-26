@@ -1,16 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-// import Input from 'material-ui/Input';
-import purple from 'material-ui/colors/purple';
 import TextField from 'material-ui/TextField/TextField';
 
 const styles = theme => ({
-  inputInkbar: {
-    '&:after': {
-      backgroundColor: purple[500],
-    },
-  },
   textFieldRoot: {
     padding: 0,
     'label + &': {

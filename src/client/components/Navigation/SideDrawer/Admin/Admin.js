@@ -1,13 +1,10 @@
 import React from 'react';
-import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-// import { Receipt, Edit, SpeakerNotes, Home } from 'material-ui-icons';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Home, SpeakerNotes, Edit, Delete, PersonAdd, Assignment, RemoveCircle, Update } from 'material-ui-icons';
-
 import Divider from 'material-ui/Divider';
-import List from 'material-ui/List';
+import Tooltip from 'material-ui/Tooltip/Tooltip';
 
 import Aux from '../../../../hoc/Wrapper/Wrapper';
-import Tooltip from 'material-ui/Tooltip/Tooltip';
 
 
 const admin = (props) => (

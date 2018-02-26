@@ -8,11 +8,19 @@ const initialState = {
   searchedTransactions: null,
   loading: false,
 }
+
+export const addTransactionStarted = (state, action) => {
+  return updateObject(state, { loading: true });
+}
 export const addTransactionSuccess = (state, action) => {
-  return updateObject(state, { message: action.message });
+  return updateObject(state, { message: action.message, loading: false });
 }
 export const addTransactionFail = (state, action) => {
-  return updateObject(state, { error: action.error });
+  return updateObject(state, { error: action.error, loading: false });
+}
+
+export const getTransactionStarted = (state, action) => {
+  return updateObject(state, { loading: true });
 }
 export const getTransactionsSuccess = (state, action) => {
   return updateObject(state, { transactions: action.transactions });
@@ -20,7 +28,8 @@ export const getTransactionsSuccess = (state, action) => {
 export const getTransactionsFail = (state, action) => {
   return updateObject(state, { error: action.error });
 }
-export const searchTransactionsStart = (state, action) => {
+
+export const searchTransactionsStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
 export const searchTransactionsSuccess = (state, action) => {
@@ -31,16 +40,22 @@ export const searchTransactionsFail = (state, action) => {
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.ADD_TRANSACTION_START:
+      return addTransactionStarted(state, action);
     case actionTypes.ADD_TRANSACTION_SUCCESS:
       return addTransactionSuccess(state, action);
     case actionTypes.ADD_TRANSACTION_FAIL:
       return addTransactionFail(state, action);
+
+    case actionTypes.GET_TRANSACTIONS_START:
+      return getTransactionStarted(state, action);
     case actionTypes.GET_TRANSACTIONS_SUCCESS:
       return getTransactionsSuccess(state, action);
     case actionTypes.GET_TRANSACTIONS_FAIL:
       return getTransactionsFail(state, action);
+
     case actionTypes.SEARCH_TRANSACTIONS_START:
-      return searchTransactionsStart(state, action);
+      return searchTransactionsStarted(state, action);
     case actionTypes.SEARCH_TRANSACTIONS_SUCCESS:
       return searchTransactionsSuccess(state, action);
     case actionTypes.SEARCH_TRANSACTIONS_FAIL:

@@ -1,14 +1,11 @@
 import React from 'react';
-import Input from '../TextField/TextField';
-import Select from '../Select/Select';
-// import Aux from '../../../hoc/Wrapper/Wrapper';
-import MultiSelect from '../MultiSelect/MultiSelect';
-// import DatePicker from '../DatePicker/DatePicker';
-// import Label from '../Label/Label';
 import { FormControl } from 'material-ui/Form';
-// import { InputLabel } from 'material-ui/Input';
 import withStyles from 'material-ui/styles/withStyles';
 import purple from 'material-ui/colors/purple';
+
+import Input from '../TextField/TextField';
+// import Select from '../Select/Select';
+import MultiSelect from '../MultiSelect/MultiSelect';
 
 const styles = theme => ({
   container: {
@@ -46,12 +43,13 @@ const input = (props) => {
         type='number'
       />;
       break;
-    case ('select'):
-      inputElement = <Select
+    case ('singleselect'):
+      inputElement = <MultiSelect
         value={props.value}
         changed={props.changed}
         options={props.elementConfig.options}
         label={props.label}
+        type='single'
       />
       break;
     case ('label'):
@@ -66,6 +64,7 @@ const input = (props) => {
         value={props.value}
         changed={props.changed}
         label={props.label}
+        type='multi'
       />
       break;
     case ('date'):
@@ -88,14 +87,6 @@ const input = (props) => {
   return (
     <div className={classes.container}>
       <FormControl className={classes.formControl}>
-        {/* <InputLabel
-          FormControlClasses={{
-            focused: classes.inputLabelFocused,
-          }}
-          htmlFor="custom-color-input"
-        >
-          {props.label}
-        </InputLabel> */}
         {inputElement}
       </FormControl>
     </div>

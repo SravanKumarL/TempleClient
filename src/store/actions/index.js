@@ -2,6 +2,7 @@
 export {
   authUser,
   authSuccess,
+  authStarted,
   authFail,
   authLogout,
   autoSignIn,
@@ -10,9 +11,11 @@ export {
 
 export {
   addTransaction,
+  addTransactionStarted,
   addTransactionSuccess,
   addTransactionFail,
   getTransactions,
+  getTransactionsStarted,
   getTransactionsSuccess,
   getTransactionsFail,
   searchTransactions,

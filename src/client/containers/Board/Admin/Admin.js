@@ -1,11 +1,12 @@
 import React from 'react';
 import Button from 'material-ui/Button';
 import { withRouter } from 'react-router-dom';
+
 import Typography from 'material-ui/Typography';
 import { SpeakerNotes, Edit, Delete, PersonAdd, Assignment, RemoveCircle, Update } from 'material-ui-icons';
 import withStyles from 'material-ui/styles/withStyles';
+
 import Aux from '../../../hoc/Wrapper/Wrapper';
-// import ExpansionPanel from '../../../components/UI/ExpansionPanel/ExpansionPanel';
 
 const styles = theme => ({
   container: {
@@ -74,14 +75,6 @@ class Admin extends React.Component {
           label: 'poojas',
           backgroundColor: '#1E88E5',
         },
-        // deletePooja: {
-        //   label: 'Delete',
-        //   backgroundColor: '#D32F2F',
-        // },
-        // updatePooja: {
-        //   label: 'Update',
-        //   backgroundColor: '#00897B',
-        // },
       },
       reports: {
         poojaReports: {
@@ -114,9 +107,6 @@ class Admin extends React.Component {
         break;
     }
   }
-  // clicked = (buttonName) => {
-
-  // }
   getButtons = (optionKey) => {
     const { classes } = this.props;
     const optionsArray = [];

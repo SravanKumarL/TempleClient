@@ -11,12 +11,15 @@ const initialState = {
 export const addPoojaStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
+
 export const addPoojaSuccess = (state, action) => {
   return updateObject(state, { message: action.message, loading: false, });
 }
+
 export const addPoojaFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 }
+
 export const getPoojaDetailsStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
@@ -26,6 +29,7 @@ export const getPoojaDetailsSuccess = (state, action) => {
 export const getPoojaDetailsFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 }
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_POOJA_START:

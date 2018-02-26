@@ -8,9 +8,25 @@
 .routeWrapper {
   display: flex;
   flex-grow: 1;
+  /* position: relative; */
 }
- 
-.routeWrapper > div {
+
+.routeWrapper>div {
   display: flex;
   flex-grow: 1;
+  /* position: absolute; */
+}
+
+.fadeEnter {
+  display: flex;
+  flex-grow: 1;
+  opacity: 0;
+  z-index: 1;
+}
+
+.fadeEnterActive {
+  display: flex;
+  flex-grow: 1;
+  opacity: 1;
+  transition: opacity 300ms ease-in;
 }

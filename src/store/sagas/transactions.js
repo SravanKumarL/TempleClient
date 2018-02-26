@@ -4,6 +4,7 @@ import axios from '../../axios/transactions';
 
 export function* addTransactionSaga(action) {
   try {
+    yield put(actions.addTransactionStarted());
     const token = localStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to do the transaction' };
@@ -29,6 +30,7 @@ export function* addTransactionSaga(action) {
 
 export function* getTransactionsSaga(action) {
   try {
+    yield put(actions.getTransactionsStarted());
     const token = localStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to do the transaction' };
@@ -51,9 +53,9 @@ export function* getTransactionsSaga(action) {
 
 export function* searchTransactionsSaga(action) {
   try {
+    yield put(actions.searchTransactionsStarted());
     const searchData = action.searchData;
     const token = localStorage.getItem('token');
-    yield put(actions.searchTransactionsStarted());
     if (!token) {
       const error = { message: 'You are not allowed to do the transaction' };
       yield put(actions.searchTransactionsFail(error));

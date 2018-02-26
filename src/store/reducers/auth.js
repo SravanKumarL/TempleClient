@@ -6,18 +6,28 @@ const initialState = {
   error: null,
   user: null,
   role: null,
+  loading: false,
 }
+
+export const authStarted = (state, action) => {
+  return updateObject(state, { loading: true });
+}
+
 export const authSuccess = (state, action) => {
-  return updateObject(state, { token: action.token, user: action.user, role: action.role });
+  return updateObject(state, { token: action.token, user: action.user, role: action.role, loading: false });
 }
+
 export const authFail = (state, action) => {
-  return updateObject(state, { error: action.error });
+  return updateObject(state, { error: action.error, loading: false });
 }
+
 export const logout = (state, action) => {
   return updateObject(state, { token: null });
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.AUTH_START:
+      return authStarted(state, action);
     case actionTypes.AUTH_SUCCESS:
       return authSuccess(state, action);
     case actionTypes.AUTH_FAIL:

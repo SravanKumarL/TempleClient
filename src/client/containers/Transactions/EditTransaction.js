@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
 import { withStyles } from 'material-ui/styles';
 import IconButton from 'material-ui/IconButton';
 import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
 import { FormControl } from 'material-ui/Form';
 import { Search } from 'material-ui-icons';
-import * as actions from '../../../store/actions';
 import Table from '../../components/UI/Table/Table';
 import Typography from 'material-ui/Typography/Typography';
 import CircularProgress from 'material-ui/Progress/CircularProgress';
+
+import * as actions from '../../../store/actions';
 
 const styles = theme => ({
   root: {
@@ -19,10 +21,11 @@ const styles = theme => ({
     flexDirection: 'column'
   },
   formControl: {
-    marginLeft: theme.spacing.unit * 25,
-    marginRight: theme.spacing.unit * 25,
-    // flexGrow: 1,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginBottom: '2vh',
+    minWidth: '40%',
+    width: '50%',
   },
   withoutLabel: {
     marginTop: theme.spacing.unit * 3,

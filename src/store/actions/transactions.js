@@ -2,8 +2,15 @@ import * as actionTypes from './actionTypes';
 
 export const addTransaction = (transaction) => {
   return {
-    type: actionTypes.ADD_TRANSACTION_START,
+    type: actionTypes.ADD_TRANSACTION,
     transaction
+  }
+}
+
+
+export const addTransactionStarted = () => {
+  return {
+    type: actionTypes.ADD_TRANSACTION_START,
   }
 }
 
@@ -22,10 +29,15 @@ export const addTransactionFail = (error) => {
 }
 export const getTransactions = () => {
   return {
-    type: actionTypes.GET_TRANSACTIONS_START,
+    type: actionTypes.GET_TRANSACTIONS,
   }
 }
 
+export const getTransactionsStarted = () => {
+  return {
+    type: actionTypes.GET_TRANSACTIONS,
+  }
+}
 export const getTransactionsSuccess = (transactions) => {
   return {
     type: actionTypes.GET_TRANSACTIONS_SUCCESS,

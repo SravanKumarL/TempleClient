@@ -1,13 +1,13 @@
 import React from 'react';
+import { withStyles } from 'material-ui/styles';
+
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
-import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
 import IconButton from 'material-ui/IconButton';
 import AccountCircle from 'material-ui-icons/AccountCircle';
-// import Menu, { MenuItem } from 'material-ui/Menu';
 import Tooltip from 'material-ui/Tooltip';
 
 const drawerWidth = 240;

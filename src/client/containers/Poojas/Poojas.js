@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import withStyles from 'material-ui/styles/withStyles';
 import { connect } from 'react-redux';
 
+import CircularProgress from 'material-ui/Progress/CircularProgress';
+import Button from 'material-ui/Button/Button';
+
 import TextField from '../../components/UI/TextField/TextField';
 import Table from '../../components/UI/Table/Table';
-import Button from 'material-ui/Button/Button';
 import * as actions from '../../../store/actions';
-import CircularProgress from 'material-ui/Progress/CircularProgress';
-import Snackbar from 'material-ui/Snackbar/Snackbar';
+import Snackbar from '../../components/UI/Snackbar/Snackbar';
 
 const styles = theme => ({
   root: {
@@ -25,7 +26,7 @@ const styles = theme => ({
   field: {
     display: 'flex',
     // marginLeft: 'auto',
-    marginRight: '20px',  
+    marginRight: '20px',
   },
   button: {
     width: 150,
@@ -97,15 +98,9 @@ class Poojas extends Component {
     if (message) {
       snackBar = (
         <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           open={this.state.snackOpen}
-          autoHideDuration='1000'
-          onClose={this.closeSnackHandler}
-          transition={this.transitionUp}
-          SnackbarContentProps={{
-            'aria-describedby': 'message-id',
-          }}
-          message={<span id="message-id">{this.props.message}</span>}
+          close={this.closeSnackHandler}
+          message={this.props.message}
         />
       )
     }

@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
-// import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-// import { Receipt, SpeakerNotes, Edit } from 'material-ui-icons';
 import User from './User/User';
 import Admin from './Admin/Admin';
 
@@ -14,18 +12,12 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    // flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
   },
   titleTextContainer: {
     display: 'flex',
     flexDirection: 'column',
-    // marginTop: '20vh',
-    // marginRight: 'auto',
-    // marginLeft: 'auto',
-    // marginBottom: 'auto',
-    // marginTop: 75,
     flexGrow: 1,
   },
   userContainer: {
@@ -42,13 +34,13 @@ class Board extends React.Component {
     const { classes } = this.props;
     let options = (
       <div className={classes.userContainer} style={{ flexDirection: 'row' }}>
-        <User />;
-        </div>
+        <User />
+      </div>
     );
     if (this.props.role === 'admin') {
       options = (
         <div className={classes.adminContainer} style={{ flexDirection: 'row' }}>
-          <Admin />;
+          <Admin />
           </div>
       );
     }
@@ -58,9 +50,6 @@ class Board extends React.Component {
           <Typography type='headline' gutterBottom align='center'>
             Welcome to the Temple Software
           </Typography>
-          {/* <Typography type='body1' gutterBottom align='center'>
-            Please select from the following to get started....
-        </Typography> */}
         </div>
         {options}
       </div>

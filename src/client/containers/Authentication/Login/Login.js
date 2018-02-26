@@ -8,13 +8,13 @@ import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavi
 
 const styles = theme => ({
   container: {
+    width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: '100%',
     alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
+    marginBottom: '50px',
   },
   textFieldRoot: {
     margin: 'auto',
