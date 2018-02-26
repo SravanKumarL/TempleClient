@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
+
 import AppBar from '../../components/Navigation/AppBar/AppBar';
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 import * as actions from '../../../store/actions';
@@ -98,7 +99,6 @@ class Layout extends React.Component {
             user={user}
             role={role}
           />
-
           <main className={classes.content}>
             {this.props.children}
           </main>

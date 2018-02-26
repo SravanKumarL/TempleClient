@@ -11,7 +11,6 @@ const textLabel = props => {
         {props.value}
       </Typography>
     </div>
-
   );
 }
 

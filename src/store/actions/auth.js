@@ -2,10 +2,16 @@ import * as actionTypes from './actionTypes';
 
 export const authUser = (username, password, role) => {
   return {
-    type: actionTypes.AUTH_START,
+    type: actionTypes.AUTHENTICATE,
     username,
     password,
     role
+  }
+};
+
+export const authStarted = () => {
+  return {
+    type: actionTypes.AUTH_START,
   }
 };
 

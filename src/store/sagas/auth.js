@@ -1,10 +1,13 @@
 import { put } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
+
 import * as actions from '../actions';
 import axios from 'axios';
 
 export function* signInSaga(action) {
-  // Submit the username, password and role to the server
   try {
+    yield put(actions.authStarted());
+    yield delay(1000);
     const authData = {
       username: action.username,
       password: action.password,

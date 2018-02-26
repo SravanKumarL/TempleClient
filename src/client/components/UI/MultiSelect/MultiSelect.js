@@ -47,9 +47,6 @@ const styles = theme => ({
   root: {
     width: '80%',
     margin: 'auto',
-
-    // paddingTop: '10px'
-    // marginBottom: '10px',
   },
   chip: {
     margin: theme.spacing.unit / 4,
@@ -62,7 +59,6 @@ const styles = theme => ({
     '.Select-control': {
       display: 'flex',
       alignItems: 'center',
-      // border: 0,
       height: 'auto',
       borderRadius: 4,
       backgroundColor: theme.palette.common.white,
@@ -75,10 +71,6 @@ const styles = theme => ({
         borderColor: '#80bdff',
         boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
       },
-      // background: 'transparent',
-      // '&:hover': {
-      //   boxShadow: 'none',
-      // },
     },
     '.Select-multi-value-wrapper': {
       flexGrow: 1,
@@ -89,7 +81,7 @@ const styles = theme => ({
       margin: 0,
     },
     '.Select.has-value.is-clearable.Select--single > .Select-control .Select-value': {
-      padding: 0,
+      padding: 16,
     },
     '.Select-noresults': {
       padding: theme.spacing.unit * 2,
@@ -166,9 +158,27 @@ const styles = theme => ({
 });
 
 const multiSelect = (props) => {
-  const { classes, label, value, changed } = props;
-  return (
+  const { classes, label, value, changed, type } = props;
+  let element = (
     <Input
+      fullWidth
+      disableUnderline
+      inputComponent={SelectWrapped}
+      inputProps={{
+        classes,
+        value: value,
+        onChange: changed,
+        placeholder: label,
+        instanceId: 'react-select-single',
+        id: 'react-select-single',
+        name: 'react-select-single',
+        simpleValue: true,
+        options: props.options,
+      }}
+    />
+  );
+  if (type === 'multi') {
+    element = <Input
       disableUnderline
       fullWidth
       placeholder={label}
@@ -186,7 +196,8 @@ const multiSelect = (props) => {
         options: suggestions,
       }}
     />
-  );
+  }
+  return element;
 }
 
 multiSelect.propTypes = {

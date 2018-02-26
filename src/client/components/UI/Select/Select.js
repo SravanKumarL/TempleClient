@@ -1,7 +1,8 @@
 import React from 'react';
+import withStyles from 'material-ui/styles/withStyles';
+
 import { MenuItem } from 'material-ui/Menu';
 import Select from 'material-ui/Select';
-import withStyles from 'material-ui/styles/withStyles';
 
 const styles = theme => ({
   textFieldInput: {
@@ -18,6 +19,16 @@ const styles = theme => ({
   }
 });
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 const select = (props) => {
   const { value, changed, options, classes } = props;
   return (
@@ -26,6 +37,7 @@ const select = (props) => {
       value={value}
       onChange={changed}
       disableUnderline
+      MenuProps={MenuProps}
     >
       {options.map(option => (
         <MenuItem

@@ -35,7 +35,6 @@ class App extends Component {
               <Route path='/transactions/edit' component={EditTransaction} />
               <Route path='/transactions/create' component={CreateTransaction} />
               <Route path='/' exact component={Board} />
-              {/* <Route path='/' component={Authentication} /> */}
               <Redirect to='/' />
           </Switch>
         </Layout>

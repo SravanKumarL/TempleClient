@@ -1,9 +1,11 @@
 import React from 'react';
 import Button from 'material-ui/Button';
 import { withRouter } from 'react-router-dom';
+
 import Typography from 'material-ui/Typography';
 import { Receipt, SpeakerNotes, Edit } from 'material-ui-icons';
 import withStyles from 'material-ui/styles/withStyles';
+
 import Aux from '../../../hoc/Wrapper/Wrapper';
 
 const styles = theme => ({
@@ -15,8 +17,6 @@ const styles = theme => ({
     marginTop: '5vh',
     marginBottom: 'auto',
     marginRight: 100,
-    // margin: 'auto',
-    // padding: '8px',
     borderRadius: '5px',
     '&:hover': {
       boxShadow: '0px 0px 10px #000000',
@@ -43,6 +43,7 @@ const styles = theme => ({
     fontWeight: 'bold',
   }
 });
+
 class User extends React.Component {
   openTransactionsHandler = () => {
     this.props.history.push('/transactions/create');

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
+
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
@@ -45,7 +46,6 @@ const styles = theme => ({
   },
   accountInformation: {
     display: 'flex',
-    // flexDirection: 'column',
     flexGrow: 1,
   },
   textContainer: {

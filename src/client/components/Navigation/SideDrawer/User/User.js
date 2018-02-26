@@ -1,7 +1,6 @@
 import React from 'react';
 import { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Receipt, SpeakerNotes, Edit, Home } from 'material-ui-icons';
-// import Divider from 'material-ui/Divider';
 import List from 'material-ui/List';
 
 import Aux from '../../../../hoc/Wrapper/Wrapper';
@@ -16,9 +15,6 @@ const user = (props) => (
         </ListItemIcon>
         <ListItemText primary="Home" />
       </ListItem>
-      {/* </List> */}
-      {/* <Divider /> */}
-      {/* <List> */}
       <ListItem button title='Create Transaction' tabIndex={0} onClick={() => props.clicked('receipt')} >
         <ListItemIcon>
           <Receipt />
@@ -31,9 +27,6 @@ const user = (props) => (
         </ListItemIcon>
         <ListItemText primary="Edit Transaction" />
       </ListItem>
-      {/* </List> */}
-      {/* <Divider /> */}
-      {/* <List> */}
       <ListItem title='Reports' button tabIndex={0} onClick={() => props.clicked('reports')}>
         <ListItemIcon>
           <SpeakerNotes />
@@ -41,7 +34,6 @@ const user = (props) => (
         <ListItemText primary="Reports" />
       </ListItem>
     </List>
-    {/* <Divider /> */}
   </Aux>
 );
 

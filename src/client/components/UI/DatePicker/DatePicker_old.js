@@ -1,5 +1,4 @@
-import React, {   Component } from 'react';
-// import moment from 'moment';
+import React from 'react';
 import { DatePicker } from 'material-ui-pickers';
 
 export const datePicker = (props) => {
