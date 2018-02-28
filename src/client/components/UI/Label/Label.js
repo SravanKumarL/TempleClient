@@ -13,5 +13,5 @@ const textLabel = props => {
     </div>
   );
 }
-
 export default textLabel;
+

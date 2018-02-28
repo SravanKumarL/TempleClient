@@ -9,16 +9,29 @@ import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-
-
+import Reboot from 'material-ui/Reboot';
+// import { deepOrange, red, lightGreen } from 'material-ui/colors';
 import reducer from './store/reducers/index';
 import { watchAuth } from './store/sagas';
 
 const theme = createMuiTheme({
   palette: {
-    // type: 'dark', // Switching the dark mode on is a single property value change.
-    type: 'light', // Switching the dark mode on is a single property value change.
-  },
+    type: 'dark', // Switching the dark mode on is a single property value change.
+    // type: 'light', // Switching the dark mode on is a single property value change.
+  }
+  // palette: {
+  //   primary: deepOrange,
+  //   secondary: lightGreen,
+  //   error: red,
+  //   // Used by `getContrastText()` to maximize the contrast between the background and
+  //   // the text.
+  //   contrastThreshold: 3,
+  //   // Used to shift a color's luminance by approximately
+  //   // two indexes within its tonal palette.
+  //   // E.g., shift from Red 500 to Red 300 or Red 700.
+  //   tonalOffset: 0.2,
+  //   // type: 'dark',
+  // },
 });
 const sagaMiddleWare = createSagaMiddleware();
 
@@ -30,13 +43,17 @@ const store = createStore(
 sagaMiddleWare.run(watchAuth);
 
 const app = (
-  <Provider store={store}>
-    <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    </BrowserRouter>
-  </Provider>
+  <div>
+    <Reboot />
+    <Provider store={store}>
+      <BrowserRouter>
+        <MuiThemeProvider theme={theme}>
+          <App />
+        </MuiThemeProvider>
+      </BrowserRouter>
+    </Provider>
+  </div>
+
 );
 ReactDOM.render(app, document.getElementById('root'));
 registerServiceWorker();

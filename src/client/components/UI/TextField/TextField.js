@@ -9,7 +9,7 @@ const styles = theme => ({
     'label + &': {
       marginTop: theme.spacing.unit * 3,
     },
-    height: 'auto',
+    height: 'auto ',
   },
   textFieldInput: {
     borderRadius: 4,
@@ -34,6 +34,10 @@ function TextBox(props) {
   return (
     <TextField
       placeholder={label}
+      classes= {{
+        root: classes.textFieldRoot,
+        input: classes.textFieldInput,
+      }}
       InputProps={{
         disableUnderline: true,
         classes: {
