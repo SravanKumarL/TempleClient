@@ -14,11 +14,12 @@ class FlatDatePicker extends Component {
     //   console.info(str)
     // }
   }
-  onModeSelected=(selectedMode)=>{
-    this.setState({mode:selectedMode,selectedDates:[]});
+  onModeSelected=(e)=>{
+    const { value } = e.target;
+    this.setState({mode:value,selectedDates:[]});
   }
-  onDatesSelected=(dates)=>{
-    this.setState({selectedDates:dates});
+  onDatesSelected=(selectedDates)=>{
+    this.setState({selectedDates});
     // console.log(this.state.selectedDates);
   }
   getNumberOfDays = () => {
@@ -38,7 +39,7 @@ class FlatDatePicker extends Component {
   }
   radioButton=(btnName)=>(
     <label key={btnName}>
-      <input type="radio" value={btnName} name={btnName} checked={this.state.mode===btnName} onChange={(e)=>this.onModeSelected(e.target.value)}/>
+      <input type="radio" value={btnName} name={btnName} checked={this.state.mode===btnName} onChange={this.onModeSelected}/>
       {` ${btnName} `}
     </label>
   )
@@ -50,7 +51,7 @@ class FlatDatePicker extends Component {
         <form>
           {['single','multiple','range'].map(x=>this.radioButton(x))}
         </form>
-        <Flatpickr value={this.state.selectedDates} options={{mode: this.state.mode,allowInput: true}} onChange={(selectedDates)=>this.onDatesSelected(selectedDates)} />
+        <Flatpickr value={this.state.selectedDates} options={{mode: this.state.mode,allowInput: true}} onChange={this.onDatesSelected} />
           <br/>
         <label>{this.getNumberOfDays()}</label>
         {/* <Flatpickr data-enable-time className='test'
