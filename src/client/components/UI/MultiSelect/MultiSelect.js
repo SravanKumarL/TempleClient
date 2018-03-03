@@ -82,6 +82,7 @@ const styles = theme => ({
     },
     '.Select.has-value.is-clearable.Select--single > .Select-control .Select-value': {
       padding: 16,
+      color: 'initial'
     },
     '.Select-noresults': {
       padding: theme.spacing.unit * 2,
@@ -105,7 +106,7 @@ const styles = theme => ({
     '.Select-placeholder, .Select--single .Select-value': {
       position: 'absolute',
       top: 0,
-      left: 0,
+      left: 16,
       right: 0,
       bottom: 0,
       display: 'flex',
@@ -115,7 +116,7 @@ const styles = theme => ({
       padding: 0,
     },
     '.Select-placeholder': {
-      opacity: 0,
+      opacity: 0.5,
       color: theme.palette.common.black,
     },
     '.Select-menu-outer': {

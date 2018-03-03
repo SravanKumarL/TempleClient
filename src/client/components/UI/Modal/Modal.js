@@ -5,6 +5,7 @@ import { withStyles } from 'material-ui/styles';
 // import Slide from 'material-ui/transitions/Slide';
 import Modal from 'material-ui/Modal';
 import Typography from 'material-ui/Typography/Typography';
+import Grow from 'material-ui/transitions/Grow';
 
 const styles = theme => ({
   paper: {
@@ -46,22 +47,21 @@ const modal = (props) => {
     //   // timeout={500}
     //   in={props.open}
     // >
-      <Modal
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        open={props.open}
-        onClose={props.closed}
-      >
-        <div className={classes.paper}>
-          <Typography type='title' align='center'>
-            {props.title}
-          </Typography>
-          <div className={classes.content}>
-            {props.children}
-          </div>
+    <Modal
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      open={props.open}
+      onClose={props.closed}
+    >
+      <div className={classes.paper}>
+        <Typography type='title' align='center'>
+          {props.title}
+        </Typography>
+        <div className={classes.content}>
+          {props.children}
         </div>
-      </Modal>
-    // </Slide>
+      </div>
+    </Modal>
   );
 }
 
