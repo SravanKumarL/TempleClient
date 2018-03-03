@@ -35,7 +35,7 @@ export const getTransactions = () => {
 
 export const getTransactionsStarted = () => {
   return {
-    type: actionTypes.GET_TRANSACTIONS,
+    type: actionTypes.GET_TRANSACTIONS_START,
   }
 }
 export const getTransactionsSuccess = (transactions) => {

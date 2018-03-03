@@ -23,10 +23,10 @@ export const getTransactionStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
 export const getTransactionsSuccess = (state, action) => {
-  return updateObject(state, { transactions: action.transactions });
+  return updateObject(state, { transactions: action.transactions, loading: false });
 }
 export const getTransactionsFail = (state, action) => {
-  return updateObject(state, { error: action.error });
+  return updateObject(state, { error: action.error, loading: false });
 }
 
 export const searchTransactionsStarted = (state, action) => {

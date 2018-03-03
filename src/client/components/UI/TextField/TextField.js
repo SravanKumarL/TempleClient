@@ -12,6 +12,7 @@ const styles = theme => ({
     height: 'auto ',
   },
   textFieldInput: {
+    color: 'initial',
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',

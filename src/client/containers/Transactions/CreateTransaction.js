@@ -385,7 +385,7 @@ class CreateTransaction extends React.Component {
           open={this.state.previewModal}
           transactionFields={this.state.transactionForm}
           createdBy={this.props.user}
-          print={this.previewHandler}
+          print={this.printHandler}
           summaryClosed={this.modalCloseHandler} />
         {message}
       </div>
