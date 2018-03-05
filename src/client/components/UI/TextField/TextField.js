@@ -35,10 +35,6 @@ function TextBox(props) {
   return (
     <TextField
       placeholder={label}
-      classes= {{
-        root: classes.textFieldRoot,
-        input: classes.textFieldInput,
-      }}
       InputProps={{
         disableUnderline: true,
         classes: {

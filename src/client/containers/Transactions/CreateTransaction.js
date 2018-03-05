@@ -5,10 +5,14 @@ import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography/Typography';
 import Paper from 'material-ui/Paper';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import Button from 'material-ui/Button';
+import Search from 'material-ui-icons/Search';
+import Fade from 'material-ui/transitions/Fade';
 
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import TransactionForm from '../../components/TransactionForm/TransactionForm';
+import SearchPanel from '../../components/UI/SearchPanel/SearchPanel';
 
 import * as actions from '../../../store/actions';
 import { updateObject, checkValidity, getCurrentDate, convertToStartCase } from '../../shared/utility';
@@ -16,9 +20,25 @@ import { updateObject, checkValidity, getCurrentDate, convertToStartCase } from 
 
 const styles = theme => ({
   root: {
-    marginRight: 'auto',
-    marginLeft: 'auto',
-    marginTop: '-15px'
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexGrow: 1
+  },
+  panes: {
+    display: 'flex',
+    flexGrow: 1,
+    height: '100%',
+  },
+  leftPane: {
+    display: 'flex',
+    width: '300px'
+  },
+  rightPane: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    width: '300px'
   },
   tabRoot: {
     backgroundColor: theme.palette.primary.main,
@@ -232,6 +252,9 @@ class CreateTransaction extends React.Component {
     previewModal: false,
     snackOpen: false,
     activeTab: 0,
+    searchPanelOpen: false,
+    showSearchButton: true,
+    radioValue: 'Phone Number',
   };
 
   closeSnackHandler = () => {
@@ -371,23 +394,93 @@ class CreateTransaction extends React.Component {
     );
   }
 
+  openSearchPanelHandler = () => {
+    this.setState({
+      showSearchButton: false,
+      searchPanelOpen: true,
+    });
+  }
+
+  closeSearchPanelHandler = () => {
+    this.setState({
+      searchPanelOpen: false,
+    });
+  }
+
+  panelExitHandler = () => {
+    this.setState({
+      showSearchButton: true,
+    });
+  }
+
+  searchValueChangedHandler = (event) => {
+    const { value } = event.target;
+    this.setState({
+      searchValue: value
+    });
+  }
+  radioChangedHandler = (event) => {
+    const { value } = event.target;
+    this.setState({
+      radioValue: value,
+    });
+  }
+  searchClickedHandler = () => {
+    const { radioValue } = this.state;
+    this.props.searchTransactions({ phoneNumber: this.state.searchValue, selection: radioValue });
+  }
+  itemSelectinChangedHandler = (selectedItem) => {
+    const updateFormElement = { ...this.state.transactionForm };
+    updateFormElement.phoneNumber.value = selectedItem.phoneNumber;
+    updateFormElement.names.value = selectedItem.names;
+    updateFormElement.gothram.value = selectedItem.gothram;
+    updateFormElement.nakshatram.value = selectedItem.nakshatram;
+    this.setState({
+      transactionForm: updateFormElement,
+    });
+    // console.log(selectedItem);
+  }
   render() {
-    const { classes } = this.props;
+    const { classes, searchedTransactions } = this.props;
+    const { showSearchButton, searchPanelOpen } = this.state;
     const tab = this.getTab();
     let message = null;
     if (this.props.message) {
       message = this.getMessage();
     }
     return (
-      <div className={classes.root}>
-        {tab}
-        <TransactionSummary
-          open={this.state.previewModal}
-          transactionFields={this.state.transactionForm}
-          createdBy={this.props.user}
-          print={this.printHandler}
-          summaryClosed={this.modalCloseHandler} />
-        {message}
+      <div className={classes.panes}>
+        <div className={classes.leftPane}></div>
+        <div className={classes.root}>
+          {tab}
+          <TransactionSummary
+            open={this.state.previewModal}
+            transactionFields={this.state.transactionForm}
+            createdBy={this.props.user}
+            print={this.printHandler}
+            summaryClosed={this.modalCloseHandler} />
+          {message}
+        </div>
+        <div className={classes.rightPane}>
+          <Fade in={showSearchButton} timeout={{ enter: 800, exit: 0 }} mountOnEnter unmountOnExit>
+            <Button style={{ marginRight: '10px', marginTop: '10px' }} color='primary' fab aria-label="open" onClick={this.openSearchPanelHandler}>
+              <Search />
+            </Button>
+          </Fade>
+          <SearchPanel
+            value={this.state.searchValue}
+            changed={this.searchValueChangedHandler}
+            searchClicked={this.searchClickedHandler}
+            open={searchPanelOpen}
+            itemSelected={this.itemSelectinChangedHandler}
+            transactions={searchedTransactions}
+            radioNames={['Names', 'Phone Number']}
+            radioValue={this.state.radioValue}
+            radioChanged={this.radioChangedHandler}
+            closed={this.closeSearchPanelHandler}
+            panelExited={this.panelExitHandler}
+          />
+        </div>
       </div>
     );
   }
@@ -398,6 +491,7 @@ const mapStateToProps = (state, ownProps) => {
     message: state.transactions.message,
     user: state.auth.user,
     poojaDetails: state.poojas.poojaDetails,
+    searchedTransactions: state.transactions.searchedTransactions,
   }
 }
 
@@ -408,6 +502,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getPoojaDetails: () => {
       dispatch(actions.getPoojaDetails());
+    },
+    searchTransactions: (searchData) => {
+      dispatch(actions.searchTransactions(searchData))
     }
   }
 }

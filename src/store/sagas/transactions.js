@@ -60,18 +60,19 @@ export function* searchTransactionsSaga(action) {
       const error = { message: 'You are not allowed to do the transaction' };
       yield put(actions.searchTransactionsFail(error));
     } else {
+      let url = action.searchData.selection.toLowerCase() === 'phone number' ? '/getTransactionsWithPhoneNumber' : '/getTransactionsWithNames'; 
       const headers = {
         'authorization': `${token}`,
       }
       const response = yield axios({
         method: 'post',
-        url: '/getTransactionsWithPhoneNumber',
+        url: url,
         headers,
         data: searchData
       });
       yield put(actions.searchTransactionsSuccess(response.data.transactions));
     }
   } catch (error) {
-    yield put(actions.getTransactionsFail(error));
+    yield put(actions.searchTransactionsFail(error));
   }
 }
