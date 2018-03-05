@@ -2,16 +2,16 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/Progress/CircularProgress';
 import Typography from 'material-ui/Typography';
-import Carousel from 're-carousel';
+// import Carousel from 're-carousel';
 
 import Login from './Login/Login';
 import Aux from '../../hoc/Wrapper/Wrapper';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
-import IndicatorDots from '../../components/UI/IndicatorDots/IndicatorDots';
-import Buttons from '../../components/UI/CarouselButtons/CarouselButtons';
+// import IndicatorDots from '../../components/UI/IndicatorDots/IndicatorDots';
+// import Buttons from '../../components/UI/CarouselButtons/CarouselButtons';
 import * as actions from '../../../store/actions';
-import Saraswati from '../../../assets/Saraswathi.jpg';
-import Durga from '../../../assets/Durga.jpg';
+// import Saraswati from '../../../assets/Saraswathi.jpg';
+// import Durga from '../../../assets/Durga.jpg';
 import classes from './Authentication.css';
 
 class Authentication extends Component {
@@ -63,7 +63,7 @@ class Authentication extends Component {
       <Aux>
         <div className={classes.Authentication}>
           <div className={classes.LeftPane}>
-            <Carousel loop auto widgets={[IndicatorDots, Buttons]}>
+            {/* <Carousel loop auto widgets={[IndicatorDots, Buttons]}>
               <div style={{ height: '100%' }}>
                 <img src={Saraswati} alt='Saraswati Alankaram' />
               </div>
@@ -71,7 +71,7 @@ class Authentication extends Component {
                 <img src={Durga} alt='Durga' />
               </div>
               <div style={{ backgroundColor: 'orchid', height: '100%' }}>Frame 3</div>
-            </Carousel>
+            </Carousel> */}
           </div>
           <div className={classes.RightPane}>
             <Login onSubmit={this.submitFormHandler} />

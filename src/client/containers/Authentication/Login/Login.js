@@ -15,9 +15,11 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     marginBottom: '50px',
+    backgroundColor: theme.palette.background.default ,
   },
   textFieldRoot: {
     margin: 'auto',
+    color: 'initial',
     width: '250px',
     padding: 0,
     'label + &': {
