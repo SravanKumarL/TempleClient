@@ -169,25 +169,11 @@ class CreateTransaction extends React.Component {
         valid: false,
         touched: false,
       },
-      from: {
+      date: {
         elementType: 'date',
         elementConfig: {
           type: 'text',
-          placeholder: 'From',
-        },
-        value: getCurrentDate(),
-        validation: {
-          required: true,
-        },
-        valid: false,
-        disabled: false,
-        touched: false,
-      },
-      to: {
-        elementType: 'date',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'To',
+          placeholder: 'Select Date(s)',
         },
         value: getCurrentDate(),
         validation: {

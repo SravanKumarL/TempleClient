@@ -1,91 +1,112 @@
-
-// import 'flatpickr/dist/themes/material_green.css'
-import React, { Component } from 'react'
+import _ from 'lodash';
+import 'flatpickr/dist/themes/material_green.css'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { render } from 'react-dom'
-
 import Flatpickr from './Flatpickr'
-
-class FlatDatePicker extends Component {
+import RadioButtonsGroup from './RadioButtonsGroup';
+import MultipleSelect from './MultiSelect';
+class DatePickerWrapper extends Component {
   state = {
-    // v: '2016-01-01 01:01',
-    mode:'single',
-    selectedDates:[],
-    // onChange: (_, str) => {
-    //   console.info(str)
-    // }
+    mode: 'single',
+    selectedDates: [],
+    selectedDays: [],
+    rangeOfDates:[]
   }
-  onModeSelected=(e)=>{
-    const { value } = e.target;
-    this.setState({mode:value,selectedDates:[]});
+  componentDidUpdate=(prevProps,prevState)=>{
+    const {onDateSelectionChanged}=this.prevProps;
+    onDateSelectionChanged(this.getSelectedDates(prevState));
   }
-  onDatesSelected=(selectedDates)=>{
+  getAllDays=()=>['All days','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  getFilteredDates=(selectedDays)=>{
+    let daysOfWeek=this.getDaysOfWeek();
+    return this.state.rangeOfDates.filter(x => selectedDays.indexOf(daysOfWeek[x.getDay()]) !== -1);
+  }
+  isFilterApplied=()=>this.state.mode==='range' && this.state.selectedDays.length > 0;
+  getDaysOfWeek=()=>this.getAllDays().filter(x=>x!=='All days');
+  getRangeStartEnd=()=>[this.state.rangeOfDates[0],this.state.rangeOfDates[this.state.rangeOfDates.length-1]];
+  getSelectedDates=(state)=>{
+    if(state.mode==='range')
+      return this.getFilteredDates(state.selectedDays);
+    return state.selectedDates;
+  }
+  onDaySelected=(selectedDays)=>{
+    if(selectedDays.indexOf('All days')!==-1)
+    {
+      if(this.getAllDays().length>selectedDays.length)
+        selectedDays = this.getAllDays();
+      else
+        selectedDays=selectedDays.filter(x=>x!=='All days');
+    }
+    else if(_.isEqual(selectedDays.sort(),this.getDaysOfWeek().sort()))
+      selectedDays=[];
+    if (this.state.mode==='range' && selectedDays.length !== 0) {
+      this.getFilteredDates(selectedDays);
+      this.setState({ selectedDates:rangeOfDates });
+    }
+    // console.log(selectedDays);
+    this.setState({
+      selectedDays
+    });
+  }
+  onModeSelected = (selectedMode) => {
+      this.setState({ mode: selectedMode, selectedDates: [],selectedDays:[],rangeOfDates:[] });
+  }
+  onDatesSelected = (selectedDates) => {
+    if(this.state.mode === 'range' && selectedDates.length===2)
+    {
+      let dates=[];
+      let i=new Date(selectedDates[0]);
+      while(i<=selectedDates[1]){
+        dates.push(new Date(i));
+        i=new Date(i.setDate(i.getDate()+1));
+      }
+      this.setState({rangeOfDates:dates});
+    }
     this.setState({selectedDates});
     // console.log(this.state.selectedDates);
   }
+  onClose=(selDates,dateStr,flatPickr)=>{
+    if(this.isFilterApplied() && this.state.rangeOfDates>0)
+      this.setState({selectedDates:this.getRangeStartEnd()});
+  }
+  onOpen=(selDates,dateStr,flatPickr)=>{
+    if(this.isFilterApplied())
+      this.setState({selectedDates:this.getFilteredDates(this.state.selectedDays)});
+  }
   getNumberOfDays = () => {
-    return this.state.mode === 'range' && this.state.selectedDates.length === 2 ?
-     Math.round((this.state.selectedDates[1].getTime() - this.state.selectedDates[0].getTime())/(1000*60*60*24)) : 
-      this.state.selectedDates.length;
+    return this.state.mode === 'range' ? (this.state.selectedDays.length===0 ? this.state.rangeOfDates.length : this.state.selectedDates.length):
+    this.state.selectedDates.length;
   }
-  componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState(state => ({
-    //     v: state.v.replace('2016', '2017'),
-    //     onChange: (_, str) => {
-    //       console.info('New change handler: ', str)
-    //     }
-    //   }))
-    // }, 2000)
+  getMode=()=>{
+    if(this.isFilterApplied()) {
+      if(_.isEqual(this.state.selectedDates.sort(),this.getRangeStartEnd().sort()))
+        return 'range';
+      return 'multiple';
+    }
+    return this.state.mode;
   }
-  radioButton=(btnName)=>(
-    <label key={btnName}>
-      <input type="radio" value={btnName} name={btnName} checked={this.state.mode===btnName} onChange={this.onModeSelected}/>
-      {` ${btnName} `}
-    </label>
-  )
   render() {
-    const { v } = this.state
-
     return (
       <div>
-        <form>
-          {['single','multiple','range'].map(x=>this.radioButton(x))}
-        </form>
-        <Flatpickr value={this.state.selectedDates} options={{mode: this.state.mode,allowInput: true}} onChange={this.onDatesSelected} />
-          <br/>
-        <label>{this.getNumberOfDays()}</label>
-        {/* <Flatpickr data-enable-time className='test'
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr data-enable-time defaultValue='2016-11-11 11:11'
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr data-enable-time value={v}
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr value={v} options={{minDate: '2016-11-01'}}
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr value={[v, '2016-01-10']} options={{mode: 'range'}}
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr onChange={this.state.onChange}
-          onOpen={() => { console.info('opened (by prop)') }}
-          options={{
-            onClose: () => {
-              console.info('closed (by option)')
-            },
-            maxDate: new Date()
-          }} />
-        <Flatpickr value={new Date()}
-          onChange={(_, str) => console.info(str)} />
-        <Flatpickr value={v} options={{wrap: true}}
-          onChange={(_, str) => console.info(str)}
-        >
-          <input type='text' data-input />
-          <button type='button' data-toggle>Toggle</button>
-          <button type='button' data-clear>Clear</button>
-        </Flatpickr> */}
+        <div className="selection" style={{display:'flex'}}>
+        <RadioButtonsGroup options={['single', 'multiple', 'range']} label='Calendar mode' mode={this.state.mode} onModeSelect={this.onModeSelected}/>
+          {this.state.mode === 'range' &&
+            <MultipleSelect label='Days' items={this.getAllDays()} selItems={this.state.selectedDays} onItemSel={this.onDaySelected} style={{margin:'24px'}}/>}
+          </div>
+        <div className="datePickerWrap">
+          <Flatpickr value={this.state.selectedDates} options={{
+            mode: this.getMode(), allowInput: true, closeOnSelect: false,
+            ignoredFocusElements: [document.getElementsByClassName('datePickerWrap')[0]]
+          }} onChange={this.onDatesSelected} onClose={this.onClose}/>
+        </div>
+        <br />
+        {/* <label>{this.getNumberOfDays()}</label> */}
       </div>
     )
   }
 }
-export default FlatDatePicker;
-// window.init = () => {
-//   render(<App />, document.querySelector('#container'))
-// }
+DatePickerWrapper.propTypes={
+  onDateSelectionChanged:PropTypes.func.isRequired
+}
+export default DatePickerWrapper;
