@@ -31,7 +31,6 @@ class CreateTransaction extends React.Component {
   state = {
     transactionForm: formStateConfig(),
     formIsValid: false,
-    poojaDetails: null,
   };
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
@@ -45,7 +44,7 @@ class CreateTransaction extends React.Component {
       });
       const newFormElement = { ...this.state.transactionForm };
       newFormElement.pooja.elementConfig.options = options;
-      this.setState({ transactionForm: newFormElement, poojaDetails });
+      this.setState({ transactionForm: newFormElement });
     }
     const { selectedTransaction } = nextProps;
     if (!isEmpty(selectedTransaction)) {
@@ -63,7 +62,7 @@ class CreateTransaction extends React.Component {
   }
 
   inputChangedHandler = (event, inputIdentifier) => {
-    const value = inputIdentifier === 'nakshatram' || inputIdentifier === 'pooja' ? event : event.target.value;
+    const value = (inputIdentifier === 'nakshatram' || inputIdentifier === 'pooja') ? event : event.target.value;
     const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
       value: value,
       valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
@@ -77,7 +76,7 @@ class CreateTransaction extends React.Component {
         updatedtransactionForm['amount'].value = '';
       } else {
         const pooja = value.toLowerCase();
-        updatedtransactionForm['amount'].value = this.state.poojaDetails[`${pooja}`];
+        updatedtransactionForm['amount'].value = this.props.poojaDetails[`${pooja}`];
       }
     }
     let formIsValid = true;

@@ -59,43 +59,38 @@ class Transactions extends React.Component {
     selectedTransaction: {},
   };
 
-  closeSnackHandler = () => {
-    this.setState({
-      snackOpen: false,
-    });
-  }
-  modalOpenHandler = () => {
-    this.setState({
-      modalOpen: true,
-    });
-  };
+  closeSnackHandler = () => this.setState({ snackOpen: false });
 
-  modalCloseHandler = () => {
-    this.setState({
-      modalOpen: false,
-    });
-  }
+  modalOpenHandler = () => this.setState({ modalOpen: true });
 
-  // printHandler = () => {
-  //   const { phoneNumber, names, gothram, nakshatram, pooja, from, to, numberOfDays, amount } = this.state.transactionForm;
-  //   const createdBy = this.props.user;
-  //   const transaction = {
-  //     phoneNumber: phoneNumber.value,
-  //     names: names.value,
-  //     gothram: gothram.value,
-  //     nakshatram: nakshatram.value,
-  //     pooja: pooja.value,
-  //     fromDate: from.value,
-  //     toDate: to.value,
-  //     numberOfDays: numberOfDays.value,
-  //     amount: amount.value,
-  //     createdBy: createdBy,
-  //   }
-  //   this.props.addTransaction(transaction);
-  //   this.previewCloseHandler();
-  //   // window.print();
-  //   // this.setState({ open: true });
-  // }
+  modalCloseHandler = () => this.setState({ modalOpen: false });
+
+  printHandler = () => {
+    // const { phoneNumber, names, gothram, nakshatram, pooja, from, to, numberOfDays, amount } = this.state.transactionInformation;
+    const createdBy = this.props.user;
+    const { transactionInformation } = this.state;
+    let transaction = Object.keys(this.state.transactionInformation)
+      .reduce((acc, item) => {
+        return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
+      },{});
+    transaction = { ...transaction, createdBy };
+    // const transaction = {
+    //   phoneNumber: phoneNumber.value,
+    //   names: names.value,
+    //   gothram: gothram.value,
+    //   nakshatram: nakshatram.value,
+    //   pooja: pooja.value,
+    //   fromDate: from.value,
+    //   toDate: to.value,
+    //   numberOfDays: numberOfDays.value,
+    //   amount: amount.value,
+    //   createdBy: createdBy,
+    // }
+    this.props.addTransaction(transaction);
+    this.modalCloseHandler();
+    // window.print();
+    // this.setState({ open: true });
+  }
 
   tabChangeHandler = (event, value) => {
     this.setState({
@@ -122,7 +117,7 @@ class Transactions extends React.Component {
       );
     }
     return (
-      <div className={classes.panes}>
+      <div className={classes.panes} >
         <div className={classes.leftPane}></div>
         <div className={classes.root}>
           <Paper className={classes.tabRoot}>
@@ -148,7 +143,7 @@ class Transactions extends React.Component {
         <div className={classes.rightPane}>
           <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
         </div>
-      </div>
+      </div >
     );
   }
 }
@@ -157,8 +152,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     message: state.transactions.message,
     user: state.auth.user,
-    poojaDetails: state.poojas.poojaDetails,
-    searchedTransactions: state.transactions.searchedTransactions,
   }
 }
 
@@ -167,12 +160,6 @@ const mapDispatchToProps = (dispatch) => {
     addTransaction: (transaction) => {
       dispatch(actions.addTransaction(transaction))
     },
-    getPoojaDetails: () => {
-      dispatch(actions.getPoojaDetails());
-    },
-    searchTransactions: (searchData) => {
-      dispatch(actions.searchTransactions(searchData))
-    }
   }
 }
 
