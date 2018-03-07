@@ -56,6 +56,7 @@ class Transactions extends React.Component {
     snackOpen: false,
     activeTab: 'pooja',
     transactionInformation: [],
+    selectedTransaction: {},
   };
 
   closeSnackHandler = () => {
@@ -101,13 +102,15 @@ class Transactions extends React.Component {
       activeTab: value,
     });
   }
-
+  itemSelectionChangedHandler = (selectedTransaction) => {
+    this.setState({ selectedTransaction });
+  }
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
   }
   render() {
     const { classes } = this.props;
-    const { activeTab, transactionInformation, modalOpen } = this.state;
+    const { activeTab, transactionInformation, modalOpen, selectedTransaction } = this.state;
     let message = null;
     if (this.props.message) {
       message = (
@@ -132,6 +135,7 @@ class Transactions extends React.Component {
           <CreateTransaction
             submit={this.formSubmitHandler}
             activeTab={activeTab}
+            selectedTransaction={selectedTransaction}
           />
           <TransactionSummary
             open={modalOpen}

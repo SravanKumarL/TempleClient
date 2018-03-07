@@ -59,7 +59,7 @@ class SearchTransaction extends React.Component {
     this.props.searchTransactions({ phoneNumber: this.state.searchValue, selection: radioValue });
   }
   itemSelectinChangedHandler = (selectedItem) => {
-    
+    this.props.itemSelected(selectedItem);
   }
   render() {
     const { searchedTransactions } = this.props;

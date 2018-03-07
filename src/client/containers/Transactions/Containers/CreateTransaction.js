@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
-
+import { isEmpty } from 'lodash';
 import * as actions from '../../../../store/actions';
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
@@ -46,7 +46,16 @@ class CreateTransaction extends React.Component {
       const newFormElement = { ...this.state.transactionForm };
       newFormElement.pooja.elementConfig.options = options;
       this.setState({ transactionForm: newFormElement, poojaDetails });
-
+    }
+    const { selectedTransaction } = nextProps;
+    if (!isEmpty(selectedTransaction)) {
+      const newFormElement = updateObject(this.state.transactionForm, {
+        phoneNumber: { ...this.state.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber },
+        names: { ...this.state.transactionForm.names, value: selectedTransaction.names },
+        gothram: { ...this.state.transactionForm.gothram, value: selectedTransaction.gothram },
+        nakshatram: { ...this.state.transactionForm.nakshatram, value: selectedTransaction.nakshatram },
+      });
+      this.setState({ transactionForm: newFormElement });
     }
   }
   formResetHandler = () => {
