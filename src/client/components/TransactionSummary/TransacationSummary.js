@@ -53,7 +53,7 @@ const transactionSummary = (props) => {
         <FormGroup className={classes.content}>
           {Object.keys(transactionFields).map(id => {
             const field = transactionFields[id];
-            const placeholder = id === 'amount' ? 'Amount' : field.elementConfig.placeholder;
+            const placeholder = field.name;
             return (<FormControlLabel
               className={classes.formLabel}
               key={id}
