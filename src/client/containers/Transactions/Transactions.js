@@ -66,26 +66,13 @@ class Transactions extends React.Component {
   modalCloseHandler = () => this.setState({ modalOpen: false });
 
   printHandler = () => {
-    // const { phoneNumber, names, gothram, nakshatram, pooja, from, to, numberOfDays, amount } = this.state.transactionInformation;
     const createdBy = this.props.user;
     const { transactionInformation } = this.state;
     let transaction = Object.keys(this.state.transactionInformation)
       .reduce((acc, item) => {
         return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
-      },{});
+      }, {});
     transaction = { ...transaction, createdBy };
-    // const transaction = {
-    //   phoneNumber: phoneNumber.value,
-    //   names: names.value,
-    //   gothram: gothram.value,
-    //   nakshatram: nakshatram.value,
-    //   pooja: pooja.value,
-    //   fromDate: from.value,
-    //   toDate: to.value,
-    //   numberOfDays: numberOfDays.value,
-    //   amount: amount.value,
-    //   createdBy: createdBy,
-    // }
     this.props.addTransaction(transaction);
     this.modalCloseHandler();
     // window.print();
@@ -109,11 +96,7 @@ class Transactions extends React.Component {
     let message = null;
     if (this.props.message) {
       message = (
-        <Snackbar
-          open={this.state.snackOpen}
-          close={this.closeSnackHandler}
-          message={this.props.message}
-        />
+        <Snackbar open={this.state.snackOpen} close={this.closeSnackHandler} message={this.props.message} />
       );
     }
     return (

@@ -33,20 +33,16 @@ class CreateTransaction extends React.Component {
     formIsValid: false,
   };
   componentWillReceiveProps(nextProps) {
-    const { poojaDetails } = nextProps;
+    const { poojaDetails, selectedTransaction, activeTab } = nextProps;
     if (poojaDetails) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
-        return {
-          value: newkey,
-          label: newkey,
-        }
+        return { value: newkey, label: newkey }
       });
       const newFormElement = { ...this.state.transactionForm };
       newFormElement.pooja.elementConfig.options = options;
       this.setState({ transactionForm: newFormElement });
     }
-    const { selectedTransaction } = nextProps;
     if (!isEmpty(selectedTransaction)) {
       const newFormElement = updateObject(this.state.transactionForm, {
         phoneNumber: { ...this.state.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber },
@@ -56,10 +52,57 @@ class CreateTransaction extends React.Component {
       });
       this.setState({ transactionForm: newFormElement });
     }
+    if (activeTab !== this.props.activeTab) {
+      this.getUpdatedFormElement(activeTab);
+    }
   }
-  formResetHandler = () => {
-    this.setState({ ...this.baseState })
+  getUpdatedFormElement = (activeTab) => {
+    // let updatedFormElement = { ...this.state.transactionForm };
+    // switch (value) {
+    //   case 0:
+    //     updatedFormElement.pooja.elementType = 'singleselect';
+    //     updatedFormElement.amount.disabled = true;
+    //     updatedFormElement.pooja.elementConfig.placeholder = 'Pooja';
+    //     break;
+    //   case 1:
+    //     updatedFormElement.pooja.elementConfig.placeholder = 'Special Pooja';
+    //     updatedFormElement.pooja.elementType = 'singleselect';
+    //     break;
+    //   case 2:
+    //     updatedFormElement.pooja.elementType = 'input';
+    //     updatedFormElement.amount.disabled = false;
+    //     updatedFormElement.amount.value = '';
+    //     updatedFormElement.pooja.value = '';
+    //     updatedFormElement.pooja.elementConfig.placeholder = 'Special Offerings';
+    //     break;
+    //   default:
+    //     break;
+    // }
+    let updatedFormElement = { ...this.state.transactionForm };
+    switch (activeTab) {
+      case 'pooja':
+        updatedFormElement = updateObject(updatedFormElement, {
+          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' } },
+          amount: { ...updatedFormElement.amount, disabled: false },
+        });
+        break;
+      case 'special pooja':
+        updatedFormElement = updateObject(updatedFormElement, {
+          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Pooja' } },
+        });
+        break;
+      case 'other':
+        updatedFormElement = updateObject(updatedFormElement, {
+          pooja: { ...updatedFormElement.pooja, elementType: 'input', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
+          amount: { ...updatedFormElement.amount, disabled: false, value: '' },
+        });
+        break;
+      default:
+        break;
+    }
+    this.setState({ transactionForm: updatedFormElement });
   }
+  formResetHandler = () => this.setState({ ...this.baseState });
 
   inputChangedHandler = (event, inputIdentifier) => {
     const value = (inputIdentifier === 'nakshatram' || inputIdentifier === 'pooja') ? event : event.target.value;
@@ -84,10 +127,7 @@ class CreateTransaction extends React.Component {
       formIsValid = updatedtransactionForm[inputIdentifier].valid && formIsValid;
     }
     updatedtransactionForm[inputIdentifier] = updatedFormElement;
-    this.setState({
-      transactionForm: updatedtransactionForm,
-      formIsValid,
-    });
+    this.setState({ transactionForm: updatedtransactionForm, formIsValid, });
   }
   submitHandler = () => {
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
@@ -120,9 +160,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getPoojaDetails: () => {
-      dispatch(actions.getPoojaDetails());
-    },
+    getPoojaDetails: () => { dispatch(actions.getPoojaDetails()); },
   }
 }
 

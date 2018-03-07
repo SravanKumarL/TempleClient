@@ -8,8 +8,6 @@ import Fade from 'material-ui/transitions/Fade';
 import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
 import * as actions from '../../../../store/actions';
 
-
-
 class SearchTransaction extends React.Component {
   constructor() {
     super();
@@ -22,45 +20,29 @@ class SearchTransaction extends React.Component {
     radioValue: 'Phone Number',
   };
 
+  openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
 
-  openSearchPanelHandler = () => {
-    this.setState({
-      showSearchButton: false,
-      searchPanelOpen: true,
-    });
-  }
+  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false, });
 
-  closeSearchPanelHandler = () => {
-    this.setState({
-      searchPanelOpen: false,
-    });
-  }
+  panelExitHandler = () => this.setState({ showSearchButton: true, });
 
-  panelExitHandler = () => {
-    this.setState({
-      showSearchButton: true,
-    });
-  }
+  itemSelectinChangedHandler = (selectedItem) => this.props.itemSelected(selectedItem);
 
   searchValueChangedHandler = (event) => {
     const { value } = event.target;
-    this.setState({
-      searchValue: value
-    });
+    this.setState({searchValue: value});
   }
+
   radioChangedHandler = (event) => {
     const { value } = event.target;
-    this.setState({
-      radioValue: value,
-    });
+    this.setState({radioValue: value,});
   }
+
   searchClickedHandler = () => {
     const { radioValue } = this.state;
     this.props.searchTransactions({ phoneNumber: this.state.searchValue, selection: radioValue });
   }
-  itemSelectinChangedHandler = (selectedItem) => {
-    this.props.itemSelected(selectedItem);
-  }
+
   render() {
     const { searchedTransactions } = this.props;
     const { showSearchButton, searchPanelOpen } = this.state;
