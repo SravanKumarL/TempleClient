@@ -5,7 +5,7 @@ import './App.css';
 import Authentication from './containers/Authentication/Authentication';
 import Layout from './hoc/Layout/Layout';
 import Board from './containers/Board/Board';
-import CreateTransaction from './containers/Transactions/CreateTransaction';
+import Transactions from './containers/Transactions/Transactions';
 import EditTransaction from './containers/Transactions/EditTransaction';
 import Poojas from './containers/Poojas/Poojas';
 import Reports from './containers/Reports/Reports';
@@ -33,7 +33,7 @@ class App extends Component {
               <Route path='/reports/managementReport' exact component={ManagementReport} />
               <Route path='/reports' component={Reports} />
               <Route path='/transactions/edit' component={EditTransaction} />
-              <Route path='/transactions/create' component={CreateTransaction} />
+              <Route path='/transactions/create' component={Transactions} />
               <Route path='/' exact component={Board} />
               <Redirect to='/' />
           </Switch>

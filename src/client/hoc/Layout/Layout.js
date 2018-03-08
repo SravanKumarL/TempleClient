@@ -28,7 +28,9 @@ const styles = theme => ({
     display: 'flex',
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: 24,
+    // padding: 24,
+    paddingTop: 24,
+    paddingLeft: 24,
     height: 'calc(100% - 56px)',
     marginTop: 56,
     [theme.breakpoints.up('sm')]: {

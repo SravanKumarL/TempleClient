@@ -66,7 +66,7 @@ const transactionForm = (props) => {
         <Button onClick={props.preview} color='primary' raised size='large' className={classes.button}>
           Preview
         </Button>
-        <Button onClick={props.cancel} color='secondary' raised size='large' className={classes.button}>
+        <Button onClick={props.reset} color='secondary' raised size='large' className={classes.button}>
           Reset
         </Button>
       </div>
