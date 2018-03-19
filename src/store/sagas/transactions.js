@@ -1,7 +1,7 @@
 import { put } from 'redux-saga/effects';
 import * as actions from '../actions';
 import axios from '../../axios/transactions';
-
+import constants from './constants';
 export function* addTransactionSaga(action) {
   try {
     yield put(actions.addTransactionStarted());
@@ -15,8 +15,8 @@ export function* addTransactionSaga(action) {
       }
       const response = yield axios({
         method: 'post',
-        url: '/addTransaction',
-        data: action.transaction,
+        url: `${constants.Transactions}/${constants.add}`,
+        data: action.payload.change,
         headers
       });
       yield put(actions.addTransactionSuccess(response.data.message));
@@ -28,7 +28,7 @@ export function* addTransactionSaga(action) {
 
 }
 
-export function* getTransactionsSaga(action) {
+export function* getTransactionsSaga() {
   try {
     yield put(actions.getTransactionsStarted());
     const token = localStorage.getItem('token');
@@ -41,7 +41,7 @@ export function* getTransactionsSaga(action) {
       }
       const response = yield axios({
         method: 'get',
-        url: '/getTransactions',
+        url: `${constants.Transactions}`,
         headers
       });
       yield put(actions.getTransactionsSuccess(response.data.transactions));
@@ -60,13 +60,13 @@ export function* searchTransactionsSaga(action) {
       const error = { message: 'You are not allowed to do the transaction' };
       yield put(actions.searchTransactionsFail(error));
     } else {
-      let url = action.searchData.selection.toLowerCase() === 'phone number' ? '/getTransactionsWithPhoneNumber' : '/getTransactionsWithNames'; 
+      let getSegment = action.searchData.selection.toLowerCase() === 'phone number' ? 'getTransactionsWithPhoneNumber' : `${constants.get}`; 
       const headers = {
         'authorization': `${token}`,
       }
       const response = yield axios({
         method: 'post',
-        url: url,
+        url: `${constants.Transactions}/${getSegment}`,
         headers,
         data: searchData
       });

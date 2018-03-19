@@ -1,0 +1,9 @@
+module.exports={
+    delete:'delete',
+    add:'add',
+    edit:'edit',
+    get:'get',
+    Poojas:'poojas',
+    Transactions:'transactions',
+    Reports:'reports'   
+}

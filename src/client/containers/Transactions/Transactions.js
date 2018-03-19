@@ -10,6 +10,7 @@ import TransactionSummary from '../../components/TransactionSummary/Transacation
 import * as actions from '../../../store/actions';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
+import constants from '../../../store/sagas/constants';
 
 const styles = theme => ({
   root: {
@@ -141,7 +142,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTransaction: (transaction) => {
-      dispatch(actions.addTransaction(transaction))
+      dispatch(actions.commitTransaction(constants.add,constants.Transactions,[],transaction));
     },
   }
 }

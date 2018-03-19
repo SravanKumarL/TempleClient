@@ -3,7 +3,7 @@ const Transaction = require('./controllers/transactions');
 const Pooja = require('./controllers/poojaDetails');
 const passportService = require('./services/passport');
 const passport = require('passport');
-
+const constants = require('./constants/constants');
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
@@ -16,11 +16,11 @@ module.exports = function (app) {
   app.post('/signup', Authentication.signup);
   
   // Transaction Routes
-  app.post('/addTransaction', requireAuth, Transaction.addTransaction);
-  app.get('/getTransactions', requireAuth, Transaction.getTransactions);
-  app.post('/getTransactionsWithPhoneNumber', requireAuth, Transaction.searchTransactionWithPhoneNumber);
+  app.post(`${constants.Transactions}/${constants.add}`, requireAuth, Transaction.addTransaction);
+  app.get(`${constants.Transactions}`, requireAuth, Transaction.getTransactions);
+  app.post(`${constants.Transactions}/getTransactionsWithPhoneNumber`, requireAuth, Transaction.searchTransactionWithPhoneNumber);
   
   //Pooja Routes
-  app.post('/addPooja', requireAuth, Pooja.addPooja);
-  app.get('/getPoojaDetails', requireAuth, Pooja.getPoojas);
+  app.post(`${constants.Poojas}/${constants.add}`, requireAuth, Pooja.addPooja);
+  app.get(`${constants.Poojas}`, requireAuth, Pooja.getPoojas);
 }

@@ -8,7 +8,7 @@ import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 import { formStateConfig } from '../StateConfig';
 import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
-
+import constants from '../../../../store/sagas/constants'
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -160,7 +160,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getPoojaDetails: () => { dispatch(actions.getPoojaDetails()); },
+    getPoojaDetails: () => { dispatch(actions.fetchData(constants.Poojas)); },
   }
 }
 

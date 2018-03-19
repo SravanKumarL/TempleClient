@@ -97,3 +97,23 @@ export const phoneNumber = value =>
     ? 'Invalid phone number, must be 10 digits'
     : undefined
 /* eslint-enable */
+export const getFormattedColumns=(columns)=>{
+  try{
+      if(columns!==undefined && columns.length!==0 && columns.every(column=> checkIfObject(column)))
+      {
+          if(columns.every(column=>column.hasOwnProperty('name') && column.hasOwnProperty('title')))
+              return columns;
+          return columns.map(column=>{
+              let columnName= column.hasOwnProperty('name')? column.name :(column.hasOwnProperty('title')? column.title :column);
+              column['title']=columnName;
+              column['name']=columnName;
+              return column;
+          });
+      }
+      throw new Error('Invalid column format');
+  }
+  catch(err){
+      throw err;
+  }
+}
+export const checkIfObject=(obj)=> obj!==null && typeof obj === 'object';
