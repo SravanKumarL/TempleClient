@@ -81,6 +81,8 @@
     "start": "node scripts/start.js",
     "server": "nodemon src/server/index.js",
     "build": "node scripts/build.js",
+    "bundle": "npm run babel-transpile && webpack --config webpack.js",
+    "babel-transpile": "babel src/server --out-dir build",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
@@ -124,6 +126,15 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-eslint": "^8.0.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "redux-devtools-extension": "^2.13.2"
   }
 }
