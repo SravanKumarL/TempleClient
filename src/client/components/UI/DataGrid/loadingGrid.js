@@ -1,11 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { Paper } from 'material-ui';
 import withStyles from 'material-ui/styles/withStyles'
 import { FilteringState, IntegratedPaging, IntegratedFiltering, PagingState, EditingState } from '@devexpress/dx-react-grid';
 import { Grid, Table, TableHeaderRow, TableEditColumn, TableFilterRow, PagingPanel, DragDropProvider } from '@devexpress/dx-react-grid-material-ui';
-import Loading from './Progress';
-import ErrorSnackbar from './ErrorSnackBar';
+import Loading from '../Progress/progress';
 const onCommitChanges = () => { };
 const styles=theme=>({
     grid:{
@@ -17,7 +15,7 @@ const styles=theme=>({
     }
 });
 const LoadingGrid = ({ columns, error, classes }) => (
-    <div style={classes.grid}>
+    <div className={classes.grid}>
         <Paper>
             <Grid rows={[]} columns={columns}>
                 <FilteringState />

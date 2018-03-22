@@ -5,5 +5,6 @@ module.exports={
     get:'get',
     Poojas:'poojas',
     Transactions:'transactions',
-    Reports:'reports'   
+    Reports:'reports',
+    Schema:'schema'
 }

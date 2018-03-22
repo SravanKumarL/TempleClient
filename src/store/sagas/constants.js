@@ -1,9 +1,11 @@
-export default constants={
+const constants={
     delete:'delete',
     add:'add',
     edit:'edit',
     get:'get',
     Poojas:'poojas',
     Transactions:'transactions',
-    Reports:'reports'   
+    Reports:'reports', 
+    Schema:'schema'
 }
+export default constants;

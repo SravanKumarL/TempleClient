@@ -14,14 +14,14 @@ const styles = theme => ({
     opacity:1.0,
     position:'absolute',
     zIndex:100,
-    background:'white'
+    background:theme.palette.background.paper
   },
 });
 
 function CircularIndeterminate(props) {
   const { classes } = props;
   return (
-    <div style={classes.progress}>
+    <div className={classes.progress}>
       <CircularProgress size={50} />
     </div>
   );

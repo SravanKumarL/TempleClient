@@ -24,6 +24,7 @@ module.exports = function (app) {
   let Pooja=Entity.entity(constants.Poojas);
   app.post(`/${constants.Poojas}/${constants.add}`, requireAuth, Pooja.add);
   app.get(`/${constants.Poojas}`, requireAuth, Pooja.get);
+  app.get(`/${constants.Poojas}/${constants.Schema}`, requireAuth, Pooja.schema);
   app.delete(`/${constants.Poojas}/:id`,requireAuth,Pooja.delete);
   app.put(`/${constants.Poojas}/:id`,requireAuth,Pooja.update);
 }

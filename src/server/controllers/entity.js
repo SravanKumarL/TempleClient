@@ -1,5 +1,6 @@
 const Pooja = require('../models/poojaDetails');
 const constants = require('../constants/constants');
+const _ = require('lodash');
 const populateModel = function (model, reqBody, id) {
     if (!checkReqBody(model, reqBody))
         return null;
@@ -14,7 +15,7 @@ const getModel = (collection) => {
     }
 }
 const checkReqBody = function (model, reqBody) {
-    const modelProps = getModelProps(model).filter(prop=>prop!=='id');
+    const modelProps = getModelProps(model).filter(prop => prop !== 'id');
     return modelProps.filter(prop => reqBody.hasOwnProperty(prop)).length === modelProps.length;
 }
 const getModelProps = (model) => Object.getOwnPropertyNames(model.schema.obj);
@@ -23,30 +24,34 @@ exports.entity = function (collection) {
     return {
         add: function (req, res, next) {
             let newId;
-            const getCount= async ()=>await model.count({}, function(err, count){
-                if (err)
-                    res.json({ error: err });
+            model.count({}, function (error, count) {
+                if (error)
+                    res.json({ error });
                 newId = count + 1;
-            });
-            getCount();
-            let entity = populateModel(model, req.body, newId);
-            if (entity === null) {
-                let modelProps = getModelProps(model);
-                return res.status(422).send({ error: `You must provide ${modelProps.slice(0, modelProps.length - 1).join(', ')} and ${modelProps[modelProps.length - 1]}` });
-            }
-            //save it to the db
-            entity.save(function (err) {
-                if (err) { return next(err); }
-                //Respond to request indicating the pooja was created
-                res.json({ message: `${collection.slice(0, collection.length - 1)} was added successfully` });
+            }).then((resolve, reject) => {
+                if (reject)
+                    res.json({ error: reject });
+                let entity = populateModel(model, req.body, newId);
+                if (entity === null) {
+                    let modelProps = getModelProps(model);
+                    return res.status(422).send({ error: `You must provide ${modelProps.slice(0, modelProps.length - 1).join(', ')} and ${modelProps[modelProps.length - 1]}` });
+                }
+                //save it to the db
+                entity.save(function (error) {
+                    if (error) { return res.json({ error }); }
+                    //Respond to request indicating the pooja was created
+                    res.json({ message: `${collection.slice(0, collection.length - 1)} was added successfully` });
+                });
             });
         },
         get: function (req, res, next) {
-            model.find().exec((err, data) => {
-                if (err) {
-                    res.status(500).send(err);
+            let modelProps = getModelProps(model);
+            model.find().exec((error, data) => {
+                if (error) {
+                    res.json({ error });
                 }
-                res.json({ data });
+                let modData = data.map(d => _.pick(d, modelProps));
+                res.send(modData);
             });
         },
         delete: function (req, res, next) {
@@ -58,15 +63,20 @@ exports.entity = function (collection) {
             //     res.status(200).send(`${collection.slice(0, collection.length - 1)} was deleted successfully`);
             // });
             model.remove({ id: req.params.id }, function (error) {
-                res.json({ error: error });
+                if (error)
+                    res.json({ error });
             });
-            res.status(200).send(`${collection.slice(0, collection.length - 1)} was deleted successfully`);
+            res.json({ message: `${collection.slice(0, collection.length - 1)} was deleted successfully` });
         },
         update: function (req, res, next) {
             model.findOneAndUpdate({ id: req.params.id }, req.body, function (error) {
-                res.json({ error: error });
+                if (error)
+                    res.json({ error });
             });
-            res.status(200).send(`${collection.slice(0, collection.length - 1)} was updated successfully`);
+            res.json({ message: `${collection.slice(0, collection.length - 1)} was updated successfully` });
+        },
+        schema: function (req, res, next) {
+            res.status(200).send(getModelProps(model).filter(prop => prop !== 'id'));
         }
     }
 }

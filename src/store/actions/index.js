@@ -25,6 +25,8 @@ export {
 export {
   commitTransaction,
   fetchData,
+  fetchSchema,
+  onFetchSchemaSuccess,
   onFetchReq,
   onFetchSuccess,
   onFetchFailed,

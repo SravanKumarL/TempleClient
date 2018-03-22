@@ -23,11 +23,13 @@ export const SEARCH_TRANSACTIONS_START = 'SEARCH_TRANSACTIONS_START';
 export const SEARCH_TRANSACTIONS_SUCCESS = 'SEARCH_TRANSACTIONS_SUCCESS';
 export const SEARCH_TRANSACTIONS_FAIL = 'SEARCH_TRANSACTIONS_FAIL';
 
-//Db Router
-
+//Entity
+export const resetEntity='RESET_ENTITY';
 export const commitTransaction='COMMIT_TRANSACTION';
 export const onTransactionCommitReq='ON_TRANSACTION_COMMIT_REQ';
 export const fetchData='FETCH_DATA';
+export const fetchSchema='FETCH_SCHEMA';
+export const onFetchSchemaSuccess= 'ON_FETCH_SCHEMA_SUCCESS';
 export const onFetchReq= 'ON_FETCH_REQ';
 export const onFetchSuccess= 'ON_FETCH_SUCCESS';
 export const onFetchFailed= 'ON_FETCH_FAILED';

@@ -187,7 +187,7 @@ const styles = theme => ({
 })
 const Poojas= ({classes})=>(
   <div className={classes.root}>
-    <DataGridWrapper className={classes.table} columns={['Pooja Name','Amount']} collection={constants.Poojas}/>
+    <DataGridWrapper className={classes.table} collection={constants.Poojas}/>
   </div>
 )
 export default withStyles(styles)(Poojas);

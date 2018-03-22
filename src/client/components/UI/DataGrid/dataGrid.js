@@ -15,7 +15,6 @@ import Dialog, {
   DialogContentText,
   DialogTitle,
 } from 'material-ui/Dialog';
-import _ from 'lodash';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input';
@@ -29,7 +28,6 @@ import SaveIcon from 'material-ui-icons/Save';
 import CancelIcon from 'material-ui-icons/Cancel';
 import { withStyles } from 'material-ui/styles';
 import constants from '../../../../store/sagas/constants';
-import { globalSalesValues } from './demo-data/generator';
 import LoadingGrid from './loadingGrid';
 
 const styles = theme => ({
@@ -100,9 +98,9 @@ const Command = ({ id, onExecute }) => {
 };
 
 const availableValues = {
-  product: globalSalesValues.product,
-  region: globalSalesValues.region,
-  customer: globalSalesValues.customer,
+  // product: globalSalesValues.product,
+  // region: globalSalesValues.region,
+  // customer: globalSalesValues.customer,
 };
 
 const LookupEditCellBase = ({
@@ -145,10 +143,10 @@ const EditCell = (props) => {
   }
   return <TableEditRow.Cell {...props} />;
 };
-const groupCell = (props) => {
-  // return <TableGroupRow.Cell {...props} onToggle={onGroupToggle}/>;
-  return <TableGroupRow.Cell {...props} key={props.row.key} />
-}
+// const groupCell = (props) => {
+//   // return <TableGroupRow.Cell {...props} onToggle={onGroupToggle}/>;
+//   return <TableGroupRow.Cell {...props} key={props.row.key} />
+// }
 const Row = (props) => {
   return <Table.Row {...props} key={props.row.id} />;
 }
@@ -236,7 +234,7 @@ class DataGrid extends React.PureComponent {
           rows.splice(index, 1);
         }
       });
-      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, rows, this.state.deletingRows));
+      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, rows, this.state.deletingRows[0]));
       this.setState({ rows, deletingRows: [] });
     };
     this.changeColumnOrder = (order) => {
@@ -245,7 +243,8 @@ class DataGrid extends React.PureComponent {
     this.onSnackBarClose=()=>this.setState({snackBarOpen:false});
   }
   componentDidMount() {
-    this.setAndCommitTrans(() => this.props.fetchRows(this.props.collection));
+    this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection));
+    this.setAndCommitTrans(() => this.props.fetchData(this.props.collection));
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.error === '')
@@ -262,7 +261,7 @@ class DataGrid extends React.PureComponent {
   // }
   render() {
     const {
-      classes, loading, columns, error, message, collection
+      classes, loading, columns, error, message
     } = this.props;
     const {
       // rows,
@@ -381,7 +380,7 @@ class DataGrid extends React.PureComponent {
               <Button onClick={this.deleteRows} color="secondary">Delete</Button>
             </DialogActions>
           </Dialog>
-          <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction} 
+          <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
             onSnackBarClose={this.onSnackBarClose}/>
         </Paper>
     );
