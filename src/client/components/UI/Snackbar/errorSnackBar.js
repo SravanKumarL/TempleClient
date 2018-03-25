@@ -11,6 +11,9 @@ const styles = theme => ({
     width: theme.spacing.unit * 4,
     height: theme.spacing.unit * 4,
   },
+  snackBar:{
+    background:theme.palette.primary.dark
+  }
 });
 
 class ErrorSnackbar extends React.Component {
@@ -23,10 +26,10 @@ class ErrorSnackbar extends React.Component {
             key="close"
             aria-label="Close"
             color="inherit"
-            className={props.classes.close}
+            className={this.props.classes.close}
             onClick={this.handleClose}
           >
-            <CloseIcon />
+            <CloseIcon/>
           </IconButton>,
         ]
       };
@@ -55,14 +58,15 @@ class ErrorSnackbar extends React.Component {
     this.props.onSnackBarClose();
   };
   componentWillReceiveProps(nextProps){
-    let actions=this.getActions(nextProps.redoTransaction,nextProps.error);
+    let actions=this.getActions(nextProps.redoTransaction);
     this.setState({actions})
   }
   render() {
-    const { message,open } = this.props;
+    const { message,open,classes } = this.props;
     return (
       <div>
         <Snackbar
+          className={classes.snackBar}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',

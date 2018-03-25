@@ -8,5 +8,5 @@ export default combineReducers({
   auth,
   form,
   transactions,
-  entity
+  poojas:entity
 });

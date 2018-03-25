@@ -97,12 +97,6 @@ const Command = ({ id, onExecute }) => {
   );
 };
 
-const availableValues = {
-  // product: globalSalesValues.product,
-  // region: globalSalesValues.region,
-  // customer: globalSalesValues.customer,
-};
-
 const LookupEditCellBase = ({
   availableColumnValues, value, onValueChange, classes,
 }) => (
@@ -137,12 +131,15 @@ const Cell = (props) => {
 };
 
 const EditCell = (props) => {
-  const availableColumnValues = availableValues[props.column.name];
-  if (availableColumnValues) {
-    return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
-  }
+  // const availableColumnValues = availableValues[props.column.name];
+  // if (availableColumnValues) {
+  //   return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
+  // }
   return <TableEditRow.Cell {...props} />;
 };
+const EditRow=(props)=>{
+  return <TableEditRow.Row {...props} key={props.row.id}/>
+}
 // const groupCell = (props) => {
 //   // return <TableGroupRow.Cell {...props} onToggle={onGroupToggle}/>;
 //   return <TableGroupRow.Cell {...props} key={props.row.key} />
@@ -159,6 +156,7 @@ class DataGrid extends React.PureComponent {
       // tableColumnExtensions: [
       //   { columnName: 'amount', align: 'right' },
       // ],
+      prevRows:[],
       rows: [],
       snackBarOpen: false,
       transaction: null,
@@ -171,7 +169,7 @@ class DataGrid extends React.PureComponent {
       deletingRows: [],
       pageSize: 5,
       pageSizes: [5, 10, 0],
-      columnOrder: ['product', 'region', 'amount', 'discount', 'saleDate', 'customer'],
+      columnOrder: [],
     };
     this.handleGroupingChange = (groups) => {
       let isGrouped = groups.length > 0;
@@ -186,21 +184,22 @@ class DataGrid extends React.PureComponent {
     }
     this.changeSorting = sorting => this.setState({ sorting });
     this.changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
-    this.changeAddedRows = addedRows => this.setState({
-      addedRows: addedRows.map(row => (Object.keys(row).length ? row : {
-        amount: 0,
-        discount: 0,
-        saleDate: new Date().toISOString().split('T')[0],
-        product: availableValues.product[0],
-        region: availableValues.region[0],
-        customer: availableValues.customer[0],
-      })),
-    });
+    // this.changeAddedRows = addedRows => this.setState({
+    //   addedRows: addedRows.map(row => (Object.keys(row).length ? row : {
+    //     amount: 0,
+    //     discount: 0,
+    //     saleDate: new Date().toISOString().split('T')[0],
+    //     product: availableValues.product[0],
+    //     region: availableValues.region[0],
+    //     customer: availableValues.customer[0],
+    //   })),
+    // });
     this.changeRowChanges = rowChanges => this.setState({ rowChanges });
     this.changeCurrentPage = currentPage => this.setState({ currentPage });
     this.changePageSize = pageSize => this.setState({ pageSize });
     this.commitChanges = ({ added, changed, deleted }) => {
       let { rows } = this.state;
+      this.setState({prevRows:rows});
       if (added) {
         const modRows=rows.map(row=>{
           row['id']=row['id']+1;
@@ -217,24 +216,25 @@ class DataGrid extends React.PureComponent {
         //     ...row,
         //   })),
         // ];
-        this.setAndCommitTrans(() => this.props.commitTransaction(constants.add, this.props.collection, rows, added));
+        this.setAndCommitTrans(() => this.props.commitTransaction(constants.add, this.props.collection, added[0]));
       }
       if (changed) {
         rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-        this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, rows, changed));
+        this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
       }
       this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
     };
     this.cancelDelete = () => this.setState({ deletingRows: [] });
     this.deleteRows = () => {
       const rows = this.state.rows.slice();
+      this.setState({prevRows:rows});
       this.state.deletingRows.forEach((rowId) => {
         const index = rows.findIndex(row => row.id === rowId);
         if (index > -1) {
           rows.splice(index, 1);
         }
       });
-      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, rows, this.state.deletingRows[0]));
+      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, this.state.deletingRows[0]));
       this.setState({ rows, deletingRows: [] });
     };
     this.changeColumnOrder = (order) => {
@@ -247,13 +247,17 @@ class DataGrid extends React.PureComponent {
     this.setAndCommitTrans(() => this.props.fetchData(this.props.collection));
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.error === '')
+    const {rows,error,message}=nextProps;
+    if (error === '')
       this.setState({ transaction: null });
-    if(nextProps.message !== '' || nextProps.error!=='')
+    if(rows!==undefined)
+      this.setState({ rows,prevRows:rows });
+    else
+      this.setState({rows:this.state.prevRows});
+    if(message !== '' || error!=='')
       this.setState({snackBarOpen:true});
     else
       this.setState({snackBarOpen:false});
-    this.setState({ rows: nextProps.rows });
   }
   // componentWillUpdate(nextProps, nextState) {
   //   if(nextState.snackBarOpen && nextProps.error!=='')
@@ -333,7 +337,7 @@ class DataGrid extends React.PureComponent {
             <TableFilterRow />
             {isGrouped ? <TableGroupRow /> :
               <TableEditRow
-                cellComponent={EditCell}
+                cellComponent={EditCell} row={EditRow}
               />}
             {!isGrouped &&
               <TableEditColumn

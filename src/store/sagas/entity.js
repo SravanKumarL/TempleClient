@@ -1,16 +1,14 @@
 import axios from '../../axios/poojas';
-import { put,call } from 'redux-saga/effects'
-import * as actions from '../actions';
+import { put, call } from 'redux-saga/effects'
+import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants from './constants';
-import { delay } from 'redux-saga';
 export function* handleTransaction(action) {
-    const { rows, type, collection, change } = action.payload;
+    const { type, collection, change } = action.payload;
     if (collection === constants.Transactions && type === constants.add) {
         yield* transactionSagas.addTransactionSaga(action);
     }
     else {
-        yield put(actions.onTransactionCommitReq());
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -20,51 +18,52 @@ export function* handleTransaction(action) {
                 const headers = {
                     'authorization': `${token}`,
                 }
-                let response={};
+                let response = {};
                 switch (type) {
-                    case constants.addTransaction:
+                    case constants.add:
                         response = yield axios({
                             method: 'post',
                             url: `/${collection}/add`,
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse,response,rows);
+                        yield call(handleResponse, response);
                         break;
-                    case constants.deleteTransaction:
+                    case constants.delete:
                         response = yield axios({
                             method: 'delete',
                             url: `/${collection}/${change}`,
                             headers
                         });
-                        yield call(handleResponse,response,rows);
+                        yield call(handleResponse, response)
                         break;
-                    case constants.editTransaction:
+                    case constants.edit:
                         const entity = Object.getOwnPropertyNames(change)[0];
                         response = yield axios({
                             method: 'put',
                             url: `/${collection}/${entity}`,
                             data: JSON.stringify(Object.values(change)[0]),
                             headers
-                        }).then()
-                        yield call(handleResponse,response,rows);
+                        });
+                        yield call(handleResponse, response)
                         break;
                     default:
                         break;
                 }
             }
         }
-        catch (err) {
-            yield put(actions.onTransactionFailed(err.message))
+        catch (error) {
+            console.log(error);
+            yield put(actions.onTransactionFailed(error.message))
         }
     }
 }
-function handleResponse(response,rows) {
+const handleResponse = (response) => {
     const { error, message } = response.data;
     if (error)
-        yield put(actions.onTransactionFailed(error));
+        put(actions.onTransactionFailed(error));
     else
-        yield put(actions.onTransactionCommitted(rows, message));
+        put(actions.onTransactionCommitted(message));
 }
 export function* handleFetchData(action) {
     const { collection } = action.payload;
@@ -89,7 +88,8 @@ export function* handleFetchData(action) {
                 yield put(actions.onFetchSuccess(response.data));
             }
         } catch (error) {
-            yield put(actions.onFetchFailed(error));
+            console.log(error);
+            yield put(actions.onFetchFailed(error.message));
         }
     }
 }
@@ -113,6 +113,7 @@ export function* handleFetchSchema(action) {
             yield put(actions.onFetchSchemaSuccess(response.data));
         }
     } catch (error) {
-        yield put(actions.onFetchFailed(error));
+        console.log(error);
+        yield put(actions.onFetchFailed(error.message));
     }
 }

@@ -10,7 +10,7 @@ export default function entity(state = initialState, action) {
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false };
         case actionTypes.onTransactionCommitted:
-            return { ...state, rows: action.payload.rows, message: action.payload.message, error: '' }
+            return { ...state, message: action.payload.message, error: '' }
         case actionTypes.onTransactionCommitReq:
             return { ...state, error: '', message: '' }
         case actionTypes.onTransactionFailed:

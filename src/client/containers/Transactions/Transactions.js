@@ -142,7 +142,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTransaction: (transaction) => {
-      dispatch(actions.commitTransaction(constants.add,constants.Transactions,[],transaction));
+      dispatch(actions.commitTransaction(constants.add,constants.Transactions,transaction));
     },
   }
 }

@@ -8,8 +8,8 @@ const mapStateToProps = (state, ownProps) => {
     if(columns)
         formattedColumns= getFormattedColumns(columns);
     else
-        formattedColumns = getFormattedColumns(state.entity.columns);
-    let { loading, rows, error, message } = state.entity;
+        formattedColumns = getFormattedColumns(state[collection].columns);
+    let { loading, rows, error, message } = state[collection];
     return { loading, rows, columns: formattedColumns, error, message, collection };
 }
 const mapDispatchToProps = { ...actions };
