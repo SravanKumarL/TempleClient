@@ -12,7 +12,7 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
 import * as actions from '../../../store/actions';
-import constants from '../../../../store/sagas/constants'
+import constants from '../../../store/sagas/constants'
 
 const styles = theme => ({
   container: {

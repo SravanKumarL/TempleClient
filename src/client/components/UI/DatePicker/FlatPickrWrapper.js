@@ -3,7 +3,6 @@ import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/material_green.css'
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { render } from 'react-dom'
 import Flatpickr from './Flatpickr'
 import RadioButtonsGroup from './RadioButtonsGroup';
 import MultipleSelect from './MultiSelect';

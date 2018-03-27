@@ -77,7 +77,7 @@ export const formStateConfig = () => {
         type: 'text',
         placeholder: 'Select date(s)',
       },
-      value: getCurrentDate(),
+      value: '',
       validation: {
         required: false,
       },

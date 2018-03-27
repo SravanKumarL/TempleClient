@@ -67,7 +67,7 @@ export function* searchTransactionsSaga(action) {
       }
       const response = yield axios({
         method: 'post',
-        url: `${constants.Transactions}/${constants.get}`;,
+        url: `${constants.Transactions}/${constants.get}`,
         headers,
         data: searchData
       });
