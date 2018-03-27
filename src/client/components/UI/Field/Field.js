@@ -2,7 +2,7 @@ import React from 'react';
 import { FormControl } from 'material-ui/Form';
 import withStyles from 'material-ui/styles/withStyles';
 import purple from 'material-ui/colors/purple';
-
+import DatePickerWrapper from '../DatePicker/FlatPickrWrapper';
 import Input from '../TextField/TextField';
 // import Select from '../Select/Select';
 import MultiSelect from '../MultiSelect/MultiSelect';
@@ -68,12 +68,13 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      inputElement = <Input
-        value={props.value}
-        changed={props.changed}
-        label={props.label}
-        type='date'
-      />
+      // inputElement = <Input
+      //   value={props.value}
+      //   changed={props.changed}
+      //   label={props.label}
+      //   type='date'
+      // />
+      inputElement=<DatePickerWrapper onDateSelectionChanged={props.changed}/>
       break;
     default:
       inputElement = <Input
