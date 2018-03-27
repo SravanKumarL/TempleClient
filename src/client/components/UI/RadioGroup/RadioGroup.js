@@ -11,7 +11,7 @@ const styles = theme => ({
   formControl: {
     display:'flex',
     flexDirection:'row',
-    margin: theme.spacing.unit * 3,
+    margin: theme.spacing.unit,
   },
   group: {
     margin: `${theme.spacing.unit}px 0`,
@@ -49,4 +49,4 @@ RadioButtonsGroup.propTypes = {
     onModeSelect:PropTypes.func.isRequired
   };
   
-  export default withStyles(styles)(RadioButtonsGroup);
+export default withStyles(styles)(RadioButtonsGroup);

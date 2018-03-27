@@ -19,11 +19,3 @@
   align-items: center;
   background-color: #303030;
 }
-
-img {
-  /* display: flex;
-  flex-direction: column;
-  flex-grow: 1; */
-  max-height: 70%;
-  max-width: 70%;
-}

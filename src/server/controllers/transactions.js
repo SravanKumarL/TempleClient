@@ -48,8 +48,17 @@ exports.getTransactions = function (req, res, next) {
   });
 }
 
-exports.searchTransactionWithPhoneNumber = function (req, res, next) {
-  Transaction.find({ phoneNumber: req.body.phoneNumber },(err, transactions) => {
+exports.searchTransactions = function (req, res, next) {
+  const searchValue = req.body.searchValue;
+  let searchObject = { phoneNumber: searchValue };
+  if (searchValue.length === 0) {
+    return res.json({transactions: []});
+  }
+  if (isNaN(Number(searchValue))) {
+    const regex = new RegExp(".*" + searchValue.toLowerCase() + ".*", 'i');
+    searchObject = { names: { $regex: regex } };
+  }
+  Transaction.find(searchObject, (err, transactions) => {
     if (err) {
       res.status(500).send(err);
     }

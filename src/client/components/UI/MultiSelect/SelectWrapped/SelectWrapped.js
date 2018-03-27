@@ -38,6 +38,7 @@ const selectWrapped = (props) => {
         return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
       }}
       simpleValue
+      // onSelectResetsInput
       removeSelected={false}
       clearRenderer={() => <ClearIcon />}
       valueComponent={value}

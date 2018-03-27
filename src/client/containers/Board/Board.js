@@ -1,70 +1,144 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
+import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import User from './User/User';
-import Admin from './Admin/Admin';
+import { blueGrey } from 'material-ui/colors'
+import { Receipt } from 'material-ui-icons';
+import Fade from 'material-ui/transitions/Fade';
+
+import Transactions from '../../containers/Transactions/Transactions';
+import Reports from '../../containers/Reports/Reports';
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{
+      display: 'flex',
+      flexDirection: 'column',
+      background: 'white',
+      color: 'black',
+      height: '100%',
+      marginLeft: 5,
+      padding: 8 * 3,
+      paddingTop: '10px',
+      paddingBottom: '88px',
+      marginRight: '40px',
+      borderTopRightRadius: '10px,'
+    }}>
+      {props.children}
+    </Typography >
+  );
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 const styles = theme => ({
-  adminContainer: {
+  root: {
+    backgroundColor: blueGrey[800],
+    flexGrow: 1,
+  },
+  flexContainer: {
+    display: 'inline-flex',
+  },
+  indicator: {
+    background: 'white',
+  },
+  rootInheritSelected: {
+    background: 'white !important',
+    height: 75,
+    color: 'green !important',
+    fontWeight: 'bold',
+  },
+  wrapper: {
+    flexDirection: 'row',
+  },
+  rootInherit: {
+    margin: 5,
+    marginTop: 0,
+    marginBottom: 10,
+    borderRadius: 8,
+    height: 60,
+    width: 100,
+    color: '#eee',
+    background: blueGrey[700],
+    boxShadow: theme.shadows[17],
+  },
+  labelContainer: {
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  tabContainer: {
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '100%',
   },
-  titleTextContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-  },
-  userContainer: {
-    display: 'flex',
-    flexGrow: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
+  span: {
+    height: 18,
+    background: 'white',
+    color: blueGrey[500],
+    textAlign: 'center',
+    paddingTop: 20,
+    transiton: 'initial',
   }
 });
 
-class Board extends React.Component {
+class SimpleTabs extends React.Component {
+  state = {
+    activeTab: 'transactions',
+  };
+
+  handleChange = (event, value) => {
+    this.setState({ activeTab: value });
+  };
 
   render() {
     const { classes } = this.props;
-    let options = (
-      <div className={classes.userContainer} style={{ flexDirection: 'row' }}>
-        <User />
-      </div>
-    );
-    if (this.props.role === 'admin') {
-      options = (
-        <div className={classes.adminContainer} style={{ flexDirection: 'row' }}>
-          <Admin />
-          </div>
-      );
-    }
+    const { activeTab } = this.state;
+    const newTabClasses = {
+      rootInherit: classes.rootInherit,
+      rootInheritSelected: classes.rootInheritSelected,
+      wrapper: classes.wrapper,
+      labelContainer: classes.labelContainer,
+    };
     return (
-      <div className={classes.adminContainer}>
-        <div className={classes.titleTextContainer}>
-          <Typography type='headline' gutterBottom align='center'>
-            Welcome to the Temple Software
-          </Typography>
+      <div className={classes.root}>
+        <Tabs
+          classes={{
+            root: classes.root,
+            flexContainer: classes.flexContainer,
+          }}
+          fullWidth
+          value={activeTab}
+          onChange={this.handleChange}
+          indicatorClassName={classes.span}
+        >
+          <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
+          <Tab label="Reports" value='reports' classes={newTabClasses} />
+        </Tabs>
+        <div className={classes.tabContainer}>
+          {activeTab === 'transactions' &&
+            <TabContainer>
+              <Fade in={activeTab === 'transactions'} timeout = {500} mountOnEnter unmountOnExit>
+                <Transactions />
+              </Fade>
+            </TabContainer>}
+          {activeTab === 'reports' &&
+            <TabContainer>
+              <Fade in={activeTab === 'reports'} timeout= {500} mountOnEnter unmountOnExit>
+                <Reports />
+              </Fade>
+            </TabContainer>}
         </div>
-        {options}
       </div>
     );
   }
 }
 
-Board.propTypes = {
+SimpleTabs.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.auth.user,
-    role: state.auth.role,
-  }
-}
-export default withRouter(connect(mapStateToProps)(withStyles(styles)(Board)));
+export default withStyles(styles)(SimpleTabs);

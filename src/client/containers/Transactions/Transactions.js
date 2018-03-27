@@ -2,9 +2,9 @@ import React from 'react'
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
 import Tabs, { Tab } from 'material-ui/Tabs';
-
+import blueGrey from 'material-ui/colors/blueGrey';
+import Fade from 'material-ui/transitions/Fade';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import * as actions from '../../../store/actions';
@@ -20,23 +20,23 @@ const styles = theme => ({
     alignItems: 'center',
     flexGrow: 1
   },
+  middlePane: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    flexGrow: 1,
+    width: 600,
+  },
   panes: {
     display: 'flex',
     flexGrow: 1,
     height: '100%',
+    justifyContent: 'center'
   },
   leftPane: {
     display: 'flex',
-    width: '300px'
-  },
-  rightPane: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '300px'
-  },
-  tabRoot: {
-    backgroundColor: theme.palette.primary.main,
-    color: 'white',
+    // width: 390,
   },
   container: {
     display: 'flex',
@@ -49,6 +49,48 @@ const styles = theme => ({
     height: '90%',
     backgroundColor: theme.palette.background.paper,
   },
+  flexContainer: {
+    display: 'inline-flex',
+    borderRadius: 8,
+  },
+  indicator: {
+    background: 'white',
+  },
+  rootInheritSelected: {
+    background: 'white !important',
+    height: 75,
+    color: 'green !important',
+    fontWeight: 'bold',
+  },
+  wrapper: {
+    flexDirection: 'row',
+  },
+  rootInherit: {
+    margin: 10,
+    borderRadius: 8,
+    height: 60,
+    width: 250,
+    minWidth: 'initial',
+    maxWidth: 'initia',
+    color: '#eee',
+    background: blueGrey[700],
+    boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)',
+    opacity: 1,
+  },
+  labelContainer: {
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+  tabContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    height: '100%',
+  },
+  span: {
+    height: 18,
+    background: 'initial',
+  }
 });
 
 class Transactions extends React.Component {
@@ -93,24 +135,36 @@ class Transactions extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const { activeTab, transactionInformation, modalOpen, selectedTransaction } = this.state;
+    const { activeTab, modalOpen,transactionInformation, selectedTransaction } = this.state;
     let message = null;
     if (this.props.message) {
       message = (
         <Snackbar open={this.state.snackOpen} close={this.closeSnackHandler} message={this.props.message} />
       );
     }
+    const newTabClasses = {
+      rootInherit: classes.rootInherit,
+      rootInheritSelected: classes.rootInheritSelected,
+      wrapper: classes.wrapper,
+      labelContainer: classes.labelContainer,
+    };
     return (
       <div className={classes.panes} >
-        <div className={classes.leftPane}></div>
-        <div className={classes.root}>
-          <Paper className={classes.tabRoot}>
-            <Tabs value={activeTab} onChange={this.tabChangeHandler} fullWidth>
-              <Tab value='pooja' label='Pooja' />
-              <Tab value='special pooja' label='Special Pooja' />
-              <Tab value='other' label='Other' />
+        <div className={classes.leftPane}>
+          <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
+        </div>
+        <div className={classes.middlePane}>
+          <Fade in={activeTab === 'pooja' || activeTab === 'other'} timeout={500} mountOnEnter unmountOnExit>
+            <Tabs classes={{
+              root: classes.root,
+              flexContainer: classes.flexContainer,
+            }} value={activeTab}
+              onChange={this.tabChangeHandler}
+              indicatorClassName={classes.span}>
+              <Tab classes={newTabClasses} value='pooja' label='Pooja' />
+              <Tab classes={newTabClasses} value='other' label='Other' />
             </Tabs>
-          </Paper>
+          </Fade>
           <CreateTransaction
             submit={this.formSubmitHandler}
             activeTab={activeTab}
@@ -123,9 +177,6 @@ class Transactions extends React.Component {
             print={this.printHandler}
             summaryClosed={this.modalCloseHandler} />
           {message}
-        </div>
-        <div className={classes.rightPane}>
-          <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
         </div>
       </div >
     );

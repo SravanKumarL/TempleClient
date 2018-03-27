@@ -81,7 +81,7 @@ const styles = theme => ({
       margin: 0,
     },
     '.Select.has-value.is-clearable.Select--single > .Select-control .Select-value': {
-      padding: 16,
+      // padding: 16,
       color: 'initial'
     },
     '.Select-noresults': {
@@ -101,6 +101,7 @@ const styles = theme => ({
       fontFamily: 'inherit',
       fontSize: 'inherit',
       margin: 0,
+      marginLeft: 5,
       outline: 0,
     },
     '.Select-placeholder, .Select--single .Select-value': {
