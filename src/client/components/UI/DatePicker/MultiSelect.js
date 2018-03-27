@@ -35,13 +35,22 @@ const MenuProps = {
 
 
 class MultipleSelect extends React.Component {
-
+  state={
+    open:false
+  }
   handleChange = event => {
     // this.setState({ name: event.target.value });
     const {onItemSel}=this.props;
     onItemSel(event.target.value);
   };
-
+  handleClose=event=>{
+    this.setState({open:false});
+    this.props.onClose();
+  }
+  handleOpen=event=>{
+    this.setState({open:true});
+    this.props.onOpen();
+  }
   render() {
     const { classes, theme,label,items,selItems } = this.props;
     return (
@@ -52,8 +61,11 @@ class MultipleSelect extends React.Component {
             multiple
             value={selItems}
             onChange={this.handleChange}
+            onOpen={this.handleOpen}
+            onClose={this.handleClose}
             input={<Input id="select-multiple" />}
             MenuProps={MenuProps}
+            open={this.state.open}
           >
             {items.map(item => (
               <MenuItem
