@@ -1,55 +1,59 @@
 import React from 'react';
 
 import withStyles from 'material-ui/styles/withStyles';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import Typography from 'material-ui/Typography/Typography';
-import Button from 'material-ui/Button';
-
-import Modal from '../../components/UI/Modal/Modal';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Paper from 'material-ui/Paper';
+import Dialog from '../../components/UI/Dialog/Dialog';
 
 const styles = (theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginLeft: '8px',
+  root: {
+    width: '100%',
+    marginTop: theme.spacing.unit * 3,
+    overflowX: 'auto',
   },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  formLabel: {
-    display: 'flex',
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-evenly',
-    alignSelf: 'flex-start',
-    margin: '10px',
-  },
-  buttonsContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
-  button: {
-    margin: theme.spacing.unit,
-    width: '20%',
-    '&:hover': {
-      boxShadow: '0px 0px 10px #000000',
-      zIndex: 2,
-      transition: 'all 200ms ease-in',
-      transform: 'scale(1.1)',
-    },
+  table: {
+    minWidth: 400,
   },
 });
 
 const transactionSummary = (props) => {
   const { classes, open, transactionFields, summaryClosed, print, createdBy } = props;
   return (
-    <Modal open={open} closed={summaryClosed} title='Transaction Summary'>
-      <div className={classes.container}>
+    <Dialog
+      open={open}
+      primaryClicked={print}
+      primaryText='Print'
+      secondaryText='Cancel'
+      secondaryClicked={summaryClosed}
+      cancelled={summaryClosed}
+      title='Transaction Summary'>
+      <Paper component='div' className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>Title</TableCell>
+              <TableCell>Value</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.keys(transactionFields).map(id => {
+              const field = transactionFields[id];
+              const placeholder = field.name;
+              return (
+                <TableRow key={id}>
+                  <TableCell>{placeholder}:</TableCell>
+                  <TableCell>{field.value}</TableCell>
+                </TableRow>
+              );
+            })}
+            <TableRow key={createdBy}>
+              <TableCell>Created By:</TableCell>
+              <TableCell>{createdBy}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Paper>
+      {/* <div className={classes.container}>
         <FormGroup className={classes.content}>
           {Object.keys(transactionFields).map(id => {
             const field = transactionFields[id];
@@ -58,7 +62,7 @@ const transactionSummary = (props) => {
               className={classes.formLabel}
               key={id}
               control={
-                <Typography style={{ marginLeft: '30px' }} align='center' type="subheading">
+                <Typography style={{ marginLeft: '30px' }} align='center' type="body1">
                   {field.value}
                 </Typography>
               }
@@ -70,15 +74,15 @@ const transactionSummary = (props) => {
             control={
               <Typography style={{ marginLeft: '30px' }} align='center' type="subheading"> {createdBy}</Typography>
             }
-            label={`CreatedBy :      `}
+            label={`CreatedBy :       `}
           />
         </FormGroup>
-      </div>
-      <div className={classes.buttonsContainer}>
+      </div> */}
+      {/* <div className={classes.buttonsContainer}>
         <Button raised className={classes.button} color='primary' onClick={print}> Print </Button>
         <Button raised className={classes.button} color='secondary' onClick={summaryClosed}> Cancel </Button>
-      </div>
-    </Modal>
+      </div> */}
+    </Dialog>
   )
 };
 

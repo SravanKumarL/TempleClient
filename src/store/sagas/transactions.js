@@ -1,4 +1,5 @@
 import { put } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
 import * as actions from '../actions';
 import axios from '../../axios/transactions';
 import constants from './constants';
@@ -53,6 +54,7 @@ export function* getTransactionsSaga() {
 
 export function* searchTransactionsSaga(action) {
   try {
+    yield delay(500);
     yield put(actions.searchTransactionsStarted());
     const searchData = action.searchData;
     const token = localStorage.getItem('token');
@@ -60,13 +62,12 @@ export function* searchTransactionsSaga(action) {
       const error = { message: 'You are not allowed to do the transaction' };
       yield put(actions.searchTransactionsFail(error));
     } else {
-      let getSegment = action.searchData.selection.toLowerCase() === 'phone number' ? 'getTransactionsWithPhoneNumber' : `${constants.get}`; 
       const headers = {
         'authorization': `${token}`,
       }
       const response = yield axios({
         method: 'post',
-        url: `${constants.Transactions}/${getSegment}`,
+        url: `${constants.Transactions}/${constants.get}`;,
         headers,
         data: searchData
       });

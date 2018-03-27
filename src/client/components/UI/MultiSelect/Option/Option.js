@@ -12,7 +12,7 @@ class Option extends React.Component{
       <MenuItem
         onFocus={onFocus}
         selected={isFocused}
-        onClick={this.handleClick}
+        onClick={this.handleClick.bind(this)}
         component="div"
         style={{
           fontWeight: isSelected ? 500 : 400,

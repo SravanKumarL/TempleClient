@@ -2,9 +2,7 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 
 import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import MenuIcon from 'material-ui-icons/Menu';
 import classNames from 'classnames';
 import IconButton from 'material-ui/IconButton';
 import AccountCircle from 'material-ui-icons/AccountCircle';
@@ -16,6 +14,9 @@ const styles = theme => ({
   appBar: {
     position: 'absolute',
     zIndex: theme.zIndex.drawer + 1,
+    flexDirection: 'row',
+    height: 56,
+    alignItems: 'center',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -45,6 +46,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     marginLeft: 'auto',
+    marginBottom: 3
   },
   logoutText: {
     color: 'white',
@@ -56,6 +58,7 @@ const styles = theme => ({
   },
   toolbar: {
     marginLeft: 50,
+    marginTop: 5
   }
 });
 
@@ -63,16 +66,16 @@ const appBar = (props) => {
   const { classes } = props;
   return (
     <AppBar className={classNames(classes.appBar, props.open && classes.appBarShift)}>
-      <Toolbar disableGutters className={props.open ? classes.toolbar : ''}>
-        <IconButton
+      {/* <Toolbar disableGutters classes={classes.toolbar} className={props.open ? classes.toolbar : ''}> */}
+        {/* <IconButton
           color="inherit"
           aria-label="open drawer"
           onClick={props.drawerOpen}
           className={classNames(classes.menuButton, props.open && classes.hide)}
         >
           <MenuIcon />
-        </IconButton>
-        <Typography type="title" color="inherit" noWrap>
+        </IconButton> */}
+        <Typography style={{ marginLeft: '3vw', marginBottom: 3 }} type="title" color="inherit" noWrap>
           {props.role === 'user' ? 'User Board' : 'Admin Board'}
         </Typography>
         <div className={classes.logout}>
@@ -92,7 +95,7 @@ const appBar = (props) => {
           </Tooltip>
 
         </div>
-      </Toolbar>
+      {/* </Toolbar> */}
     </AppBar >
   );
 }

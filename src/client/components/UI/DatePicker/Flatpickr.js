@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Flatpickr from 'flatpickr'
+import withStyles from 'material-ui/styles/withStyles';
 
 const hooks = [
   'onChange',
@@ -12,6 +13,33 @@ const hooks = [
   'onValueUpdate',
   'onDayCreate'
 ]
+const styles = theme => ({
+  textFieldRoot: {
+    padding: 0,
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+    height: 'auto ',
+  },
+  textFieldInput: {
+    color: 'initial',
+    margin: 'auto',
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    width: '100%',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+  },
+  textFieldFormLabel: {
+    fontSize: 18,
+  },
+});
 
 class DateTimePicker extends Component {
   static propTypes = {
@@ -102,7 +130,7 @@ class DateTimePicker extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { options, defaultValue, value, children, ...props } = this.props
+    const { options, defaultValue, classes, value, children, ...props } = this.props
 
     // Don't pass hooks to dom node
     hooks.forEach(hook => {
@@ -112,14 +140,16 @@ class DateTimePicker extends Component {
     return options.wrap
       ? (
         <div {...props} ref={node => { this.node = node }}>
-          { children }
+          {children}
         </div>
       )
       : (
-        <input {...props} defaultValue={defaultValue}
-          ref={node => { this.node = node }} />
+        <div className={classes.textFieldRoot}>
+          <input className={classes.textFieldInput} {...props} defaultValue={defaultValue}
+            ref={node => { this.node = node }} />
+        </div>
       )
   }
 }
 
-export default DateTimePicker
+export default withStyles(styles)(DateTimePicker);

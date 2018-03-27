@@ -156,7 +156,7 @@ class MaterialUiForm extends React.Component {
             component={renderTextField} label="Password" />
         </div>
         <div>
-          <Button type='submit' raised='true' size='large' className={classes.button} color='primary' >
+          <Button type='submit' raised size='large' className={classes.button} color='primary' >
             Sign In
         </Button>
         </div>

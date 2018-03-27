@@ -18,7 +18,7 @@ module.exports = function (app) {
   // Transaction Routes
   app.post(`/${constants.Transactions}/${constants.add}`, requireAuth, Transaction.addTransaction);
   app.get(`/${constants.Transactions}`, requireAuth, Transaction.getTransactions);
-  app.post(`/${constants.Transactions}/getTransactionsWithPhoneNumber`, requireAuth, Transaction.searchTransactionWithPhoneNumber);
+  app.post(`/${constants.Transactions}`, requireAuth, Transaction.searchTransactions);
   
   //Pooja Routes
   let Pooja=Entity.entity(constants.Poojas);
