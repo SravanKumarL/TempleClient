@@ -23,13 +23,15 @@ export const SEARCH_TRANSACTIONS_START = 'SEARCH_TRANSACTIONS_START';
 export const SEARCH_TRANSACTIONS_SUCCESS = 'SEARCH_TRANSACTIONS_SUCCESS';
 export const SEARCH_TRANSACTIONS_FAIL = 'SEARCH_TRANSACTIONS_FAIL';
 
-//Poojas
-export const ADD_POOJA = 'ADD_POOJA';
-export const ADD_POOJA_START = 'ADD_POOJA_START';
-export const ADD_POOJA_SUCCESS = 'ADD_POOJA_SUCCESS';
-export const ADD_POOJA_FAIL = 'ADD_POOJA_FAIL';
-
-export const GET_POOJADETAILS = 'GET_POOJADETAILS';
-export const GET_POOJADETAILS_START = 'GET_POOJADETAILS_START';
-export const GET_POOJADETAILS_SUCCESS = 'GET_POOJADETAILS_SUCCESS';
-export const GET_POOJADETAILS_FAIL = 'GET_POOJADETAILS_FAIL';
+//Entity
+export const resetEntity='RESET_ENTITY';
+export const commitTransaction='COMMIT_TRANSACTION';
+export const onTransactionCommitReq='ON_TRANSACTION_COMMIT_REQ';
+export const fetchData='FETCH_DATA';
+export const fetchSchema='FETCH_SCHEMA';
+export const onFetchSchemaSuccess= 'ON_FETCH_SCHEMA_SUCCESS';
+export const onFetchReq= 'ON_FETCH_REQ';
+export const onFetchSuccess= 'ON_FETCH_SUCCESS';
+export const onFetchFailed= 'ON_FETCH_FAILED';
+export const onTransactionFailed='ON_TRANSACTION_FAILED';
+export const onTransactionCommitted='ON_TRANSACTION_COMMITTED';

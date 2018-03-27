@@ -35,9 +35,13 @@
     "jest": "20.0.4",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.5",
+    "material-ui": "^1.0.0-beta.35",
+    "material-ui-icons": "^1.0.0-beta.35",
+    "@devexpress/dx-react-core": "^1.0.3",
+    "@devexpress/dx-react-grid": "^1.0.3",
+    "@devexpress/dx-react-grid-material-ui": "^1.0.3",
+    "prop-types": "^15.5.10",
     "material-design-icons": "^3.0.1",
-    "material-ui": "^1.0.0-beta.31",
-    "material-ui-icons": "^1.0.0-beta.17",
     "material-ui-pickers": "^1.0.0-beta.14",
     "material-ui-search-bar": "^0.4.1",
     "moment": "^2.20.1",
@@ -79,6 +83,8 @@
     "start": "node scripts/start.js",
     "server": "nodemon src/server/index.js",
     "build": "node scripts/build.js",
+    "bundle": "npm run babel-transpile && webpack --config webpack.js",
+    "babel-transpile": "babel src/server --out-dir build",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
@@ -122,6 +128,15 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-eslint": "^8.0.1",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "redux-devtools-extension": "^2.13.2"
   }
 }
