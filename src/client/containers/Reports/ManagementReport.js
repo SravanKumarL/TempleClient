@@ -6,6 +6,7 @@ import Typography from 'material-ui/Typography/Typography';
 
 import Paper from '../../components/UI/Paper/Paper';
 import * as actions from '../../../store/actions';
+import constants from '../../../store/sagas/constants';
 
 const styles = theme => ({
   container: {
@@ -73,7 +74,7 @@ class Search extends Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     getTransactions: () => {
-      dispatch(actions.getTransactions());
+      dispatch(actions.fetchData(constants.Transactions));
     }
   }
 }

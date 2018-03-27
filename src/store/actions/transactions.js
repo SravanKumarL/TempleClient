@@ -1,12 +1,5 @@
 import * as actionTypes from './actionTypes';
 
-export const addTransaction = (transaction) => {
-  return {
-    type: actionTypes.ADD_TRANSACTION,
-    transaction
-  }
-}
-
 
 export const addTransactionStarted = () => {
   return {
@@ -25,11 +18,6 @@ export const addTransactionFail = (error) => {
   return {
     type: actionTypes.ADD_TRANSACTION_FAIL,
     error
-  }
-}
-export const getTransactions = () => {
-  return {
-    type: actionTypes.GET_TRANSACTIONS,
   }
 }
 
