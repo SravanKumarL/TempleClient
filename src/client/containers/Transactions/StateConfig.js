@@ -73,31 +73,17 @@ export const formStateConfig = () => {
       valid: false,
       touched: false,
     },
-    from: {
+    date: {
       elementType: 'date',
       elementConfig: {
         type: 'text',
-        placeholder: 'From',
+        placeholder: 'Select date(s)',
       },
       value: getCurrentDate(),
       validation: {
-        required: true,
+        required: false,
       },
-      valid: false,
-      disabled: false,
-      touched: false,
-    },
-    to: {
-      elementType: 'date',
-      elementConfig: {
-        type: 'text',
-        placeholder: 'To',
-      },
-      value: getCurrentDate(),
-      validation: {
-        required: true,
-      },
-      valid: false,
+      valid: true,
       disabled: false,
       touched: false,
     },
