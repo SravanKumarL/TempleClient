@@ -123,12 +123,12 @@ class Admin extends React.Component {
             key={option.id}
             onClick={this.clicked.bind(this, option.config.label)}
             style={{ backgroundColor: option.config.backgroundColor }}
-            raised
+            variant='raised'
             color='primary'
             className={classes.button}>
             <div className={classes.iconButton}>
               {this.getIcon(option.id)}
-              <Typography type='button' gutterBottom align='center' className={classes.text}>
+              <Typography variant='button' gutterBottom align='center' className={classes.text}>
                 {option.config.label}
               </Typography>
             </div>
@@ -155,16 +155,16 @@ class Admin extends React.Component {
     return (
       <div className={classes.container}>
         {/* <ExpansionPanel defaultExpanded title='Transactions'> */}
-          {this.getButtons('transactions')}
+        {this.getButtons('transactions')}
         {/* </ExpansionPanel> */}
         {/* <ExpansionPanel defaultExpanded title='Users'> */}
-          {this.getButtons('users')}
+        {this.getButtons('users')}
         {/* </ExpansionPanel> */}
         {/* <ExpansionPanel title='Poojas'> */}
-          {this.getButtons('poojas')}
+        {this.getButtons('poojas')}
         {/* </ExpansionPanel> */}
         {/* <ExpansionPanel title='Reports'> */}
-          {this.getButtons('reports')}
+        {this.getButtons('reports')}
         {/* </ExpansionPanel> */}
       </div>
     );

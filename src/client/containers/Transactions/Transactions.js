@@ -135,7 +135,7 @@ class Transactions extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const { activeTab, modalOpen,transactionInformation, selectedTransaction } = this.state;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction } = this.state;
     let message = null;
     if (this.props.message) {
       message = (
@@ -143,8 +143,8 @@ class Transactions extends React.Component {
       );
     }
     const newTabClasses = {
-      rootInherit: classes.rootInherit,
-      rootInheritSelected: classes.rootInheritSelected,
+      textColorInherit: classes.rootInherit,
+      textColorInheritSelected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
     };
@@ -158,9 +158,10 @@ class Transactions extends React.Component {
             <Tabs classes={{
               root: classes.root,
               flexContainer: classes.flexContainer,
+              indicator: classes.span,
             }} value={activeTab}
               onChange={this.tabChangeHandler}
-              indicatorClassName={classes.span}>
+            >
               <Tab classes={newTabClasses} value='pooja' label='Pooja' />
               <Tab classes={newTabClasses} value='other' label='Other' />
             </Tabs>
@@ -193,7 +194,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTransaction: (transaction) => {
-      dispatch(actions.commitTransaction(constants.add,constants.Transactions,transaction));
+      dispatch(actions.commitTransaction(constants.add, constants.Transactions, transaction));
     },
   }
 }

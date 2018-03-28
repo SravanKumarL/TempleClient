@@ -60,14 +60,14 @@ class User extends React.Component {
       <Aux>
         <Button
           style={{ backgroundColor: '#FFB300' }}
-          raised
+          variant='raised'
           color="primary"
           className={classes.button}
           onClick={this.openTransactionsHandler}
         >
           <div className={classes.iconButton}>
             <Receipt className={classes.icon} />
-            <Typography type='button' gutterBottom align='center'>
+            <Typography variant='button' gutterBottom align='center'>
               New Transaction
       </Typography>
           </div>
@@ -75,12 +75,12 @@ class User extends React.Component {
         <Button
           onClick={this.editTransactionsHandler}
           style={{ backgroundColor: '#03A9F4' }}
-          raised
+          variant='raised'
           color='primary'
           className={classes.button}>
           <div className={classes.iconButton}>
             <Edit className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
+            <Typography variant='button' gutterBottom align='center' className={classes.text}>
               Edit Transaction
       </Typography>
           </div>
@@ -88,12 +88,12 @@ class User extends React.Component {
         <Button
           onClick={this.reportsHandler}
           style={{ backgroundColor: '#4CAF50' }}
-          raised
+          variant='raised'
           color='primary'
           className={classes.button}>
           <div className={classes.iconButton}>
             <SpeakerNotes className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
+            <Typography variant='button' gutterBottom align='center' className={classes.text}>
               Reports
       </Typography>
           </div>

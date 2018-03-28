@@ -42,7 +42,7 @@ class Authentication extends Component {
     if (this.props.loading) {
       loading = (
         <Fragment>
-          <Typography type='caption'> Signing in...</Typography>
+          <Typography variant='caption'> Signing in...</Typography>
           <CircularProgress />
         </Fragment>
       )

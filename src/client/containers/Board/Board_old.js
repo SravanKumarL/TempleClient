@@ -47,7 +47,7 @@ class Board extends React.Component {
     return (
       <div className={classes.adminContainer}>
         <div className={classes.titleTextContainer}>
-          <Typography type='headline' gutterBottom align='center'>
+          <Typography variant='headline' gutterBottom align='center'>
             Welcome to the Temple Software
           </Typography>
         </div>

@@ -135,44 +135,20 @@ class Reports extends React.Component {
             <Button
               key={option.name}
               style={{ backgroundColor: option.color }}
-              raised
+              variant='raised'
               color="primary"
               className={classes.button}
               onClick={() => this.optionClickedHandler(option)}
             >
               <div className={classes.iconButton}>
                 {option.icon}
-                <Typography type='button' gutterBottom align='center'>
+                <Typography variant='button' gutterBottom align='center'>
                   {option.name}
                 </Typography>
               </div>
             </Button>
           )
         })}
-        {/* <Button
-          onClick={this.poojaReportsClickedHandler}
-          style={{ backgroundColor: '#03A9F4' }}
-          raised
-          color='primary'
-          className={classes.button}>
-          <div className={classes.iconButton}>
-            <Edit className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
-              Management Report
-      </Typography>
-          </div>
-        </Button>
-        <Button
-          style={{ backgroundColor: '#4CAF50' }}
-          raised color='primary'
-          className={classes.button}>
-          <div className={classes.iconButton}>
-            <SpeakerNotes className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
-              Accounts Report
-      </Typography>
-          </div>
-        </Button> */}
       </Fragment>
     );
   }

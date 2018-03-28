@@ -26,15 +26,13 @@ const dialog = (props) => {
           {title}
         </DialogTitle>
         <DialogContent >
-          {/* <DialogContentText id="alert-dialog-slide-description"> */}
             {children}
-          {/* </DialogContentText> */}
         </DialogContent>
         <DialogActions style={{justifyContent: 'center'}}>
-          <Button style={{minWidth: 100}} raised onClick={primaryClicked} color="primary">
+          <Button style={{minWidth: 100}} variant='raised' onClick={primaryClicked} color="primary">
             {primaryText}
             </Button>
-          <Button style={{minWidth: 100}} raised onClick={secondaryClicked} color="secondary">
+          <Button style={{minWidth: 100}} variant='raised' onClick={secondaryClicked} color="secondary">
             {secondaryText}
             </Button>
         </DialogActions>

@@ -98,8 +98,8 @@ class SimpleTabs extends React.Component {
     const { classes } = this.props;
     const { activeTab } = this.state;
     const newTabClasses = {
-      rootInherit: classes.rootInherit,
-      rootInheritSelected: classes.rootInheritSelected,
+      textColorInherit: classes.rootInherit,
+      textColorInheritSelected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
     };
@@ -109,11 +109,11 @@ class SimpleTabs extends React.Component {
           classes={{
             root: classes.root,
             flexContainer: classes.flexContainer,
+            indicator: classes.span,
           }}
           fullWidth
           value={activeTab}
           onChange={this.handleChange}
-          indicatorClassName={classes.span}
         >
           <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
           <Tab label="Reports" value='reports' classes={newTabClasses} />

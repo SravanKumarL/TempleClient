@@ -75,7 +75,7 @@ const appBar = (props) => {
         >
           <MenuIcon />
         </IconButton> */}
-        <Typography style={{ marginLeft: '3vw', marginBottom: 3 }} type="title" color="inherit" noWrap>
+        <Typography style={{ marginLeft: '3vw', marginBottom: 3 }} variant="title" color="inherit" noWrap>
           {props.role === 'user' ? 'User Board' : 'Admin Board'}
         </Typography>
         <div className={classes.logout}>
@@ -88,7 +88,7 @@ const appBar = (props) => {
               color="inherit"
             >
               <AccountCircle className={classes.accountCircle} />
-              <Typography className={classes.logoutText} type='subheading' gutterBottom>
+              <Typography className={classes.logoutText} variant='subheading' gutterBottom>
                 Logout
           </Typography>
             </IconButton>

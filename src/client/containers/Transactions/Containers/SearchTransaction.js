@@ -82,7 +82,7 @@ class SearchTransaction extends React.Component {
     return (
       <div>
         <Fade in={showSearchButton} timeout={{ enter: 800, exit: 0 }} mountOnEnter unmountOnExit>
-          <Button style={{ marginRight: '10px', marginTop: '10px' }} color='primary' fab aria-label="open" onClick={this.openSearchPanelHandler}>
+          <Button style={{ marginRight: '10px', marginTop: '10px' }} color='primary' variant='fab' aria-label="open" onClick={this.openSearchPanelHandler}>
             <Search />
           </Button>
         </Fade>

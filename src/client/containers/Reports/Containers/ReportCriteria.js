@@ -30,7 +30,7 @@ class ReportCriteria extends React.Component {
     }
     let option = (
       <div style={{ display: 'flex', width: 450, flexGrow: 1, flexDirection: 'column' }}>
-        <Typography type='subheading' align='center'>{heading}</Typography>
+        <Typography variant='subheading' align='center'>{heading}</Typography>
         {pooja}
         <Field
           elementType='date'
