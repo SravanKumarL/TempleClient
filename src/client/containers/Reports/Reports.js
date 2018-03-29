@@ -5,22 +5,29 @@ import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import { Receipt, SpeakerNotes, Edit } from 'material-ui-icons';
-import Modal from '../../components/UI/Modal/Modal';
-import DatePicker from '../../components/UI/DatePicker/DatePicker';
+import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
+import { Receipt, SpeakerNotes, Edit, AddCircle, Remove } from 'material-ui-icons';
+// import DatePicker from '../../components/UI/DatePicker/DatePicker';
+import Dialog from '../../components/UI/Dialog/Dialog';
+import ReportCriteria from './Containers/ReportCriteria';
+import { convertToStartCase } from '../../shared/utility';
+import * as actions from '../../../store/actions';
+import constants from '../../../store/sagas/constants'
 
 const styles = theme => ({
   container: {
     display: 'flex',
-    flexDirection: 'column',
     flexGrow: 1,
     flexWrap: 'wrap',
+    alignContent: 'space-evenly',
+    width: 160,
+    boxShadow: theme.shadows[1],
   },
   button: {
     display: 'flex',
     flexDirection: 'column',
-    height: 75,
-    width: 200,
+    height: 50,
+    flexBasis: 136,
     margin: '10px',
     padding: '50px',
     '&:hover': {
@@ -58,6 +65,18 @@ const styles = theme => ({
 class Reports extends React.Component {
   state = {
     modalOpen: false,
+    selectedOption: {},
+    poojaDetails: null,
+  }
+  componentWillReceiveProps(nextProps) {
+    const { poojaDetails } = nextProps;
+    if (poojaDetails) {
+      const options = Object.keys(poojaDetails).map(key => {
+        const newkey = convertToStartCase(key);
+        return { value: newkey, label: newkey }
+      });
+      this.setState({ poojaDetails: options });
+    }
   }
   poojaReportsClickedHandler = () => {
     this.setState({
@@ -73,66 +92,70 @@ class Reports extends React.Component {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
   }
+  closeDialogHandler = () => {
+    this.setState({ modalOpen: false });
+  }
+  generateReportHandler = () => { }
+  dateSelectionChangedHandler = () => { }
   getModal = () => {
-    const { classes } = this.props;
+    const { modalOpen, selectedOption } = this.state;
     return (
-      <Modal open={this.state.modalOpen} closed={this.closeHandler} title='Pooja Report'>
-        <div className={classes.modalContent}>
-          <DatePicker label='select a date' value={new Date()} changed={this.dateChangedHandler} />
-          <Button raised color='primary' align='center' onClick={this.getReportHandler} gutterBottom> Get Report </Button>
-        </div>
-      </Modal>
+      <Dialog
+        open={modalOpen}
+        primaryClicked={this.generateReportHandler}
+        primaryText='Generate Report'
+        secondaryText='Close'
+        secondaryClicked={this.closeDialogHandler}
+        title={selectedOption.name}
+        cancelled={this.closeDialogHandler}>
+        <ReportCriteria
+          poojas={this.state.poojaDetails}
+          title={selectedOption.name}
+          dateSelectionChanged={this.dateSelectionChangedHandler}
+        />
+      </Dialog>
     );
+  }
+  optionClickedHandler = (option) => {
+    this.setState({ selectedOption: option, modalOpen: true });
   }
   getButtons = () => {
     const { classes } = this.props;
+    const options = [
+      { name: 'Pooja Report', color: '#F57C00', icon: <SpeakerNotes className={classes.icon} /> },
+      { name: 'Management Report', color: '#00C853', icon: <Edit className={classes.icon} /> },
+      { name: 'Temple Report', color: '#0288D1', icon: <Receipt className={classes.icon} /> },
+      { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
+      { name: 'Accounts Report', color: '#D50000', icon: <Remove className={classes.icon} /> },
+    ];
     return (
       <Fragment>
-        <Button
-          style={{ backgroundColor: '#FFB300' }}
-          raised
-          color="primary"
-          className={classes.button}
-          onClick={this.poojaReportsClickedHandler}
-        >
-          <div className={classes.iconButton}>
-            <Receipt className={classes.icon} />
-            <Typography type='button' gutterBottom align='center'>
-              Pooja Report
-      </Typography>
-          </div>
-        </Button>
-        <Button
-          onClick={this.poojaReportsClickedHandler}
-          style={{ backgroundColor: '#03A9F4' }}
-          raised
-          color='primary'
-          className={classes.button}>
-          <div className={classes.iconButton}>
-            <Edit className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
-              Management Report
-      </Typography>
-          </div>
-        </Button>
-        <Button
-          style={{ backgroundColor: '#4CAF50' }}
-          raised color='primary'
-          className={classes.button}>
-          <div className={classes.iconButton}>
-            <SpeakerNotes className={classes.icon} />
-            <Typography type='button' gutterBottom align='center' className={classes.text}>
-              Accounts Report
-      </Typography>
-          </div>
-        </Button>
+        {options.map(option => {
+          return (
+            <Button
+              key={option.name}
+              style={{ backgroundColor: option.color }}
+              variant='raised'
+              color="primary"
+              className={classes.button}
+              onClick={() => this.optionClickedHandler(option)}
+            >
+              <div className={classes.iconButton}>
+                {option.icon}
+                <Typography variant='button' gutterBottom align='center'>
+                  {option.name}
+                </Typography>
+              </div>
+            </Button>
+          )
+        })}
       </Fragment>
     );
   }
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container} style={{ flexDirection: 'row' }}>
+      <div className={classes.container}>
         {this.getButtons()}
         {this.getModal()}
         {/* <Switch>
@@ -149,6 +172,12 @@ const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
     role: state.auth.role,
+    poojaDetails: state.poojas.rows,
   }
 }
-export default withRouter(connect(mapStateToProps)(withStyles(styles)(Reports)));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getPoojaDetails: () => { dispatch(actions.fetchData(constants.Poojas)); },
+  }
+}
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withPoojaDetails(withStyles(styles)(Reports))));

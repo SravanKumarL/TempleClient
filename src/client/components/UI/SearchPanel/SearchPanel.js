@@ -5,19 +5,21 @@ import withStyles from 'material-ui/styles/withStyles';
 import IconButton from 'material-ui/IconButton';
 import Input, { InputAdornment } from 'material-ui/Input';
 import Search from 'material-ui-icons/Search';
-import ChevronRight from 'material-ui-icons/ChevronRight';
+import Popup from './PopupMenu';
+import { Clear } from 'material-ui-icons';
+import ChevronLeft from 'material-ui-icons/ChevronLeft';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Slide from 'material-ui/transitions/Slide';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form';
-import { convertToStartCase } from '../../../shared/utility';
 import green from 'material-ui/colors/green';
+import Typography from 'material-ui/Typography';
+import CircularProgress from 'material-ui/Progress/CircularProgress';
+
 
 const styles = theme => ({
   root: {
     display: 'flex',
+    padding: 5,
   },
-
   formControl: {
     display: 'flex',
     margin: theme.spacing.unit * 3,
@@ -32,34 +34,96 @@ const styles = theme => ({
   panel: {
     display: 'flex',
     marginLeft: 'auto',
-    width: 300,
+    width: 390,
     flexDirection: 'column',
     flexGrow: 1,
-    borderLeft: '1px solid #EEE',
-    borderTop: '1px solid #EEE',
-    padding: 4,
+    border: '1px solid #ced4da',
     height: '100%',
   },
   header: {
     display: 'flex',
-    borderBottom: '1px solid #eee',
+    paddingLeft: 36,
+    paddingRight: 36,
+  },
+  textFieldRoot: {
+    padding: 0,
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+    border: '1px solid #ced4da',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  textFieldInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    fontSize: 15,
+    padding: '10px 12px',
+    width: '290px',
+    marginBottom: 'auto',
+    marginTop: 'auto',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
   },
   input: {
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+    display: 'inline-flex',
+    border: '1px solid #ced4da',
+    zIndex: 1,
     flexGrow: 1,
-  }
+  },
+  buttonRoot: {
+    height: 40,
+  },
+  showIconButton: {
+    height: 30,
+    opacity: 1,
+    transition: 'all 0.5s ease-in-out',
+  },
+  hideIconButton: {
+    height: 30,
+    opacity: 0,
+    transition: 'all 0.5s ease-in-out',
+  },
 })
 
 const searchPanel = (props) => {
-  const { classes, value, changed, radioNames, itemSelected, radioValue, radioChanged, searchClicked, open, transactions, closed, panelExited } = props;
-  let transactionsList = null;
-  if (transactions) {
+  const { loading, classes, value, changed, inputRef, clearClicked, searchClicked, open, transactions, closed, panelExited, optionClicked } = props;
+  let transactionsList = (
+    <Typography style={{ marginTop: 20 }} variant='body1' align='center'> Please enter some value to search...</Typography>
+  );
+  if (value !== '' && transactions && transactions.length === 0) {
     transactionsList = (
-      <List component="nav">
+      <Typography style={{ marginTop: 20 }} variant='body1' align='center'> No search results found</Typography>
+    );
+  }
+  if (loading) {
+    transactionsList = (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography style={{ marginTop: 20 }} variant='caption'>Searching...</Typography>
+        <CircularProgress />
+      </div>
+    );
+  }
+  if (transactions && transactions.length > 0) {
+    transactionsList = (
+      <List component="nav" style={{ maxHeight: '89%', overflow: 'auto' }}>
         {transactions.map(transaction => {
           return (
-            <ListItem key={transaction._id} button onClick={() => itemSelected(transaction)}>
-              <ListItemText inset primary={transaction.names} />
-            </ListItem>
+            <div key={transaction._id} style={{ display: 'flex' }}>
+              <ListItem button disableRipple>
+                <ListItemText inset primary={transaction.names} />
+                <Popup style={{ marginLeft: 'auto' }} options={['View', 'Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
+              </ListItem>
+            </div>
           );
         })}
       </List>
@@ -67,68 +131,47 @@ const searchPanel = (props) => {
   }
   let panel = (
     <div className={classes.panel} >
-      <div className={classes.header}>
-        <IconButton style={{ zIndex: 1 }} aria-label="close" onClick={closed}>
-          <ChevronRight />
+      <div style={{ display: 'flex', marginBottom: 10, alignItems: 'center' }}>
+        <Typography variant='title' style={{ flexGrow: 1 }} align='center'> Search Transaction </Typography>
+        <IconButton style={{ zIndex: 1, marginLeft: 'auto' }} aria-label="close" onClick={closed}>
+          <ChevronLeft />
         </IconButton>
+      </div>
+      <div className={classes.header}>
         <Input
-          className={classes.input}
+          placeholder='Search By Name or Phone Number'
+          // onKeyDown={(e) => { if (e.keyCode === 13) searchClicked(); }}
+          inputRef={node => inputRef(node)}
+          classes={{
+            root: classes.textFieldRoot,
+            input: classes.textFieldInput,
+          }}
           id="adornment-search"
           type='input'
           value={value}
           onChange={changed}
           onSubmit={searchClicked}
           disableUnderline
+          autoFocus
           endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                onClick={searchClicked}
-              >
-                <Search />
-              </IconButton>
+            <InputAdornment style={{ display: 'flex', height: '40px', position: 'absolute', left: '83%' }} position="end">
+              {!value ?
+                <IconButton className={classes.buttonRoot} disabled>
+                  <Search style={{ height: 40 }} />
+                </IconButton> :
+                <IconButton className={classes.buttonRoot} onClick={clearClicked}>
+                  <Clear style={{ height: 40 }} />
+                </IconButton>
+              }
             </InputAdornment>
           }
         />
-      </div>
-      <div>
-        <FormControl component="fieldset" required className={classes.formControl}>
-          <FormLabel component="legend">Search By</FormLabel>
-          <RadioGroup
-            aria-label="searchby"
-            name="searchby1"
-            className={classes.group}
-            value={radioValue}
-            onChange={radioChanged}
-          >
-            <FormControlLabel
-              value={radioNames[0]}
-              control={
-                <Radio
-                  classes={{
-                    checked: classes.checked,
-                  }}
-                />
-              }
-              label={convertToStartCase(radioNames[0])} />
-            <FormControlLabel
-              value={radioNames[1]}
-              control={
-                <Radio
-                  classes={{
-                    checked: classes.checked,
-                  }}
-                />
-              }
-              label={convertToStartCase(radioNames[1])} />
-          </RadioGroup>
-        </FormControl>
-
       </div>
       {transactionsList}
     </div>
   );
   return (
-    <Slide direction="left" in={open} mountOnEnter unmountOnExit onExited={panelExited}>
+    <Slide direction="right" in={open} mountOnEnter unmountOnExit onExited={panelExited}>
       {panel}
     </Slide>
   );

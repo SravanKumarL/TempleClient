@@ -6,6 +6,7 @@ import DatePickerWrapper from '../DatePicker/FlatPickrWrapper';
 import Input from '../TextField/TextField';
 // import Select from '../Select/Select';
 import MultiSelect from '../MultiSelect/MultiSelect';
+import RadioGroup from '../RadioGroup/RadioGroup';
 
 const styles = theme => ({
   container: {
@@ -59,6 +60,13 @@ const input = (props) => {
         label={props.label}
       />
       break;
+    case ('radioGroup'):
+      inputElement = <RadioGroup
+        mode={props.value}
+        options={props.elementConfig.options}
+        onModeSelect={props.changed}
+        label='Payment Mode' />
+      break;
     case ('multiselect'):
       inputElement = <MultiSelect
         value={props.value}
@@ -68,12 +76,6 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      // inputElement = <Input
-      //   value={props.value}
-      //   changed={props.changed}
-      //   label={props.label}
-      //   type='date'
-      // />
       inputElement=<DatePickerWrapper onDateSelectionChanged={props.changed}/>
       break;
     default:

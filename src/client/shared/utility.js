@@ -73,7 +73,7 @@ const maxLength15 = maxLength(15)
 export const minLength = min => value =>
   value && value.length < min ? `Must be ${min} characters or more` : undefined
 export const minLength2 = minLength(2)
-const number = value =>
+export const isNumber = value =>
   value && isNaN(Number(value)) ? 'Must be a number' : undefined
 const minValue = min => value =>
   value && value < min ? `Must be at least ${min}` : undefined
@@ -88,7 +88,7 @@ const aol = value =>
   value && /.+@aol\.com/.test(value)
     ? 'Really? You still use AOL for your email?'
     : undefined
-const alphaNumeric = value =>
+export const isAlphaNumeric = value =>
   value && /[^a-zA-Z0-9 ]/i.test(value)
     ? 'Only alphanumeric characters'
     : undefined
@@ -99,8 +99,7 @@ export const phoneNumber = value =>
 /* eslint-enable */
 export const getFormattedColumns = (columns) => {
   if (columns !== undefined && columns.length !== 0) {
-    if(columns.every(column => checkIfObject(column)))
-    {
+    if (columns.every(column => checkIfObject(column))) {
       if (columns.every(column => column.hasOwnProperty('name') && column.hasOwnProperty('title')))
         return columns;
       else
@@ -111,8 +110,9 @@ export const getFormattedColumns = (columns) => {
           return column;
         });
     }
-    return columns.map(column=>({name:column,title:column}));
+    return columns.map(column => ({ name: column, title: column }));
   }
   return [];
 }
 export const checkIfObject = (obj) => obj !== null && typeof obj === 'object';
+  /* eslintenable */

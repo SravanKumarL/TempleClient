@@ -78,12 +78,12 @@ const drawer = (props) => {
           <div className={classes.accountInformation}>
             <div style={{ display: 'flex' }}>
               <AccountCircle style={{ marginLeft: '3px' }} />
-              <Typography style={{ marginLeft: '3px', fontWeight: 'bold' }} type='subheading' gutterBottom>
+              <Typography style={{ marginLeft: '3px', fontWeight: 'bold' }} variant='subheading' gutterBottom>
                 {props.role === 'user' ? 'User :' : 'Admin :'}
               </Typography>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginLeft: '5px' }}>
-              <Typography gutterBottom style={{ fontWeight: 'bold' }} type='subheading' align='center'>
+              <Typography gutterBottom style={{ fontWeight: 'bold' }} variant='subheading' align='center'>
                 {props.user}
               </Typography>
             </div>

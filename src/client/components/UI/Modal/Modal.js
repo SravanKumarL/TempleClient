@@ -38,7 +38,7 @@ const modal = (props) => {
       onClose={props.closed}
     >
       <div className={classes.paper}>
-        <Typography type='title' align='center'>
+        <Typography variant='title' align='center'>
           {props.title}
         </Typography>
         <div className={classes.content}>

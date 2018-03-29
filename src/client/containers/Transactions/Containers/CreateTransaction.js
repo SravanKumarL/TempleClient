@@ -13,8 +13,8 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    margin: 'auto',
-    width: '500px',
+    // margin: 'auto',
+    width: '535px',
     alignItems: 'center',
     boxSizing: 'border-box',
     boxShadow: '0px 0px 1px 1px #D3D3D3',
@@ -57,27 +57,6 @@ class CreateTransaction extends React.Component {
     }
   }
   getUpdatedFormElement = (activeTab) => {
-    // let updatedFormElement = { ...this.state.transactionForm };
-    // switch (value) {
-    //   case 0:
-    //     updatedFormElement.pooja.elementType = 'singleselect';
-    //     updatedFormElement.amount.disabled = true;
-    //     updatedFormElement.pooja.elementConfig.placeholder = 'Pooja';
-    //     break;
-    //   case 1:
-    //     updatedFormElement.pooja.elementConfig.placeholder = 'Special Pooja';
-    //     updatedFormElement.pooja.elementType = 'singleselect';
-    //     break;
-    //   case 2:
-    //     updatedFormElement.pooja.elementType = 'input';
-    //     updatedFormElement.amount.disabled = false;
-    //     updatedFormElement.amount.value = '';
-    //     updatedFormElement.pooja.value = '';
-    //     updatedFormElement.pooja.elementConfig.placeholder = 'Special Offerings';
-    //     break;
-    //   default:
-    //     break;
-    // }
     let updatedFormElement = { ...this.state.transactionForm };
     switch (activeTab) {
       case 'pooja':
@@ -105,7 +84,7 @@ class CreateTransaction extends React.Component {
   formResetHandler = () => this.setState({ ...this.baseState });
 
   inputChangedHandler = (event, inputIdentifier) => {
-    const value = (inputIdentifier === 'nakshatram' || inputIdentifier === 'pooja' || inputIdentifier==='date') ? event : event.target.value;
+    const value = ['nakshatram', 'pooja', 'date', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
     const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
       value: value,
       valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
@@ -119,14 +98,52 @@ class CreateTransaction extends React.Component {
         updatedtransactionForm['amount'].value = '';
       } else {
         const pooja = value.toLowerCase();
-        updatedtransactionForm['amount'].value = this.props.poojaDetails[`${pooja}`];
+        updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
       }
     }
-    else if ( inputIdentifier === 'date'){
-      if(value)
-      {
-        updatedtransactionForm['numberOfDays'].value=value.length;
-        updatedtransactionForm['amount'].value*=value.length;
+    else if (inputIdentifier === 'date') {
+      if (value) {
+        updatedtransactionForm['numberOfDays'].value = value.length;
+        updatedtransactionForm['amount'].value *= value.length;
+      }
+    }
+    else if (inputIdentifier === 'modeOfPayment') {
+      if (value === 'cheque') {
+        updatedtransactionForm = updateObject(this.state.transactionForm, {
+          chequeNo: {
+            elementType: 'input',
+            elementConfig: {
+              type: 'text',
+              placeholder: 'Cheque No',
+            },
+            validation: {
+              required: true,
+            },
+            value: '',
+            disabled: false,
+            valid: false,
+            touched: false,
+          },
+          bankName: {
+            elementType: 'input',
+            elementConfig: {
+              type: 'text',
+              placeholder: 'Bank Name',
+            },
+            validation: {
+              required: true,
+            },
+            value: '',
+            disabled: false,
+            valid: false,
+            touched: false,
+          },
+        });
+      } else {
+        const newForm = { ...this.state.transactionForm };
+        delete newForm.chequeNo;
+        delete newForm.bankName;
+        updatedtransactionForm = newForm;
       }
     }
     let formIsValid = true;
@@ -161,7 +178,7 @@ class CreateTransaction extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    poojaDetails: state.poojas.poojaDetails,
+    poojaDetails: state.poojas.rows,
   }
 }
 

@@ -55,7 +55,7 @@ class Search extends Component {
                 Details:
             </Typography>
               {fields.map(field => (
-                <Typography type='body1'>
+                <Typography variant='body1'>
                   {field.name}: {transaction[`${field.id}`]}
                 </Typography>
               ), transaction)}

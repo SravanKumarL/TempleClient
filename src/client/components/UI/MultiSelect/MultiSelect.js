@@ -65,7 +65,6 @@ const styles = theme => ({
       border: '1px solid #ced4da',
       fontSize: 16,
       padding: '8px 10px',
-      width: 'calc(100% - 24px)',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       '&:focus': {
         borderColor: '#80bdff',
@@ -81,7 +80,7 @@ const styles = theme => ({
       margin: 0,
     },
     '.Select.has-value.is-clearable.Select--single > .Select-control .Select-value': {
-      padding: 16,
+      // padding: 16,
       color: 'initial'
     },
     '.Select-noresults': {
@@ -101,6 +100,7 @@ const styles = theme => ({
       fontFamily: 'inherit',
       fontSize: 'inherit',
       margin: 0,
+      marginLeft: 5,
       outline: 0,
     },
     '.Select-placeholder, .Select--single .Select-value': {
@@ -175,6 +175,10 @@ const multiSelect = (props) => {
         name: 'react-select-single',
         simpleValue: true,
         options: props.options,
+      }}
+      InputLabelProps={{
+        shrink: true,
+        className: classes.textFieldFormLabel,
       }}
     />
   );

@@ -2,9 +2,9 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
-
+import blueGrey from 'material-ui/colors/blueGrey';
 import AppBar from '../../components/Navigation/AppBar/AppBar';
-import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
+// import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
 import * as actions from '../../../store/actions';
 
 const styles = theme => ({
@@ -27,15 +27,16 @@ const styles = theme => ({
     width: '100%',
     display: 'flex',
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: blueGrey[800],
+    // backgroundColor: theme.palette.background.default,
     // padding: 24,
-    paddingTop: 24,
-    paddingLeft: 24,
-    height: 'calc(100% - 56px)',
+    paddingTop: 30,
+    paddingLeft: 60,
+    height: '94.5vh',
     marginTop: 56,
     [theme.breakpoints.up('sm')]: {
-      height: 'calc(100% - 64px)',
-      marginTop: 64,
+      height: '94.5vh',
+      marginTop: 56,
     },
     button: {
       position: 'absolute',
@@ -48,18 +49,15 @@ class Layout extends React.Component {
     open: false,
   };
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
+  handleDrawerOpen = () => this.setState({ open: true })
 
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
+  handleDrawerClose = () => this.setState({ open: false })
 
   handleLogout = () => {
     this.props.history.replace('/');
     this.props.onLogout();
   }
+
   handleNavItemsClick = (itemClicked) => {
     let url;
     switch (itemClicked) {
@@ -83,24 +81,24 @@ class Layout extends React.Component {
     }
   }
   render() {
-    const { classes, user, role } = this.props;
+    const { classes, role } = this.props;
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
           <AppBar
-            open={this.state.open}
-            close={this.handleClose}
+            // open={this.state.open}
+            // close={this.handleClose}
             logout={this.handleLogout}
-            drawerOpen={this.handleDrawerOpen}
+            // drawerOpen={this.handleDrawerOpen}
             role={role}
           />
-          <SideDrawer
+          {/* <SideDrawer
             open={this.state.open}
             handleDrawerClose={this.handleDrawerClose}
             navItemsClicked={this.handleNavItemsClick.bind(this)}
             user={user}
             role={role}
-          />
+          /> */}
           <main className={classes.content}>
             {this.props.children}
           </main>

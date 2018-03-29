@@ -245,9 +245,8 @@ class CreateTransaction extends React.Component {
         updatedtransactionForm['amount'].value = '';
       } else {
         const pooja = value.toLowerCase();
-        updatedtransactionForm['amount'].value = this.state.poojaDetails[`${pooja}`];
+        updatedtransactionForm['amount'].value = this.state.transactionForm.numberOfDays.value * this.state.poojaDetails[`${pooja}`];
       }
-
     }
     let formIsValid = true;
     for (let inputIdentifier in updatedtransactionForm) {
@@ -383,7 +382,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     message: state.transactions.message,
     user: state.auth.user,
-    poojaDetails: state.poojas.poojaDetails,
+    poojaDetails: state.poojas.rows,
   }
 }
 

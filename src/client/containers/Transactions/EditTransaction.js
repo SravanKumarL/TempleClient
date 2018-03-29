@@ -66,7 +66,7 @@ class InputAdornments extends React.Component {
     if (transactions) {
       if (transactions.length === 0) {
         table = (
-          <Typography type='body1' align='center' gutterBottom>
+          <Typography variant='body1' align='center' gutterBottom>
             Search returned no results...
            </Typography>
         );
