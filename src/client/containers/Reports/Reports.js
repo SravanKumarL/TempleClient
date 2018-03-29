@@ -13,6 +13,7 @@ import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
 import * as actions from '../../../store/actions';
 import constants from '../../../store/sagas/constants'
+import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
 
 const styles = theme => ({
   container: {
@@ -66,7 +67,9 @@ class Reports extends React.Component {
   state = {
     modalOpen: false,
     selectedOption: {},
+    date:new Date(),
     poojaDetails: null,
+    reportOpen:false
   }
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
@@ -95,8 +98,8 @@ class Reports extends React.Component {
   closeDialogHandler = () => {
     this.setState({ modalOpen: false });
   }
-  generateReportHandler = () => { }
-  dateSelectionChangedHandler = () => { }
+  generateReportHandler = () => this.setState({reportOpen:true});
+  dateSelectionChangedHandler = (dates) => this.setState({date:dates[0]})
   getModal = () => {
     const { modalOpen, selectedOption } = this.state;
     return (
@@ -121,6 +124,7 @@ class Reports extends React.Component {
   }
   getButtons = () => {
     const { classes } = this.props;
+    const {reportOpen,selectedOption,date}=this.state;
     const options = [
       { name: 'Pooja Report', color: '#F57C00', icon: <SpeakerNotes className={classes.icon} /> },
       { name: 'Management Report', color: '#00C853', icon: <Edit className={classes.icon} /> },
@@ -149,6 +153,8 @@ class Reports extends React.Component {
             </Button>
           )
         })}
+        {reportOpen && <DataGridWrapper collection={constants.Reports} 
+          searchCriteria={{ReportName:selectedOption.name.split(' ')[0],Date:date}} readOnly={true}/>}
       </Fragment>
     );
   }

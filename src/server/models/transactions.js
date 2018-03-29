@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
+  id:Number,
   phoneNumber: Number,
   names: String,
   gothram: String,
@@ -10,8 +11,11 @@ const transactionSchema = new Schema({
   fromDate: Date,
   toDate: Date,
   numberOfDays: Number,
-  amount: Number,
   createdBy: String,
+  amount:Number,
+  bankName:String,
+  chequeNo:Number,
+  createdDate:Date
 });
 
 // Create the model class
