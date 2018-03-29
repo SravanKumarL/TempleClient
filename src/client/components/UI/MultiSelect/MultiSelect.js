@@ -65,7 +65,6 @@ const styles = theme => ({
       border: '1px solid #ced4da',
       fontSize: 16,
       padding: '8px 10px',
-      width: 'calc(100% - 24px)',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       '&:focus': {
         borderColor: '#80bdff',
@@ -176,6 +175,10 @@ const multiSelect = (props) => {
         name: 'react-select-single',
         simpleValue: true,
         options: props.options,
+      }}
+      InputLabelProps={{
+        shrink: true,
+        className: classes.textFieldFormLabel,
       }}
     />
   );

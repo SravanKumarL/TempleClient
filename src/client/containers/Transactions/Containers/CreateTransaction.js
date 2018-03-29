@@ -98,14 +98,13 @@ class CreateTransaction extends React.Component {
         updatedtransactionForm['amount'].value = '';
       } else {
         const pooja = value.toLowerCase();
-        updatedtransactionForm['amount'].value = this.props.poojaDetails[`${pooja}`];
+        updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
       }
     }
-    else if ( inputIdentifier === 'date'){
-      if(value)
-      {
-        updatedtransactionForm['numberOfDays'].value=value.length;
-        updatedtransactionForm['amount'].value*=value.length;
+    else if (inputIdentifier === 'date') {
+      if (value) {
+        updatedtransactionForm['numberOfDays'].value = value.length;
+        updatedtransactionForm['amount'].value *= value.length;
       }
     }
     else if (inputIdentifier === 'modeOfPayment') {
@@ -179,7 +178,7 @@ class CreateTransaction extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    poojaDetails: state.poojas.poojaDetails,
+    poojaDetails: state.poojas.rows,
   }
 }
 

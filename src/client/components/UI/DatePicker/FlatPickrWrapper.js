@@ -4,7 +4,7 @@ import 'flatpickr/dist/themes/material_green.css'
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Flatpickr from './Flatpickr'
-import RadioButtonsGroup from './RadioButtonsGroup';
+import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

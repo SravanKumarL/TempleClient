@@ -1,4 +1,4 @@
-const Entity =require('./controllers/entity');
+const Entity = require('./controllers/entity');
 const Authentication = require('./controllers/authentication');
 const Transaction = require('./controllers/transactions');
 const passportService = require('./services/passport');
@@ -14,17 +14,17 @@ module.exports = function (app) {
   //Auth routes
   app.post('/signin', requireSignin, Authentication.signin);
   app.post('/signup', Authentication.signup);
-  
+
   // Transaction Routes
   app.post(`/${constants.Transactions}/${constants.add}`, requireAuth, Transaction.addTransaction);
-  app.get(`/${constants.Transactions}`, requireAuth, Transaction.getTransactions);
-  app.post(`/${constants.Transactions}`, requireAuth, Transaction.searchTransactions);
-  
+  app.get(`/${constants.Transactions}/${constants.get}`, requireAuth, Transaction.getTransactions);
+  app.post(`/${constants.Transactions}/${constants.get}`, requireAuth, Transaction.searchTransactions);
+
   //Pooja Routes
-  let Pooja=Entity.entity(constants.Poojas);
+  let Pooja = Entity.entity(constants.Poojas);
   app.post(`/${constants.Poojas}/${constants.add}`, requireAuth, Pooja.add);
   app.get(`/${constants.Poojas}`, requireAuth, Pooja.get);
   app.get(`/${constants.Poojas}/${constants.Schema}`, requireAuth, Pooja.schema);
-  app.delete(`/${constants.Poojas}/:id`,requireAuth,Pooja.delete);
-  app.put(`/${constants.Poojas}/:id`,requireAuth,Pooja.update);
+  app.delete(`/${constants.Poojas}/:id`, requireAuth, Pooja.delete);
+  app.put(`/${constants.Poojas}/:id`, requireAuth, Pooja.update);
 }

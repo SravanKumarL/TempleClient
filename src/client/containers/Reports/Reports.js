@@ -172,7 +172,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.auth.user,
     role: state.auth.role,
-    poojaDetails: state.poojas.poojaDetails,
+    poojaDetails: state.poojas.rows,
   }
 }
 const mapDispatchToProps = (dispatch) => {
