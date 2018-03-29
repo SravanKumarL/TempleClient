@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
-const initialState ={ columns: [], rows: [], loading: false, error: '', message: '' };
-export const entity= ()=> (state =  { columns: [], rows: [], loading: false, error: '', message: '' }, action) => {
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '' };
+export default function entity(state = initialState, action) {
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:
@@ -20,4 +20,4 @@ export const entity= ()=> (state =  { columns: [], rows: [], loading: false, err
         default:
             return state;
     }
-};
+}

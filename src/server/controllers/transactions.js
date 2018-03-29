@@ -1,5 +1,5 @@
-import { reportMapping } from '../constants/constants';
 const Transaction = require('../models/transactions');
+
 exports.addTransaction = function (req, res, next) {
   // Extract the required data
   const phoneNumber = req.body.phoneNumber;
@@ -12,14 +12,13 @@ exports.addTransaction = function (req, res, next) {
   const numberOfDays = req.body.numberOfDays;
   const amount = req.body.amount;
   const createdBy = req.body.createdBy;
-  const {id,bankName,chequeNo,createdDate}=req.body;
+
   //Validate different cases
   if (!names || !pooja || !phoneNumber) {
     return res.status(422).send({ error: 'You must provide phone number names and pooja' });
   }
   // Create new model instance
   const transaction = new Transaction({
-    id,bankName,chequeNo,createdDate,
     phoneNumber: phoneNumber,
     names: names,
     gothram: gothram,
@@ -33,7 +32,7 @@ exports.addTransaction = function (req, res, next) {
   });
 
   //save it to the db
-  transacton.save(function (err) {
+  transaction.save(function (err) {
     if (err) { return next(err); }
     //Respond to request indicating the transaction was created
     res.json({ message: 'Transaction was saved successfully' });
@@ -64,29 +63,5 @@ exports.searchTransactions = function (req, res, next) {
       res.status(500).send(err);
     }
     res.json({ transactions });
-  });
-}
-
-exports.getReports=function(req,res,next){
-  const searchCriteria= req.body;
-  const {ReportName,Date,fromDate,toDate}=searchCriteria;
-  if(!ReportName || !Date)
-    res.json({error:'Search criteria is invalid'});
-  const report=reportMapping[ReportName];
-  if(!report)
-    res.json({error:'Invalid report name'});
-    // find({createdDate:{$gte:fromDate,$lte:toDate}})
-  const model= Transaction.schema.obj;
-  const slice=(array,obj)=>{
-    let slicedObj={};
-    array.forEach(x=>slicedObj[x]=obj[x]);
-    return slicedObj;
-  }
-  Transaction.find({createdDate:Date}).select(report.join(' ')).exec(function(error,results){
-    if(error) res.json({error});
-    results=results.map(result=>{
-      return slice(report,result);
-    });
-    res.json(results);
   });
 }

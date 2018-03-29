@@ -1,5 +1,5 @@
-import constants from '../constants/constants';
 const Pooja = require('../models/poojaDetails');
+const constants = require('../constants/constants');
 const _ = require('lodash');
 const populateModel = function (model, reqBody, id) {
     if (!checkReqBody(model, reqBody))

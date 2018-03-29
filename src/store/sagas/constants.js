@@ -6,17 +6,6 @@ const constants={
     Poojas:'poojas',
     Transactions:'transactions',
     Reports:'reports', 
-    Schema:'schema',
-    Accounts:'Accounts',
-    Pooja:'Pooja',
-    Management:'Management'
+    Schema:'schema'
 }
-export const ManagementReport=['pooja','amount'];
-export const PoojaReport=['names','gothram','nakshatram'];
-export const AccountReport=['names','id','pooja','amount','chequeNo','bankName','createdDate'];
 export default constants;
-export const reportMapping={
-    'Accounts':AccountReport,
-    'Pooja':PoojaReport,
-    'Management':ManagementReport
-}
