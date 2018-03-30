@@ -9,7 +9,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import CssBaseline from 'material-ui/CssBaseline';
+import Reboot from 'material-ui/Reboot';
 // import blueGrey from 'material-ui/colors/blueGrey';
 // import { deepOrange, red, lightGreen } from 'material-ui/colors';
 import reducer from './store/reducers/index';
@@ -92,7 +92,7 @@ sagaMiddleWare.run(watchAuth);
 
 const app = (
   <div>
-    <CssBaseline />
+    <Reboot />
     <Provider store={store}>
       <BrowserRouter>
         <MuiThemeProvider theme={theme}>

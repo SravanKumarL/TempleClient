@@ -2,11 +2,11 @@ import * as actionTypes from './actionTypes';
 export const commitTransaction=(type,collection,change)=>{
     return {type:actionTypes.commitTransaction,payload:{type,change,collection}}
 }
-export const fetchData=(collection)=>{
-    return {type:actionTypes.fetchData,payload:{collection}};
+export const fetchData=(collection,searchCriteria)=>{
+    return {type:actionTypes.fetchData,payload:{collection,searchCriteria}};
 }
-export const fetchSchema=(collection)=>{
-    return {type:actionTypes.fetchSchema,payload:{collection}};
+export const fetchSchema=(collection,searchCriteria)=>{
+    return {type:actionTypes.fetchSchema,payload:{collection,searchCriteria}};
 }
 export const onFetchReq=()=>{
     return {type:actionTypes.onFetchReq,payload:{loading:true,rows:[]}};
