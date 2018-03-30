@@ -6,14 +6,16 @@ import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
 import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
-import { Receipt, SpeakerNotes, Edit, AddCircle, Remove } from 'material-ui-icons';
+import { Event, Poll, ImportContacts } from 'material-ui-icons';
 // import DatePicker from '../../components/UI/DatePicker/DatePicker';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
 import * as actions from '../../../store/actions';
+import orange from 'material-ui/colors/orange';
+import blue from 'material-ui/colors/blue';
+import green from 'material-ui/colors/green';
 import constants from '../../../store/sagas/constants'
-import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
 
 const styles = theme => ({
   container: {
@@ -21,16 +23,18 @@ const styles = theme => ({
     flexGrow: 1,
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
-    width: 160,
-    boxShadow: theme.shadows[1],
+    width: 200,
+    boxShadow: theme.shadows[3],
   },
   button: {
     display: 'flex',
     flexDirection: 'column',
     height: 50,
     flexBasis: 136,
-    margin: '10px',
-    padding: '50px',
+    borderRadius: 10,
+    margin: 'auto',
+    padding: '80px',
+    boxShadow: theme.shadows[5],
     '&:hover': {
       boxShadow: '0px 0px 10px #000000',
       zIndex: 2,
@@ -67,9 +71,7 @@ class Reports extends React.Component {
   state = {
     modalOpen: false,
     selectedOption: {},
-    date:new Date(),
     poojaDetails: null,
-    reportOpen:false
   }
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
@@ -98,8 +100,8 @@ class Reports extends React.Component {
   closeDialogHandler = () => {
     this.setState({ modalOpen: false });
   }
-  generateReportHandler = () => this.setState({reportOpen:true});
-  dateSelectionChangedHandler = (dates) => this.setState({date:dates[0]})
+  generateReportHandler = () => { }
+  dateSelectionChangedHandler = () => { }
   getModal = () => {
     const { modalOpen, selectedOption } = this.state;
     return (
@@ -124,13 +126,12 @@ class Reports extends React.Component {
   }
   getButtons = () => {
     const { classes } = this.props;
-    const {reportOpen,selectedOption,date}=this.state;
     const options = [
-      { name: 'Pooja Report', color: '#F57C00', icon: <SpeakerNotes className={classes.icon} /> },
-      { name: 'Management Report', color: '#00C853', icon: <Edit className={classes.icon} /> },
-      { name: 'Temple Report', color: '#0288D1', icon: <Receipt className={classes.icon} /> },
-      { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
-      { name: 'Accounts Report', color: '#D50000', icon: <Remove className={classes.icon} /> },
+      { name: 'Pooja Report', color: orange[500], icon: <Event className={classes.icon} /> },
+      { name: 'Management Report', color: blue[500], icon: <Poll className={classes.icon} /> },
+      // { name: 'Temple Report', color: '#0288D1', icon: <Receipt className={classes.icon} /> },
+      // { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
+      { name: 'Accounts Report', color: green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
     return (
       <Fragment>
@@ -153,8 +154,6 @@ class Reports extends React.Component {
             </Button>
           )
         })}
-        {reportOpen && <DataGridWrapper collection={constants.Reports} 
-          searchCriteria={{ReportName:selectedOption.name.split(' ')[0],Date:date}} readOnly={true}/>}
       </Fragment>
     );
   }

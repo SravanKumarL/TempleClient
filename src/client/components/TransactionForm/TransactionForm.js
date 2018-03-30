@@ -1,6 +1,9 @@
 import React from 'react';
 
 import Button from 'material-ui/Button';
+import Pageview from 'material-ui-icons/Pageview';
+import Restore from 'material-ui-icons/Restore';
+import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
 import Field from '../UI/Field/Field';
@@ -33,7 +36,13 @@ const styles = theme => ({
     justifyContent: 'center',
     paddingTop: 20,
     paddingBottom: 10,
-  }
+  },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
 });
 
 const transactionForm = (props) => {
@@ -64,9 +73,11 @@ const transactionForm = (props) => {
       ))}
       <div className={classes.buttonsContainer}>
         <Button onClick={props.preview} color='primary' variant='raised' size='large' className={classes.button}>
+          <Pageview className={classNames(classes.leftIcon, classes.iconSmall)} />
           Preview
         </Button>
-        <Button onClick={props.reset} color='secondary' variant='raised'   size='large' className={classes.button}>
+        <Button onClick={props.reset} color='secondary' variant='raised' size='large' className={classes.button}>
+          <Restore className={classNames(classes.leftIcon, classes.iconSmall)} />
           Reset
         </Button>
       </div>

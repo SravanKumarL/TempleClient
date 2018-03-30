@@ -3,13 +3,10 @@ import { reducer as form } from 'redux-form';
 
 import auth from './auth';
 import transactions from './transactions';
-import {entity} from './entity';
-const poojas=entity();
-const reports=entity();
+import entity from './entity';
 export default combineReducers({
   auth,
   form,
   transactions,
-  poojas,
-  reports
+  poojas:entity
 });

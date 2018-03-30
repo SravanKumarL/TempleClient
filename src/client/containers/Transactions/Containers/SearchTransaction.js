@@ -31,12 +31,8 @@ class SearchTransaction extends React.Component {
     }
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
-  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false, });
+  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });
   panelExitHandler = () => this.setState({ showSearchButton: true, });
-  itemSelectinChangedHandler = (selectedItem) => {
-    this.setState({ ...this.baseState })
-    this.props.itemSelected(selectedItem);
-  }
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
     this.setState({ searchValue: value, isLoading: true });
@@ -48,17 +44,10 @@ class SearchTransaction extends React.Component {
   }
   inputRefHandler = (node) => { this.input = node; }
   optionClickedHandler = (option, transaction) => {
-    switch (option.toLowerCase()) {
-      case 'view':
-        break;
-      case 'edit':
-        break;
-      case 'use':
-        this.itemSelectinChangedHandler(transaction);
-        break;
-      default:
-        break;
+    if (option.toLowerCase() === 'use') {
+      this.setState({ ...this.baseState })
     }
+    this.props.itemSelected(option, transaction);
   }
   render() {
     const { searchTextError, showSearchButton, searchPanelOpen, searchedTransactions } = this.state;
@@ -81,7 +70,7 @@ class SearchTransaction extends React.Component {
     }
     return (
       <div>
-        <Fade in={showSearchButton} timeout={{ enter: 800, exit: 0 }} mountOnEnter unmountOnExit>
+        <Fade in={showSearchButton} timeout={{ enter: 500, exit: 0 }} mountOnEnter unmountOnExit>
           <Button style={{ marginRight: '10px', marginTop: '10px' }} color='primary' variant='fab' aria-label="open" onClick={this.openSearchPanelHandler}>
             <Search />
           </Button>

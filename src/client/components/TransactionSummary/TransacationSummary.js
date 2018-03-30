@@ -4,18 +4,24 @@ import withStyles from 'material-ui/styles/withStyles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
+import { getCurrentDate } from '../../shared/utility';
 
 const styles = (theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
+    boxShadow: theme.shadows[3],
+    border: `1px solid ${theme.palette.grey[200]}`,
   },
   table: {
     minWidth: 400,
   },
 });
-
+const getDates = (dates) => {
+  const newDates = dates.map(date => getCurrentDate(date));
+  return newDates.join(',');
+}
 const transactionSummary = (props) => {
   const { classes, open, transactionFields, summaryClosed, print, createdBy } = props;
   return (
@@ -42,7 +48,7 @@ const transactionSummary = (props) => {
               return (
                 <TableRow key={id}>
                   <TableCell>{placeholder}:</TableCell>
-                  <TableCell>{field.value}</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{id === 'date' ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );
             })}
