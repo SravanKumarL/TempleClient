@@ -34,8 +34,8 @@ function TextBox(props) {
   const { classes, label, value, changed, disabled, multiline } = props;
   return (
     <TextField
-      label={label}
-      // placeholder={label}
+      // label={label}
+      placeholder={label}
       InputProps={{
         disableUnderline: true,
         classes: {
@@ -43,10 +43,10 @@ function TextBox(props) {
           input: classes.textFieldInput,
         },
       }}
-      InputLabelProps={{
-        shrink: true,
-        className: classes.textFieldFormLabel,
-      }}
+      // InputLabelProps={{
+      //   shrink: true,
+      //   className: classes.textFieldFormLabel,
+      // }}
       value={value}
       onChange={changed}
       disabled={disabled}

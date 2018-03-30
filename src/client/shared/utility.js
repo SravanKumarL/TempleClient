@@ -38,8 +38,8 @@ export const checkValidity = (value, rules) => {
   return isValid;
 }
 
-export const getCurrentDate = () => {
-  let today = new Date();
+export const getCurrentDate = (date = new Date()) => {
+  let today = date;
   let dd = today.getDate();
   let mm = today.getMonth() + 1; //January is 0!
   let yyyy = today.getFullYear();

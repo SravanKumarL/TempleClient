@@ -1,3 +1,5 @@
+// import { getCurrentDate } from "../../shared/utility";
+
 export const formStateConfig = () => {
   return {
     phoneNumber: {
@@ -77,26 +79,12 @@ export const formStateConfig = () => {
         type: 'text',
         placeholder: 'Select date(s)',
       },
-      value: '',
+      value: [new Date()],
       validation: {
         required: false,
       },
       valid: true,
       disabled: false,
-      touched: false,
-    },
-    modeOfPayment: {
-      elementType: 'radioGroup',
-      elementConfig: {
-        options: ['cash', 'cheque'],
-        placeholder: 'Mode'
-      },
-      value: 'cash',
-      disabled: false,
-      validation: {
-        required: true,
-      },
-      valid: false,
       touched: false,
     },
     numberOfDays: {
@@ -125,6 +113,20 @@ export const formStateConfig = () => {
       },
       valid: false,
       disabled: true,
+      touched: false,
+    },
+    modeOfPayment: {
+      elementType: 'radioGroup',
+      elementConfig: {
+        options: ['cash', 'cheque'],
+        placeholder: 'Mode'
+      },
+      value: 'cash',
+      disabled: false,
+      validation: {
+        required: true,
+      },
+      valid: false,
       touched: false,
     },
   }

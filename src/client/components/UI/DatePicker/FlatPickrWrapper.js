@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import 'flatpickr/dist/flatpickr.css'
-import 'flatpickr/dist/themes/material_green.css'
+import 'flatpickr/dist/themes/material_blue.css'
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Flatpickr from './Flatpickr'
@@ -52,7 +52,7 @@ class DatePickerWrapper extends Component {
         selectedDays = this.getAllDays();
     }
     {
-      const { mode, unFilteredRange, selectedDates } = this.state;
+      const { mode, unFilteredRange } = this.state;
       if (mode === 'range' && selectedDays.length !== 0 && selectedDays.length!==8) {
         this.setState({ filteredRange: this.getFilteredDates(selectedDays, unFilteredRange) });
       }

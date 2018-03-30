@@ -13,6 +13,23 @@ function Transition(props) {
 
 const dialog = (props) => {
   const { handleClose, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, children } = props;
+  let buttons = (
+    <Button style={{ minWidth: 100 }} variant='raised' onClick={primaryClicked} color="primary">
+      {primaryText}
+    </Button>
+  );
+  if (secondaryText) {
+    buttons = (
+      <React.Fragment>
+        <Button style={{ minWidth: 100 }} variant='raised' onClick={primaryClicked} color="primary">
+          {primaryText}
+        </Button>
+        <Button style={{ minWidth: 100 }} variant='raised' onClick={secondaryClicked} color="secondary">
+          {secondaryText}
+        </Button>
+      </React.Fragment>
+    );
+  }
   return (
     <div>
       <Dialog
@@ -26,15 +43,10 @@ const dialog = (props) => {
           {title}
         </DialogTitle>
         <DialogContent >
-            {children}
+          {children}
         </DialogContent>
-        <DialogActions style={{justifyContent: 'center'}}>
-          <Button style={{minWidth: 100}} variant='raised' onClick={primaryClicked} color="primary">
-            {primaryText}
-            </Button>
-          <Button style={{minWidth: 100}} variant='raised' onClick={secondaryClicked} color="secondary">
-            {secondaryText}
-            </Button>
+        <DialogActions style={{ justifyContent: 'center' }}>
+          {buttons}
         </DialogActions>
       </Dialog>
     </div>
