@@ -2,7 +2,7 @@ import axios from '../../axios/poojas';
 import { put, call } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
-import constants from './constants';
+import constants, { reportMapping } from './constants';
 export function* handleTransaction(action) {
     const { type, collection, change } = action.payload;
     if (collection === constants.Transactions && type === constants.add) {
@@ -66,7 +66,7 @@ const handleResponse = (response) => {
         put(actions.onTransactionCommitted(message));
 }
 export function* handleFetchData(action) {
-    const { collection } = action.payload;
+    const { collection, searchCriteria } = action.payload;
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
@@ -80,11 +80,22 @@ export function* handleFetchData(action) {
                 const headers = {
                     'authorization': `${token}`,
                 }
-                const response = yield axios({
-                    method: 'get',
-                    url: `/${collection}`,
-                    headers
-                });
+                let response={};
+                if(searchCriteria && collection===constants.Reports){
+                    response = yield axios({
+                        method: 'post',
+                        data: searchCriteria,
+                        url: `/${collection}`,
+                        headers
+                    });
+                }
+                else{
+                    response = yield axios({
+                        method: 'get',
+                        url: `/${collection}`,
+                        headers
+                    });
+                }
                 yield put(actions.onFetchSuccess(response.data));
             }
         } catch (error) {
@@ -94,23 +105,27 @@ export function* handleFetchData(action) {
     }
 }
 export function* handleFetchSchema(action) {
-    const { collection } = action.payload;
+    const { collection, searchCriteria } = action.payload;
     try {
         yield put(actions.onFetchReq());
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
         } else {
-            const headers = {
-                'authorization': `${token}`,
+            if(searchCriteria && collection===constants.Reports){
+                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName])); 
             }
-            const response = yield axios({
-                method: 'get',
-                url: `/${collection}/${constants.Schema}`,
-                headers
-            });
-            console.log(response.data);
-            yield put(actions.onFetchSchemaSuccess(response.data));
+            else{
+                const headers = {
+                    'authorization': `${token}`,
+                }
+                const response = yield axios({
+                    method: 'get',
+                    url: `/${collection}/${constants.Schema}`,
+                    headers
+                });
+                yield put(actions.onFetchSchemaSuccess(response.data));
+            }
         }
     } catch (error) {
         console.log(error);

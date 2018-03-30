@@ -1,5 +1,5 @@
+const {Constants}=require('../constants/constants');
 const Pooja = require('../models/poojaDetails');
-const constants = require('../constants/constants');
 const _ = require('lodash');
 const populateModel = function (model, reqBody, id) {
     if (!checkReqBody(model, reqBody))
@@ -8,7 +8,7 @@ const populateModel = function (model, reqBody, id) {
 }
 const getModel = (collection) => {
     switch (collection) {
-        case constants.Poojas:
+        case Constants.Poojas:
             return Pooja;
         default:
             return null;

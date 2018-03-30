@@ -137,8 +137,8 @@ const EditCell = (props) => {
   // }
   return <TableEditRow.Cell {...props} />;
 };
-const EditRow=(props)=>{
-  return <TableEditRow.Row {...props} key={props.row.id}/>
+const EditRow = (props) => {
+  return <TableEditRow.Row {...props} key={props.row.id} />
 }
 // const groupCell = (props) => {
 //   // return <TableGroupRow.Cell {...props} onToggle={onGroupToggle}/>;
@@ -156,7 +156,7 @@ class DataGrid extends React.PureComponent {
       // tableColumnExtensions: [
       //   { columnName: 'amount', align: 'right' },
       // ],
-      prevRows:[],
+      prevRows: [],
       rows: [],
       snackBarOpen: false,
       transaction: null,
@@ -199,15 +199,15 @@ class DataGrid extends React.PureComponent {
     this.changePageSize = pageSize => this.setState({ pageSize });
     this.commitChanges = ({ added, changed, deleted }) => {
       let { rows } = this.state;
-      this.setState({prevRows:rows});
+      this.setState({ prevRows: rows });
       if (added) {
-        const modRows=rows.map(row=>{
-          row['id']=row['id']+1;
+        const modRows = rows.map(row => {
+          row['id'] = row['id'] + 1;
           return row;
         });
-        added[0]['id']=0;
+        added[0]['id'] = 0;
         modRows.unshift(added[0]);
-        rows=modRows;
+        rows = modRows;
         // const startingAddedId = (rows.length - 1) > 0 ? rows[rows.length - 1].id + 1 : 0;
         // rows = [
         //   ...rows,
@@ -227,7 +227,7 @@ class DataGrid extends React.PureComponent {
     this.cancelDelete = () => this.setState({ deletingRows: [] });
     this.deleteRows = () => {
       const rows = this.state.rows.slice();
-      this.setState({prevRows:rows});
+      this.setState({ prevRows: rows });
       this.state.deletingRows.forEach((rowId) => {
         const index = rows.findIndex(row => row.id === rowId);
         if (index > -1) {
@@ -240,24 +240,24 @@ class DataGrid extends React.PureComponent {
     this.changeColumnOrder = (order) => {
       this.setState({ columnOrder: order });
     };
-    this.onSnackBarClose=()=>this.setState({snackBarOpen:false});
+    this.onSnackBarClose = () => this.setState({ snackBarOpen: false });
   }
   componentDidMount() {
-    this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection));
-    this.setAndCommitTrans(() => this.props.fetchData(this.props.collection));
+    this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection, this.props.searchCriteria));
+    this.setAndCommitTrans(() => this.props.fetchData(this.props.collection, this.props.searchCriteria));
   }
   componentWillReceiveProps(nextProps) {
-    const {rows,error,message}=nextProps;
+    const { rows, error, message } = nextProps;
     if (error === '')
       this.setState({ transaction: null });
-    if(rows!==undefined)
-      this.setState({ rows,prevRows:rows });
+    if (rows !== undefined)
+      this.setState({ rows, prevRows: rows });
     else
-      this.setState({rows:this.state.prevRows});
-    if(message !== '' || error!=='')
-      this.setState({snackBarOpen:true});
+      this.setState({ rows: this.state.prevRows });
+    if (message !== '' || error !== '')
+      this.setState({ snackBarOpen: true });
     else
-      this.setState({snackBarOpen:false});
+      this.setState({ snackBarOpen: false });
   }
   // componentWillUpdate(nextProps, nextState) {
   //   if(nextState.snackBarOpen && nextProps.error!=='')
@@ -265,11 +265,9 @@ class DataGrid extends React.PureComponent {
   // }
   render() {
     const {
-      classes, loading, columns, error, message
+      classes, loading, columns, error, message, readOnly
     } = this.props;
     const {
-      // rows,
-      // columns,
       // tableColumnExtensions,
       rows,
       sorting,
@@ -284,7 +282,7 @@ class DataGrid extends React.PureComponent {
       isGrouped,
       transaction
     } = this.state;
-    let snackBarMsg=message!==''?message:error;
+    let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
         <Paper>
@@ -294,7 +292,7 @@ class DataGrid extends React.PureComponent {
             getRowId={getRowId}
           >
             <FilteringState />
-            <SelectionState />
+            {!readOnly && <SelectionState />}
             <SortingState
               sorting={sorting}
               onSortingChange={this.changeSorting}
@@ -307,19 +305,20 @@ class DataGrid extends React.PureComponent {
               onPageSizeChange={this.changePageSize}
             />
             <IntegratedFiltering />
-            <IntegratedSelection />
+            {!readOnly && <IntegratedSelection />}
             <IntegratedGrouping />
             <IntegratedSorting />
             <IntegratedPaging />
-            <EditingState
-              editingRowIds={editingRowIds}
-              onEditingRowIdsChange={this.changeEditingRowIds}
-              rowChanges={rowChanges}
-              onRowChangesChange={this.changeRowChanges}
-              addedRows={addedRows}
-              onAddedRowsChange={this.changeAddedRows}
-              onCommitChanges={this.commitChanges}
-            />
+            {!readOnly &&
+              <EditingState
+                editingRowIds={editingRowIds}
+                onEditingRowIdsChange={this.changeEditingRowIds}
+                rowChanges={rowChanges}
+                onRowChangesChange={this.changeRowChanges}
+                addedRows={addedRows}
+                onAddedRowsChange={this.changeAddedRows}
+                onCommitChanges={this.commitChanges}
+              />}
             <DragDropProvider />
             <Table cellComponent={Cell} rowComponent={Row} />
             {/* <Table
@@ -327,7 +326,7 @@ class DataGrid extends React.PureComponent {
             cellComponent={Cell}
             rowComponent={Row}
           /> */}
-            <TableSelection showSelectionColumn={!isGrouped} />
+            {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />}
             <TableColumnReordering
               order={columnOrder}
               onOrderChange={this.changeColumnOrder}
@@ -336,10 +335,10 @@ class DataGrid extends React.PureComponent {
             <TableHeaderRow showSortingControls />
             <TableFilterRow />
             {isGrouped ? <TableGroupRow /> :
-              <TableEditRow
+              (!readOnly && <TableEditRow
                 cellComponent={EditCell} row={EditRow}
-              />}
-            {!isGrouped &&
+              />)}
+            {(!isGrouped && !readOnly) &&
               <TableEditColumn
                 width={120}
                 showAddCommand={!addedRows.length}
@@ -352,10 +351,10 @@ class DataGrid extends React.PureComponent {
               pageSizes={pageSizes}
             />
             <Toolbar />
-            <GroupingPanel showSortingControls />
+            {!readOnly && <GroupingPanel showSortingControls />}
             <ColumnChooser />
           </Grid>
-          <Dialog
+          {!readOnly && <Dialog
             open={!!deletingRows.length}
             onClose={this.cancelDelete}
             classes={{ paper: classes.dialog }}
@@ -383,9 +382,9 @@ class DataGrid extends React.PureComponent {
               <Button onClick={this.cancelDelete} color="primary">Cancel</Button>
               <Button onClick={this.deleteRows} color="secondary">Delete</Button>
             </DialogActions>
-          </Dialog>
+          </Dialog>}
           <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
-            onSnackBarClose={this.onSnackBarClose}/>
+            onSnackBarClose={this.onSnackBarClose} />
         </Paper>
     );
   }
