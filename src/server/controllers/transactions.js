@@ -33,7 +33,7 @@ exports.addTransaction = function (req, res, next) {
   });
 
   //save it to the db
-  transacton.save(function (err) {
+  transaction.save(function (err) {
     if (err) { return next(err); }
     //Respond to request indicating the transaction was created
     res.json({ message: 'Transaction was saved successfully' });

@@ -3,7 +3,7 @@ const Authentication = require('./controllers/authentication');
 const Transaction = require('./controllers/transactions');
 const passportService = require('./services/passport');
 const passport = require('passport');
-const constants = require('./constants/constants');
+const {Constants} = require('./constants/constants');
 const requireAuth = passport.authenticate('jwt', { session: false });
 const requireSignin = passport.authenticate('local', { session: false });
 
@@ -16,16 +16,16 @@ module.exports = function (app) {
   app.post('/signup', Authentication.signup);
 
   // Transaction Routes
-  app.post(`/${constants.Transactions}/${constants.add}`, requireAuth, Transaction.addTransaction);
-  app.get(`/${constants.Transactions}/${constants.get}`, requireAuth, Transaction.getTransactions);
-  app.post(`/${constants.Transactions}/${constants.get}`, requireAuth, Transaction.searchTransactions);
-  app.post(`/${constants.Reports}`,requireAuth,Transaction.getReports);
+  app.post(`/${Constants.Transactions}/${Constants.add}`, requireAuth, Transaction.addTransaction);
+  app.get(`/${Constants.Transactions}/${Constants.get}`, requireAuth, Transaction.getTransactions);
+  app.post(`/${Constants.Transactions}/${Constants.get}`, requireAuth, Transaction.searchTransactions);
+  app.post(`/${Constants.Reports}`,requireAuth,Transaction.getReports);
 
   //Pooja Routes
-  let Pooja = Entity.entity(constants.Poojas);
-  app.post(`/${constants.Poojas}/${constants.add}`, requireAuth, Pooja.add);
-  app.get(`/${constants.Poojas}`, requireAuth, Pooja.get);
-  app.get(`/${constants.Poojas}/${constants.Schema}`, requireAuth, Pooja.schema);
-  app.delete(`/${constants.Poojas}/:id`, requireAuth, Pooja.delete);
-  app.put(`/${constants.Poojas}/:id`, requireAuth, Pooja.update);
+  let Pooja = Entity.entity(Constants.Poojas);
+  app.post(`/${Constants.Poojas}/${Constants.add}`, requireAuth, Pooja.add);
+  app.get(`/${Constants.Poojas}`, requireAuth, Pooja.get);
+  app.get(`/${Constants.Poojas}/${Constants.Schema}`, requireAuth, Pooja.schema);
+  app.delete(`/${Constants.Poojas}/:id`, requireAuth, Pooja.delete);
+  app.put(`/${Constants.Poojas}/:id`, requireAuth, Pooja.update);
 }
