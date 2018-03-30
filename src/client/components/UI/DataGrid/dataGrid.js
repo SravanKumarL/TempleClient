@@ -291,7 +291,7 @@ class DataGrid extends React.PureComponent {
             columns={columns}
             getRowId={getRowId}
           >
-            <FilteringState />
+            {!readOnly && <FilteringState />}
             {!readOnly && <SelectionState />}
             <SortingState
               sorting={sorting}
@@ -304,7 +304,7 @@ class DataGrid extends React.PureComponent {
               pageSize={pageSize}
               onPageSizeChange={this.changePageSize}
             />
-            <IntegratedFiltering />
+            {!readOnly && <IntegratedFiltering />}
             {!readOnly && <IntegratedSelection />}
             <IntegratedGrouping />
             <IntegratedSorting />
@@ -333,7 +333,7 @@ class DataGrid extends React.PureComponent {
             />
 
             <TableHeaderRow showSortingControls />
-            <TableFilterRow />
+            {!readOnly && <TableFilterRow />}
             {isGrouped ? <TableGroupRow /> :
               (!readOnly && <TableEditRow
                 cellComponent={EditCell} row={EditRow}
@@ -346,13 +346,13 @@ class DataGrid extends React.PureComponent {
                 showDeleteCommand
                 commandComponent={Command}
               />}
-            <TableColumnVisibility />
+            {!readOnly && <TableColumnVisibility />}
             <PagingPanel
               pageSizes={pageSizes}
             />
             <Toolbar />
             {!readOnly && <GroupingPanel showSortingControls />}
-            <ColumnChooser />
+            {!readOnly && <ColumnChooser />}
           </Grid>
           {!readOnly && <Dialog
             open={!!deletingRows.length}
