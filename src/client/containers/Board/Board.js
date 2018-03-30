@@ -4,7 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import { blueGrey } from 'material-ui/colors'
-import { Receipt } from 'material-ui-icons';
+import { Receipt, Pages } from 'material-ui-icons';
 import Fade from 'material-ui/transitions/Fade';
 
 import Transactions from '../../containers/Transactions/Transactions';
@@ -47,6 +47,7 @@ const styles = theme => ({
   },
   rootInheritSelected: {
     background: 'white !important',
+    width: 216,
     height: 75,
     color: 'green !important',
     fontWeight: 'bold',
@@ -60,13 +61,13 @@ const styles = theme => ({
     marginBottom: 10,
     borderRadius: 8,
     height: 60,
-    width: 100,
+    width: 216,
     color: '#eee',
     background: blueGrey[700],
     boxShadow: theme.shadows[17],
   },
   labelContainer: {
-    paddingLeft: 12,
+    paddingLeft: 8,
     paddingRight: 12,
   },
   tabContainer: {
@@ -82,6 +83,9 @@ const styles = theme => ({
     textAlign: 'center',
     paddingTop: 20,
     transiton: 'initial',
+  },
+  label: {
+    fontSize: 16,
   }
 });
 
@@ -102,6 +106,7 @@ class SimpleTabs extends React.Component {
       textColorInheritSelected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
+      label: classes.label,
     };
     return (
       <div className={classes.root}>
@@ -116,18 +121,18 @@ class SimpleTabs extends React.Component {
           onChange={this.handleChange}
         >
           <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
-          <Tab label="Reports" value='reports' classes={newTabClasses} />
+          <Tab label="Reports" value='reports' classes={newTabClasses} icon={<Pages />} />
         </Tabs>
         <div className={classes.tabContainer}>
           {activeTab === 'transactions' &&
             <TabContainer>
-              <Fade in={activeTab === 'transactions'} timeout = {500} mountOnEnter unmountOnExit>
+              <Fade in={activeTab === 'transactions'} timeout={500} mountOnEnter unmountOnExit>
                 <Transactions />
               </Fade>
             </TabContainer>}
           {activeTab === 'reports' &&
             <TabContainer>
-              <Fade in={activeTab === 'reports'} timeout= {500} mountOnEnter unmountOnExit>
+              <Fade in={activeTab === 'reports'} timeout={500} mountOnEnter unmountOnExit>
                 <Reports />
               </Fade>
             </TabContainer>}

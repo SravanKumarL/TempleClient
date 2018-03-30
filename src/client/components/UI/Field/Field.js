@@ -14,7 +14,7 @@ const styles = theme => ({
     justifyContent: 'center',
   },
   formControl: {
-    width: '80%',
+    width: '100%',
   },
   inputLabelFocused: {
     color: purple[500],

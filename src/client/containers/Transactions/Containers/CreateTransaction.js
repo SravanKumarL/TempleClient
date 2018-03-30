@@ -26,7 +26,7 @@ const styles = theme => ({
 class CreateTransaction extends React.Component {
   constructor() {
     super();
-    this.baseState = this.state;
+    this.baseState = { ...this.state };
   }
   state = {
     transactionForm: formStateConfig(),
@@ -65,14 +65,9 @@ class CreateTransaction extends React.Component {
           amount: { ...updatedFormElement.amount, disabled: false },
         });
         break;
-      case 'special pooja':
-        updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Pooja' } },
-        });
-        break;
       case 'other':
         updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'input', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
+          pooja: { ...updatedFormElement.pooja, elementType: 'textarea', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
           amount: { ...updatedFormElement.amount, disabled: false, value: '' },
         });
         break;
@@ -159,6 +154,7 @@ class CreateTransaction extends React.Component {
     }).reduce((acc, item) => {
       return Object.assign(acc, item);
     });
+    this.setState({ ...this.baseState });
     this.props.submit(transactionInformation);
   }
   render() {

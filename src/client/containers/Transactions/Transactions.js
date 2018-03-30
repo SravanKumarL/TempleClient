@@ -10,7 +10,10 @@ import TransactionSummary from '../../components/TransactionSummary/Transacation
 import * as actions from '../../../store/actions';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
+import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
+import { Event, Description } from 'material-ui-icons';
+import ViewTransactions from './Components/ViewTransactions';
 
 const styles = theme => ({
   root: {
@@ -18,7 +21,8 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    flexGrow: 1
+    flexGrow: 1,
+    position: 'relative',
   },
   middlePane: {
     display: 'flex',
@@ -26,7 +30,9 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     flexGrow: 1,
+    position: 'absolute',
     width: 600,
+    height: '82vh'
   },
   panes: {
     display: 'flex',
@@ -36,6 +42,11 @@ const styles = theme => ({
   },
   leftPane: {
     display: 'flex',
+    // width: 390,
+  },
+  rightPane: {
+    display: 'flex',
+    marginLeft: 'auto',
     // width: 390,
   },
   container: {
@@ -68,6 +79,7 @@ const styles = theme => ({
   rootInherit: {
     margin: 10,
     borderRadius: 8,
+    fontSize: 16,
     height: 60,
     width: 250,
     minWidth: 'initial',
@@ -90,6 +102,9 @@ const styles = theme => ({
   span: {
     height: 18,
     background: 'initial',
+  },
+  label: {
+    fontSize: 16,
   }
 });
 
@@ -100,8 +115,14 @@ class Transactions extends React.Component {
     activeTab: 'pooja',
     transactionInformation: [],
     selectedTransaction: {},
+    dialogOpen: false,
+    option: '',
   };
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.message) {
+      this.setState({ snackOpen: true });
+    }
+  }
   closeSnackHandler = () => this.setState({ snackOpen: false });
 
   modalOpenHandler = () => this.setState({ modalOpen: true });
@@ -127,15 +148,40 @@ class Transactions extends React.Component {
       activeTab: value,
     });
   }
-  itemSelectionChangedHandler = (selectedTransaction) => {
-    this.setState({ selectedTransaction });
+  itemSelectionChangedHandler = (option, selectedTransaction) => {
+    this.setState({ option, selectedTransaction, dialogOpen: true, });
   }
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
   }
+  closeDialogHandler = () => this.setState({ dialogOpen: false })
   render() {
     const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction } = this.state;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen } = this.state;
+    let dialog = (
+      <Dialog
+        open={dialogOpen}
+        primaryClicked={this.editTransactionHandler}
+        primaryText='Edit'
+        secondaryText='Cancel'
+        secondaryClicked={this.closeDialogHandler}
+        title='Edit Transaction'
+        cancelled={this.closeDialogHandler}>
+        Edit Content
+      </Dialog>
+    );
+    if (option.toLowerCase() === 'view') {
+      dialog = (
+        <Dialog
+          open={dialogOpen}
+          primaryClicked={this.closeDialogHandler}
+          primaryText='Close'
+          title='View Transaction'>
+          <ViewTransactions
+            transaction={selectedTransaction} />
+        </Dialog>
+      );
+    }
     let message = null;
     if (this.props.message) {
       message = (
@@ -147,12 +193,10 @@ class Transactions extends React.Component {
       textColorInheritSelected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
+      label: classes.label
     };
     return (
       <div className={classes.panes} >
-        <div className={classes.leftPane}>
-          <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
-        </div>
         <div className={classes.middlePane}>
           <Fade in={activeTab === 'pooja' || activeTab === 'other'} timeout={500} mountOnEnter unmountOnExit>
             <Tabs classes={{
@@ -162,14 +206,14 @@ class Transactions extends React.Component {
             }} value={activeTab}
               onChange={this.tabChangeHandler}
             >
-              <Tab classes={newTabClasses} value='pooja' label='Pooja' />
-              <Tab classes={newTabClasses} value='other' label='Other' />
+              <Tab classes={newTabClasses} value='pooja' label='Pooja' icon={<Event />} />
+              <Tab classes={newTabClasses} value='other' label='Other' icon={<Description />} />
             </Tabs>
           </Fade>
           <CreateTransaction
             submit={this.formSubmitHandler}
             activeTab={activeTab}
-            selectedTransaction={selectedTransaction}
+            selectedTransaction={selectedTransaction && option.toLowerCase() === 'use' ? selectedTransaction : null}
           />
           <TransactionSummary
             open={modalOpen}
@@ -179,6 +223,10 @@ class Transactions extends React.Component {
             summaryClosed={this.modalCloseHandler} />
           {message}
         </div>
+        <div className={classes.rightPane}>
+          <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
+        </div>
+        {dialog}
       </div >
     );
   }
