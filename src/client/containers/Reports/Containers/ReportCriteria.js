@@ -8,7 +8,10 @@ class ReportCriteria extends React.Component {
     poojaValue: '',
   }
   poojaChangedHandler = (event, inputIdentifier) => {
-    this.setState({ poojaValue: event })
+    const {poojaSelected}=this.props;
+    if(poojaSelected)
+      poojaSelected(event);
+    this.setState({ poojaValue: event });
   }
   render() {
     const { title, dateSelectionChanged, poojas } = this.props;

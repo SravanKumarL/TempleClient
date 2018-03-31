@@ -79,7 +79,7 @@ class CreateTransaction extends React.Component {
   formResetHandler = () => this.setState({ ...this.baseState });
 
   inputChangedHandler = (event, inputIdentifier) => {
-    const value = ['nakshatram', 'pooja', 'date', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
+    const value = ['nakshatram', 'pooja', 'selectedDates', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
     const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
       value: value,
       valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
@@ -96,7 +96,7 @@ class CreateTransaction extends React.Component {
         updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
       }
     }
-    else if (inputIdentifier === 'date') {
+    else if (inputIdentifier === 'selectedDates') {
       if (value) {
         updatedtransactionForm['numberOfDays'].value = value.length;
         updatedtransactionForm['amount'].value *= value.length;

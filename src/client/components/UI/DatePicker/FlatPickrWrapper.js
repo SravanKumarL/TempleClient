@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import Flatpickr from './Flatpickr'
 import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
+import { getCurrentDate } from '../../../shared/utility';
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   getDaysOfWeek = () => this.getAllDays().filter(x => x !== 'All days');
@@ -34,8 +35,8 @@ class DatePickerWrapper extends Component {
   getSelectedDates = (state) => {
     const { mode, selectedDays, unFilteredRange, selectedDates } = state;
     if (mode === 'range')
-      return this.getFilteredDates(selectedDays, unFilteredRange);
-    return selectedDates;
+      return this.getFilteredDates(selectedDays, unFilteredRange).map(date=>getCurrentDate(date));
+    return selectedDates.map(date=>getCurrentDate(date));
   }
   onDaySelected = (selectedDays) => {
     const prevSelectedDays = this.state.selectedDays;

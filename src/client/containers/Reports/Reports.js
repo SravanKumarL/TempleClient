@@ -10,7 +10,7 @@ import { Event, Poll, ImportContacts } from 'material-ui-icons';
 // import DatePicker from '../../components/UI/DatePicker/DatePicker';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate } from '../../shared/utility';
 import * as actions from '../../../store/actions';
 import orange from 'material-ui/colors/orange';
 import blue from 'material-ui/colors/blue';
@@ -72,9 +72,10 @@ class Reports extends React.Component {
   state = {
     modalOpen: false,
     selectedOption: {},
-    date:new Date(),
+    selectedDates: getCurrentDate(),
     poojaDetails: null,
-    reportOpen:false
+    reportOpen: false,
+    pooja: ''
   }
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
@@ -103,8 +104,9 @@ class Reports extends React.Component {
   closeDialogHandler = () => {
     this.setState({ modalOpen: false });
   }
-  generateReportHandler = () => this.setState({reportOpen:true});
-  dateSelectionChangedHandler = (dates) => this.setState({date:dates[0]})
+  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
+  dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
+  poojaSelected = (pooja) => this.setState({ pooja });
   getModal = () => {
     const { modalOpen, selectedOption } = this.state;
     return (
@@ -120,6 +122,7 @@ class Reports extends React.Component {
           poojas={this.state.poojaDetails}
           title={selectedOption.name}
           dateSelectionChanged={this.dateSelectionChangedHandler}
+          poojaSelected={this.poojaSelected}
         />
       </Dialog>
     );
@@ -129,7 +132,7 @@ class Reports extends React.Component {
   }
   getButtons = () => {
     const { classes } = this.props;
-    const {reportOpen,selectedOption,date}=this.state;
+    const { reportOpen, selectedOption, selectedDates, pooja } = this.state;
     const options = [
       { name: 'Pooja Report', color: orange[500], icon: <Event className={classes.icon} /> },
       { name: 'Management Report', color: blue[500], icon: <Poll className={classes.icon} /> },
@@ -137,6 +140,12 @@ class Reports extends React.Component {
       // { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
       { name: 'Accounts Report', color: green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
+    let searchObj = {};
+    if (selectedOption.name) {
+      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
+      if (searchObj.ReportName === 'Pooja')
+        searchObj = { ...searchObj, pooja };
+    }
     return (
       <Fragment>
         {options.map(option => {
@@ -158,8 +167,7 @@ class Reports extends React.Component {
             </Button>
           )
         })}
-        {reportOpen && <DataGridWrapper collection={constants.Reports} 
-          searchCriteria={{ReportName:selectedOption.name.split(' ')[0],Date:date}} readOnly={true}/>}
+        {reportOpen && <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />}
       </Fragment>
     );
   }

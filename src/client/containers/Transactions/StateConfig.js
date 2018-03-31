@@ -73,7 +73,7 @@ export const formStateConfig = () => {
       valid: false,
       touched: false,
     },
-    date: {
+    selectedDates: {
       elementType: 'date',
       elementConfig: {
         type: 'text',
