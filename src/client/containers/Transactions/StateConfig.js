@@ -1,3 +1,5 @@
+import { getCurrentDate } from "../../shared/utility";
+
 // import { getCurrentDate } from "../../shared/utility";
 
 export const formStateConfig = () => {
@@ -77,9 +79,9 @@ export const formStateConfig = () => {
       elementType: 'date',
       elementConfig: {
         type: 'text',
-        placeholder: 'Select date(s)',
+        placeholder: 'Selected date(s)',
       },
-      value: [new Date()],
+      value: [getCurrentDate()],
       validation: {
         required: false,
       },
@@ -102,7 +104,7 @@ export const formStateConfig = () => {
       touched: false,
     },
     amount: {
-      elementType: 'input',
+      elementType: 'number',
       elementConfig: {
         type: 'text',
         placeholder: 'Amount',

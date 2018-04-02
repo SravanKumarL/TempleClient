@@ -176,10 +176,10 @@ const multiSelect = (props) => {
         simpleValue: true,
         options: props.options,
       }}
-      InputLabelProps={{
-        shrink: true,
-        className: classes.textFieldFormLabel,
-      }}
+      // InputLabelProps={{
+      //   shrink: true,
+      //   className: classes.textFieldFormLabel,
+      // }}
     />
   );
   if (type === 'multi') {

@@ -21,10 +21,11 @@ import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
 const styles = theme => ({
   container: {
     display: 'flex',
-    flexGrow: 1,
+    // flexGrow: 1,
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
     width: 200,
+    marginRight: 20,
     boxShadow: theme.shadows[3],
   },
   button: {
@@ -132,20 +133,12 @@ class Reports extends React.Component {
   }
   getButtons = () => {
     const { classes } = this.props;
-    const { reportOpen, selectedOption, selectedDates, pooja } = this.state;
     const options = [
       { name: 'Pooja Report', color: orange[500], icon: <Event className={classes.icon} /> },
       { name: 'Management Report', color: blue[500], icon: <Poll className={classes.icon} /> },
-      // { name: 'Temple Report', color: '#0288D1', icon: <Receipt className={classes.icon} /> },
-      // { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
       { name: 'Accounts Report', color: green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
-    let searchObj = {};
-    if (selectedOption.name) {
-      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
-      if (searchObj.ReportName === 'Pooja')
-        searchObj = { ...searchObj, pooja };
-    }
+
     return (
       <Fragment>
         {options.map(option => {
@@ -167,18 +160,32 @@ class Reports extends React.Component {
             </Button>
           )
         })}
-        {reportOpen && <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />}
       </Fragment>
     );
   }
   render() {
+    const { reportOpen, selectedOption, selectedDates, pooja } = this.state;
     const { classes } = this.props;
+    let searchObj = {};
+    if (selectedOption.name) {
+      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
+      if (searchObj.ReportName === 'Pooja')
+        searchObj = { ...searchObj, pooja };
+    }
     return (
-      <div className={classes.container}>
-        {this.getButtons()}
-        {this.getModal()}
-        {/* <Switch>
+      <div style={{ display: 'flex', height: '100%' }}>
+        <div className={classes.container}>
+          {this.getButtons()}
+          {this.getModal()}
+          {/* <Switch>
         </Switch> */}
+        </div>
+
+        {reportOpen &&
+          <div style={{ display: 'flex', flexDirection: 'column' }} >
+            <Typography variant='display1' align='center' style={{ marginBottom: 20 }}> {selectedOption.name} </Typography>
+            <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+          </div>}
       </div>
     );
   }

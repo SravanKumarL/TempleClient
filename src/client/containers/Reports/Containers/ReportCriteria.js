@@ -37,6 +37,7 @@ class ReportCriteria extends React.Component {
         {pooja}
         <Field
           elementType='date'
+          mode='single'
           changed={dateSelectionChanged}
         />
       </div>

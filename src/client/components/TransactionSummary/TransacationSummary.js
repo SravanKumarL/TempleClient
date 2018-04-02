@@ -43,6 +43,9 @@ const transactionSummary = (props) => {
           </TableHead>
           <TableBody>
             {Object.keys(transactionFields).map(id => {
+              if (id === 'others') {
+                return null;
+              }
               const field = transactionFields[id];
               const placeholder = field.name;
               return (

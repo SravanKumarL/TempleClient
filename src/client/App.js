@@ -6,13 +6,6 @@ import Authentication from './containers/Authentication/Authentication';
 import Layout from './hoc/Layout/Layout';
 import Board from './containers/Board/Board';
 import Pooja from './containers/Poojas/Poojas';
-// import Transactions from './containers/Transactions/Transactions';
-// import EditTransaction from './containers/Transactions/EditTransaction';
-// import Poojas from './containers/Poojas/Poojas';
-// import Reports from './containers/Reports/Reports';
-// import ManagementReport from './containers/Reports/ManagementReport';
-// import Questionnaire from './containers/Questionnaire/Questionnaire';
-// import Tabs from './components/UI/CustomTab/Tabs';
 
 import * as actions from '../store/actions/index';
 
@@ -33,12 +26,6 @@ class App extends Component {
       routes = (
         <Layout>
           <Switch>
-            {/* <Route path='/Tabs' component={Tabs} /> */}
-            {/* <Route path='/poojas' exact component={Poojas} /> */}
-            {/* <Route path='/reports/managementReport' exact component={ManagementReport} />
-            <Route path='/reports' component={Reports} />
-            <Route path='/transactions/edit' component={EditTransaction} />
-            <Route path='/transactions/create' component={Transactions} /> */}
             <Route path='/poojas' exact component={Pooja} />
             <Route path='/' exact component={Board} />
             <Redirect to='/' />

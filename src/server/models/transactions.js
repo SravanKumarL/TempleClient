@@ -14,7 +14,8 @@ const transactionSchema = new Schema({
   amount:Number,
   bankName:String,
   chequeNo:Number,
-  createdDate:Date
+  createdDate:Date,
+  others: Boolean,
 });
 
 // Create the model class
