@@ -27,7 +27,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response);
+                        yield call(handleResponse, response, collection);
                         break;
                     case constants.delete:
                         response = yield axios({
@@ -35,7 +35,7 @@ export function* handleTransaction(action) {
                             url: `/${collection}/${change}`,
                             headers
                         });
-                        yield call(handleResponse, response)
+                        yield call(handleResponse, response, collection);
                         break;
                     case constants.edit:
                         const entity = Object.getOwnPropertyNames(change)[0];
@@ -45,7 +45,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(Object.values(change)[0]),
                             headers
                         });
-                        yield call(handleResponse, response)
+                        yield call(handleResponse, response, collection);
                         break;
                     default:
                         break;
@@ -54,16 +54,16 @@ export function* handleTransaction(action) {
         }
         catch (error) {
             console.log(error);
-            yield put(actions.onTransactionFailed(error.message))
+            yield put(actions.onTransactionFailed(error.message,collection))
         }
     }
 }
-const handleResponse = (response) => {
+const handleResponse = (response, collection) => {
     const { error, message } = response.data;
     if (error)
-        put(actions.onTransactionFailed(error));
+        put(actions.onTransactionFailed(error,collection));
     else
-        put(actions.onTransactionCommitted(message));
+        put(actions.onTransactionCommitted(message,collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
@@ -72,7 +72,7 @@ export function* handleFetchData(action) {
     }
     else {
         try {
-            yield put(actions.onFetchReq());
+            yield put(actions.onFetchReq(collection));
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -96,11 +96,11 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                yield put(actions.onFetchSuccess(response.data));
+                yield put(actions.onFetchSuccess(response.data, collection));
             }
         } catch (error) {
             console.log(error);
-            yield put(actions.onFetchFailed(error.message));
+            yield put(actions.onFetchFailed(error.message, collection));
         }
     }
 }
@@ -113,7 +113,7 @@ export function* handleFetchSchema(action) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
         } else {
             if(searchCriteria && collection===constants.Reports){
-                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName])); 
+                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName], collection)); 
             }
             else{
                 const headers = {
@@ -124,11 +124,11 @@ export function* handleFetchSchema(action) {
                     url: `/${collection}/${constants.Schema}`,
                     headers
                 });
-                yield put(actions.onFetchSchemaSuccess(response.data));
+                yield put(actions.onFetchSchemaSuccess(response.data, collection));
             }
         }
     } catch (error) {
         console.log(error);
-        yield put(actions.onFetchFailed(error.message));
+        yield put(actions.onFetchFailed(error.message,collection));
     }
 }

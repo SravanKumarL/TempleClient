@@ -4,11 +4,14 @@ import { withStyles } from 'material-ui/styles';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import { blueGrey } from 'material-ui/colors'
-import { Receipt, Pages } from 'material-ui-icons';
+import { Receipt, Pages, Event, AccountCircle } from 'material-ui-icons';
 import Fade from 'material-ui/transitions/Fade';
 
 import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
+import Poojas from '../Poojas/Poojas';
+import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
+import constants from '../../../store/sagas/constants';
 
 function TabContainer(props) {
   return (
@@ -99,7 +102,7 @@ class SimpleTabs extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, role } = this.props;
     const { activeTab } = this.state;
     const newTabClasses = {
       textColorInherit: classes.rootInherit,
@@ -122,6 +125,8 @@ class SimpleTabs extends React.Component {
         >
           <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
           <Tab label="Reports" value='reports' classes={newTabClasses} icon={<Pages />} />
+          {role==='admin' && <Tab label="Poojas" value='poojas' classes={newTabClasses} icon={<Event/>}/>}
+          {role==='admin' && <Tab label="Users" value='users' classes={newTabClasses} icon={<AccountCircle/>}/>}
         </Tabs>
         <div className={classes.tabContainer}>
           {activeTab === 'transactions' &&
@@ -136,6 +141,18 @@ class SimpleTabs extends React.Component {
                 <Reports />
               </Fade>
             </TabContainer>}
+          {activeTab === 'poojas' && 
+          <TabContainer>
+              <Fade in={activeTab === 'poojas'} timeout={500} mountOnEnter unmountOnExit>
+                <Poojas />
+              </Fade>
+            </TabContainer>}
+          {activeTab === 'users' && 
+          <TabContainer>
+              <Fade in={activeTab === 'users'} timeout={500} mountOnEnter unmountOnExit>
+                <DataGridWrapper style={{flexGrow:1}} collection={constants.Users}/>
+              </Fade>
+            </TabContainer>}  
         </div>
       </div>
     );

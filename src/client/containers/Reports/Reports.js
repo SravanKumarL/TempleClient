@@ -129,7 +129,7 @@ class Reports extends React.Component {
     );
   }
   optionClickedHandler = (option) => {
-    this.setState({ selectedOption: option, modalOpen: true });
+    this.setState({ selectedOption: option, modalOpen: true, reportOpen:false });
   }
   getButtons = () => {
     const { classes } = this.props;

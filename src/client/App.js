@@ -10,29 +10,24 @@ import Pooja from './containers/Poojas/Poojas';
 import * as actions from '../store/actions/index';
 
 import classes from './App.css';
+import { PrivateRoute } from './hoc/Router/PropsRoute';
 
 class App extends Component {
   componentDidMount() {
     this.props.onTryAutoSignIn();
   }
+  handleLogin=()=>this.props.history.push('/');
   render() {
+    const layout=()=>(
+      <Layout>
+        <Board role={this.props.role}/>
+      </Layout>
+    );
     let routes = (
       <Switch>
-        <Route path='/' component={Authentication} />
-        <Redirect to='/' />
+        <PrivateRoute path='/' redirectComponent={Authentication} component={layout} isLoggedIn={this.props.isAuthenticated}/>
       </Switch>
     );
-    if (this.props.isAuthenticated) {
-      routes = (
-        <Layout>
-          <Switch>
-            <Route path='/poojas' exact component={Pooja} />
-            <Route path='/' exact component={Board} />
-            <Redirect to='/' />
-          </Switch>
-        </Layout>
-      );
-    }
     return (
       <div className={classes.App}>
         {routes}
@@ -43,6 +38,7 @@ class App extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     isAuthenticated: state.auth.token !== null,
+    role:state.auth.role
   }
 }
 
