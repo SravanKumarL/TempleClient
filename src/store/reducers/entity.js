@@ -1,7 +1,8 @@
 import * as actionTypes from '../actions/actionTypes';
 const initialState = { columns: [], rows: [], loading: false, error: '', message: '' };
 export const entity = (name) => (state = { name, columns: [], rows: [], loading: false, error: '', message: '' }, action) => {
-    if(name!==action.name) return state;
+    const {payload}=action;
+    if(payload && name!==payload.name) return state;
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:

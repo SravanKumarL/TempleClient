@@ -4,7 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
-import Select from 'material-ui/Select';
+import {Select,ListItemText,Checkbox} from 'material-ui';
 
 const styles = theme => ({
   root: {
@@ -70,17 +70,9 @@ class MultipleSelect extends React.Component {
             open={this.state.open}
           >
             {items.map(item => (
-              <MenuItem
-                key={item}
-                value={item}
-                style={{
-                  fontWeight:
-                    selItems.indexOf(item) === -1
-                      ? theme.typography.fontWeightRegular
-                      : theme.typography.fontWeightMedium,
-                }}
-              >
-                {item}
+              <MenuItem key={item} value={item}>
+                <Checkbox checked={selItems.indexOf(item) > -1} />
+                <ListItemText primary={item} />
               </MenuItem>
             ))}
           </Select>

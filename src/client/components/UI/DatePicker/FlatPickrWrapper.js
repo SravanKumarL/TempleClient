@@ -7,6 +7,8 @@ import Flatpickr from './Flatpickr'
 import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
 import { getCurrentDate } from '../../../shared/utility';
+import { Button } from 'material-ui';
+import  ContentPaper  from './ContentPaper';
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   getDaysOfWeek = () => this.getAllDays().filter(x => x !== 'All days');
@@ -14,7 +16,8 @@ class DatePickerWrapper extends Component {
     selectedDates: [new Date()],
     selectedDays: [],
     filteredRange: [],
-    unFilteredRange: []
+    unFilteredRange: [],
+    showPaper:false
   }
   state = { ...this.defaultState, mode: 'single', closeOnSelect: true };
   liftStateUp = (props = this.props, state = this.state) => {
@@ -132,7 +135,7 @@ class DatePickerWrapper extends Component {
     if (!mode)
       datePickMode = this.state.mode;
     return (
-      <div>
+      <div style={{display:'flex',flexDirection:'row'}}>
         {mode !== undefined ||
           <div id="selection" style={{ display: 'flex' }}>
             <RadioButtonsGroup options={['single', 'multiple', 'range']} label='Calendar mode' mode={this.state.mode}
@@ -149,6 +152,8 @@ class DatePickerWrapper extends Component {
             }}
             onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} />
         </div>
+        <Button onClick={()=>this.setState((prevState)=>({showPaper:!prevState.showPaper}))}>Show Paper</Button>
+          {this.state.showPaper && <ContentPaper style={{alignSelf:'flex-end'}}/>}
         <br />
         {/* <label>{this.getNumberOfDays()}</label> */}
       </div>
