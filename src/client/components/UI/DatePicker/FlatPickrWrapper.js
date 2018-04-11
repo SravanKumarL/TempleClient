@@ -135,7 +135,7 @@ class DatePickerWrapper extends Component {
     if (!mode)
       datePickMode = this.state.mode;
     return (
-      <div style={{display:'flex',flexDirection:'row'}}>
+      <div>
         {mode !== undefined ||
           <div id="selection" style={{ display: 'flex' }}>
             <RadioButtonsGroup options={['single', 'multiple', 'range']} label='Calendar mode' mode={this.state.mode}
@@ -152,8 +152,8 @@ class DatePickerWrapper extends Component {
             }}
             onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} />
         </div>
-        <Button onClick={()=>this.setState((prevState)=>({showPaper:!prevState.showPaper}))}>Show Paper</Button>
-          {this.state.showPaper && <ContentPaper style={{alignSelf:'flex-end'}}/>}
+        {/* <Button onClick={()=>this.setState((prevState)=>({showPaper:!prevState.showPaper}))}>Show Paper</Button> */}
+          {/* {this.state.showPaper && <ContentPaper style={{alignSelf:'flex-end'}}/>} */}
         <br />
         {/* <label>{this.getNumberOfDays()}</label> */}
       </div>

@@ -96,8 +96,21 @@ exports.getReports = function (req, res, next) {
     array.forEach(x => slicedObj[x] = obj[x]);
     return slicedObj;
   }
-  let searchObj = {};
+  const searchObj = getSearchObj(selectedDates, pooja);
+  Transaction.find(searchObj).select(report.join(' ')).exec(function (error, results) {
+    if (error) return res.json({ error });
+    if (ReportName === Constants.Management) {
+      const reportCount = results.length;
+      results = results.map(result => ({ 'pooja': result.pooja, 'total poojas': reportCount, 'total amount': result.amount * reportCount }));
+    }
+    else
+      results = results.map(result => slice(report, result));
+    return res.json(results);
+  });
+}
+const getSearchObj = (selectedDates, pooja) => {
   let dates = selectedDates;
+  let searchObj = {};
   if (selectedDates && typeof selectedDates === "string")
     dates = [selectedDates];
   const length = dates ? dates.length : undefined;
@@ -112,10 +125,7 @@ exports.getReports = function (req, res, next) {
     searchObj = { selectedDates: { "$in": dates } };
   }
   if (pooja)
-    searchObj = { ...searchObj, pooja };
-  Transaction.find(searchObj).select(report.join(' ')).exec(function (error, results) {
-    if (error) return res.json({ error });
-    results = results.map(result => slice(report, result));
-    return res.json(results);
-  });
+    return { ...searchObj, pooja };
+  else
+    return { createdDate: searchObj.selectedDates };
 }
