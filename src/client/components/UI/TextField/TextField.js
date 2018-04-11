@@ -31,11 +31,11 @@ const styles = theme => ({
 });
 
 function TextBox(props) {
-  const { classes, label, value, changed, disabled, multiline } = props;
+  const { classes, label, value, changed, disabled, multiline, showLabels } = props;
   return (
     <TextField
-      // label={label}
-      placeholder={label}
+      label={showLabels ? label : ''}
+      placeholder={showLabels ? '' : label}
       InputProps={{
         disableUnderline: true,
         classes: {
@@ -43,10 +43,10 @@ function TextBox(props) {
           input: classes.textFieldInput,
         },
       }}
-      // InputLabelProps={{
-      //   shrink: true,
-      //   className: classes.textFieldFormLabel,
-      // }}
+      InputLabelProps={showLabels ? {
+        shrink: true,
+        className: classes.textFieldFormLabel,
+      } : {}}
       value={value}
       onChange={changed}
       disabled={disabled}

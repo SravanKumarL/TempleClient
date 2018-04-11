@@ -3,17 +3,21 @@ import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
+import Pageview from 'material-ui-icons/Pageview';
+import Restore from 'material-ui-icons/Restore';
+import classNames from 'classnames';
+
 import * as actions from '../../../../store/actions';
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 import { formStateConfig } from '../StateConfig';
 import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
 import constants from '../../../../store/sagas/constants'
+
 const styles = theme => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    // margin: 'auto',
     width: '535px',
     alignItems: 'center',
     boxSizing: 'border-box',
@@ -21,12 +25,19 @@ const styles = theme => ({
     height: '90%',
     backgroundColor: theme.palette.background.paper,
   },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
 });
 
 class CreateTransaction extends React.Component {
   constructor() {
     super();
     this.baseState = { ...this.state };
+    this.inputChangedHandler = this.inputChangedHandler.bind(this);
   }
   state = {
     transactionForm: formStateConfig(),
@@ -61,13 +72,13 @@ class CreateTransaction extends React.Component {
     switch (activeTab) {
       case 'pooja':
         updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' } },
+          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Poojas' } },
           amount: { ...updatedFormElement.amount, disabled: false },
         });
         break;
       case 'other':
         updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'textarea', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
+          pooja: { ...updatedFormElement.pooja, elementType: 'input', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
           amount: { ...updatedFormElement.amount, disabled: false, value: '' },
         });
         break;
@@ -79,7 +90,11 @@ class CreateTransaction extends React.Component {
   formResetHandler = () => this.setState({ ...this.baseState });
 
   inputChangedHandler = (event, inputIdentifier) => {
-    const value = ['nakshatram', 'pooja', 'date', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
+    let value = ['nakshatram', 'pooja', 'selectedDates', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
+    const { activeTab } = this.props;
+    if (activeTab === 'other' && inputIdentifier === 'pooja') {
+      value = event.target.value;
+    }
     const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
       value: value,
       valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
@@ -92,11 +107,17 @@ class CreateTransaction extends React.Component {
       if (!value) {
         updatedtransactionForm['amount'].value = '';
       } else {
-        const pooja = value.toLowerCase();
-        updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
+        if (activeTab === 'other') {
+          updatedtransactionForm['amount'].disabled = false;
+          updatedtransactionForm['amount'].value = '';
+
+        } else {
+          const pooja = value.toLowerCase();
+          updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
+        }
       }
     }
-    else if (inputIdentifier === 'date') {
+    else if (inputIdentifier === 'selectedDates') {
       if (value) {
         updatedtransactionForm['numberOfDays'].value = value.length;
         updatedtransactionForm['amount'].value *= value.length;
@@ -164,8 +185,13 @@ class CreateTransaction extends React.Component {
         <TransactionForm
           transactionForm={this.state.transactionForm}
           fieldChanged={this.inputChangedHandler}
-          preview={this.submitHandler}
-          reset={this.formResetHandler}
+          primaryClicked={this.submitHandler}
+          showButtons={true}
+          secondaryClicked={this.formResetHandler}
+          primaryText='Preview'
+          secondaryText='Reset'
+          primaryIcon={<Pageview className={classNames(classes.leftIcon, classes.iconSmall)} />}
+          secondaryIcon={<Restore className={classNames(classes.leftIcon, classes.iconSmall)} />}
         />
       </div>
     );

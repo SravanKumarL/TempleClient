@@ -158,51 +158,114 @@ const styles = theme => ({
   },
 });
 
-const multiSelect = (props) => {
-  const { classes, label, value, changed, type } = props;
-  let element = (
-    <Input
-      fullWidth
-      disableUnderline
-      inputComponent={SelectWrapped}
-      inputProps={{
-        classes,
-        value: value,
-        onChange: changed,
-        placeholder: label,
-        instanceId: 'react-select-single',
-        id: 'react-select-single',
-        name: 'react-select-single',
-        simpleValue: true,
-        options: props.options,
-      }}
-      InputLabelProps={{
-        shrink: true,
-        className: classes.textFieldFormLabel,
-      }}
-    />
-  );
-  if (type === 'multi') {
-    element = <Input
-      disableUnderline
-      fullWidth
-      placeholder={label}
-      inputComponent={SelectWrapped}
-      inputProps={{
-        classes,
-        value: value,
-        multi: true,
-        onChange: changed,
-        placeholder: label,
-        instanceId: 'react-select-chip',
-        id: 'react-select-chip',
-        name: 'react-select-chip',
-        simpleValue: true,
-        options: suggestions,
-      }}
-    />
+// const multiSelect = (props) => {
+//   const { classes, label, value, changed, type } = props;
+//   let element = (
+//     <Input
+//       fullWidth
+//       disableUnderline
+//       inputComponent={SelectWrapped}
+//       inputProps={{
+//         classes,
+//         value: value,
+//         onChange: changed,
+//         placeholder: label,
+//         instanceId: 'react-select-single',
+//         id: 'react-select-single',
+//         name: 'react-select-single',
+//         simpleValue: true,
+//         options: props.options,
+//       }}
+//       // InputLabelProps={{
+//       //   shrink: true,
+//       //   className: classes.textFieldFormLabel,
+//       // }}
+//     />
+//   );
+//   if (type === 'multi') {
+//     element = <Input
+//       disableUnderline
+//       fullWidth
+//       placeholder={label}
+//       inputComponent={SelectWrapped}
+//       inputProps={{
+//         classes,
+//         value: value,
+//         multi: true,
+//         onChange: changed,
+//         placeholder: label,
+//         instanceId: 'react-select-chip',
+//         id: 'react-select-chip',
+//         name: 'react-select-chip',
+//         simpleValue: true,
+//         options: suggestions,
+//       }}
+//     />
+//   }
+//   return element;
+// }
+class multiSelect extends React.Component {
+  state={
+    value:''
   }
-  return element;
+  onChange=(value)=>{
+    this.setState((prevState)=>{
+      if(value==='' && prevState.value!=='' && this.props.type==='multi')
+      {
+        value=prevState.value;
+        value+=`,${value.split(',')[0]}`;
+      }
+      this.props.changed(value);
+      return {value};
+    });
+  }
+  render() {
+    const { classes, label, type } = this.props;
+    const {value}=this.state
+    let element = (
+      <Input
+        fullWidth
+        disableUnderline
+        inputComponent={SelectWrapped}
+        inputProps={{
+          classes,
+          value: value,
+          onChange: this.onChange,
+          placeholder: label,
+          instanceId: 'react-select-single',
+          id: 'react-select-single',
+          name: 'react-select-single',
+          simpleValue: true,
+          options: this.props.options,
+        }}
+      // InputLabelProps={{
+      //   shrink: true,
+      //   className: classes.textFieldFormLabel,
+      // }}
+      />
+    );
+    if (type === 'multi') {
+      element = <Input
+        disableUnderline
+        fullWidth
+        placeholder={label}
+        inputComponent={SelectWrapped}
+        inputProps={{
+          classes,
+          value: value,
+          multi: true,
+          onChange: this.onChange,
+          placeholder: label,
+          instanceId: 'react-select-chip',
+          id: 'react-select-chip',
+          name: 'react-select-chip',
+          simpleValue: true,
+          options: suggestions,
+        }}
+      />
+    }
+    return element;
+  }
 }
 
 multiSelect.propTypes = {

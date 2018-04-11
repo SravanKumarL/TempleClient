@@ -8,14 +8,14 @@ const transactionSchema = new Schema({
   gothram: String,
   nakshatram: String,
   pooja: String,
-  fromDate: Date,
-  toDate: Date,
+  selectedDates:[String],
   numberOfDays: Number,
   createdBy: String,
   amount:Number,
   bankName:String,
   chequeNo:Number,
-  createdDate:Date
+  createdDate:Date,
+  others: Boolean,
 });
 
 // Create the model class

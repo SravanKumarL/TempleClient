@@ -10,7 +10,7 @@ import { Event, Poll, ImportContacts } from 'material-ui-icons';
 // import DatePicker from '../../components/UI/DatePicker/DatePicker';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate } from '../../shared/utility';
 import * as actions from '../../../store/actions';
 import orange from 'material-ui/colors/orange';
 import blue from 'material-ui/colors/blue';
@@ -21,10 +21,11 @@ import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
 const styles = theme => ({
   container: {
     display: 'flex',
-    flexGrow: 1,
+    // flexGrow: 1,
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
     width: 200,
+    marginRight: 20,
     boxShadow: theme.shadows[3],
   },
   button: {
@@ -72,9 +73,10 @@ class Reports extends React.Component {
   state = {
     modalOpen: false,
     selectedOption: {},
-    date:new Date(),
+    selectedDates: getCurrentDate(),
     poojaDetails: null,
-    reportOpen:false
+    reportOpen: false,
+    pooja: ''
   }
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
@@ -103,8 +105,9 @@ class Reports extends React.Component {
   closeDialogHandler = () => {
     this.setState({ modalOpen: false });
   }
-  generateReportHandler = () => this.setState({reportOpen:true});
-  dateSelectionChangedHandler = (dates) => this.setState({date:dates[0]})
+  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
+  dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
+  poojaSelected = (pooja) => this.setState({ pooja });
   getModal = () => {
     const { modalOpen, selectedOption } = this.state;
     return (
@@ -120,23 +123,22 @@ class Reports extends React.Component {
           poojas={this.state.poojaDetails}
           title={selectedOption.name}
           dateSelectionChanged={this.dateSelectionChangedHandler}
+          poojaSelected={this.poojaSelected}
         />
       </Dialog>
     );
   }
   optionClickedHandler = (option) => {
-    this.setState({ selectedOption: option, modalOpen: true });
+    this.setState({ selectedOption: option, modalOpen: true, reportOpen:false });
   }
   getButtons = () => {
     const { classes } = this.props;
-    const {reportOpen,selectedOption,date}=this.state;
     const options = [
       { name: 'Pooja Report', color: orange[500], icon: <Event className={classes.icon} /> },
       { name: 'Management Report', color: blue[500], icon: <Poll className={classes.icon} /> },
-      // { name: 'Temple Report', color: '#0288D1', icon: <Receipt className={classes.icon} /> },
-      // { name: 'Cancellations Report', color: '#512DA8', icon: <AddCircle className={classes.icon} /> },
       { name: 'Accounts Report', color: green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
+
     return (
       <Fragment>
         {options.map(option => {
@@ -158,19 +160,32 @@ class Reports extends React.Component {
             </Button>
           )
         })}
-        {reportOpen && <DataGridWrapper collection={constants.Reports} 
-          searchCriteria={{ReportName:selectedOption.name.split(' ')[0],Date:date}} readOnly={true}/>}
       </Fragment>
     );
   }
   render() {
+    const { reportOpen, selectedOption, selectedDates, pooja } = this.state;
     const { classes } = this.props;
+    let searchObj = {};
+    if (selectedOption.name) {
+      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
+      if (searchObj.ReportName === 'Pooja')
+        searchObj = { ...searchObj, pooja };
+    }
     return (
-      <div className={classes.container}>
-        {this.getButtons()}
-        {this.getModal()}
-        {/* <Switch>
+      <div style={{ display: 'flex', height: '100%' }}>
+        <div className={classes.container}>
+          {this.getButtons()}
+          {this.getModal()}
+          {/* <Switch>
         </Switch> */}
+        </div>
+
+        {reportOpen &&
+          <div style={{ display: 'flex', flexDirection: 'column' }} >
+            <Typography variant='display1' align='center' style={{ marginBottom: 20 }}> {selectedOption.name} </Typography>
+            <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+          </div>}
       </div>
     );
   }

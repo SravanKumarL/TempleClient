@@ -13,7 +13,11 @@ import SearchTransaction from './Containers/SearchTransaction';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import { Event, Description } from 'material-ui-icons';
+import { ModeEdit, Cancel } from 'material-ui-icons';
+import classNames from 'classnames';
 import ViewTransactions from './Components/ViewTransactions';
+import EditTransactions from './Components/EditTransactions';
+import { updateObject } from '../../shared/utility';
 
 const styles = theme => ({
   root: {
@@ -137,6 +141,11 @@ class Transactions extends React.Component {
         return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
       }, {});
     transaction = { ...transaction, createdBy };
+    if (this.state.activeTab === 'others') {
+      transaction.others = true;
+    } else {
+      transaction.others = false;
+    }
     this.props.addTransaction(transaction);
     this.modalCloseHandler();
     // window.print();
@@ -149,15 +158,31 @@ class Transactions extends React.Component {
     });
   }
   itemSelectionChangedHandler = (option, selectedTransaction) => {
-    this.setState({ option, selectedTransaction, dialogOpen: true, });
+    if (option.toLowerCase() !== 'use') {
+      this.setState({ dialogOpen: true });
+    }
+    this.setState({ option, selectedTransaction });
   }
   formSubmitHandler = (transactionInformation) => {
+    
     this.setState({ modalOpen: true, transactionInformation });
   }
   closeDialogHandler = () => this.setState({ dialogOpen: false })
+  fieldEditedHandler = (event, inputIdentifier) => {
+    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, {
+      [inputIdentifier]: event.target.value,
+    });
+    this.setState({ selectedTransaction: updatedSelectedTransaction });
+  }
   render() {
     const { classes } = this.props;
     const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen } = this.state;
+    // const editForm = {
+    //   phoneNumber: { ...transactionInformation.phoneNumber },
+    //   names: { ...transactionInformation.names },
+    //   gothram: { ...transactionInformation.gothram },
+    //   nakshatram: { ...transactionInformation.nakshatram }
+    // };
     let dialog = (
       <Dialog
         open={dialogOpen}
@@ -165,9 +190,15 @@ class Transactions extends React.Component {
         primaryText='Edit'
         secondaryText='Cancel'
         secondaryClicked={this.closeDialogHandler}
+        primaryIcon={<ModeEdit className={classNames(classes.leftIcon, classes.iconSmall)} />}
+        secondaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
         title='Edit Transaction'
         cancelled={this.closeDialogHandler}>
-        Edit Content
+        <EditTransactions
+          // transactionFormFields={editForm}
+          transaction={selectedTransaction}
+          fieldChanged={this.fieldEditedHandler}
+        />
       </Dialog>
     );
     if (option.toLowerCase() === 'view') {
@@ -176,6 +207,7 @@ class Transactions extends React.Component {
           open={dialogOpen}
           primaryClicked={this.closeDialogHandler}
           primaryText='Close'
+          primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
           title='View Transaction'>
           <ViewTransactions
             transaction={selectedTransaction} />

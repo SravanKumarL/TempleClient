@@ -12,19 +12,23 @@ function Transition(props) {
 }
 
 const dialog = (props) => {
-  const { handleClose, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, children } = props;
+  
+  const { handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
   let buttons = (
-    <Button style={{ minWidth: 100 }} variant='raised' onClick={primaryClicked} color="primary">
+    <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="error">
+      {primaryIcon}
       {primaryText}
     </Button>
   );
   if (secondaryText) {
     buttons = (
       <React.Fragment>
-        <Button style={{ minWidth: 100 }} variant='raised' onClick={primaryClicked} color="primary">
+        <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="primary">
+          {primaryIcon}
           {primaryText}
         </Button>
-        <Button style={{ minWidth: 100 }} variant='raised' onClick={secondaryClicked} color="secondary">
+        <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={secondaryClicked} color="secondary">
+          {secondaryIcon}
           {secondaryText}
         </Button>
       </React.Fragment>
@@ -42,15 +46,17 @@ const dialog = (props) => {
         <DialogTitle align='center' id="alert-dialog-slide-title">
           {title}
         </DialogTitle>
-        <DialogContent >
+        <DialogContent style={{ padding: '24px 24px 24px' }} >
           {children}
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
-          {buttons}
+          {showButtons ? buttons : null}
         </DialogActions>
       </Dialog>
     </div>
   );
 }
-
+dialog.defaultProps = {
+  showButtons: true,
+}
 export default dialog;

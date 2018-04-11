@@ -175,19 +175,12 @@ import withStyles from 'material-ui/styles/withStyles';
 import constants from '../../../store/sagas/constants';
 const styles = theme => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    width: '100%',
-    alignItems: 'center'
+    flexGrow: 1
   },
-  table:{
-    display:'flex'
-  }
 })
 const Poojas= ({classes})=>(
   <div className={classes.root}>
-    <DataGridWrapper className={classes.table} collection={constants.Poojas}/>
+    <DataGridWrapper collection={constants.Poojas}/>
   </div>
 )
 export default withStyles(styles)(Poojas);

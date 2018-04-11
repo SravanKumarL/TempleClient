@@ -1,4 +1,4 @@
-const {Constants}=require('../constants/constants');
+const { Constants } = require('../constants/constants');
 const Pooja = require('../models/poojaDetails');
 const _ = require('lodash');
 const populateModel = function (model, reqBody, id) {
@@ -26,11 +26,11 @@ exports.entity = function (collection) {
             let newId;
             model.count({}, function (error, count) {
                 if (error)
-                    res.json({ error });
+                    return res.json({ error });
                 newId = count + 1;
             }).then((resolve, reject) => {
                 if (reject)
-                    res.json({ error: reject });
+                    return res.json({ error: reject });
                 let entity = populateModel(model, req.body, newId);
                 if (entity === null) {
                     let modelProps = getModelProps(model);
@@ -40,7 +40,7 @@ exports.entity = function (collection) {
                 entity.save(function (error) {
                     if (error) { return res.json({ error }); }
                     //Respond to request indicating the pooja was created
-                    res.json({ message: `${collection.slice(0, collection.length - 1)} was added successfully` });
+                    return res.json({ message: `${collection.slice(0, collection.length - 1)} was added successfully` });
                 });
             });
         },
@@ -48,10 +48,10 @@ exports.entity = function (collection) {
             let modelProps = getModelProps(model);
             model.find().exec((error, data) => {
                 if (error) {
-                    res.json({ error });
+                    return res.json({ error });
                 }
                 let modData = data.map(d => _.pick(d, modelProps));
-                res.send(modData);
+                return res.send(modData);
             });
         },
         delete: function (req, res, next) {
@@ -64,19 +64,19 @@ exports.entity = function (collection) {
             // });
             model.remove({ id: req.params.id }, function (error) {
                 if (error)
-                    res.json({ error });
+                    return res.json({ error });
             });
-            res.json({ message: `${collection.slice(0, collection.length - 1)} was deleted successfully` });
+            return res.json({ message: `${collection.slice(0, collection.length - 1)} was deleted successfully` });
         },
         update: function (req, res, next) {
             model.findOneAndUpdate({ id: req.params.id }, req.body, function (error) {
                 if (error)
-                    res.json({ error });
+                    return res.json({ error });
             });
-            res.json({ message: `${collection.slice(0, collection.length - 1)} was updated successfully` });
+            return res.json({ message: `${collection.slice(0, collection.length - 1)} was updated successfully` });
         },
         schema: function (req, res, next) {
-            res.status(200).send(getModelProps(model).filter(prop => prop !== 'id'));
+            return res.status(200).send(getModelProps(model).filter(prop => prop !== 'id'));
         }
     }
 }

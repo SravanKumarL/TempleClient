@@ -1,9 +1,7 @@
 import React from 'react';
 
 import Button from 'material-ui/Button';
-import Pageview from 'material-ui-icons/Pageview';
-import Restore from 'material-ui-icons/Restore';
-import classNames from 'classnames';
+
 import { withStyles } from 'material-ui/styles';
 
 import Field from '../UI/Field/Field';
@@ -15,7 +13,7 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: '90%',
-    height: '82vh',
+    // height: '82vh',
     paddingTop: '10px',
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -37,16 +35,11 @@ const styles = theme => ({
     paddingTop: 20,
     paddingBottom: 10,
   },
-  leftIcon: {
-    marginRight: theme.spacing.unit,
-  },
-  iconSmall: {
-    fontSize: 20,
-  },
+
 });
 
 const transactionForm = (props) => {
-  const { classes } = props;
+  const { classes, primaryText, secondaryText, primaryIcon, secondaryIcon, showLabels, showButtons } = props;
   const formElementsArray = [];
   for (let key in props.transactionForm) {
     formElementsArray.push({
@@ -58,6 +51,7 @@ const transactionForm = (props) => {
     <form className={classes.form} >
       {formElementsArray.map(formElement => (
         <Field
+          showLabels={showLabels ? showLabels : false}
           disabled={formElement.config.disabled}
           key={formElement.id}
           label={formElement.config.elementConfig.placeholder}
@@ -71,16 +65,17 @@ const transactionForm = (props) => {
           changed={(event) => props.fieldChanged(event, formElement.id)}
         />
       ))}
-      <div className={classes.buttonsContainer}>
-        <Button onClick={props.preview} color='primary' variant='raised' size='large' className={classes.button}>
-          <Pageview className={classNames(classes.leftIcon, classes.iconSmall)} />
-          Preview
-        </Button>
-        <Button onClick={props.reset} color='secondary' variant='raised' size='large' className={classes.button}>
-          <Restore className={classNames(classes.leftIcon, classes.iconSmall)} />
-          Reset
-        </Button>
-      </div>
+      {showButtons ?
+        <div className={classes.buttonsContainer}>
+          <Button onClick={props.primaryClicked} color='primary' variant='raised' size='large' className={classes.button}>
+            {primaryIcon}
+            {primaryText}
+          </Button>
+          <Button onClick={props.secondaryClicked} color='secondary' variant='raised' size='large' className={classes.button}>
+            {secondaryIcon}
+            {secondaryText}
+          </Button>
+        </div> : null}
     </form>
   );
 }
