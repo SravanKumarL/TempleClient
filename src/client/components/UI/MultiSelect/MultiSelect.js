@@ -4,7 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import Input from 'material-ui/Input';
 import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
-
+import _ from 'lodash'
 const suggestions = [
   { label: 'Ashwini' },
   { label: 'Bharani' },
@@ -205,23 +205,44 @@ const styles = theme => ({
 //   return element;
 // }
 class multiSelect extends React.Component {
-  state={
-    value:''
+  state = {
+    values: '',
+    valueObjs: [],
+    nextId: 0
   }
-  onChange=(value)=>{
-    this.setState((prevState)=>{
-      if(value==='' && prevState.value!=='' && this.props.type==='multi')
-      {
-        value=prevState.value;
-        value+=`,${value.split(',')[0]}`;
+  onChange = (selValue) => {
+    this.setState((prevState) => {
+      let { valueObjs, nextId, values } = prevState;
+      if (this.props.type === 'multi') {
+        const selValues = selValue.split(',');
+        const prevValues = valueObjs.map(vo => vo.value);
+        nextId++;
+        const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
+        if (selValue !== '' || _.isEqual(prevValues, selValues)) {
+          valueObjs.push({ value: selValue, id: nextId });
+        }
+        else if (unselected !== '') {
+          valueObjs.push({ value: unselected, id: nextId });
+        }
+        values = valueObjs.map(x => x.value).join(',');
       }
-      this.props.changed(value);
-      return {value};
+      else {
+        values = selValue;
+      }
+      this.props.changed(values);
+      return { values, valueObjs, nextId };
     });
+  }
+  onRemove = (valueObj) => {
+    const valueObjs = this.state.valueObjs.filter(x => x.id !== valueObj.id);
+    this.setState({ valueObjs, values: valueObjs.map(vo => vo.value).join(',') });
+  }
+  onClearAll = () => {
+    this.setState({ nextId: 0, values: '', valueObjs: [] });
   }
   render() {
     const { classes, label, type } = this.props;
-    const {value}=this.state
+    const { values, valueObjs } = this.state
     let element = (
       <Input
         fullWidth
@@ -229,9 +250,11 @@ class multiSelect extends React.Component {
         inputComponent={SelectWrapped}
         inputProps={{
           classes,
-          value: value,
+          value: values,
           onChange: this.onChange,
           placeholder: label,
+          onClearAll: this.onClearAll,
+          closeOnSelect: true,
           instanceId: 'react-select-single',
           id: 'react-select-single',
           name: 'react-select-single',
@@ -249,17 +272,17 @@ class multiSelect extends React.Component {
         disableUnderline
         fullWidth
         placeholder={label}
-        inputComponent={SelectWrapped}
+        inputComponent={(props) => (<SelectWrapped removeChip={this.onRemove} {...props} />)}
         inputProps={{
           classes,
-          value: value,
+          value: valueObjs,
           multi: true,
           onChange: this.onChange,
+          onClearAll: this.onClearAll,
           placeholder: label,
           instanceId: 'react-select-chip',
           id: 'react-select-chip',
           name: 'react-select-chip',
-          simpleValue: true,
           options: suggestions,
         }}
       />
