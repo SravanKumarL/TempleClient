@@ -19,7 +19,7 @@ router(app);
 
 
 //Server Setup
-const port = 7000;
+const port = process.env.PORT ||  7000;
 const server = http.createServer(app);
 server.listen(port);
 console.log('Server listening on port:', port);
