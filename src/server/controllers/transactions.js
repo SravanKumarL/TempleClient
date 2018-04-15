@@ -7,7 +7,7 @@ exports.addTransaction = function (req, res, next) {
     id,
     bankName,
     chequeNo,
-    createdDate,
+    // createdDate,
     phoneNumber,
     names,
     gothram,
@@ -18,6 +18,7 @@ exports.addTransaction = function (req, res, next) {
     createdBy,
     others,
   } = req.body;
+  const createdDate= new Date().toDateString();
   let { selectedDates } = req.body;
   if (selectedDates && typeof selectedDates === "string")
     selectedDates = JSON.parse(selectedDates);

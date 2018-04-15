@@ -21,6 +21,9 @@ const styles = theme => ({
     maxWidth: 300,
     marginRight: 'auto',
     marginLeft: 'auto'
+  },
+  selectRoot: {
+    maxWidth: 140,
   }
 });
 
@@ -59,7 +62,7 @@ class MultipleSelect extends React.Component {
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="select-multiple-checkbox">{label}</InputLabel>
-          <Select
+          <Select classes={{root:classes.selectRoot}}
             multiple
             value={selItems}
             onChange={this.handleChange}
