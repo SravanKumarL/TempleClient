@@ -2,7 +2,8 @@ import { put } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 
 import * as actions from '../actions';
-import axios from 'axios';
+import axios from '../../axios/transactions';
+
 
 export function* signInSaga(action) {
   try {
@@ -14,7 +15,7 @@ export function* signInSaga(action) {
       role: action.role,
     };
 
-    const response = yield axios.post('http://localhost:7000/signin', authData);
+    const response = yield axios.post('/signin', authData);
     if (response.data.role !== action.role) {
       return yield put(actions.authFail({ error: 'Please check the role you selected for signin' }));
     }
