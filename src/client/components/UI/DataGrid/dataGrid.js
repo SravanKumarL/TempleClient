@@ -290,10 +290,8 @@ class DataGrid extends React.PureComponent {
     let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
-      <div style={{position:'relative',display:'flex',flexDirection:'column'}}>
-        <div style={{zIndex:1, maxWidth:128,maxHeight:36,position:'absolute',marginLeft:690,marginTop:14}}>
-          <Button onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
-        </div>
+      <div style={{display:'flex',flexDirection:'column'}}>
+        <Button style={{zIndex:1, marginRight:'7%',marginTop:'3%',marginBottom:'-3%', alignSelf:'flex-end'}} onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
         <Paper>
           <Grid
             rows={rows}

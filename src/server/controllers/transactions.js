@@ -18,7 +18,7 @@ exports.addTransaction = function (req, res, next) {
     createdBy,
     others,
   } = req.body;
-  const createdDate= new Date().toDateString();
+  const createdDate = new Date().toDateString();
   let { selectedDates } = req.body;
   if (selectedDates && typeof selectedDates === "string")
     selectedDates = JSON.parse(selectedDates);
@@ -75,6 +75,14 @@ exports.searchTransactions = function (req, res, next) {
     const regex = new RegExp(".*" + searchValue.toLowerCase() + ".*", 'i');
     searchObject = { names: { $regex: regex } };
   }
+  // const numericalSearchVal = Number(searchValue);
+  // if (isNaN(numericalSearchVal)) {
+  //   // const regex = new RegExp(".*" + searchValue.toLowerCase() + ".*", 'i');
+  //   searchObject = { names: { $regex: `/(?i)${searchValue}/` } };
+  // }
+  // else {
+  //   searchObject = { phoneNumber: { $regex: `/${numericalSearchVal}/` } };
+  // }
   Transaction.find(searchObject, (err, transactions) => {
     if (err) {
       res.status(500).send(err);
