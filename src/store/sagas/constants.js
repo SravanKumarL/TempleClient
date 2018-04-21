@@ -12,7 +12,7 @@ const constants={
     Management:'Management',
     Users:'users'
 }
-export const ManagementReport=['pooja','amount'];
+export const ManagementReport = ['pooja','total poojas','total amount'];
 export const PoojaReport=['names','gothram','nakshatram'];
 export const AccountReport=['names','id','pooja','amount','chequeNo','bankName','createdDate'];
 export default constants;

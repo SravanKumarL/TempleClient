@@ -15,9 +15,9 @@ import Dialog, {
   DialogContentText,
   DialogTitle,
 } from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input';
+import AddIcon from 'material-ui-icons/Add';
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import { TableCell } from 'material-ui/Table';
@@ -29,6 +29,7 @@ import CancelIcon from 'material-ui-icons/Cancel';
 import { withStyles } from 'material-ui/styles';
 import constants from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
+import { Typography, Button } from 'material-ui';
 
 const styles = theme => ({
   lookupEditCell: {
@@ -44,15 +45,14 @@ const styles = theme => ({
   },
 });
 
-const AddButton = ({ onExecute }) => (
-  <div style={{ textAlign: 'center' }}>
-    <Button
-      color="primary"
-      onClick={onExecute}
-      title="Create new row"
-    >
-      New
-    </Button>
+const AddButton = ({ onExecute, collection }) => (
+  <div style={{width:120}}>
+    <IconButton onClick={onExecute} title="Create new row">
+      <AddIcon />
+      <Typography variant="body2" style={{marginLeft:10}}>
+        Add a new {collection.slice(0,collection.length-1)}
+      </Typography>
+    </IconButton>
   </div>
 );
 
@@ -88,11 +88,11 @@ const commandComponents = {
   cancel: CancelButton,
 };
 
-const Command = ({ id, onExecute }) => {
+const Command = ({ id, onExecute,collection }) => {
   const CommandButton = commandComponents[id];
   return (
     <CommandButton
-      onExecute={onExecute}
+      onExecute={onExecute} collection={collection}
     />
   );
 };
@@ -156,6 +156,7 @@ class DataGrid extends React.PureComponent {
       // tableColumnExtensions: [
       //   { columnName: 'amount', align: 'right' },
       // ],
+      displayFilter:false,
       prevRows: [],
       rows: [],
       snackBarOpen: false,
@@ -242,6 +243,9 @@ class DataGrid extends React.PureComponent {
     };
     this.onSnackBarClose = () => this.setState({ snackBarOpen: false });
   }
+  onFilterClick=()=>{
+    this.setState((prevState)=>({displayFilter:!prevState.displayFilter}));
+  }
   componentDidMount() {
     this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection, this.props.searchCriteria));
     this.setAndCommitTrans(() => this.props.fetchData(this.props.collection, this.props.searchCriteria));
@@ -280,11 +284,14 @@ class DataGrid extends React.PureComponent {
       pageSizes,
       columnOrder,
       isGrouped,
-      transaction
+      transaction,
+      displayFilter
     } = this.state;
     let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
+      <div style={{display:'flex',flexDirection:'column'}}>
+        <Button style={{zIndex:1, marginRight:'7%',marginTop:'3%',marginBottom:'-3%', alignSelf:'flex-end'}} onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
         <Paper>
           <Grid
             rows={rows}
@@ -333,7 +340,7 @@ class DataGrid extends React.PureComponent {
             />
 
             <TableHeaderRow showSortingControls />
-            {!readOnly && <TableFilterRow />}
+            {displayFilter && <TableFilterRow />}
             {isGrouped ? <TableGroupRow /> :
               (!readOnly && <TableEditRow
                 cellComponent={EditCell} row={EditRow}
@@ -344,7 +351,7 @@ class DataGrid extends React.PureComponent {
                 showAddCommand={!addedRows.length}
                 showEditCommand
                 showDeleteCommand
-                commandComponent={Command}
+                commandComponent={(props)=>(<Command collection={this.props.collection} {...props}/>)}
               />}
             {!readOnly && <TableColumnVisibility />}
             <PagingPanel
@@ -386,6 +393,7 @@ class DataGrid extends React.PureComponent {
           <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
             onSnackBarClose={this.onSnackBarClose} />
         </Paper>
+      </div>
     );
   }
 }
