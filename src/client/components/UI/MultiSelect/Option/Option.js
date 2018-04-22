@@ -4,7 +4,10 @@ import { MenuItem } from 'material-ui/Menu';
 
 class Option extends React.Component{
   handleClick = event => {
-    this.props.onOptionSelect(this.props.option, event);
+    if(!this.props.onOptionSelect)
+      this.props.onSelect(this.props.option, event);
+    else
+      this.props.onOptionSelect(this.props.option, event);
   };
   render() {
     const { children, isFocused, isSelected, onFocus } = this.props;
