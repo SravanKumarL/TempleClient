@@ -15,7 +15,7 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     marginBottom: '50px',
-    backgroundColor: theme.palette.background.default,
+    // backgroundColor: theme.palette.background.default,
   },
   textFieldRoot: {
     margin: 'auto',
@@ -28,7 +28,7 @@ const styles = theme => ({
   },
   textFieldInput: {
     borderRadius: 4,
-    backgroundColor: theme.palette.common.white,
+    // backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',

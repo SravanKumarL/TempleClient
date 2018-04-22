@@ -2,18 +2,33 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/Progress/CircularProgress';
 import Typography from 'material-ui/Typography';
-// import Carousel from 're-carousel';
 
 import Login from './Login/Login';
-import Aux from '../../hoc/Wrapper/Wrapper';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
-// import IndicatorDots from '../../components/UI/IndicatorDots/IndicatorDots';
-// import Buttons from '../../components/UI/CarouselButtons/CarouselButtons';
 import * as actions from '../../../store/actions';
-// import Saraswati from '../../../assets/Saraswathi.jpg';
-// import Durga from '../../../assets/Durga.jpg';
-import classes from './Authentication.css';
+import { withStyles } from 'material-ui/styles';
 
+
+const styles = theme => ({
+  Authentication: {
+    display: 'flex',
+    height: '100vh',
+    flexGrow: 1,
+  },
+  LeftPane: {
+    display: 'flex',
+    flexGrow: 3,
+    background: 'linear-gradient(to bottom, purple 25%, black 100%);'
+  },
+  RightPane: {
+    display: 'flex',
+    flexGrow: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  }
+});
 class Authentication extends Component {
   state = {
     open: false,
@@ -21,23 +36,16 @@ class Authentication extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error) {
-      this.setState({
-        open: true,
-      });
+      this.setState({ open: true, });
     }
   }
 
-  submitFormHandler = (username, password, role) => {
-    this.props.onAuthSubmit(username, password, role)
-  }
+  submitFormHandler = (username, password, role) => { this.props.onAuthSubmit(username, password, role); }
 
-  closeHandler = () => {
-    this.setState({
-      open: false,
-    });
-  }
+  closeHandler = () => { this.setState({ open: false }); }
 
   render() {
+    const { classes } = this.props;
     let loading = null;
     if (this.props.loading) {
       loading = (
@@ -60,26 +68,15 @@ class Authentication extends Component {
     }
 
     return (
-      <Aux>
-        <div className={classes.Authentication}>
-          <div className={classes.LeftPane}>
-            {/* <Carousel loop auto widgets={[IndicatorDots, Buttons]}>
-              <div style={{ height: '100%' }}>
-                <img src={Saraswati} alt='Saraswati Alankaram' />
-              </div>
-              <div style={{ height: '100%' }}>
-                <img src={Durga} alt='Durga' />
-              </div>
-              <div style={{ backgroundColor: 'orchid', height: '100%' }}>Frame 3</div>
-            </Carousel> */}
-          </div>
-          <div className={classes.RightPane}>
-            <Login onSubmit={this.submitFormHandler} />
-            {loading}
-          </div>
-          {errorMessage}
+      <div className={classes.Authentication}>
+        <div className={classes.LeftPane}>
         </div>
-      </Aux>
+        <div className={classes.RightPane}>
+          <Login onSubmit={this.submitFormHandler} />
+          {loading}
+        </div>
+        {errorMessage}
+      </div>
     );
   }
 }
@@ -97,4 +94,4 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Authentication);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Authentication));
