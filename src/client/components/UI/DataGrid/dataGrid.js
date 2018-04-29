@@ -29,7 +29,7 @@ import CancelIcon from 'material-ui-icons/Cancel';
 import { withStyles } from 'material-ui/styles';
 import constants from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
-import { Typography, Button } from 'material-ui';
+import { Typography, Button, TextField } from 'material-ui';
 
 const styles = theme => ({
   lookupEditCell: {
@@ -46,11 +46,11 @@ const styles = theme => ({
 });
 
 const AddButton = ({ onExecute, collection }) => (
-  <div style={{width:120}}>
+  <div style={{ width: 120 }}>
     <IconButton onClick={onExecute} title="Create new row">
       <AddIcon />
-      <Typography variant="body2" style={{marginLeft:10}}>
-        Add a new {collection.slice(0,collection.length-1)}
+      <Typography variant="body2" style={{ marginLeft: 10 }}>
+        Add a new {collection.slice(0, collection.length - 1)}
       </Typography>
     </IconButton>
   </div>
@@ -88,11 +88,11 @@ const commandComponents = {
   cancel: CancelButton,
 };
 
-const Command = ({ id, onExecute,collection }) => {
+const Command = ({ id, onExecute, collection,self }) => {
   const CommandButton = commandComponents[id];
   return (
     <CommandButton
-      onExecute={onExecute} collection={collection}
+      onExecute={onExecute} collection={collection} self={self}
     />
   );
 };
@@ -119,8 +119,22 @@ const LookupEditCellBase = ({
     </TableCell>
   );
 export const LookupEditCell = withStyles(styles, { name: 'DataGrid' })(LookupEditCellBase);
+const onPasswordChange = (onValueChange) => ((e) => {
+  onValueChange(e.target.value);
+});
 
+const PasswordCellBase = ({ value, onValueChange, classes }) => (
+  <TableCell>
+    <TextField type="password" autoComplete="current-password" margin="normal" value={value} onChange={onPasswordChange(onValueChange)} />
+  </TableCell>
+  //className={classes.password}
+);
+const PasswordCell = withStyles(styles, { name: 'DataGrid' })(PasswordCellBase);
 const Cell = (props) => {
+  if (props.column.name == "password")
+    return (<TableCell>
+      <Input type="password" disabled disableUnderline {...props} />
+    </TableCell>);
   // if (props.column.name === 'discount') {
   //   return <ProgressBarCell {...props} />;
   // }
@@ -135,6 +149,10 @@ const EditCell = (props) => {
   // if (availableColumnValues) {
   //   return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
   // }
+  if (props.column.name === 'password') {
+      // props = { ...props, value: '' };
+    return <PasswordCell {...props} />
+  }
   return <TableEditRow.Cell {...props} />;
 };
 const EditRow = (props) => {
@@ -156,7 +174,7 @@ class DataGrid extends React.PureComponent {
       // tableColumnExtensions: [
       //   { columnName: 'amount', align: 'right' },
       // ],
-      displayFilter:false,
+      displayFilter: false,
       prevRows: [],
       rows: [],
       snackBarOpen: false,
@@ -199,6 +217,11 @@ class DataGrid extends React.PureComponent {
     this.changeCurrentPage = currentPage => this.setState({ currentPage });
     this.changePageSize = pageSize => this.setState({ pageSize });
     this.commitChanges = ({ added, changed, deleted }) => {
+      // if(Object.keys(changed).some(prop=>changed[prop]===''))
+      // {
+      //   this.setState({initialRender:true});
+      //   return; // To display snackbar
+      // }
       let { rows } = this.state;
       this.setState({ prevRows: rows });
       if (added) {
@@ -223,7 +246,7 @@ class DataGrid extends React.PureComponent {
         rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
         this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
       }
-      this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
+      this.setState({ rows, deletingRows: deleted || this.state.deletingRows});/* initialRender:true  */
     };
     this.cancelDelete = () => this.setState({ deletingRows: [] });
     this.deleteRows = () => {
@@ -243,15 +266,16 @@ class DataGrid extends React.PureComponent {
     };
     this.onSnackBarClose = () => this.setState({ snackBarOpen: false });
   }
-  onFilterClick=()=>{
-    this.setState((prevState)=>({displayFilter:!prevState.displayFilter}));
+  onFilterClick = () => {
+    this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
   }
   componentDidMount() {
     this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection, this.props.searchCriteria));
     this.setAndCommitTrans(() => this.props.fetchData(this.props.collection, this.props.searchCriteria));
   }
   componentWillReceiveProps(nextProps) {
-    const { rows, error, message } = nextProps;
+    let { rows, error, message } = nextProps;
+    rows = rows.map((row, index) => ({ ...row, id: index }));
     if (error === '')
       this.setState({ transaction: null });
     if (rows !== undefined)
@@ -290,110 +314,110 @@ class DataGrid extends React.PureComponent {
     let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
-      <div style={{display:'flex',flexDirection:'column'}}>
-        <Button style={{zIndex:1, marginRight:'7%',marginTop:'3%',marginBottom:'-3%', alignSelf:'flex-end'}} onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
-        <Paper>
-          <Grid
-            rows={rows}
-            columns={columns}
-            getRowId={getRowId}
-          >
-            {!readOnly && <FilteringState />}
-            {!readOnly && <SelectionState />}
-            <SortingState
-              sorting={sorting}
-              onSortingChange={this.changeSorting}
-            />
-            <GroupingState onGroupingChange={this.handleGroupingChange} />
-            <PagingState
-              currentPage={currentPage}
-              onCurrentPageChange={this.changeCurrentPage}
-              pageSize={pageSize}
-              onPageSizeChange={this.changePageSize}
-            />
-            {!readOnly && <IntegratedFiltering />}
-            {!readOnly && <IntegratedSelection />}
-            <IntegratedGrouping />
-            <IntegratedSorting />
-            <IntegratedPaging />
-            {!readOnly &&
-              <EditingState
-                editingRowIds={editingRowIds}
-                onEditingRowIdsChange={this.changeEditingRowIds}
-                rowChanges={rowChanges}
-                onRowChangesChange={this.changeRowChanges}
-                addedRows={addedRows}
-                onAddedRowsChange={this.changeAddedRows}
-                onCommitChanges={this.commitChanges}
-              />}
-            <DragDropProvider />
-            <Table cellComponent={Cell} rowComponent={Row} />
-            {/* <Table
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Button style={{ zIndex: 1, marginRight: '7%', marginTop: '3%', marginBottom: '-3%', alignSelf: 'flex-end' }} onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
+          <Paper>
+            <Grid
+              rows={rows}
+              columns={columns}
+              getRowId={getRowId}
+            >
+              {!readOnly && <FilteringState />}
+              {!readOnly && <SelectionState />}
+              <SortingState
+                sorting={sorting}
+                onSortingChange={this.changeSorting}
+              />
+              <GroupingState onGroupingChange={this.handleGroupingChange} />
+              <PagingState
+                currentPage={currentPage}
+                onCurrentPageChange={this.changeCurrentPage}
+                pageSize={pageSize}
+                onPageSizeChange={this.changePageSize}
+              />
+              {!readOnly && <IntegratedFiltering />}
+              {!readOnly && <IntegratedSelection />}
+              <IntegratedGrouping />
+              <IntegratedSorting />
+              <IntegratedPaging />
+              {!readOnly &&
+                <EditingState
+                  editingRowIds={editingRowIds}
+                  onEditingRowIdsChange={this.changeEditingRowIds}
+                  rowChanges={rowChanges}
+                  onRowChangesChange={this.changeRowChanges}
+                  addedRows={addedRows}
+                  onAddedRowsChange={this.changeAddedRows}
+                  onCommitChanges={this.commitChanges}
+                />}
+              <DragDropProvider />
+              <Table cellComponent={Cell} rowComponent={Row} />
+              {/* <Table
             columnExtensions={tableColumnExtensions}
             cellComponent={Cell}
             rowComponent={Row}
           /> */}
-            {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />}
-            <TableColumnReordering
-              order={columnOrder}
-              onOrderChange={this.changeColumnOrder}
-            />
+              {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />}
+              <TableColumnReordering
+                order={columnOrder}
+                onOrderChange={this.changeColumnOrder}
+              />
 
-            <TableHeaderRow showSortingControls />
-            {displayFilter && <TableFilterRow />}
-            {isGrouped ? <TableGroupRow /> :
-              (!readOnly && <TableEditRow
-                cellComponent={EditCell} row={EditRow}
-              />)}
-            {(!isGrouped && !readOnly) &&
-              <TableEditColumn
-                width={120}
-                showAddCommand={!addedRows.length}
-                showEditCommand
-                showDeleteCommand
-                commandComponent={(props)=>(<Command collection={this.props.collection} {...props}/>)}
-              />}
-            {!readOnly && <TableColumnVisibility />}
-            <PagingPanel
-              pageSizes={pageSizes}
-            />
-            <Toolbar />
-            {!readOnly && <GroupingPanel showSortingControls />}
-            {!readOnly && <ColumnChooser />}
-          </Grid>
-          {!readOnly && <Dialog
-            open={!!deletingRows.length}
-            onClose={this.cancelDelete}
-            classes={{ paper: classes.dialog }}
-          >
-            <DialogTitle>Delete Row</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                Are you sure to delete the following row?
+              <TableHeaderRow showSortingControls />
+              {displayFilter && <TableFilterRow />}
+              {isGrouped ? <TableGroupRow /> :
+                (!readOnly && <TableEditRow
+                  cellComponent={EditCell} row={EditRow}
+                />)}
+              {(!isGrouped && !readOnly) &&
+                <TableEditColumn
+                  width={120}
+                  showAddCommand={!addedRows.length}
+                  showEditCommand
+                  showDeleteCommand
+                  commandComponent={(props) => (<Command collection={this.props.collection} {...props}/>)}
+                />}
+              {!readOnly && <TableColumnVisibility />}
+              <PagingPanel
+                pageSizes={pageSizes}
+              />
+              <Toolbar />
+              {!readOnly && <GroupingPanel showSortingControls />}
+              {!readOnly && <ColumnChooser />}
+            </Grid>
+            {!readOnly && <Dialog
+              open={!!deletingRows.length}
+              onClose={this.cancelDelete}
+              classes={{ paper: classes.dialog }}
+            >
+              <DialogTitle>Delete Row</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure to delete the following row?
             </DialogContentText>
-              <Paper>
-                <Grid
-                  rows={rows.filter(row => deletingRows.indexOf(row.id) > -1)}
-                  columns={columns}
-                >
-                  <Table cellComponent={Cell} />
-                  {/* <Table
+                <Paper>
+                  <Grid
+                    rows={rows.filter(row => deletingRows.indexOf(row.id) > -1)}
+                    columns={columns}
+                  >
+                    <Table cellComponent={Cell} />
+                    {/* <Table
                   columnExtensions={tableColumnExtensions}
                   cellComponent={Cell}
                 /> */}
-                  <TableHeaderRow />
-                </Grid>
-              </Paper>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.cancelDelete} color="primary">Cancel</Button>
-              <Button onClick={this.deleteRows} color="secondary">Delete</Button>
-            </DialogActions>
-          </Dialog>}
-          <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
-            onSnackBarClose={this.onSnackBarClose} />
-        </Paper>
-      </div>
+                    <TableHeaderRow />
+                  </Grid>
+                </Paper>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.cancelDelete} color="primary">Cancel</Button>
+                <Button onClick={this.deleteRows} color="secondary">Delete</Button>
+              </DialogActions>
+            </Dialog>}
+            <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
+              onSnackBarClose={this.onSnackBarClose} />
+          </Paper>
+        </div>
     );
   }
 }
