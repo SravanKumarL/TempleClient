@@ -88,11 +88,11 @@ const commandComponents = {
   cancel: CancelButton,
 };
 
-const Command = ({ id, onExecute, collection,self }) => {
+const Command = ({ id, onExecute, collection }) => {
   const CommandButton = commandComponents[id];
   return (
     <CommandButton
-      onExecute={onExecute} collection={collection} self={self}
+      onExecute={onExecute} collection={collection}
     />
   );
 };
