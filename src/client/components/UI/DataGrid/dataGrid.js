@@ -30,6 +30,7 @@ import { withStyles } from 'material-ui/styles';
 import constants from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
 import { Typography, Button, TextField } from 'material-ui';
+import PasswordCell from '../TextField/PasswordCell';
 
 const styles = theme => ({
   lookupEditCell: {
@@ -119,17 +120,6 @@ const LookupEditCellBase = ({
     </TableCell>
   );
 export const LookupEditCell = withStyles(styles, { name: 'DataGrid' })(LookupEditCellBase);
-const onPasswordChange = (onValueChange) => ((e) => {
-  onValueChange(e.target.value);
-});
-
-const PasswordCellBase = ({ value, onValueChange, classes }) => (
-  <TableCell>
-    <TextField type="password" autoComplete="current-password" margin="normal" value={value} onChange={onPasswordChange(onValueChange)} />
-  </TableCell>
-  //className={classes.password}
-);
-const PasswordCell = withStyles(styles, { name: 'DataGrid' })(PasswordCellBase);
 const Cell = (props) => {
   if (props.column.name == "password")
     return (<TableCell>
@@ -218,10 +208,9 @@ class DataGrid extends React.PureComponent {
     this.changePageSize = pageSize => this.setState({ pageSize });
     this.commitChanges = ({ added, changed, deleted }) => {
       // if(Object.keys(changed).some(prop=>changed[prop]===''))
-      // {
-      //   this.setState({initialRender:true});
       //   return; // To display snackbar
-      // }
+      if(Object.keys(changed).some(prop=>changed[prop]===undefined))
+        return; // To display snackbar
       let { rows } = this.state;
       this.setState({ prevRows: rows });
       if (added) {
@@ -246,7 +235,7 @@ class DataGrid extends React.PureComponent {
         rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
         this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
       }
-      this.setState({ rows, deletingRows: deleted || this.state.deletingRows});/* initialRender:true  */
+      this.setState({ rows, deletingRows: deleted || this.state.deletingRows});
     };
     this.cancelDelete = () => this.setState({ deletingRows: [] });
     this.deleteRows = () => {
