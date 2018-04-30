@@ -18,6 +18,8 @@ import Dialog, {
 import IconButton from 'material-ui/IconButton';
 import Input from 'material-ui/Input';
 import AddIcon from 'material-ui-icons/Add';
+import PrintIcon from 'material-ui-icons/Print'
+import FilterIcon from 'material-ui-icons/FilterList'
 import Select from 'material-ui/Select';
 import { MenuItem } from 'material-ui/Menu';
 import { TableCell } from 'material-ui/Table';
@@ -31,6 +33,7 @@ import constants from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
 import { Typography, Button, TextField } from 'material-ui';
 import PasswordCell from '../TextField/PasswordCell';
+import phe from 'print-html-element';
 
 const styles = theme => ({
   lookupEditCell: {
@@ -258,6 +261,9 @@ class DataGrid extends React.PureComponent {
   onFilterClick = () => {
     this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
   }
+  onPrintClicked=()=>{
+    phe.printElement(document.getElementById('datagridPaper'));
+  }
   componentDidMount() {
     this.setAndCommitTrans(() => this.props.fetchSchema(this.props.collection, this.props.searchCriteria));
     this.setAndCommitTrans(() => this.props.fetchData(this.props.collection, this.props.searchCriteria));
@@ -303,9 +309,14 @@ class DataGrid extends React.PureComponent {
     let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Button style={{ zIndex: 1, marginRight: '7%', marginTop: '3%', marginBottom: '-3%', alignSelf: 'flex-end' }} onClick={this.onFilterClick}>{displayFilter && 'Hide'} Filter</Button>
-          <Paper>
+        <div style={{ position:'relative' }}>
+          <Button style={{ zIndex: 1, position:'absolute', marginLeft:`${(displayFilter? (84-2):84)}%`,marginTop:'1.2%' }} onClick={this.onFilterClick}>
+           <FilterIcon/> {displayFilter && 'Hide'} Filter
+          </Button>
+          <Button style={{ zIndex: 1, position:'absolute',marginLeft:`${(displayFilter? (70-2):70)}%`,marginTop:'1.2%' }} onClick={this.onPrintClicked}>
+            <PrintIcon/> Print {this.props.collection}
+          </Button>
+          <Paper id="datagridPaper">
             <Grid
               rows={rows}
               columns={columns}
