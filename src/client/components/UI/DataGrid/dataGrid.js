@@ -101,6 +101,9 @@ const Command = ({ id, onExecute, collection }) => {
   );
 };
 
+const onLookupSelected = (onValueChange) => ((event) => {
+  onValueChange(event.target.value);
+});
 const LookupEditCellBase = ({
   availableColumnValues, value, onValueChange, classes,
 }) => (
@@ -109,7 +112,7 @@ const LookupEditCellBase = ({
     >
       <Select
         value={value}
-        onChange={event => onValueChange(event.target.value)}
+        onChange={onLookupSelected(onValueChange)}
         input={
           <Input
             classes={{ root: classes.inputRoot }}
@@ -124,10 +127,12 @@ const LookupEditCellBase = ({
   );
 export const LookupEditCell = withStyles(styles, { name: 'DataGrid' })(LookupEditCellBase);
 const Cell = (props) => {
-  if (props.column.name == "password")
+  if (props.column.name == "password") {
+    const { tableRow, tableColumn, ...rest } = props; // Shows a warning if passed as is
     return (<TableCell>
-      <Input type="password" disabled disableUnderline {...props} />
+      <Input type="password" disabled disableUnderline {...rest} />
     </TableCell>);
+  }
   // if (props.column.name === 'discount') {
   //   return <ProgressBarCell {...props} />;
   // }
@@ -143,10 +148,13 @@ const EditCell = (props) => {
   //   return <LookupEditCell {...props} availableColumnValues={availableColumnValues} />;
   // }
   if (props.column.name === 'password') {
-      // props = { ...props, value: '' };
+    // props = { ...props, value: '' };
     return <PasswordCell {...props} />
   }
-  return <TableEditRow.Cell {...props} />;
+  else if (props.column.name === 'role') {
+    return <LookupEditCell availableColumnValues={['user', 'admin']} {...props} />
+  }
+  return <TableEditRow.Cell {...props} editingEnabled={props.column.name !== 'username' || props.tableRow.type === "added"} />;
 };
 const EditRow = (props) => {
   return <TableEditRow.Row {...props} key={props.row.id} />
@@ -196,27 +204,21 @@ class DataGrid extends React.PureComponent {
     }
     this.changeSorting = sorting => this.setState({ sorting });
     this.changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
-    // this.changeAddedRows = addedRows => this.setState({
-    //   addedRows: addedRows.map(row => (Object.keys(row).length ? row : {
-    //     amount: 0,
-    //     discount: 0,
-    //     saleDate: new Date().toISOString().split('T')[0],
-    //     product: availableValues.product[0],
-    //     region: availableValues.region[0],
-    //     customer: availableValues.customer[0],
-    //   })),
-    // });
+    this.changeAddedRows = addedRows => {
+      this.setState({
+        addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: 'user' } : {})))
+      });
+    }
     this.changeRowChanges = rowChanges => this.setState({ rowChanges });
     this.changeCurrentPage = currentPage => this.setState({ currentPage });
     this.changePageSize = pageSize => this.setState({ pageSize });
-    this.commitChanges = ({ added, changed, deleted }) => {
+    this.commitChanges = (props) => {
+      const { added, changed, deleted } = props;
       // if(Object.keys(changed).some(prop=>changed[prop]===''))
       //   return; // To display snackbar
-      if(Object.keys(changed).some(prop=>changed[prop]===undefined))
-        return; // To display snackbar
       let { rows } = this.state;
       this.setState({ prevRows: rows });
-      if (added) {
+      if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || (added[0].username && added[0].password))) {
         const modRows = rows.map(row => {
           row['id'] = row['id'] + 1;
           return row;
@@ -238,7 +240,7 @@ class DataGrid extends React.PureComponent {
         rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
         this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
       }
-      this.setState({ rows, deletingRows: deleted || this.state.deletingRows});
+      this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
     };
     this.cancelDelete = () => this.setState({ deletingRows: [] });
     this.deleteRows = () => {
@@ -250,7 +252,11 @@ class DataGrid extends React.PureComponent {
           rows.splice(index, 1);
         }
       });
-      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, this.state.deletingRows[0]));
+      let rowsToBeDeleted = this.state.deletingRows.slice()[0];
+      if (this.props.collection === constants.Users) {
+        rowsToBeDeleted = this.state.rows.filter(row => row.id === rowsToBeDeleted)[0].username;
+      }
+      this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, rowsToBeDeleted));
       this.setState({ rows, deletingRows: [] });
     };
     this.changeColumnOrder = (order) => {
@@ -261,7 +267,7 @@ class DataGrid extends React.PureComponent {
   onFilterClick = () => {
     this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
   }
-  onPrintClicked=()=>{
+  onPrintClicked = () => {
     phe.printElement(document.getElementById('datagridPaper'));
   }
   componentDidMount() {
@@ -273,9 +279,9 @@ class DataGrid extends React.PureComponent {
     rows = rows.map((row, index) => ({ ...row, id: index }));
     if (error === '')
       this.setState({ transaction: null });
-    if (rows !== undefined)
+    if (rows && message === '')
       this.setState({ rows, prevRows: rows });
-    else
+    else if (error !== '')
       this.setState({ rows: this.state.prevRows });
     if (message !== '' || error !== '')
       this.setState({ snackBarOpen: true });
@@ -309,12 +315,12 @@ class DataGrid extends React.PureComponent {
     let snackBarMsg = message !== '' ? message : error;
     return (
       loading ? <LoadingGrid columns={columns} /> :
-        <div style={{ position:'relative' }}>
-          <Button style={{ zIndex: 1, position:'absolute', marginLeft:`${(displayFilter? (84-2):84)}%`,marginTop:'1.2%' }} onClick={this.onFilterClick}>
-           <FilterIcon/> {displayFilter && 'Hide'} Filter
+        <div style={{ position: 'relative' }}>
+          <Button style={{ zIndex: 1, position: 'absolute', marginLeft: `${(displayFilter ? (84 - 2) : 84)}%`, marginTop: '1.2%' }} onClick={this.onFilterClick}>
+            <FilterIcon /> {displayFilter && 'Hide'} Filter
           </Button>
-          <Button style={{ zIndex: 1, position:'absolute',marginLeft:`${(displayFilter? (70-2):70)}%`,marginTop:'1.2%' }} onClick={this.onPrintClicked}>
-            <PrintIcon/> Print {this.props.collection}
+          <Button style={{ zIndex: 1, position: 'absolute', marginLeft: `${(displayFilter ? (70 - 2) : 70)}%`, marginTop: '1.2%' }} onClick={this.onPrintClicked}>
+            <PrintIcon /> Print {this.props.collection}
           </Button>
           <Paper id="datagridPaper">
             <Grid
@@ -336,7 +342,7 @@ class DataGrid extends React.PureComponent {
                 onPageSizeChange={this.changePageSize}
               />
               {!readOnly && <IntegratedFiltering />}
-              {!readOnly && <IntegratedSelection />}
+              {/* {!readOnly && <IntegratedSelection />} */}
               <IntegratedGrouping />
               <IntegratedSorting />
               <IntegratedPaging />
@@ -357,7 +363,7 @@ class DataGrid extends React.PureComponent {
             cellComponent={Cell}
             rowComponent={Row}
           /> */}
-              {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />}
+              {/* {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />} */}
               <TableColumnReordering
                 order={columnOrder}
                 onOrderChange={this.changeColumnOrder}
@@ -367,15 +373,15 @@ class DataGrid extends React.PureComponent {
               {displayFilter && <TableFilterRow />}
               {isGrouped ? <TableGroupRow /> :
                 (!readOnly && <TableEditRow
-                  cellComponent={EditCell} row={EditRow}
+                  cellComponent={EditCell} rowComponent={EditRow}
                 />)}
               {(!isGrouped && !readOnly) &&
                 <TableEditColumn
-                  width={120}
+                  width={180}
                   showAddCommand={!addedRows.length}
                   showEditCommand
                   showDeleteCommand
-                  commandComponent={(props) => (<Command collection={this.props.collection} {...props}/>)}
+                  commandComponent={(props) => (<Command collection={this.props.collection} {...props} />)}
                 />}
               {!readOnly && <TableColumnVisibility />}
               <PagingPanel
@@ -394,7 +400,7 @@ class DataGrid extends React.PureComponent {
               <DialogContent>
                 <DialogContentText>
                   Are you sure to delete the following row?
-            </DialogContentText>
+                </DialogContentText>
                 <Paper>
                   <Grid
                     rows={rows.filter(row => deletingRows.indexOf(row.id) > -1)}

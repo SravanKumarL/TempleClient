@@ -27,7 +27,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection);
                         break;
                     case constants.delete:
                         response = yield axios({
@@ -35,7 +35,7 @@ export function* handleTransaction(action) {
                             url: `/${collection}/${change}`,
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection);
                         break;
                     case constants.edit:
                         const entity = Object.getOwnPropertyNames(change)[0];
@@ -45,7 +45,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(Object.values(change)[0]),
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection);
                         break;
                     default:
                         break;
@@ -58,12 +58,12 @@ export function* handleTransaction(action) {
         }
     }
 }
-const handleResponse = (response, collection) => {
+const handleResponse = function*(response, collection){
     const { error, message } = response.data;
     if (error)
-        put(actions.onTransactionFailed(error,collection));
+        yield put(actions.onTransactionFailed(error,collection));
     else
-        put(actions.onTransactionCommitted(message,collection));
+        yield put(actions.onTransactionCommitted(message,collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
@@ -107,7 +107,7 @@ export function* handleFetchData(action) {
 export function* handleFetchSchema(action) {
     const { collection, searchCriteria } = action.payload;
     try {
-        yield put(actions.onFetchReq());
+        yield put(actions.onFetchReq(collection));
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
