@@ -1,12 +1,12 @@
 import * as actionTypes from './actionTypes';
 export const commitTransaction = (type, collection, change) => {
-    return { type: actionTypes.commitTransaction, payload: { type, change, collection } }
+    return { type: actionTypes.commitTransaction, payload: { type, change, collection, name: collection } }
 }
 export const fetchData = (collection, searchCriteria) => {
-    return { type: actionTypes.fetchData, payload: { collection, searchCriteria } };
+    return { type: actionTypes.fetchData, payload: { collection, searchCriteria, name: collection } };
 }
 export const fetchSchema = (collection, searchCriteria) => {
-    return { type: actionTypes.fetchSchema, payload: { collection, searchCriteria } };
+    return { type: actionTypes.fetchSchema, payload: { collection, searchCriteria, name: collection } };
 }
 export const onFetchReq = (name) => {
     return { type: actionTypes.onFetchReq, payload: { loading: true, rows: [], name } };
@@ -24,7 +24,7 @@ export const onTransactionFailed = (error, name) => {
     return { type: actionTypes.onTransactionFailed, payload: { error, name } };
 }
 export const onTransactionCommitted = (message, name) => {
-    return { type: actionTypes.onTransactionCommitted, payload: { message }, name };
+    return { type: actionTypes.onTransactionCommitted, payload: { message, name } };
 }
 export const onTransactionCommitReq = (name) => {
     return { type: actionTypes.onTransactionCommitReq, payload: { name } };
