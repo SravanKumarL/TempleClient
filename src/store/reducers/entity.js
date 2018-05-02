@@ -1,8 +1,10 @@
 import * as actionTypes from '../actions/actionTypes';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '' };
+import constants from '../sagas/constants';
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {} };
+const uniqueProp = collection => collection === constants.Users ? 'username' : 'id';
 export const entity = (name) => (state = { name, columns: [], rows: [], loading: false, error: '', message: '' }, action) => {
-    const {payload}=action;
-    if(payload && name!==payload.name) return state;
+    const { payload } = action;
+    if (payload && name !== payload.name) return state;
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:
@@ -12,7 +14,9 @@ export const entity = (name) => (state = { name, columns: [], rows: [], loading:
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false, name };
         case actionTypes.onTransactionCommitted:
-            return { ...state, message: action.payload.message, error: '', name }
+            const prop = uniqueProp(name);
+            const rows = state.rows.map(row => row[prop] === action.payload.change[prop] ? action.payload.change : row);
+            return { ...state, message: action.payload.message, error: '', name, rows }
         case actionTypes.onTransactionCommitReq:
             return { ...state, error: '', message: '', name }
         case actionTypes.onTransactionFailed:

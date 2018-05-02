@@ -238,7 +238,8 @@ class DataGrid extends React.PureComponent {
       }
       if (changed) {
         rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-        this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
+        const changedObj = rows.filter(row => row.id === Number(Object.getOwnPropertyNames(changed)[0]))[0];
+        this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed, changedObj));
       }
       this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
     };
@@ -275,11 +276,11 @@ class DataGrid extends React.PureComponent {
     this.setAndCommitTrans(() => this.props.fetchData(this.props.collection, this.props.searchCriteria));
   }
   componentWillReceiveProps(nextProps) {
-    let { rows, error, message } = nextProps;
+    let { rows, error, message, change } = nextProps;
     rows = rows.map((row, index) => ({ ...row, id: index }));
     if (error === '')
       this.setState({ transaction: null });
-    if (rows && message === '')
+    if (rows)
       this.setState({ rows, prevRows: rows });
     else if (error !== '')
       this.setState({ rows: this.state.prevRows });
