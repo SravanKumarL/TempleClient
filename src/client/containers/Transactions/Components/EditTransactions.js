@@ -2,11 +2,6 @@ import React from 'react';
 
 import withStyles from 'material-ui/styles/withStyles';
 import { TableCell, TableRow } from 'material-ui/Table';
-
-
-// import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-// import Paper from 'material-ui/Paper';
-// import { convertToStartCase } from '../../../shared/utility';
 import { updateObject } from '../../../shared/utility';
 
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
@@ -25,7 +20,6 @@ const styles = (theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    // margin: 'auto',
     width: '400px',
     alignItems: 'center',
     boxSizing: 'border-box',
@@ -34,68 +28,70 @@ const styles = (theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 });
-class EditTransactions extends React.Component {
-  state = {
-    editForm: {
-      phoneNumber: {
-        elementType: 'number',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Phone Number',
-        },
-        validation: {
-          required: true,
-        },
-        value: '',
-        disabled: false,
-        valid: false,
-        touched: false,
+
+const initialState = {
+  editForm: {
+    phoneNumber: {
+      elementType: 'number',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Phone Number',
       },
-      names: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Names',
-        },
-        validation: {
-          required: true,
-        },
-        value: '',
-        disabled: false,
-        valid: false,
-        touched: false,
+      validation: {
+        required: true,
       },
-      gothram: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Gothram',
-        },
-        validation: {
-          required: true,
-        },
-        value: '',
-        disabled: false,
-        valid: false,
-        touched: false,
-      },
-      nakshatram: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Nakshatram',
-        },
-        validation: {
-          required: true,
-        },
-        value: '',
-        disabled: false,
-        valid: false,
-        touched: false,
-      }
+      value: '',
+      disabled: false,
+      valid: false,
+      touched: false,
     },
-    transaction: null,
-  }
+    names: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Names',
+      },
+      validation: {
+        required: true,
+      },
+      value: '',
+      disabled: false,
+      valid: false,
+      touched: false,
+    },
+    gothram: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Gothram',
+      },
+      validation: {
+        required: true,
+      },
+      value: '',
+      disabled: false,
+      valid: false,
+      touched: false,
+    },
+    nakshatram: {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: 'Nakshatram',
+      },
+      validation: {
+        required: true,
+      },
+      value: '',
+      disabled: false,
+      valid: false,
+      touched: false,
+    }
+  },
+  transaction: null,
+};
+class EditTransactions extends React.Component {
+  state = { ...initialState };
   componentWillReceiveProps(nextProps) {
     const { transaction } = nextProps;
     if (transaction) {

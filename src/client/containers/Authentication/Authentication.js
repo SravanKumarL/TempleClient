@@ -1,13 +1,11 @@
 import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/Progress/CircularProgress';
 import Typography from 'material-ui/Typography';
 
 import Login from './Login/Login';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
-import * as actions from '../../../store/actions';
+import createContainer from '../../hoc/createContainer/createContainer';
 import { withStyles } from 'material-ui/styles';
-
 
 const styles = theme => ({
   Authentication: {
@@ -29,10 +27,10 @@ const styles = theme => ({
     backgroundColor: 'white',
   }
 });
+
+const initialState = { open: false };
 class Authentication extends Component {
-  state = {
-    open: false,
-  }
+  state = { ...initialState };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error) {
@@ -40,7 +38,7 @@ class Authentication extends Component {
     }
   }
 
-  submitFormHandler = (username, password, role) => { this.props.onAuthSubmit(username, password, role); }
+  submitFormHandler = (username, password, role) => { this.props.authUser(username, password, role); }
 
   closeHandler = () => { this.setState({ open: false }); }
 
@@ -80,6 +78,7 @@ class Authentication extends Component {
     );
   }
 }
+
 const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
@@ -87,11 +86,5 @@ const mapStateToProps = (state) => {
     loading: state.auth.loading,
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onAuthSubmit: (username, password, role) => {
-      dispatch(actions.authUser(username, password, role));
-    }
-  }
-}
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Authentication));
+
+export default withStyles(styles)(createContainer(Authentication, mapStateToProps));

@@ -1,18 +1,16 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
+import withStyles from 'material-ui/styles/withStyles';
+import isEmpty from 'lodash/isEmpty';
 import Pageview from 'material-ui-icons/Pageview';
 import Restore from 'material-ui-icons/Restore';
 import classNames from 'classnames';
 
-import * as actions from '../../../../store/actions';
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
+import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 import { formStateConfig } from '../StateConfig';
 import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
-import constants from '../../../../store/sagas/constants'
 
 const styles = theme => ({
   container: {
@@ -33,16 +31,18 @@ const styles = theme => ({
   },
 });
 
+const initialState = {
+  transactionForm: formStateConfig(),
+  formIsValid: false,
+};
+
 class CreateTransaction extends React.Component {
   constructor() {
     super();
     this.baseState = { ...this.state };
     this.inputChangedHandler = this.inputChangedHandler.bind(this);
   }
-  state = {
-    transactionForm: formStateConfig(),
-    formIsValid: false,
-  };
+  state = { ...initialState };
   componentWillReceiveProps(nextProps) {
     const { poojaDetails, selectedTransaction, activeTab } = nextProps;
     if (poojaDetails) {
@@ -204,10 +204,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getPoojaDetails: () => { dispatch(actions.fetchData(constants.Poojas)); },
-  }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withPoojaDetails(withStyles(styles)(CreateTransaction))));
+export default withRouter(createContainer(withPoojaDetails(withStyles(styles)(CreateTransaction), mapStateToProps)));

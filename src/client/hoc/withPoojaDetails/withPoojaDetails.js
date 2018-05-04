@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import createContainer from '../createContainer/createContainer';
 import { updateObject } from '../../shared/utility';
+import constants from '../../../store/sagas/constants';
+
+const initialState = { poojaDetails: null };
 
 export const withPoojaDetails = (WrappedComponent) => {
-  return class withPoojaDetails extends Component {
-    state = {
-      poojaDetails: null,
-    };
+  class withPoojaDetails extends Component {
+    state = { ...initialState };
     componentDidMount() {
-      this.props.getPoojaDetails();
+      this.props.fetchData(constants.Poojas);
     }
     componentWillReceiveProps(nextProps) {
       if (nextProps.poojaDetails) {
@@ -22,13 +24,12 @@ export const withPoojaDetails = (WrappedComponent) => {
     }
     render() {
       const updatedProps = updateObject(this.props, { poojaDetails: this.state.poojaDetails });
-      return (
-        <WrappedComponent {...updatedProps} />
+      return (<WrappedComponent {...updatedProps} />
       );
     }
   }
+  const mapStateToProps = (state, ownProps) => ({ poojaDetails: state.poojas.rows });
+  return createContainer(withPoojaDetails, mapStateToProps);
 }
-
-
 
 export default withPoojaDetails;

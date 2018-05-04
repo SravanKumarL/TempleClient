@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import TextField from 'material-ui/TextField'
 import Button from 'material-ui/Button';
 import AccountCircle from 'material-ui-icons/AccountCircle';
-import { withStyles } from 'material-ui/styles';
+import withStyles from 'material-ui/styles/withStyles';
 import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
 
 const styles = theme => ({
@@ -15,7 +15,6 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'center',
     marginBottom: '50px',
-    // backgroundColor: theme.palette.background.default,
   },
   textFieldRoot: {
     margin: 'auto',
@@ -28,7 +27,6 @@ const styles = theme => ({
   },
   textFieldInput: {
     borderRadius: 4,
-    // backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '10px 12px',
@@ -61,25 +59,19 @@ const styles = theme => ({
 
 const validate = values => {
   const errors = {}
-  const requiredFields = [
-    'username',
-    'password',
-  ]
+  const requiredFields = ['username', 'password']
   requiredFields.forEach(field => {
     if (!values[field]) {
-      errors[field] = 'Required'
+      errors[field] = 'Required';
     }
-  })
-  if (
-    values.username &&
-    /[^a-zA-Z0-9 ]/i.test(values.username)
-  ) {
-    errors.username = 'Invalid email address'
+  });
+  if (values.username && /[^a-zA-Z0-9 ]/i.test(values.username)) {
+    errors.username = 'Invalid email address';
   }
   if (values.password && values.password.length < 3) {
-    errors.password = 'Password should contain more than three characters'
+    errors.password = 'Password should contain more than three characters';
   }
-  return errors
+  return errors;
 }
 
 const renderTextField = ({
@@ -109,12 +101,11 @@ const renderTextField = ({
       {...input}
       {...custom}
     />
-  )
-
+  );
+  
+const initialState = { value: 0 };
 class MaterialUiForm extends React.Component {
-  state = {
-    value: 0,
-  };
+  state = { ...initialState };
   onSubmitHandler = ({ username, password }) => {
     const role = this.state.value === 0 ? 'user' : 'admin';
     this.props.onSubmit(username, password, role);
@@ -122,7 +113,6 @@ class MaterialUiForm extends React.Component {
   handleChange = (event, value) => {
     this.setState({ value });
   };
-
   render() {
     const { classes, handleSubmit } = this.props;
     const { value } = this.state;
@@ -137,24 +127,20 @@ class MaterialUiForm extends React.Component {
           <BottomNavigationAction label="User" icon={<AccountCircle />} />
           <BottomNavigationAction label="Admin" icon={<AccountCircle />} />
         </BottomNavigation>
-        <div>
-          <Field
-            name="username"
-            component={renderTextField}
-            label="Username"
-            autoFocus
-            placeholder={'Username'}
-            classes={classes}
-          />
-        </div>
-        <div>
-          <Field
-            placeholder={'Password'}
-            name="password"
-            type='password'
-            classes={classes}
-            component={renderTextField} label="Password" />
-        </div>
+        <Field
+          name="username"
+          component={renderTextField}
+          label="Username"
+          autoFocus
+          placeholder={'Username'}
+          classes={classes}
+        />
+        <Field
+          placeholder={'Password'}
+          name="password"
+          type='password'
+          classes={classes}
+          component={renderTextField} label="Password" />
         <div>
           <Button type='submit' variant='raised' size='large' className={classes.button} color='primary' >
             Sign In
