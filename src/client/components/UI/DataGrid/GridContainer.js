@@ -1,29 +1,43 @@
 import React from 'react';
-import { EnumAvailableRoles } from './Cell/CellFactory';
+import { EnumAvailableRoles, EditCell, Cell } from './Cell/CellFactory';
+import { withStyles } from 'material-ui';
 import {
-    SortingState, EditingState, PagingState, FilteringState, IntegratedSelection,
-    IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, SelectionState
+    SortingState, EditingState, PagingState, FilteringState, /* IntegratedSelection, */
+    IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, /* SelectionState */
 } from '@devexpress/dx-react-grid';
 import {
     Grid,
-    Table, TableHeaderRow, TableEditRow, TableEditColumn, TableFilterRow, ColumnChooser, TableSelection, TableGroupRow,
+    Table, TableHeaderRow, TableEditRow, TableEditColumn, TableFilterRow, ColumnChooser, /* TableSelection, */ TableGroupRow,
     PagingPanel, DragDropProvider, TableColumnReordering, TableColumnVisibility, GroupingPanel, Toolbar
 } from '@devexpress/dx-react-grid-material-ui';
-export default class Grid extends React.PureComponent {
+import DeleteDialog from './DeleteRowDialog';
+import constants, { transactionType } from '../../../../store/sagas/constants';
+import Command from './CommandButton';
+
+const styles = theme => ({
+    inputRoot: {
+        width: '100%',
+    },
+});
+const EditRow = (props) => {
+    return <TableEditRow.Row {...props} key={props.row.id} />
+}
+const Row = (props) => {
+    return <Table.Row {...props} key={props.row.id} />;
+}
+class GridContainer extends React.PureComponent {
     constructor(props) {
+        super(props);
         this.state = {
-            displayFilter: false,
-            prevRows: [],
             rows: [],
-            snackBarOpen: false,
-            transaction: null,
+            prevRows: [],
+            deletingRows: [],
             isGrouped: false,
             sorting: [],
             editingRowIds: [],
             addedRows: [],
             rowChanges: {},
             currentPage: 0,
-            deletingRows: [],
             pageSize: 5,
             pageSizes: [5, 10, 0],
             columnOrder: [],
@@ -35,7 +49,7 @@ export default class Grid extends React.PureComponent {
             this.setState({ isGrouped });
         }
         this.onGroupToggle = () => {
-            this.setState((prevState, props) => { return { ...prevState, isGrouped: !prevState.isGrouped }; });
+            this.setState((prevState) => ({ isGrouped: !prevState.isGrouped }));
         }
         //#endregion
 
@@ -54,7 +68,7 @@ export default class Grid extends React.PureComponent {
             const { added, changed, deleted } = props;
             let { rows } = this.state;
             this.setState({ prevRows: rows });
-            if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || (username in added[0] && password in added[0]))) {
+            if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || ('username' in added[0] && 'password' in added[0]))) {
                 const modRows = rows.map(row => {
                     row['id'] = row['id'] + 1;
                     return row;
@@ -62,59 +76,50 @@ export default class Grid extends React.PureComponent {
                 added[0]['id'] = 0;
                 modRows.unshift(added[0]);
                 rows = modRows;
-                this.props.setAndCommitTrans(constants.add, this.props.collection, added[0]);
+                this.props.setAndCommitTransaction(transactionType.modify, this.props.collection, added[0]);
             }
             if (changed) {
                 rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-                this.setAndCommitTrans(() => this.props.commitTransaction(constants.edit, this.props.collection, changed));
+                this.setAndCommitTransaction(transactionType.modify, this.props.collection, changed);
             }
             this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
         };
         //#endregion
-
-        //#region Delete Handlers
-        this.cancelDelete = () => this.setState({ deletingRows: [] });
-        this.deleteRows = () => {
-            const rows = this.state.rows.slice();
-            this.setState({ prevRows: rows });
-            this.state.deletingRows.forEach((rowId) => {
-                const index = rows.findIndex(row => row.id === rowId);
-                if (index > -1) {
-                    rows.splice(index, 1);
-                }
-            });
-            let rowsToBeDeleted = this.state.deletingRows.slice()[0];
-            if (this.props.collection === constants.Users) {
-                rowsToBeDeleted = this.state.rows.filter(row => row.id === rowsToBeDeleted)[0].username;
-            }
-            this.setAndCommitTrans(() => this.props.commitTransaction(constants.delete, this.props.collection, rowsToBeDeleted));
-            this.setState({ rows, deletingRows: [] });
-        };
-        //#endregion
-
         //#region Misc Handlers
+        this.deleteRows = (rows, prevRows) => this.setState((prevState) =>
+            ({ rows, prevRows: prevRows || prevState.prevRows, deletingRows: [] }));
         this.changeColumnOrder = (order) => {
             this.setState({ columnOrder: order });
         };
-        this.onSnackBarClose = () => this.setState({ snackBarOpen: false });
-        this.onFilterClick = () => {
-            this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
-        }
-        this.onPrintClicked = () => {
-            printHtml.printElement(document.getElementById('datagridPaper'));
-        }
+        this.getRowId = row => row.id;
         //#endregion
     }
+    componentWillReceiveProps(nextProps) {
+        this.setState({ rows: nextProps.rows, prevRows: nextProps.prevRows });
+    }
     render() {
+        const { columns, setAndCommitTransaction, collection,
+            readOnly, displayFilter } = this.props;
+        const { rows,
+            sorting,
+            isGrouped,
+            deletingRows,
+            editingRowIds,
+            addedRows,
+            rowChanges,
+            currentPage,
+            pageSize,
+            pageSizes,
+            columnOrder } = this.state;
         return (
             <React.Fragment>
                 <Grid
                     rows={rows}
                     columns={columns}
-                    getRowId={getRowId}
+                    getRowId={this.getRowId}
                 >
                     {!readOnly && <FilteringState />}
-                    {!readOnly && <SelectionState />}
+                    {/* {!readOnly && <SelectionState />} */}
                     <SortingState
                         sorting={sorting}
                         onSortingChange={this.changeSorting}
@@ -170,10 +175,10 @@ export default class Grid extends React.PureComponent {
                     {!readOnly && <GroupingPanel showSortingControls />}
                     {!readOnly && <ColumnChooser />}
                 </Grid>
-                {!readOnly && <DeleteDialog deletingRows={deletingRows} cancelDelete={this.cancelDelete} deleteRows={this.deleteRows} collection={collection} />}
-                <ErrorSnackbar message={snackBarMsg} open={this.state.snackBarOpen} redoTransaction={transaction}
-                    onSnackBarClose={this.onSnackBarClose} />
+                {!readOnly && <DeleteDialog setAndCommitTransaction={setAndCommitTransaction} deletingRows={deletingRows}
+                    deleteRows={this.deleteRows} collection={collection} rows={rows} columns={columns} />}
             </React.Fragment>
         );
     }
 }
+export default withStyles(styles)(GridContainer);

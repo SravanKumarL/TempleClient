@@ -1,9 +1,13 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { TableCell, Input, Select, MenuItem } from 'material-ui';
-const styles = {
-
-};
+const styles = theme => ({
+    lookupEditCell: {
+        paddingTop: theme.spacing.unit * 0.875,
+        paddingRight: theme.spacing.unit,
+        paddingLeft: theme.spacing.unit,
+    },
+});
 const onLookupSelected = (onValueChange) => ((event) => {
     onValueChange(event.target.value);
 });

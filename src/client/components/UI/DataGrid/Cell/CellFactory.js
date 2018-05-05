@@ -1,6 +1,6 @@
 import React from 'react';
-import PasswordCell from './Cell/PasswordCell';
-import LookupEditCell from './Cell/LookupCell';
+import PasswordCell from './PasswordCell';
+import LookupEditCell from './LookupCell';
 import { TableCell } from 'material-ui/Table';
 import { TableEditRow, Table } from '@devexpress/dx-react-grid';
 import Input from 'material-ui/Input'
@@ -15,7 +15,7 @@ export const EnumAvailableRoles = {
     admin: 'admin'
 }
 export const Cell = (props) => {
-    if (props.column.name == "password") {
+    if (props.column.name === "password") {
         const { tableRow, tableColumn, ...rest } = props; // Shows a warning if passed as is
         return (<TableCell>
             <Input type="password" disabled disableUnderline {...rest} />

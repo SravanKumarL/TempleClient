@@ -12,6 +12,15 @@ const constants={
     Management:'Management',
     Users:'users'
 }
+
+export const transactionType = {
+    fetch: {
+        schema: 'schema',
+        data: 'data'
+    },
+    modify: 'modify'
+}
+
 export const ManagementReport = ['pooja','total poojas','total amount'];
 export const PoojaReport=['names','gothram','nakshatram'];
 export const AccountReport=['names','id','pooja','amount','chequeNo','bankName','createdDate'];
