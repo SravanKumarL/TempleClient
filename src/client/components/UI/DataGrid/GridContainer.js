@@ -12,7 +12,7 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 import DeleteDialog from './DeleteRowDialog';
 import constants, { transactionType } from '../../../../store/sagas/constants';
-import Command from './CommandButton';
+import { Command } from './CommandButton';
 
 const styles = theme => ({
     inputRoot: {
@@ -76,11 +76,11 @@ class GridContainer extends React.PureComponent {
                 added[0]['id'] = 0;
                 modRows.unshift(added[0]);
                 rows = modRows;
-                this.props.setAndCommitTransaction(transactionType.modify, this.props.collection, added[0]);
+                this.props.setAndCommitTransaction(constants.add, this.props.collection, added[0]);
             }
             if (changed) {
                 rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-                this.setAndCommitTransaction(transactionType.modify, this.props.collection, changed);
+                this.setAndCommitTransaction(constants.edit, this.props.collection, changed);
             }
             this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
         };
@@ -165,7 +165,7 @@ class GridContainer extends React.PureComponent {
                             showAddCommand={!addedRows.length}
                             showEditCommand
                             showDeleteCommand
-                            commandComponent={(props) => (<Command collection={collection} {...props} />)}
+                            commandComponent={props => (<Command collection={collection} {...props} />)}
                         />}
                     {!readOnly && <TableColumnVisibility />}
                     <PagingPanel

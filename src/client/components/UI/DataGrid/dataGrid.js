@@ -28,7 +28,6 @@ export default class DataGrid extends React.PureComponent {
         case transactionType.fetch.data:
           transaction = () => this.props.fetchData(collection, data);
           break;
-        case transactionType.modify:
         default:
           transaction = () => this.props.commitTransaction(type, collection, data);
           break;

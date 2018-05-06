@@ -2,7 +2,7 @@ import React from 'react';
 import PasswordCell from './PasswordCell';
 import LookupEditCell from './LookupCell';
 import { TableCell } from 'material-ui/Table';
-import { TableEditRow, Table } from '@devexpress/dx-react-grid';
+import { TableEditRow, Table } from '@devexpress/dx-react-grid-material-ui';
 import Input from 'material-ui/Input'
 
 export const EnumUser = {

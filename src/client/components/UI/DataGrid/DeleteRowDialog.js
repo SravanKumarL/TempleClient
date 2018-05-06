@@ -11,11 +11,11 @@ import constants, { transactionType } from '../../../../store/sagas/constants';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles } from 'material-ui/styles';
 
-const styles = {
+const styles = theme=> ({
     dialog: {
         width: 'calc(100% - 16px)',
     }
-}
+});
 class DeleteDialog extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -37,7 +37,7 @@ class DeleteDialog extends React.PureComponent {
             if (this.props.collection === constants.Users) {
                 rowsToBeDeleted = this.props.rows.filter(row => row.id === rowsToBeDeleted)[0].username;
             }
-            this.props.setAndCommitTransaction(transactionType.modify, this.props.collection, rowsToBeDeleted);
+            this.props.setAndCommitTransaction(constants.delete, this.props.collection, rowsToBeDeleted);
             this.props.deleteRows(this.state.remainingRows, this.props.rows);
         };
         //#endregion

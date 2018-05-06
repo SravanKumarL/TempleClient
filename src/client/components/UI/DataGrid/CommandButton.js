@@ -7,7 +7,7 @@ import EditIcon from 'material-ui-icons/Edit';
 import CancelIcon from 'material-ui-icons/Cancel';
 import SaveIcon from 'material-ui-icons/Save';
 
-const CommandButton = ({ id, collection, onExecute }) => {
+export const Command = ({ id, collection, onExecute }) => {
     let Icon;
     let color = 'primary';
     let title = '';
@@ -23,30 +23,24 @@ const CommandButton = ({ id, collection, onExecute }) => {
             </div>);
         case 'edit':
             title = "Edit row";
-            Icon = <EditIcon />
+            Icon = EditIcon;
             break;
         case 'delete':
             title = "Delete row";
-            Icon = <DeleteIcon />
+            Icon = DeleteIcon;
             break;
         case 'commit':
             title = "Save changes";
-            Icon = <SaveIcon />
+            Icon = SaveIcon;
             break;
-        default:
         case 'cancel':
+        default:
             title = "Cancel changes";
             color = 'secondary';
-            Icon = <CancelIcon />
+            Icon = CancelIcon;
             break;
     }
     return (<IconButton title={title} color={color} onClick={onExecute}>
         <Icon />
     </IconButton>);
 }
-const Command = ({ id, onExecute, collection }) => {
-    return (
-        <CommandButton onExecute={onExecute} collection={collection} id={id} />
-    );
-};
-export default Command;

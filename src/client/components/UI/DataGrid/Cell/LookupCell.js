@@ -12,7 +12,7 @@ const onLookupSelected = (onValueChange) => ((event) => {
     onValueChange(event.target.value);
 });
 const LookupEditCellBase = ({
-    availableColumnValues, value, onValueChange, classes,
+    availableColumnValues, value, onValueChange, classes
 }) => (
         <TableCell
             className={classes.lookupEditCell}
