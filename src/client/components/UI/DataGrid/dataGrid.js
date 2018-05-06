@@ -14,8 +14,6 @@ export default class DataGrid extends React.PureComponent {
     super(props);
     this.state = {
       displayFilter: false,
-      prevRows: [],
-      rows: [],
       transaction: null,
       snackBarOpen: false
     };
@@ -50,21 +48,15 @@ export default class DataGrid extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { rows, error, message } = nextProps;
-    rows = rows.map((row, index) => ({ ...row, id: index }));
+    const { error, message } = nextProps;
     if (error === '')
       this.setState({ transaction: null });
-    if (rows)
-      this.setState({ rows, prevRows: rows });
-    else if (error !== '')
-      this.setState({ rows: this.state.prevRows });
     if (message !== '' || error !== '')
       this.setState({ snackBarOpen: true });
-    else
-      this.setState({ snackBarOpen: false });
   }
   render() {
     const {
+      rows,
       loading,
       columns,
       error,
@@ -73,11 +65,9 @@ export default class DataGrid extends React.PureComponent {
       collection
     } = this.props;
     const {
-      rows,
       transaction,
       displayFilter,
       snackBarOpen,
-      prevRows
     } = this.state;
     let snackBarMsg = message !== '' ? message : error;
     return (
@@ -100,7 +90,7 @@ export default class DataGrid extends React.PureComponent {
           <Paper id="datagridPaper">
             <GridContainer rows={rows}
               columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction}
-              readOnly={readOnly} prevRows={prevRows} displayFilter={displayFilter} />
+              readOnly={readOnly} displayFilter={displayFilter} />
             <ErrorSnackbar message={snackBarMsg} open={snackBarOpen} redoTransaction={transaction}
               onSnackBarClose={this.onSnackBarClose} />
           </Paper>

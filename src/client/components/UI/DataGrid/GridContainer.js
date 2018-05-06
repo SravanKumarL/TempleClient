@@ -80,27 +80,31 @@ class GridContainer extends React.PureComponent {
             }
             if (changed) {
                 rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-                this.setAndCommitTransaction(constants.edit, this.props.collection, changed);
+                const changedId = Number(Object.getOwnPropertyNames(changed)[0]);
+                const changedObj = rows.filter(row => row.id === changedId)[0];
+                this.setAndCommitTransaction(constants.edit, this.props.collection, changed, changedObj);
             }
-            this.setState({ rows, deletingRows: deleted || this.state.deletingRows });
+            if(deleted){
+                this.setState({deletingRows});
+            }
+            this.setState({ rows });
         };
         //#endregion
         //#region Misc Handlers
-        this.deleteRows = (rows, prevRows) => this.setState((prevState) =>
-            ({ rows, prevRows: prevRows || prevState.prevRows, deletingRows: [] }));
+        this.delDialogHandle = () => this.setState({ deletingRows: [] });
         this.changeColumnOrder = (order) => {
             this.setState({ columnOrder: order });
         };
         this.getRowId = row => row.id;
         //#endregion
     }
-    componentWillReceiveProps(nextProps) {
-        this.setState({ rows: nextProps.rows, prevRows: nextProps.prevRows });
+    valueChanged = (value) => {
+        this.newPasswordVal = value;
     }
     render() {
-        const { columns, setAndCommitTransaction, collection,
+        const { rows, columns, setAndCommitTransaction, collection,
             readOnly, displayFilter } = this.props;
-        const { rows,
+        const {
             sorting,
             isGrouped,
             deletingRows,
@@ -157,7 +161,7 @@ class GridContainer extends React.PureComponent {
                     {displayFilter && <TableFilterRow />}
                     {isGrouped ? <TableGroupRow /> :
                         (!readOnly && <TableEditRow
-                            cellComponent={EditCell} rowComponent={EditRow}
+                            cellComponent={<EditCell valueChanged={this.valueChanged} />} rowComponent={EditRow}
                         />)}
                     {(!isGrouped && !readOnly) &&
                         <TableEditColumn
@@ -176,7 +180,7 @@ class GridContainer extends React.PureComponent {
                     {!readOnly && <ColumnChooser />}
                 </Grid>
                 {!readOnly && <DeleteDialog setAndCommitTransaction={setAndCommitTransaction} deletingRows={deletingRows}
-                    deleteRows={this.deleteRows} collection={collection} rows={rows} columns={columns} />}
+                    collection={collection} columns={columns} delDialogHandle={this.delDialogHandle} />}
             </React.Fragment>
         );
     }

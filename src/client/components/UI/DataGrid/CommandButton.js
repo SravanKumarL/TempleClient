@@ -9,7 +9,7 @@ import SaveIcon from 'material-ui-icons/Save';
 
 export const Command = ({ id, collection, onExecute }) => {
     let Icon;
-    let color = 'primary';
+    let color = '';
     let title = '';
     switch (id) {
         case 'add':

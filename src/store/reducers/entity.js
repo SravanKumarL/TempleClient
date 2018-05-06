@@ -1,8 +1,9 @@
 import * as actionTypes from '../actions/actionTypes';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '' };
-export const entity = (name) => (state = { name, columns: [], rows: [], loading: false, error: '', message: '' }, action) => {
-    const {payload}=action;
-    if(payload && name!==payload.name) return state;
+import constants, { uniqueProp } from '../sagas/constants';
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [] };
+export const entity = (name) => (state = initialState, action) => {
+    const { payload } = action;
+    if (payload && name !== payload.name) return state;
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:
@@ -12,14 +13,27 @@ export const entity = (name) => (state = { name, columns: [], rows: [], loading:
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false, name };
         case actionTypes.onTransactionCommitted:
-            return { ...state, message: action.payload.message, error: '', name }
+            return { ...state, message: action.payload.message, error: '', name };
         case actionTypes.onTransactionCommitReq:
-            return { ...state, error: '', message: '', name }
+            const { type, change, name } = payload;
+            return { ...state, error: '', message: '', rows: changeRows(type, state.rows, change, name), prevRows: state.rows };
         case actionTypes.onTransactionFailed:
-            return { ...state, error: action.payload.error, message: '', name };/* ,transaction:action.payload.transaction */
+            return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
         case actionTypes.resetEntity:
             return initialState;
         default:
             return state;
     }
 };
+const changeRows = (type, rows, change, name) => {
+    const prop = uniqueProp(name);
+    switch (type) {
+        case constants.add:
+            return [...rows, change];
+        case constants.edit:
+            return rows.map(row => row[prop] === action.payload.change[prop] ? action.payload.change : row);
+        case constants.delete:
+            const uniquePropVal=change[prop];
+            return rows.filter(row[prop] !== uniquePropVal);
+    }
+}

@@ -11,7 +11,7 @@ import constants, { transactionType } from '../../../../store/sagas/constants';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles } from 'material-ui/styles';
 
-const styles = theme=> ({
+const styles = theme => ({
     dialog: {
         width: 'calc(100% - 16px)',
     }
@@ -20,37 +20,26 @@ class DeleteDialog extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            remainingRows: []
+            dialogOpen: false,
         }
         //#region Delete Handlers
         this.cancelDelete = () => {
-            this.props.deleteRows(this.props.rows, this.props.rows);
+            this.setState({ dialogOpen: false });
         }
         this.onRowsDelete = () => {
-            // this.state.deletingRows.forEach((rowId) => {
-            //     const index = rows.findIndex(row => row.id === rowId);
-            //     if (index > -1) {
-            //         rows.splice(index, 1);
-            //     }
-            // });
-            let rowsToBeDeleted = this.props.deletingRows.slice()[0];
-            if (this.props.collection === constants.Users) {
-                rowsToBeDeleted = this.props.rows.filter(row => row.id === rowsToBeDeleted)[0].username;
-            }
-            this.props.setAndCommitTransaction(constants.delete, this.props.collection, rowsToBeDeleted);
-            this.props.deleteRows(this.state.remainingRows, this.props.rows);
+            this.setState({ dialogOpen: false });
+            this.props.setAndCommitTransaction(constants.delete, this.props.collection, this.props.deletingRows);
+            this.props.delDialogHandle();
         };
         //#endregion
     }
     componentWillReceiveProps(nextProps) {
-        const deletingRows = nextProps.deletingRows;
-        this.setState({ deletingRows, remainingRows: nextProps.rows.filter(row => nextProps.deletingRows.indexOf(row.id) > -1) });
+        this.setState({ dialogOpen: nextProps.deletingRows && nextProps.deletingRows.length > 0 });
     }
     render() {
         const { columns, collection, classes, deletingRows } = this.props;
-        const { remainingRows } = this.state;
         return (<Dialog
-            open={!!deletingRows.length}
+            open={this.state.dialogOpen}
             onClose={this.cancelDelete}
             classes={classes.dialog}
         >
@@ -62,7 +51,7 @@ class DeleteDialog extends React.PureComponent {
                 </DialogContentText>
                 <Paper>
                     <Grid
-                        rows={remainingRows}
+                        rows={deletingRows}
                         columns={columns}
                     >
                         <Table cellComponent={Cell} />

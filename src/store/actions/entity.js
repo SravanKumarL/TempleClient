@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
-export const commitTransaction = (type, collection, change) => {
-    return { type: actionTypes.commitTransaction, payload: { type, change, collection, name: collection } }
+export const commitTransaction = (type, collection, change, changedObj) => {
+    return { type: actionTypes.commitTransaction, payload: { type, change, changedObj, collection, name: collection } }
 }
 export const fetchData = (collection, searchCriteria) => {
     return { type: actionTypes.fetchData, payload: { collection, searchCriteria, name: collection } };
@@ -26,6 +26,6 @@ export const onTransactionFailed = (error, name) => {
 export const onTransactionCommitted = (message, name) => {
     return { type: actionTypes.onTransactionCommitted, payload: { message, name } };
 }
-export const onTransactionCommitReq = (name) => {
-    return { type: actionTypes.onTransactionCommitReq, payload: { name } };
+export const onTransactionCommitReq = (type, change, name) => {
+    return { type: actionTypes.onTransactionCommitReq, payload: { type, change, name } };
 }
