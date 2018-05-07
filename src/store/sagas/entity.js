@@ -19,7 +19,7 @@ export function* handleTransaction(action) {
                     'authorization': `${token}`,
                 }
                 let response = {};
-                yield put(actions.onTransactionCommitReq(type, changedObj || change, name));
+                yield put(actions.onTransactionCommitReq(type, changedObj || change, collection));
                 switch (type) {
                     case constants.add:
                         response = yield axios({
@@ -28,7 +28,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield handleResponse(response, collection);
+                        yield handleResponse(response, collection, type);
                         break;
                     case constants.delete:
                         const reqParam = change[uniqueProp(collection)];
@@ -47,7 +47,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(Object.values(change)[0]),
                             headers
                         });
-                        yield handleResponse(response, collection);
+                        yield handleResponse(response, collection, type);
                         break;
                     default:
                         break;
@@ -60,12 +60,12 @@ export function* handleTransaction(action) {
         }
     }
 }
-const handleResponse = function* (response, collection) {
-    const { error, message } = response.data;
+const handleResponse = function* (response, collection, type) {
+    const { error, message, change } = response.data;
     if (error)
         yield put(actions.onTransactionFailed(error, collection));
     else
-        yield put(actions.onTransactionCommitted(message, collection));
+        yield put(actions.onTransactionCommitted(message, change, type, collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;

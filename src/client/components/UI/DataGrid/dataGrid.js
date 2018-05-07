@@ -14,34 +14,33 @@ export default class DataGrid extends React.PureComponent {
     super(props);
     this.state = {
       displayFilter: false,
-      transaction: null,
+      transaction: {},
       snackBarOpen: false
     };
-    this.setAndCommitTransaction = (type, collection, data) => {
-      let transaction;
-      switch (type) {
-        case transactionType.fetch.schema:
-          transaction = () => this.props.fetchSchema(collection, data);
-          break;
-        case transactionType.fetch.data:
-          transaction = () => this.props.fetchData(collection, data);
-          break;
-        default:
-          transaction = () => this.props.commitTransaction(type, collection, data);
-          break;
-      }
-      transaction();
-      this.setState({ transaction });
-    }
-    this.onSnackBarClose = () => this.setState({ snackBarOpen: false });
-    this.onFilterClick = () => {
-      this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
-    }
-    this.onPrintClicked = () => {
-      printHtml.printElement(document.getElementById('datagridPaper'));
-    }
   }
-
+  setAndCommitTransaction = (type, collection, data) => {
+    let transaction;
+    switch (type) {
+      case transactionType.fetch.schema:
+        transaction = () => this.props.fetchSchema(collection, data);
+        break;
+      case transactionType.fetch.data:
+        transaction = () => this.props.fetchData(collection, data);
+        break;
+      default:
+        transaction = () => this.props.commitTransaction(type, collection, data);
+        break;
+    }
+    this.setState({ transaction: transaction });
+    transaction();
+  }
+  onSnackBarClose = () => this.setState({ snackBarOpen: false });
+  onFilterClick = () => {
+    this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
+  }
+  onPrintClicked = () => {
+    printHtml.printElement(document.getElementById('datagridPaper'));
+  }
   componentDidMount() {
     this.setAndCommitTransaction(transactionType.fetch.schema, this.props.collection, this.props.searchCriteria);
     this.setAndCommitTransaction(transactionType.fetch.data, this.props.collection, this.props.searchCriteria);

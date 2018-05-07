@@ -7,6 +7,9 @@ const styles = theme => ({
         paddingRight: theme.spacing.unit,
         paddingLeft: theme.spacing.unit,
     },
+    inputRoot: {
+        width: '100%',
+    },
 });
 const onLookupSelected = (onValueChange) => ((event) => {
     onValueChange(event.target.value);

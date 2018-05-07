@@ -13,10 +13,9 @@ export const entity = (name) => (state = initialState, action) => {
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false, name };
         case actionTypes.onTransactionCommitted:
-            return { ...state, message: action.payload.message, error: '', name };
+            return { ...state, message: action.payload.message, error: '', name, rows: changeRows(payload, state.rows) };
         case actionTypes.onTransactionCommitReq:
-            const { type, change, name } = payload;
-            return { ...state, error: '', message: '', rows: changeRows(type, state.rows, change, name), prevRows: state.rows };
+            return { ...state, error: '', message: '', rows: changeRows(payload, state.rows), prevRows: state.rows, name };
         case actionTypes.onTransactionFailed:
             return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
         case actionTypes.resetEntity:
@@ -25,15 +24,17 @@ export const entity = (name) => (state = initialState, action) => {
             return state;
     }
 };
-const changeRows = (type, rows, change, name) => {
+const changeRows = (payload, rows) => {
+    const { type, change, name } = payload;
+    if (!change) return rows;
     const prop = uniqueProp(name);
     switch (type) {
         case constants.add:
             return [...rows, change];
         case constants.edit:
-            return rows.map(row => row[prop] === action.payload.change[prop] ? action.payload.change : row);
+            return rows.map(row => (row[prop] === change[prop] ? change : row));
         case constants.delete:
-            const uniquePropVal=change[prop];
-            return rows.filter(row[prop] !== uniquePropVal);
+            const uniquePropVal = change[prop];
+            return rows.filter(row => row[prop] !== uniquePropVal);
     }
 }

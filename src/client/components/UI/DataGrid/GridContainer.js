@@ -14,23 +14,20 @@ import DeleteDialog from './DeleteRowDialog';
 import constants, { transactionType } from '../../../../store/sagas/constants';
 import { Command } from './CommandButton';
 
-const styles = theme => ({
-    inputRoot: {
-        width: '100%',
-    },
-});
+// const styles = theme => ({
+
+// });
 const EditRow = (props) => {
     return <TableEditRow.Row {...props} key={props.row.id} />
 }
 const Row = (props) => {
     return <Table.Row {...props} key={props.row.id} />;
 }
-class GridContainer extends React.PureComponent {
+export default class GridContainer extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            rows: [],
-            prevRows: [],
+            delDialogOpen: false,
             deletingRows: [],
             isGrouped: false,
             sorting: [],
@@ -42,69 +39,69 @@ class GridContainer extends React.PureComponent {
             pageSizes: [5, 10, 0],
             columnOrder: [],
         };
-
-        //#region Grouping Handlers
-        this.handleGroupingChange = (groups) => {
-            let isGrouped = groups.length > 0;
-            this.setState({ isGrouped });
-        }
-        this.onGroupToggle = () => {
-            this.setState((prevState) => ({ isGrouped: !prevState.isGrouped }));
-        }
-        //#endregion
-
-        //#region Change Handlers
-        this.changeSorting = sorting => this.setState({ sorting });
-        this.changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
-        this.changeAddedRows = addedRows => {
-            this.setState({
-                addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: EnumAvailableRoles.user } : {})))
-            });
-        }
-        this.changeRowChanges = rowChanges => this.setState({ rowChanges });
-        this.changeCurrentPage = currentPage => this.setState({ currentPage });
-        this.changePageSize = pageSize => this.setState({ pageSize });
-        this.commitChanges = (props) => {
-            const { added, changed, deleted } = props;
-            let { rows } = this.state;
-            this.setState({ prevRows: rows });
-            if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || ('username' in added[0] && 'password' in added[0]))) {
-                const modRows = rows.map(row => {
-                    row['id'] = row['id'] + 1;
-                    return row;
-                });
-                added[0]['id'] = 0;
-                modRows.unshift(added[0]);
-                rows = modRows;
-                this.props.setAndCommitTransaction(constants.add, this.props.collection, added[0]);
-            }
-            if (changed) {
-                rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-                const changedId = Number(Object.getOwnPropertyNames(changed)[0]);
-                const changedObj = rows.filter(row => row.id === changedId)[0];
-                this.setAndCommitTransaction(constants.edit, this.props.collection, changed, changedObj);
-            }
-            if(deleted){
-                this.setState({deletingRows});
-            }
-            this.setState({ rows });
-        };
-        //#endregion
-        //#region Misc Handlers
-        this.delDialogHandle = () => this.setState({ deletingRows: [] });
-        this.changeColumnOrder = (order) => {
-            this.setState({ columnOrder: order });
-        };
-        this.getRowId = row => row.id;
-        //#endregion
     }
-    valueChanged = (value) => {
-        this.newPasswordVal = value;
+    //#region Grouping Handlers
+    handleGroupingChange = (groups) => {
+        let isGrouped = groups.length > 0;
+        this.setState({ isGrouped });
     }
+    onGroupToggle = () => {
+        this.setState((prevState) => ({ isGrouped: !prevState.isGrouped }));
+    }
+    //#endregion
+
+    //#region Change Handlers
+    changeSorting = sorting => this.setState({ sorting });
+    changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
+    changeAddedRows = addedRows => {
+        this.setState({
+            addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: EnumAvailableRoles.user } : {})))
+        });
+    }
+    changeRowChanges = rowChanges => this.setState({ rowChanges });
+    changeCurrentPage = currentPage => this.setState({ currentPage });
+    changePageSize = pageSize => this.setState({ pageSize });
+    commitChanges = (props) => {
+        const { added, changed, deleted } = props;
+        const rows = this.props.rows.map((row, index) => ({ ...row, id: index }));
+        if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || ('username' in added[0] && 'password' in added[0]))) {
+            // const modRows = rows.map(row => {
+            //     row['id'] = row['id'] + 1;
+            //     return row;
+            // });
+            // added[0]['id'] = 0;
+            // modRows.unshift(added[0]);
+            this.props.setAndCommitTransaction(constants.add, this.props.collection, added[0]);
+        }
+        if (changed) {
+            // rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
+            const changedId = Number(Object.getOwnPropertyNames(changed)[0]);
+            const changedObj = rows.filter(row => row.id === changedId)[0];
+            this.setAndCommitTransaction(constants.edit, this.props.collection, changed, changedObj);
+        }
+        if (deleted) {
+            const deletingRows = rows.filter(row => row.id === deleted[0]);
+            this.setState({ deletingRows, delDialogOpen: true });
+        }
+    };
+    //#endregion
+    //#region Misc Handlers
+    onDelDialogClick = (toDelete) => {
+        if (toDelete)
+            this.props.setAndCommitTransaction(constants.delete, this.props.collection, this.state.deletingRows[0]);
+        this.setState({ deletingRows: [], delDialogOpen: false });
+    }
+    changeColumnOrder = (order) => {
+        this.setState({ columnOrder: order });
+    };
+    getRowId = row => row.id;
+    //#endregion
     render() {
-        const { rows, columns, setAndCommitTransaction, collection,
+        const { columns, setAndCommitTransaction, collection,
             readOnly, displayFilter } = this.props;
+        const rows = this.props.rows.map((row, index) => ({ ...row, id: index }));
         const {
+            delDialogOpen,
             sorting,
             isGrouped,
             deletingRows,
@@ -161,7 +158,7 @@ class GridContainer extends React.PureComponent {
                     {displayFilter && <TableFilterRow />}
                     {isGrouped ? <TableGroupRow /> :
                         (!readOnly && <TableEditRow
-                            cellComponent={<EditCell valueChanged={this.valueChanged} />} rowComponent={EditRow}
+                            cellComponent={EditCell} rowComponent={EditRow}
                         />)}
                     {(!isGrouped && !readOnly) &&
                         <TableEditColumn
@@ -180,9 +177,9 @@ class GridContainer extends React.PureComponent {
                     {!readOnly && <ColumnChooser />}
                 </Grid>
                 {!readOnly && <DeleteDialog setAndCommitTransaction={setAndCommitTransaction} deletingRows={deletingRows}
-                    collection={collection} columns={columns} delDialogHandle={this.delDialogHandle} />}
+                    collection={collection} columns={columns} onDelDialogClick={this.onDelDialogClick} dialogOpen={delDialogOpen} />}
             </React.Fragment>
         );
     }
 }
-export default withStyles(styles)(GridContainer);
+// export default withStyles(styles)(GridContainer);
