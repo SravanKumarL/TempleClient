@@ -75,9 +75,10 @@ export default class GridContainer extends React.PureComponent {
         }
         if (changed) {
             // rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-            const changedId = Number(Object.getOwnPropertyNames(changed)[0]);
+            const changes= Object.entries(changed)[0];
+            const changedId = Number(changes[0]);
             const changedObj = rows.filter(row => row.id === changedId)[0];
-            this.setAndCommitTransaction(constants.edit, this.props.collection, changed, changedObj);
+            this.props.setAndCommitTransaction(constants.edit, this.props.collection, changes[1], changedObj);
         }
         if (deleted) {
             const deletingRows = rows.filter(row => row.id === deleted[0]);

@@ -19,7 +19,8 @@ export function* handleTransaction(action) {
                     'authorization': `${token}`,
                 }
                 let response = {};
-                yield put(actions.onTransactionCommitReq(type, changedObj || change, collection));
+                const resultantChange = changedObj ? { ...changedObj, ...change } : change;
+                yield put(actions.onTransactionCommitReq(type, resultantChange, collection));
                 switch (type) {
                     case constants.add:
                         response = yield axios({
@@ -28,7 +29,7 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield handleResponse(response, collection, type);
+                        yield handleResponse(response, collection, constants.edit);
                         break;
                     case constants.delete:
                         const reqParam = change[uniqueProp(collection)];
@@ -37,17 +38,16 @@ export function* handleTransaction(action) {
                             url: `/${collection}/${reqParam}`,
                             headers
                         });
-                        yield handleResponse(response, collection);
+                        yield handleResponse(response, collection, type);
                         break;
                     case constants.edit:
-                        const entity = Object.getOwnPropertyNames(change)[0];
                         response = yield axios({
                             method: 'put',
-                            url: `/${collection}/${entity}`,
-                            data: JSON.stringify(Object.values(change)[0]),
+                            url: `/${collection}/${uniqueProp(collection)}`,
+                            data: JSON.stringify(change),
                             headers
                         });
-                        yield handleResponse(response, collection, type);
+                        yield handleResponse(response, collection, type, changedObj);
                         break;
                     default:
                         break;
@@ -60,12 +60,12 @@ export function* handleTransaction(action) {
         }
     }
 }
-const handleResponse = function* (response, collection, type) {
+const handleResponse = function* (response, collection, type, changedObj) {
     const { error, message, change } = response.data;
     if (error)
         yield put(actions.onTransactionFailed(error, collection));
     else
-        yield put(actions.onTransactionCommitted(message, change, type, collection));
+        yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
