@@ -14,23 +14,26 @@ export default class DataGrid extends React.PureComponent {
     super(props);
     this.state = {
       displayFilter: false,
-      snackBarOpen: false
+      snackBarOpen: false,
+      transaction: null
     };
   }
   setAndCommitTransaction = (type, collection, change, changedObj) => {
     const { fetchSchema, fetchData, commitTransaction } = this.props;
+    let transaction = null;
     switch (type) {
       case transactionType.fetch.schema:
-        this.transaction = () => fetchSchema(collection, change);
+        transaction = () => fetchSchema(collection, change);
         break;
       case transactionType.fetch.data:
-        this.transaction = () => fetchData(collection, change);
+        transaction = () => fetchData(collection, change);
         break;
       default:
-        this.transaction = () => commitTransaction(type, collection, change, changedObj);
+        transaction = () => commitTransaction(type, collection, change, changedObj);
         break;
     }
-    this.transaction();
+    this.setState({ transaction });
+    transaction();
   }
   onSnackBarClose = () => this.setState({ snackBarOpen: false });
   onFilterClick = () => {
@@ -47,7 +50,7 @@ export default class DataGrid extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const { error, message } = nextProps;
     if (error === '')
-      this.transaction = null;
+      this.setState({ transaction: null });
     if (message !== '' || error !== '')
       this.setState({ snackBarOpen: true });
   }
@@ -62,6 +65,7 @@ export default class DataGrid extends React.PureComponent {
       collection
     } = this.props;
     const {
+      transaction,
       displayFilter,
       snackBarOpen,
     } = this.state;
@@ -85,9 +89,9 @@ export default class DataGrid extends React.PureComponent {
           </Button>
           <Paper id="datagridPaper">
             <GridContainer rows={rows}
-              columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction}
+              columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
               readOnly={readOnly} displayFilter={displayFilter} />
-            <ErrorSnackbar message={snackBarMsg} open={snackBarOpen} redoTransaction={this.transaction}
+            <ErrorSnackbar message={snackBarMsg} open={snackBarOpen} redoTransaction={transaction}
               onSnackBarClose={this.onSnackBarClose} />
           </Paper>
         </div>
