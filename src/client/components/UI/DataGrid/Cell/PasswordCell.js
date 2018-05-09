@@ -10,11 +10,11 @@ class PasswordCellBase extends React.Component {
         this.state = {
             value: ''
         };
-        this.onPasswordChange = e => {
-            this.setState({ value: e.target.value });
-            this.props.onValueChange(e.target.value);
-        };
     }
+    onPasswordChange = e => {
+        this.setState({ value: e.target.value });
+        this.props.onValueChange(e.target.value);
+    };
     render() {
         const { classes } = this.props;
         return (

@@ -2,9 +2,9 @@ import axios from '../../axios/poojas';
 import { put, call } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
-import constants, { reportMapping } from './constants';
+import constants, { reportMapping, uniqueProp } from './constants';
 export function* handleTransaction(action) {
-    const { type, collection, change } = action.payload;
+    const { type, collection, change, changedObj } = action.payload;
     if (collection === constants.Transactions && type === constants.add) {
         yield* transactionSagas.addTransactionSaga(action);
     }
@@ -19,6 +19,8 @@ export function* handleTransaction(action) {
                     'authorization': `${token}`,
                 }
                 let response = {};
+                const resultantChange = changedObj ? { ...changedObj, ...change } : change;
+                yield put(actions.onTransactionCommitReq(type, resultantChange, collection));
                 switch (type) {
                     case constants.add:
                         response = yield axios({
@@ -27,26 +29,25 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield handleResponse(response, collection);
+                        yield handleResponse(response, collection, constants.edit);
                         break;
                     case constants.delete:
+                        const reqParam = change[uniqueProp(collection)];
                         response = yield axios({
                             method: 'delete',
-                            url: `/${collection}/${change}`,
+                            url: `/${collection}/${reqParam}`,
                             headers
                         });
-                        yield handleResponse(response, collection);
+                        yield handleResponse(response, collection, type);
                         break;
                     case constants.edit:
-                        const entity = Object.getOwnPropertyNames(change)[0];
-                        const { changedObj } = action.payload;
                         response = yield axios({
                             method: 'put',
-                            url: `/${collection}/${entity}`,
-                            data: JSON.stringify(Object.values(change)[0]),
+                            url: `/${collection}/${uniqueProp(collection)}`,
+                            data: JSON.stringify(change),
                             headers
                         });
-                        yield handleResponse(response, collection, changedObj);
+                        yield handleResponse(response, collection, type, changedObj);
                         break;
                     default:
                         break;
@@ -59,12 +60,12 @@ export function* handleTransaction(action) {
         }
     }
 }
-const handleResponse = function* (response, collection, changedObj) {
+const handleResponse = function* (response, collection, type, changedObj) {
     const { error, message, change } = response.data;
     if (error)
         yield put(actions.onTransactionFailed(error, collection));
     else
-        yield put(actions.onTransactionCommitted(message, collection, Object.assign(changedObj, change)));
+        yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;

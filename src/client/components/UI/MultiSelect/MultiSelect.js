@@ -159,7 +159,7 @@ const styles = theme => ({
   },
 });
 
-class multiSelect extends React.Component {
+class MultiSelect extends React.Component {
   state = {
     values: '',
     valueObjs: [],
@@ -248,8 +248,8 @@ class multiSelect extends React.Component {
   }
 }
 
-multiSelect.propTypes = {
+MultiSelect.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(multiSelect);
+export default withStyles(styles)(MultiSelect);

@@ -23,9 +23,9 @@ export const onFetchFailed = (error, name) => {
 export const onTransactionFailed = (error, name) => {
     return { type: actionTypes.onTransactionFailed, payload: { error, name } };
 }
-export const onTransactionCommitted = (message, name, change) => {
-    return { type: actionTypes.onTransactionCommitted, payload: { message, name, change } };
+export const onTransactionCommitted = (message, change, type, name) => {
+    return { type: actionTypes.onTransactionCommitted, payload: { message, type, change, name } };
 }
-export const onTransactionCommitReq = (name) => {
-    return { type: actionTypes.onTransactionCommitReq, payload: { name } };
+export const onTransactionCommitReq = (type, change, name) => {
+    return { type: actionTypes.onTransactionCommitReq, payload: { type, change, name } };
 }

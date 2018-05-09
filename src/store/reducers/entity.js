@@ -1,8 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
-import constants from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {} };
-const uniqueProp = collection => collection === constants.Users ? 'username' : 'id';
-export const entity = (name) => (state = { name, columns: [], rows: [], loading: false, error: '', message: '' }, action) => {
+import constants, { uniqueProp } from '../sagas/constants';
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [] };
+export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
     switch (action.type) {
@@ -14,16 +13,28 @@ export const entity = (name) => (state = { name, columns: [], rows: [], loading:
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false, name };
         case actionTypes.onTransactionCommitted:
-            const prop = uniqueProp(name);
-            const rows = state.rows.map(row => row[prop] === action.payload.change[prop] ? action.payload.change : row);
-            return { ...state, message: action.payload.message, error: '', name, rows }
+            return { ...state, message: action.payload.message, error: '', name, rows: changeRows(payload, state.rows) };
         case actionTypes.onTransactionCommitReq:
-            return { ...state, error: '', message: '', name }
+            return { ...state, error: '', message: '', rows: changeRows(payload, state.rows), prevRows: state.rows, name };
         case actionTypes.onTransactionFailed:
-            return { ...state, error: action.payload.error, message: '', name };/* ,transaction:action.payload.transaction */
+            return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
         case actionTypes.resetEntity:
             return initialState;
         default:
             return state;
     }
 };
+const changeRows = (payload, rows) => {
+    const { type, change, name } = payload;
+    if (!change) return rows;
+    const prop = uniqueProp(name);
+    switch (type) {
+        case constants.add:
+            return [...rows, change];
+        case constants.edit:
+            return rows.map(row => (row[prop] === change[prop] ? change : row));
+        case constants.delete:
+            const uniquePropVal = change[prop];
+            return rows.filter(row => row[prop] !== uniquePropVal);
+    }
+}
