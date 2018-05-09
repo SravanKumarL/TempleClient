@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Input from 'material-ui/Input';
-import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
 import _ from 'lodash'
+import SingleSelectWrapped from './SelectWrapped/SingleSelectWrapped';
+import MultiSelectWrapped from './SelectWrapped/MultiSelectWrapped';
 const suggestions = [
   { label: 'Ashwini' },
   { label: 'Bharani' },
@@ -158,58 +159,13 @@ const styles = theme => ({
   },
 });
 
-// const multiSelect = (props) => {
-//   const { classes, label, value, changed, type } = props;
-//   let element = (
-//     <Input
-//       fullWidth
-//       disableUnderline
-//       inputComponent={SelectWrapped}
-//       inputProps={{
-//         classes,
-//         value: value,
-//         onChange: changed,
-//         placeholder: label,
-//         instanceId: 'react-select-single',
-//         id: 'react-select-single',
-//         name: 'react-select-single',
-//         simpleValue: true,
-//         options: props.options,
-//       }}
-//       // InputLabelProps={{
-//       //   shrink: true,
-//       //   className: classes.textFieldFormLabel,
-//       // }}
-//     />
-//   );
-//   if (type === 'multi') {
-//     element = <Input
-//       disableUnderline
-//       fullWidth
-//       placeholder={label}
-//       inputComponent={SelectWrapped}
-//       inputProps={{
-//         classes,
-//         value: value,
-//         multi: true,
-//         onChange: changed,
-//         placeholder: label,
-//         instanceId: 'react-select-chip',
-//         id: 'react-select-chip',
-//         name: 'react-select-chip',
-//         simpleValue: true,
-//         options: suggestions,
-//       }}
-//     />
-//   }
-//   return element;
-// }
-class multiSelect extends React.Component {
+class MultiSelect extends React.Component {
   state = {
     values: '',
     valueObjs: [],
     nextId: 0
   }
+
   onChange = (selValue) => {
     this.setState((prevState) => {
       let { valueObjs, nextId, values } = prevState;
@@ -233,28 +189,29 @@ class multiSelect extends React.Component {
       return { values, valueObjs, nextId };
     });
   }
+
   onRemove = (valueObj) => {
     const valueObjs = this.state.valueObjs.filter(x => x.id !== valueObj.id);
     this.setState({ valueObjs, values: valueObjs.map(vo => vo.value).join(',') });
   }
+
   onClearAll = () => {
     this.setState({ nextId: 0, values: '', valueObjs: [] });
   }
+
   render() {
-    const { classes, label, type } = this.props;
+    const { classes, label, type, changed, value } = this.props;
     const { values, valueObjs } = this.state
     let element = (
       <Input
         fullWidth
         disableUnderline
-        inputComponent={SelectWrapped}
+        inputComponent={SingleSelectWrapped}
         inputProps={{
           classes,
-          value: values,
-          onChange: this.onChange,
+          value: value,
+          onChange: changed,
           placeholder: label,
-          onClearAll: this.onClearAll,
-          closeOnSelect: true,
           instanceId: 'react-select-single',
           id: 'react-select-single',
           name: 'react-select-single',
@@ -272,7 +229,7 @@ class multiSelect extends React.Component {
         disableUnderline
         fullWidth
         placeholder={label}
-        inputComponent={(props) => (<SelectWrapped removeChip={this.onRemove} {...props} />)}
+        inputComponent={(props) => (<MultiSelectWrapped removeChip={this.onRemove} {...props} />)}
         inputProps={{
           classes,
           value: valueObjs,
@@ -283,16 +240,16 @@ class multiSelect extends React.Component {
           instanceId: 'react-select-chip',
           id: 'react-select-chip',
           name: 'react-select-chip',
-          options: suggestions,
+          options: suggestions
         }}
-      />
+      />;
     }
     return element;
   }
 }
 
-multiSelect.propTypes = {
+MultiSelect.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(multiSelect);
+export default withStyles(styles)(MultiSelect);
