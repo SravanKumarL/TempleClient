@@ -4,18 +4,24 @@ import withStyles from 'material-ui/styles/withStyles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
+// import { getCurrentDate } from '../../shared/utility';
 
 const styles = (theme) => ({
   root: {
     width: '100%',
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
+    boxShadow: theme.shadows[3],
+    border: `1px solid ${theme.palette.grey[200]}`,
   },
   table: {
     minWidth: 400,
   },
 });
-
+const getDates = (dates) => {
+  // const newDates = dates.map(date => getCurrentDate(date));
+  return dates.join(',');
+}
 const transactionSummary = (props) => {
   const { classes, open, transactionFields, summaryClosed, print, createdBy } = props;
   return (
@@ -37,12 +43,15 @@ const transactionSummary = (props) => {
           </TableHead>
           <TableBody>
             {Object.keys(transactionFields).map(id => {
+              if (id === 'others') {
+                return null;
+              }
               const field = transactionFields[id];
               const placeholder = field.name;
               return (
                 <TableRow key={id}>
                   <TableCell>{placeholder}:</TableCell>
-                  <TableCell>{field.value}</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{id === 'selectedDates' ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );
             })}
@@ -53,35 +62,6 @@ const transactionSummary = (props) => {
           </TableBody>
         </Table>
       </Paper>
-      {/* <div className={classes.container}>
-        <FormGroup className={classes.content}>
-          {Object.keys(transactionFields).map(id => {
-            const field = transactionFields[id];
-            const placeholder = field.name;
-            return (<FormControlLabel
-              className={classes.formLabel}
-              key={id}
-              control={
-                <Typography style={{ marginLeft: '30px' }} align='center' type="body1">
-                  {field.value}
-                </Typography>
-              }
-              label={`${placeholder} :      `}
-            />);
-          })}
-          <FormControlLabel
-            className={classes.formLabel}
-            control={
-              <Typography style={{ marginLeft: '30px' }} align='center' type="subheading"> {createdBy}</Typography>
-            }
-            label={`CreatedBy :       `}
-          />
-        </FormGroup>
-      </div> */}
-      {/* <div className={classes.buttonsContainer}>
-        <Button raised className={classes.button} color='primary' onClick={print}> Print </Button>
-        <Button raised className={classes.button} color='secondary' onClick={summaryClosed}> Cancel </Button>
-      </div> */}
     </Dialog>
   )
 };

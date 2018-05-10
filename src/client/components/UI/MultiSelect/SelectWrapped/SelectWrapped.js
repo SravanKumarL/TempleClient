@@ -10,35 +10,47 @@ import Select from 'react-select';
 import Option from '../Option/Option';
 
 const selectWrapped = (props) => {
-  const { classes, ...other } = props;
+  const handleClear = (change) => {
+    props.onClearAll();
+  }
+  const onOptionSelected = (value, event) => {
+    props.onChange(value.value);
+  }
+  const { classes, removeChip, onChange, ...other } = props;
   const value = valueProps => {
-    const { value, children, onRemove } = valueProps;
+    let { value } = valueProps;
+    let label = value;
+    if (value.value)
+      label = value.value;
     const valueRemove = event => {
       event.preventDefault();
       event.stopPropagation();
-      onRemove(value);
+      removeChip(value);
     };
-    if (onRemove) {
+    if (removeChip) {
       return (
         <Chip
           tabIndex={-1}
-          label={children}
+          label={label}
           className={classes.chip}
           onDelete={valueRemove}
         />
       );
     }
-    return <div className="Select-value">{children}</div>;
+    return <div className="Select-value">{label}</div>;
   }
   return (
     <Select
-      optionComponent={Option}
+      optionComponent={(props) => {
+        const { ref, ...restProps } = props;
+        return <Option id='select-option' onOptionSelect={onOptionSelected} {...restProps} />;
+      }}
       noResultsText={<Typography>{'No results found'}</Typography>}
       arrowRenderer={arrowProps => {
         return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
       }}
       simpleValue
-      // onSelectResetsInput
+      onChange={handleClear}
       removeSelected={false}
       clearRenderer={() => <ClearIcon />}
       valueComponent={value}
@@ -46,5 +58,4 @@ const selectWrapped = (props) => {
     />
   );
 }
-
 export default selectWrapped;

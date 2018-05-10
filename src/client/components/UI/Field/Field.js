@@ -14,7 +14,7 @@ const styles = theme => ({
     justifyContent: 'center',
   },
   formControl: {
-    width: '80%',
+    width: '100%',
   },
   inputLabelFocused: {
     color: purple[500],
@@ -32,6 +32,7 @@ const input = (props) => {
         label={props.label}
         disabled={props.disabled}
         multiline={props.multiline}
+        showLabels={props.showLabels}
       />;
       break;
     case ('number'):
@@ -42,6 +43,7 @@ const input = (props) => {
         label={props.label}
         disabled={props.disabled}
         type='number'
+        showLabels={props.showLabels}
       />;
       break;
     case ('singleselect'):
@@ -76,13 +78,7 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      // inputElement = <Input
-      //   value={props.value}
-      //   changed={props.changed}
-      //   label={props.label}
-      //   type='date'
-      // />
-      inputElement=<DatePickerWrapper onDateSelectionChanged={props.changed}/>
+      inputElement = <DatePickerWrapper mode={props.mode} onDateSelectionChanged={props.changed} />
       break;
     default:
       inputElement = <Input

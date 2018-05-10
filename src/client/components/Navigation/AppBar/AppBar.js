@@ -6,6 +6,7 @@ import Typography from 'material-ui/Typography';
 import classNames from 'classnames';
 import IconButton from 'material-ui/IconButton';
 import AccountCircle from 'material-ui-icons/AccountCircle';
+import Dashboard from 'material-ui-icons/Dashboard';
 import Tooltip from 'material-ui/Tooltip';
 
 const drawerWidth = 240;
@@ -67,7 +68,7 @@ const appBar = (props) => {
   return (
     <AppBar className={classNames(classes.appBar, props.open && classes.appBarShift)}>
       {/* <Toolbar disableGutters classes={classes.toolbar} className={props.open ? classes.toolbar : ''}> */}
-        {/* <IconButton
+      {/* <IconButton
           color="inherit"
           aria-label="open drawer"
           onClick={props.drawerOpen}
@@ -75,26 +76,29 @@ const appBar = (props) => {
         >
           <MenuIcon />
         </IconButton> */}
-        <Typography style={{ marginLeft: '3vw', marginBottom: 3 }} type="title" color="inherit" noWrap>
+      <div style={{ display: 'flex',marginLeft: '3vw', marginTop: 6}}>
+        <Dashboard style={{ marginLeft: 'auto', marginRight: 5 }} />
+        <Typography  variant="title" color="inherit" noWrap gutterBottom>
           {props.role === 'user' ? 'User Board' : 'Admin Board'}
         </Typography>
-        <div className={classes.logout}>
-          <Tooltip id="tooltip-bottom" title="Logout" placement="bottom">
-            <IconButton
-              className={classes.profileButton}
-              aria-owns={'menu-appbar'}
-              aria-haspopup="true"
-              onClick={props.logout}
-              color="inherit"
-            >
-              <AccountCircle className={classes.accountCircle} />
-              <Typography className={classes.logoutText} type='subheading' gutterBottom>
-                Logout
+      </div>
+      <div className={classes.logout}>
+        <Tooltip id="tooltip-bottom" title="Logout" placement="bottom">
+          <IconButton
+            className={classes.profileButton}
+            aria-owns={'menu-appbar'}
+            aria-haspopup="true"
+            onClick={props.logout}
+            color="inherit"
+          >
+            <AccountCircle className={classes.accountCircle} />
+            <Typography className={classes.logoutText} variant='subheading' gutterBottom>
+              Logout
           </Typography>
-            </IconButton>
-          </Tooltip>
+          </IconButton>
+        </Tooltip>
 
-        </div>
+      </div>
       {/* </Toolbar> */}
     </AppBar >
   );

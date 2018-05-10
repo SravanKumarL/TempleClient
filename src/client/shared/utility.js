@@ -38,8 +38,8 @@ export const checkValidity = (value, rules) => {
   return isValid;
 }
 
-export const getCurrentDate = () => {
-  let today = new Date();
+export const getCurrentDate = (date = new Date()) => {
+  let today = date;
   let dd = today.getDate();
   let mm = today.getMonth() + 1; //January is 0!
   let yyyy = today.getFullYear();
@@ -97,3 +97,22 @@ export const phoneNumber = value =>
     ? 'Invalid phone number, must be 10 digits'
     : undefined
 /* eslint-enable */
+export const getFormattedColumns = (columns) => {
+  if (columns !== undefined && columns.length !== 0) {
+    if (columns.every(column => checkIfObject(column))) {
+      if (columns.every(column => column.hasOwnProperty('name') && column.hasOwnProperty('title')))
+        return columns;
+      else
+        return columns.map(column => {
+          let columnName = column.hasOwnProperty('name') ? column.name : (column.hasOwnProperty('title') ? column.title : column);
+          column['title'] = columnName;
+          column['name'] = columnName;
+          return column;
+        });
+    }
+    return columns.map(column => ({ name: column, title: column }));
+  }
+  return [];
+}
+export const checkIfObject = (obj) => obj !== null && typeof obj === 'object';
+  /* eslintenable */

@@ -9,7 +9,8 @@ const snackbar = (props) => {
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       open={props.open}
-      autoHideDuration={2000}
+      autoHideDuration={1000}
+      color={props.color}
       onClose={props.close}
       transition={(props) => transitionUp(props)}
       SnackbarContentProps={{

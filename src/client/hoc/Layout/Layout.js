@@ -32,10 +32,10 @@ const styles = theme => ({
     // padding: 24,
     paddingTop: 30,
     paddingLeft: 60,
-    height: 'calc(100% - 56px)',
+    height: '94.5vh',
     marginTop: 56,
     [theme.breakpoints.up('sm')]: {
-      height: 'calc(100% - 56px)',
+      height: '94.5vh',
       marginTop: 56,
     },
     button: {

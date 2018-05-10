@@ -7,7 +7,7 @@ import Input, { InputAdornment } from 'material-ui/Input';
 import Search from 'material-ui-icons/Search';
 import Popup from './PopupMenu';
 import { Clear } from 'material-ui-icons';
-import ChevronLeft from 'material-ui-icons/ChevronLeft';
+import Cancel from 'material-ui-icons/Cancel';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Slide from 'material-ui/transitions/Slide';
 import green from 'material-ui/colors/green';
@@ -98,17 +98,17 @@ const styles = theme => ({
 const searchPanel = (props) => {
   const { loading, classes, value, changed, inputRef, clearClicked, searchClicked, open, transactions, closed, panelExited, optionClicked } = props;
   let transactionsList = (
-    <Typography style={{ marginTop: 20 }} type='body1' align='center'> Please enter some value to search...</Typography>
+    <Typography style={{ marginTop: 20 }} variant='body1' align='center'> Please enter some value to search...</Typography>
   );
   if (value !== '' && transactions && transactions.length === 0) {
     transactionsList = (
-      <Typography style={{ marginTop: 20 }} type='body1' align='center'> No search results found</Typography>
+      <Typography style={{ marginTop: 20 }} variant='body1' align='center'> No search results found</Typography>
     );
   }
   if (loading) {
     transactionsList = (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography style={{ marginTop: 20 }} type='caption'>Searching...</Typography>
+        <Typography style={{ marginTop: 20 }} variant='caption'>Searching...</Typography>
         <CircularProgress />
       </div>
     );
@@ -132,9 +132,9 @@ const searchPanel = (props) => {
   let panel = (
     <div className={classes.panel} >
       <div style={{ display: 'flex', marginBottom: 10, alignItems: 'center' }}>
-        <Typography type='title' style={{ flexGrow: 1 }} align='center'> Search Transaction </Typography>
+        <Typography variant='title' style={{ flexGrow: 1 }} align='center'> Search Transaction </Typography>
         <IconButton style={{ zIndex: 1, marginLeft: 'auto' }} aria-label="close" onClick={closed}>
-          <ChevronLeft />
+          <Cancel />
         </IconButton>
       </div>
       <div className={classes.header}>
@@ -171,7 +171,7 @@ const searchPanel = (props) => {
     </div>
   );
   return (
-    <Slide direction="right" in={open} mountOnEnter unmountOnExit onExited={panelExited}>
+    <Slide in={open} direction='up' timeout={200} mountOnEnter unmountOnExit onExited={panelExited}>
       {panel}
     </Slide>
   );

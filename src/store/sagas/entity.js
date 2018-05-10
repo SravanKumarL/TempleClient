@@ -2,9 +2,9 @@ import axios from '../../axios/poojas';
 import { put, call } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
-import constants from './constants';
+import constants, { reportMapping, uniqueProp } from './constants';
 export function* handleTransaction(action) {
-    const { type, collection, change } = action.payload;
+    const { type, collection, change, changedObj } = action.payload;
     if (collection === constants.Transactions && type === constants.add) {
         yield* transactionSagas.addTransactionSaga(action);
     }
@@ -19,6 +19,8 @@ export function* handleTransaction(action) {
                     'authorization': `${token}`,
                 }
                 let response = {};
+                const resultantChange = changedObj ? { ...changedObj, ...change } : change;
+                yield put(actions.onTransactionCommitReq(type, resultantChange, collection));
                 switch (type) {
                     case constants.add:
                         response = yield axios({
@@ -27,25 +29,25 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response);
+                        yield handleResponse(response, collection, constants.edit);
                         break;
                     case constants.delete:
+                        const reqParam = change[uniqueProp(collection)];
                         response = yield axios({
                             method: 'delete',
-                            url: `/${collection}/${change}`,
+                            url: `/${collection}/${reqParam}`,
                             headers
                         });
-                        yield call(handleResponse, response)
+                        yield handleResponse(response, collection, type);
                         break;
                     case constants.edit:
-                        const entity = Object.getOwnPropertyNames(change)[0];
                         response = yield axios({
                             method: 'put',
-                            url: `/${collection}/${entity}`,
-                            data: JSON.stringify(Object.values(change)[0]),
+                            url: `/${collection}/${uniqueProp(collection)}`,
+                            data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response)
+                        yield handleResponse(response, collection, type, changedObj);
                         break;
                     default:
                         break;
@@ -54,25 +56,25 @@ export function* handleTransaction(action) {
         }
         catch (error) {
             console.log(error);
-            yield put(actions.onTransactionFailed(error.message))
+            yield put(actions.onTransactionFailed(error.message, collection))
         }
     }
 }
-const handleResponse = (response) => {
-    const { error, message } = response.data;
+const handleResponse = function* (response, collection, type, changedObj) {
+    const { error, message, change } = response.data;
     if (error)
-        put(actions.onTransactionFailed(error));
+        yield put(actions.onTransactionFailed(error, collection));
     else
-        put(actions.onTransactionCommitted(message));
+        yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection } = action.payload;
+    const { collection, searchCriteria } = action.payload;
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
     else {
         try {
-            yield put(actions.onFetchReq());
+            yield put(actions.onFetchReq(collection));
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -80,40 +82,55 @@ export function* handleFetchData(action) {
                 const headers = {
                     'authorization': `${token}`,
                 }
-                const response = yield axios({
-                    method: 'get',
-                    url: `/${collection}`,
-                    headers
-                });
-                yield put(actions.onFetchSuccess(response.data));
+                let response = {};
+                if (searchCriteria && collection === constants.Reports) {
+                    response = yield axios({
+                        method: 'post',
+                        data: searchCriteria,
+                        url: `/${collection}`,
+                        headers
+                    });
+                }
+                else {
+                    response = yield axios({
+                        method: 'get',
+                        url: `/${collection}`,
+                        headers
+                    });
+                }
+                yield put(actions.onFetchSuccess(response.data, collection));
             }
         } catch (error) {
             console.log(error);
-            yield put(actions.onFetchFailed(error.message));
+            yield put(actions.onFetchFailed(error.message, collection));
         }
     }
 }
 export function* handleFetchSchema(action) {
-    const { collection } = action.payload;
+    const { collection, searchCriteria } = action.payload;
     try {
-        yield put(actions.onFetchReq());
+        yield put(actions.onFetchReq(collection));
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
         } else {
-            const headers = {
-                'authorization': `${token}`,
+            if (searchCriteria && collection === constants.Reports) {
+                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName], collection));
             }
-            const response = yield axios({
-                method: 'get',
-                url: `/${collection}/${constants.Schema}`,
-                headers
-            });
-            console.log(response.data);
-            yield put(actions.onFetchSchemaSuccess(response.data));
+            else {
+                const headers = {
+                    'authorization': `${token}`,
+                }
+                const response = yield axios({
+                    method: 'get',
+                    url: `/${collection}/${constants.Schema}`,
+                    headers
+                });
+                yield put(actions.onFetchSchemaSuccess(response.data, collection));
+            }
         }
     } catch (error) {
         console.log(error);
-        yield put(actions.onFetchFailed(error.message));
+        yield put(actions.onFetchFailed(error.message, collection));
     }
 }
