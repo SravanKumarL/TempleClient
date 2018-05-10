@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
+import withStyles from 'material-ui/styles/withStyles';
 import TextField from 'material-ui/TextField/TextField';
 
 const styles = theme => ({
@@ -28,9 +28,12 @@ const styles = theme => ({
   textFieldFormLabel: {
     fontSize: 18,
   },
+  multiLine: {
+    height: 'auto',
+  }
 });
 
-function TextBox(props) {
+const TextBox = (props) => {
   const { classes, label, value, changed, disabled, multiline, showLabels } = props;
   return (
     <TextField
@@ -41,6 +44,7 @@ function TextBox(props) {
         classes: {
           root: classes.textFieldRoot,
           input: classes.textFieldInput,
+          inputMultiline: classes.multiLine,
         },
       }}
       InputLabelProps={showLabels ? {

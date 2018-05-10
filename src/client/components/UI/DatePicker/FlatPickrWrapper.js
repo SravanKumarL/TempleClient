@@ -7,8 +7,7 @@ import Flatpickr from './Flatpickr'
 import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
 import { getCurrentDate } from '../../../shared/utility';
-import { Button } from 'material-ui';
-import  ContentPaper  from './ContentPaper';
+
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   getDaysOfWeek = () => this.getAllDays().filter(x => x !== 'All days');

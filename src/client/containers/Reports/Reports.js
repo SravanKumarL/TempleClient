@@ -1,27 +1,27 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
+import withRouter from 'react-router-dom/withRouter';
+import withStyles from 'material-ui/styles/withStyles';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
-import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
-import { Event, Poll, ImportContacts } from 'material-ui-icons';
-// import DatePicker from '../../components/UI/DatePicker/DatePicker';
+import Event from 'material-ui-icons/Event';
+import Poll from 'material-ui-icons/Poll';
+import ImportContacts from 'material-ui-icons/ImportContacts';
+
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase, getCurrentDate } from '../../shared/utility';
-import * as actions from '../../../store/actions';
-import orange from 'material-ui/colors/orange';
-import blue from 'material-ui/colors/blue';
-import green from 'material-ui/colors/green';
+import Orange from 'material-ui/colors/orange';
+import Blue from 'material-ui/colors/blue';
+import Green from 'material-ui/colors/green';
 import constants from '../../../store/sagas/constants'
-import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
+import DataGridWrapper from '../DataGrid/dataGridWrapper';
+import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
+import createContainer from '../../hoc/createContainer/createContainer';
 
 const styles = theme => ({
   container: {
     display: 'flex',
-    // flexGrow: 1,
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
     width: 200,
@@ -43,7 +43,6 @@ const styles = theme => ({
       transition: 'all 200ms ease-in',
       transform: 'scale(1.1)',
     },
-
   },
   text: {
     display: 'flex',
@@ -69,15 +68,16 @@ const styles = theme => ({
   }
 });
 
+const initialState = {
+  modalOpen: false,
+  selectedOption: {},
+  selectedDates: getCurrentDate(),
+  poojaDetails: null,
+  reportOpen: false,
+  pooja: ''
+};
 class Reports extends React.Component {
-  state = {
-    modalOpen: false,
-    selectedOption: {},
-    selectedDates: getCurrentDate(),
-    poojaDetails: null,
-    reportOpen: false,
-    pooja: ''
-  }
+  state = { ...initialState };
   componentWillReceiveProps(nextProps) {
     const { poojaDetails } = nextProps;
     if (poojaDetails) {
@@ -88,26 +88,19 @@ class Reports extends React.Component {
       this.setState({ poojaDetails: options });
     }
   }
-  poojaReportsClickedHandler = () => {
-    this.setState({
-      modalOpen: true,
-    });
-  };
-  closeHandler = () => {
-    this.setState({
-      modalOpen: false,
-    });
-  }
+  //UI State Handlers
+  poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
+  closeHandler = () => { this.setState({ modalOpen: false, }); }
+  closeDialogHandler = () => { this.setState({ modalOpen: false }); }
+  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
+  dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
+  poojaSelected = (pooja) => this.setState({ pooja });
+  optionClickedHandler = (option) => {this.setState({ selectedOption: option, modalOpen: true, reportOpen: false });}
+  
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
   }
-  closeDialogHandler = () => {
-    this.setState({ modalOpen: false });
-  }
-  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
-  dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
-  poojaSelected = (pooja) => this.setState({ pooja });
   getModal = () => {
     const { modalOpen, selectedOption } = this.state;
     return (
@@ -128,15 +121,12 @@ class Reports extends React.Component {
       </Dialog>
     );
   }
-  optionClickedHandler = (option) => {
-    this.setState({ selectedOption: option, modalOpen: true, reportOpen:false });
-  }
   getButtons = () => {
     const { classes } = this.props;
     const options = [
-      { name: 'Pooja Report', color: orange[500], icon: <Event className={classes.icon} /> },
-      { name: 'Management Report', color: blue[500], icon: <Poll className={classes.icon} /> },
-      { name: 'Accounts Report', color: green[500], icon: <ImportContacts className={classes.icon} /> },
+      { name: 'Pooja Report', color: Orange[500], icon: <Event className={classes.icon} /> },
+      { name: 'Management Report', color: Blue[500], icon: <Poll className={classes.icon} /> },
+      { name: 'Accounts Report', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
 
     return (
@@ -177,10 +167,7 @@ class Reports extends React.Component {
         <div className={classes.container}>
           {this.getButtons()}
           {this.getModal()}
-          {/* <Switch>
-        </Switch> */}
         </div>
-
         {reportOpen &&
           <div style={{ display: 'flex', flexDirection: 'column' }} >
             <Typography variant='display1' align='center' style={{ marginBottom: 20 }}> {selectedOption.name} </Typography>
@@ -201,9 +188,5 @@ const mapStateToProps = (state) => {
     poojaDetails: state.poojas.rows,
   }
 }
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getPoojaDetails: () => { dispatch(actions.fetchData(constants.Poojas)); },
-  }
-}
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withPoojaDetails(withStyles(styles)(Reports))));
+
+export default withRouter(createContainer(withPoojaDetails(withStyles(styles)(Reports), mapStateToProps)));

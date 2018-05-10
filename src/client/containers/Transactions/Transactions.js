@@ -1,19 +1,22 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
+
+import withStyles from 'material-ui/styles/withStyles';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import blueGrey from 'material-ui/colors/blueGrey';
 import Fade from 'material-ui/transitions/Fade';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
+import Event from 'material-ui-icons/Event';
+import Description from 'material-ui-icons/Description';
+import ModeEdit from 'material-ui-icons/ModeEdit';
+import Cancel from 'material-ui-icons/Cancel';
+
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
-import * as actions from '../../../store/actions';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
+import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
-import { Event, Description } from 'material-ui-icons';
-import { ModeEdit, Cancel } from 'material-ui-icons';
 import classNames from 'classnames';
 import ViewTransactions from './Components/ViewTransactions';
 import EditTransactions from './Components/EditTransactions';
@@ -112,16 +115,17 @@ const styles = theme => ({
   }
 });
 
+const initialState = {
+  modalOpen: false,
+  snackOpen: false,
+  activeTab: 'pooja',
+  transactionInformation: [],
+  selectedTransaction: {},
+  dialogOpen: false,
+  option: '',
+};
 class Transactions extends React.Component {
-  state = {
-    modalOpen: false,
-    snackOpen: false,
-    activeTab: 'pooja',
-    transactionInformation: [],
-    selectedTransaction: {},
-    dialogOpen: false,
-    option: '',
-  };
+  state = { ...initialState };
   componentWillReceiveProps(nextProps) {
     if (nextProps.message) {
       this.setState({ snackOpen: true });
@@ -132,7 +136,9 @@ class Transactions extends React.Component {
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
   modalCloseHandler = () => this.setState({ modalOpen: false });
-
+  tabChangeHandler = (value) => { this.setState({ activeTab: value, }); }
+  formSubmitHandler = (transactionInformation) => { this.setState({ modalOpen: true, transactionInformation }); }
+  
   printHandler = () => {
     const createdBy = this.props.user;
     const { transactionInformation } = this.state;
@@ -146,26 +152,17 @@ class Transactions extends React.Component {
     } else {
       transaction.others = false;
     }
-    this.props.addTransaction(transaction);
+    this.props.commitTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
     // window.print();
     // this.setState({ open: true });
   }
 
-  tabChangeHandler = (event, value) => {
-    this.setState({
-      activeTab: value,
-    });
-  }
   itemSelectionChangedHandler = (option, selectedTransaction) => {
     if (option.toLowerCase() !== 'use') {
       this.setState({ dialogOpen: true });
     }
     this.setState({ option, selectedTransaction });
-  }
-  formSubmitHandler = (transactionInformation) => {
-    
-    this.setState({ modalOpen: true, transactionInformation });
   }
   closeDialogHandler = () => this.setState({ dialogOpen: false })
   fieldEditedHandler = (event, inputIdentifier) => {
@@ -271,12 +268,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addTransaction: (transaction) => {
-      dispatch(actions.commitTransaction(constants.add, constants.Transactions, transaction));
-    },
-  }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Transactions)));
+export default withRouter(createContainer(withStyles(styles)(Transactions), mapStateToProps));

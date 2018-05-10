@@ -1,30 +1,30 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import Button from 'material-ui/Button';
 import Search from 'material-ui-icons/Search';
 import Fade from 'material-ui/transitions/Fade';
-import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
-import Snackbar from 'material-ui/Snackbar';
 import Slide from 'material-ui/transitions/Slide';
+import Snackbar from 'material-ui/Snackbar';
 
-import * as actions from '../../../../store/actions';
+import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
+import createContainer from '../../../hoc/createContainer/createContainer';
 
 const transitionUp = (props) => { return (<Slide direction="up" {...props} />) };
 
+const initialState = {
+  searchPanelOpen: false,
+  showSearchButton: true,
+  searchValue: '',
+  searchedTransactions: null,
+  searchTextError: false,
+  showOverflow: false,
+};
 class SearchTransaction extends React.Component {
   constructor() {
     super();
     this.baseState = this.state;
   }
-  state = {
-    searchPanelOpen: false,
-    showSearchButton: true,
-    searchValue: '',
-    searchedTransactions: null,
-    searchTextError: false,
-    showOverflow: false,
-  };
+  state = { ...initialState };
   componentWillReceiveProps(nextProps) {
     if (nextProps.searchedTransactions !== this.props.searchedTransactions) {
       this.setState({ searchedTransactions: nextProps.searchedTransactions });
@@ -105,12 +105,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    searchTransactions: (searchData) => {
-      dispatch(actions.searchTransactions(searchData))
-    }
-  }
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SearchTransaction));
+export default withRouter(createContainer(SearchTransaction, mapStateToProps));

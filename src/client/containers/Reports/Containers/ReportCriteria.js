@@ -1,15 +1,13 @@
 import React from 'react';
 import Typography from 'material-ui/Typography';
-// import TextField from '../../components/UI/TextField/TextField';
 import Field from '../../../components/UI/Field/Field';
+
+const initialState = { value: '', poojaValue: '' };
 class ReportCriteria extends React.Component {
-  state = {
-    value: '',
-    poojaValue: '',
-  }
+  state = { ...initialState };
   poojaChangedHandler = (event, inputIdentifier) => {
-    const {poojaSelected}=this.props;
-    if(poojaSelected)
+    const { poojaSelected } = this.props;
+    if (poojaSelected)
       poojaSelected(event);
     this.setState({ poojaValue: event });
   }
@@ -31,7 +29,7 @@ class ReportCriteria extends React.Component {
         />
       )
     }
-    let option = (
+    return (
       <div style={{ display: 'flex', width: 450, flexGrow: 1, flexDirection: 'column' }}>
         <Typography variant='subheading' align='center'>{heading}</Typography>
         {pooja}
@@ -42,8 +40,6 @@ class ReportCriteria extends React.Component {
         />
       </div>
     );
-
-    return option;
   }
 }
 

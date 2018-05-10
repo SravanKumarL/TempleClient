@@ -8,7 +8,6 @@ import Chip from 'material-ui/Chip';
 import Select from 'react-select';
 
 import Option from '../Option/Option';
-import { Button } from 'material-ui';
 
 const selectWrapped = (props) => {
   const handleClear = (change) => {

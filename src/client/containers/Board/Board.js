@@ -2,40 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
-import { blueGrey } from 'material-ui/colors'
-import { Receipt, Pages, Event, AccountCircle } from 'material-ui-icons';
-import Fade from 'material-ui/transitions/Fade';
+import blueGrey from 'material-ui/colors/blueGrey'
+import Receipt from 'material-ui-icons/Receipt';
+import Pages from 'material-ui-icons/Pages';
+import Event from 'material-ui-icons/Event';
+import AccountCircle from 'material-ui-icons/AccountCircle';
 
 import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
 import Poojas from '../Poojas/Poojas';
-import { DataGridWrapper } from '../DataGrid/dataGridWrapper';
+import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import constants from '../../../store/sagas/constants';
+import TabContainer from './TabContainer';
 
-function TabContainer(props) {
-  return (
-    <Typography component="div" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      background: 'white',
-      color: 'black',
-      height: '100%',
-      marginLeft: 5,
-      padding: 8 * 3,
-      paddingTop: '10px',
-      paddingBottom: '88px',
-      marginRight: '40px',
-      borderTopRightRadius: '10px,'
-    }}>
-      {props.children}
-    </Typography >
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 const styles = theme => ({
   root: {
@@ -92,14 +71,12 @@ const styles = theme => ({
   }
 });
 
+const initialState = { activeTab: 'transactions' };
 class SimpleTabs extends React.Component {
-  state = {
-    activeTab: 'transactions',
-  };
+  
+  state = { ...initialState };
 
-  handleChange = (event, value) => {
-    this.setState({ activeTab: value });
-  };
+  handleChange = (event, value) => { this.setState({ activeTab: value }); };
 
   render() {
     const { classes, role } = this.props;
@@ -125,34 +102,26 @@ class SimpleTabs extends React.Component {
         >
           <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
           <Tab label="Reports" value='reports' classes={newTabClasses} icon={<Pages />} />
-          {role==='admin' && <Tab label="Poojas" value='poojas' classes={newTabClasses} icon={<Event/>}/>}
-          {role==='admin' && <Tab label="Users" value='users' classes={newTabClasses} icon={<AccountCircle/>}/>}
+          {role === 'admin' && <Tab label="Poojas" value='poojas' classes={newTabClasses} icon={<Event />} />}
+          {role === 'admin' && <Tab label="Users" value='users' classes={newTabClasses} icon={<AccountCircle />} />}
         </Tabs>
         <div className={classes.tabContainer}>
           {activeTab === 'transactions' &&
             <TabContainer>
-              <Fade in={activeTab === 'transactions'} timeout={500} mountOnEnter unmountOnExit>
-                <Transactions />
-              </Fade>
+              <Transactions />
             </TabContainer>}
           {activeTab === 'reports' &&
             <TabContainer>
-              <Fade in={activeTab === 'reports'} timeout={500} mountOnEnter unmountOnExit>
-                <Reports />
-              </Fade>
+              <Reports />
             </TabContainer>}
-          {activeTab === 'poojas' && 
-          <TabContainer>
-              <Fade in={activeTab === 'poojas'} timeout={500} mountOnEnter unmountOnExit>
-                <Poojas />
-              </Fade>
+          {activeTab === 'poojas' &&
+            <TabContainer>
+              <Poojas />
             </TabContainer>}
-          {activeTab === 'users' && 
-          <TabContainer>
-              <Fade in={activeTab === 'users'} timeout={500} mountOnEnter unmountOnExit>
-                <DataGridWrapper style={{flexGrow:1}} collection={constants.Users}/>
-              </Fade>
-            </TabContainer>}  
+          {activeTab === 'users' &&
+            <TabContainer>
+              <DataGridWrapper style={{ flexGrow: 1 }} collection={constants.Users} />
+            </TabContainer>}
         </div>
       </div>
     );

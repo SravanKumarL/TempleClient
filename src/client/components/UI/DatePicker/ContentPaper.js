@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import { Paper,Typography, Checkbox, FormControlLabel  } from 'material-ui';
 const styles = theme => ({
