@@ -13,7 +13,7 @@ const drawerWidth = 240;
 
 const styles = theme => ({
   appBar: {
-    position: 'absolute',
+    position: 'fixed',
     zIndex: theme.zIndex.drawer + 1,
     flexDirection: 'row',
     height: 56,
@@ -63,23 +63,13 @@ const styles = theme => ({
   }
 });
 
-const appBar = (props) => {
-  const { classes } = props;
+const appBar = ({ classes, role, open, logout }) => {
   return (
-    <AppBar className={classNames(classes.appBar, props.open && classes.appBarShift)}>
-      {/* <Toolbar disableGutters classes={classes.toolbar} className={props.open ? classes.toolbar : ''}> */}
-      {/* <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={props.drawerOpen}
-          className={classNames(classes.menuButton, props.open && classes.hide)}
-        >
-          <MenuIcon />
-        </IconButton> */}
-      <div style={{ display: 'flex',marginLeft: '3vw', marginTop: 6}}>
+    <AppBar className={classNames(classes.appBar, open && classes.appBarShift)}>
+      <div style={{ display: 'flex', marginLeft: '3vw', marginTop: 6 }}>
         <Dashboard style={{ marginLeft: 'auto', marginRight: 5 }} />
-        <Typography  variant="title" color="inherit" noWrap gutterBottom>
-          {props.role === 'user' ? 'User Board' : 'Admin Board'}
+        <Typography variant="title" color="inherit" noWrap gutterBottom>
+          {role === 'user' ? 'User Board' : 'Admin Board'}
         </Typography>
       </div>
       <div className={classes.logout}>
@@ -88,7 +78,7 @@ const appBar = (props) => {
             className={classes.profileButton}
             aria-owns={'menu-appbar'}
             aria-haspopup="true"
-            onClick={props.logout}
+            onClick={logout}
             color="inherit"
           >
             <AccountCircle className={classes.accountCircle} />
@@ -97,9 +87,7 @@ const appBar = (props) => {
           </Typography>
           </IconButton>
         </Tooltip>
-
       </div>
-      {/* </Toolbar> */}
     </AppBar >
   );
 }

@@ -4,7 +4,6 @@ import withStyles from 'material-ui/styles/withStyles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
-// import { getCurrentDate } from '../../shared/utility';
 
 const styles = (theme) => ({
   root: {
@@ -18,12 +17,12 @@ const styles = (theme) => ({
     minWidth: 400,
   },
 });
+
 const getDates = (dates) => {
-  // const newDates = dates.map(date => getCurrentDate(date));
   return dates.join(',');
 }
-const transactionSummary = (props) => {
-  const { classes, open, transactionFields, summaryClosed, print, createdBy } = props;
+
+const transactionSummary = ({ classes, open, transactionFields, summaryClosed, print, createdBy }) => {
   return (
     <Dialog
       open={open}

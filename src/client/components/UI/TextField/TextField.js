@@ -9,16 +9,15 @@ const styles = theme => ({
     'label + &': {
       marginTop: theme.spacing.unit * 3,
     },
-    height: 'auto ',
+    height: 'auto',
   },
   textFieldInput: {
     color: 'initial',
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
-    fontSize: 16,
-    padding: '10px 12px',
-    width: 'calc(100% - 24px)',
+    fontSize: '1rem',
+    padding: '1.2rem 0.8rem',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',
@@ -28,13 +27,14 @@ const styles = theme => ({
   textFieldFormLabel: {
     fontSize: 18,
   },
-  multiLine: {
-    height: 'auto',
-  }
 });
 
-const TextBox = (props) => {
+<<<<<<< Updated upstream
+const TextBox = ({ type, classes, label, value, changed, disabled, multiline, showLabels }) => {
+=======
+function TextBox(props) {
   const { classes, label, value, changed, disabled, multiline, showLabels } = props;
+>>>>>>> Stashed changes
   return (
     <TextField
       label={showLabels ? label : ''}
@@ -44,7 +44,6 @@ const TextBox = (props) => {
         classes: {
           root: classes.textFieldRoot,
           input: classes.textFieldInput,
-          inputMultiline: classes.multiLine,
         },
       }}
       InputLabelProps={showLabels ? {
@@ -55,8 +54,9 @@ const TextBox = (props) => {
       onChange={changed}
       disabled={disabled}
       margin='dense'
-      type={props.type ? props.type : 'input'}
+      type={type ? type : 'input'}
       multiline={multiline}
+      rows={6}
     />
   );
 }

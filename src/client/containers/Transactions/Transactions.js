@@ -17,6 +17,11 @@ import SearchTransaction from './Containers/SearchTransaction';
 import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
+<<<<<<< Updated upstream
+=======
+import { Event, Description } from 'material-ui-icons';
+import { ModeEdit, Cancel } from 'material-ui-icons';
+>>>>>>> Stashed changes
 import classNames from 'classnames';
 import ViewTransactions from './Components/ViewTransactions';
 import EditTransactions from './Components/EditTransactions';
@@ -28,33 +33,31 @@ const styles = theme => ({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    flexGrow: 1,
     position: 'relative',
   },
   middlePane: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
     alignItems: 'center',
     flexGrow: 1,
-    position: 'absolute',
-    width: 600,
-    height: '82vh'
+    minWidth: '535px',
+    maxWidth: '535px',
+    marginLeft: 'auto'
   },
   panes: {
     display: 'flex',
     flexGrow: 1,
     height: '100%',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingBottom: '1rem',
+
   },
   leftPane: {
     display: 'flex',
-    // width: 390,
   },
   rightPane: {
     display: 'flex',
     marginLeft: 'auto',
-    // width: 390,
   },
   container: {
     display: 'flex',
@@ -136,9 +139,9 @@ class Transactions extends React.Component {
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
   modalCloseHandler = () => this.setState({ modalOpen: false });
-  tabChangeHandler = (value) => { this.setState({ activeTab: value, }); }
+  tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
   formSubmitHandler = (transactionInformation) => { this.setState({ modalOpen: true, transactionInformation }); }
-  
+
   printHandler = () => {
     const createdBy = this.props.user;
     const { transactionInformation } = this.state;
@@ -159,10 +162,20 @@ class Transactions extends React.Component {
   }
 
   itemSelectionChangedHandler = (option, selectedTransaction) => {
+<<<<<<< Updated upstream
     if (option.toLowerCase() !== 'use') {
       this.setState({ dialogOpen: true });
     }
     this.setState({ option, selectedTransaction });
+=======
+    if (option !== 'use') {
+      this.setState({ dialogOpen: true });
+    }
+    this.setState({ option, selectedTransaction });
+  }
+  formSubmitHandler = (transactionInformation) => {
+    this.setState({ modalOpen: true, transactionInformation });
+>>>>>>> Stashed changes
   }
   closeDialogHandler = () => this.setState({ dialogOpen: false })
   fieldEditedHandler = (event, inputIdentifier) => {

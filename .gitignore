@@ -3,3 +3,4 @@ config.js
 TempleStarter.rar
 build/
 package-lock.json
+.vscode/

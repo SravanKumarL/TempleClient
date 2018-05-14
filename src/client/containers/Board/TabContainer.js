@@ -9,13 +9,10 @@ const tabContainer = ({ children }) => {
     flexDirection: 'column',
     background: 'white',
     color: 'black',
-    height: '100%',
     marginLeft: 5,
-    padding: 8 * 3,
-    paddingTop: '10px',
-    paddingBottom: '88px',
-    marginRight: '40px',
-    borderTopRightRadius: '10px,'
+    borderTopRightRadius: '10px',
+    margin: '0 10px',
+    flexGrow: 1,
   };
   return (
     <Typography component="div" style={style}>

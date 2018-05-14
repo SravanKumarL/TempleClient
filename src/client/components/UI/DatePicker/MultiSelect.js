@@ -4,7 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl } from 'material-ui/Form';
-import {Select,ListItemText,Checkbox} from 'material-ui';
+import { Select, ListItemText, Checkbox } from 'material-ui';
 
 const styles = theme => ({
   root: {
@@ -38,13 +38,10 @@ const MenuProps = {
   },
 };
 
-
+const initialState = { open: false };
 class MultipleSelect extends React.Component {
-  state = {
-    open: false
-  }
+  state = { ...initialState }
   handleChange = event => {
-    // this.setState({ name: event.target.value });
     const { onItemSel } = this.props;
     onItemSel(event.target.value);
   };
@@ -62,7 +59,7 @@ class MultipleSelect extends React.Component {
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="select-multiple-checkbox">{label}</InputLabel>
-          <Select classes={{root:classes.selectRoot}}
+          <Select classes={{ root: classes.selectRoot }}
             multiple
             value={selItems}
             onChange={this.handleChange}

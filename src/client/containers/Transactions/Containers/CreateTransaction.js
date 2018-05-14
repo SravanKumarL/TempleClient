@@ -1,11 +1,21 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
+<<<<<<< Updated upstream
 import withStyles from 'material-ui/styles/withStyles';
 import isEmpty from 'lodash/isEmpty';
+=======
+import { withStyles } from 'material-ui/styles';
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
+>>>>>>> Stashed changes
 import Pageview from 'material-ui-icons/Pageview';
 import Restore from 'material-ui-icons/Restore';
 import classNames from 'classnames';
 
+<<<<<<< Updated upstream
+=======
+import * as actions from '../../../../store/actions';
+>>>>>>> Stashed changes
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
@@ -16,11 +26,11 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    width: '535px',
+    flexGrow: 1,
+    width: '100%',
     alignItems: 'center',
     boxSizing: 'border-box',
-    boxShadow: '0px 0px 1px 1px #D3D3D3',
-    height: '90%',
+    boxShadow: theme.shadows[2],
     backgroundColor: theme.palette.background.paper,
   },
   leftIcon: {
