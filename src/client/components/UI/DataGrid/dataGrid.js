@@ -8,11 +8,13 @@ import LoadingGrid from './loadingGrid';
 import Button from 'material-ui/Button';
 import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
+import PrintGrid from './PrintGrid';
 
 export default class DataGrid extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      isPrintClicked: false,
       displayFilter: false,
       snackBarOpen: false,
       transaction: null
@@ -40,13 +42,19 @@ export default class DataGrid extends React.PureComponent {
     this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
   }
   onPrintClicked = () => {
-    printHtml.printElement(document.getElementById('datagridPaper'));
+    this.setState({ isPrintClicked: true });
   }
   componentDidMount() {
     this.setAndCommitTransaction(transactionType.fetch.schema, this.props.collection, this.props.searchCriteria);
     this.setAndCommitTransaction(transactionType.fetch.data, this.props.collection, this.props.searchCriteria);
   }
-
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isPrintClicked) {
+      if (this.props.rows && this.props.rows.length > 0)
+        printHtml.printElement(document.getElementById('paperGrid'));
+      this.setState({ isPrintClicked: false });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { error, message } = nextProps;
     if (error === '')
@@ -65,6 +73,7 @@ export default class DataGrid extends React.PureComponent {
       collection
     } = this.props;
     const {
+      isPrintClicked,
       transaction,
       displayFilter,
       snackBarOpen,
@@ -87,12 +96,13 @@ export default class DataGrid extends React.PureComponent {
             onClick={this.onPrintClicked}>
             <PrintIcon /> Print {collection}
           </Button>
-          <Paper id="datagridPaper">
-            <GridContainer rows={rows}
-              columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
-              readOnly={readOnly} displayFilter={displayFilter} />
-            <ErrorSnackbar message={snackBarMsg} open={snackBarOpen} redoTransaction={transaction}
-              onSnackBarClose={this.onSnackBarClose} />
+          <Paper id="paperGrid">
+            {isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
+              <GridContainer rows={rows}
+                columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
+                readOnly={readOnly} displayFilter={displayFilter} />}
+            {!isPrintClicked && <ErrorSnackbar message={snackBarMsg} open={snackBarOpen} redoTransaction={transaction}
+              onSnackBarClose={this.onSnackBarClose} />}
           </Paper>
         </div>
     );

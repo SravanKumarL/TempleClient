@@ -17,11 +17,6 @@ import SearchTransaction from './Containers/SearchTransaction';
 import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
-<<<<<<< Updated upstream
-=======
-import { Event, Description } from 'material-ui-icons';
-import { ModeEdit, Cancel } from 'material-ui-icons';
->>>>>>> Stashed changes
 import classNames from 'classnames';
 import ViewTransactions from './Components/ViewTransactions';
 import EditTransactions from './Components/EditTransactions';
@@ -162,12 +157,10 @@ class Transactions extends React.Component {
   }
 
   itemSelectionChangedHandler = (option, selectedTransaction) => {
-<<<<<<< Updated upstream
-    if (option.toLowerCase() !== 'use') {
-      this.setState({ dialogOpen: true });
-    }
-    this.setState({ option, selectedTransaction });
-=======
+    // if (option.toLowerCase() !== 'use') {
+    //   this.setState({ dialogOpen: true });
+    // }
+    // this.setState({ option, selectedTransaction });
     if (option !== 'use') {
       this.setState({ dialogOpen: true });
     }
@@ -175,7 +168,6 @@ class Transactions extends React.Component {
   }
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
->>>>>>> Stashed changes
   }
   closeDialogHandler = () => this.setState({ dialogOpen: false })
   fieldEditedHandler = (event, inputIdentifier) => {

@@ -29,12 +29,7 @@ const styles = theme => ({
   },
 });
 
-<<<<<<< Updated upstream
 const TextBox = ({ type, classes, label, value, changed, disabled, multiline, showLabels }) => {
-=======
-function TextBox(props) {
-  const { classes, label, value, changed, disabled, multiline, showLabels } = props;
->>>>>>> Stashed changes
   return (
     <TextField
       label={showLabels ? label : ''}

@@ -4,7 +4,6 @@ import { withStyles } from 'material-ui/styles';
 import Input from 'material-ui/Input';
 import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
-import _ from 'lodash'
 const suggestions = [
   { label: 'Ashwini' },
   { label: 'Bharani' },
@@ -202,6 +201,7 @@ const multiSelect = (props) => {
       }}
     />
   }
+  return element;
 }
 
 multiSelect.propTypes = {

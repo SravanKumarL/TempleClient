@@ -1,21 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-<<<<<<< Updated upstream
 import withStyles from 'material-ui/styles/withStyles';
-import isEmpty from 'lodash/isEmpty';
-=======
-import { withStyles } from 'material-ui/styles';
-import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
->>>>>>> Stashed changes
 import Pageview from 'material-ui-icons/Pageview';
 import Restore from 'material-ui-icons/Restore';
 import classNames from 'classnames';
 
-<<<<<<< Updated upstream
-=======
-import * as actions from '../../../../store/actions';
->>>>>>> Stashed changes
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
