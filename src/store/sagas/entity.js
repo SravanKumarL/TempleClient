@@ -2,9 +2,9 @@ import axios from '../../axios/poojas';
 import { put, call } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
-import constants, { reportMapping } from './constants';
+import constants, { reportMapping, uniqueProp } from './constants';
 export function* handleTransaction(action) {
-    const { type, collection, change } = action.payload;
+    const { type, collection, change, changedObj } = action.payload;
     if (collection === constants.Transactions && type === constants.add) {
         yield* transactionSagas.addTransactionSaga(action);
     }
@@ -19,6 +19,8 @@ export function* handleTransaction(action) {
                     'authorization': `${token}`,
                 }
                 let response = {};
+                const resultantChange = changedObj ? { ...changedObj, ...change } : change;
+                yield put(actions.onTransactionCommitReq(type, resultantChange, collection));
                 switch (type) {
                     case constants.add:
                         response = yield axios({
@@ -27,25 +29,25 @@ export function* handleTransaction(action) {
                             data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection, constants.edit);
                         break;
                     case constants.delete:
+                        const reqParam = change[uniqueProp(collection)];
                         response = yield axios({
                             method: 'delete',
-                            url: `/${collection}/${change}`,
+                            url: `/${collection}/${reqParam}`,
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection, type);
                         break;
                     case constants.edit:
-                        const entity = Object.getOwnPropertyNames(change)[0];
                         response = yield axios({
                             method: 'put',
-                            url: `/${collection}/${entity}`,
-                            data: JSON.stringify(Object.values(change)[0]),
+                            url: `/${collection}/${uniqueProp(collection)}`,
+                            data: JSON.stringify(change),
                             headers
                         });
-                        yield call(handleResponse, response, collection);
+                        yield handleResponse(response, collection, type, changedObj);
                         break;
                     default:
                         break;
@@ -54,16 +56,16 @@ export function* handleTransaction(action) {
         }
         catch (error) {
             console.log(error);
-            yield put(actions.onTransactionFailed(error.message,collection))
+            yield put(actions.onTransactionFailed(error.message, collection))
         }
     }
 }
-const handleResponse = (response, collection) => {
-    const { error, message } = response.data;
+const handleResponse = function* (response, collection, type, changedObj) {
+    const { error, message, change } = response.data;
     if (error)
-        put(actions.onTransactionFailed(error,collection));
+        yield put(actions.onTransactionFailed(error, collection));
     else
-        put(actions.onTransactionCommitted(message,collection));
+        yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
@@ -80,8 +82,8 @@ export function* handleFetchData(action) {
                 const headers = {
                     'authorization': `${token}`,
                 }
-                let response={};
-                if(searchCriteria && collection===constants.Reports){
+                let response = {};
+                if (searchCriteria && collection === constants.Reports) {
                     response = yield axios({
                         method: 'post',
                         data: searchCriteria,
@@ -89,7 +91,7 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                else{
+                else {
                     response = yield axios({
                         method: 'get',
                         url: `/${collection}`,
@@ -107,15 +109,15 @@ export function* handleFetchData(action) {
 export function* handleFetchSchema(action) {
     const { collection, searchCriteria } = action.payload;
     try {
-        yield put(actions.onFetchReq());
+        yield put(actions.onFetchReq(collection));
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
         } else {
-            if(searchCriteria && collection===constants.Reports){
-                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName], collection)); 
+            if (searchCriteria && collection === constants.Reports) {
+                yield put(actions.onFetchSchemaSuccess(reportMapping[searchCriteria.ReportName], collection));
             }
-            else{
+            else {
                 const headers = {
                     'authorization': `${token}`,
                 }
@@ -129,6 +131,6 @@ export function* handleFetchSchema(action) {
         }
     } catch (error) {
         console.log(error);
-        yield put(actions.onFetchFailed(error.message,collection));
+        yield put(actions.onFetchFailed(error.message, collection));
     }
 }

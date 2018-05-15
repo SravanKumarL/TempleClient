@@ -16,10 +16,12 @@ class PasswordCellBase extends React.Component {
         this.props.onValueChange(e.target.value);
     };
     render() {
+        const { classes } = this.props;
         return (
             <TableCell>
                 <TextField type="password" autoComplete="current-password" margin="normal" value={this.state.value} onChange={this.onPasswordChange} />
             </TableCell>
+            //className={classes.password}
         );
     }
 }
