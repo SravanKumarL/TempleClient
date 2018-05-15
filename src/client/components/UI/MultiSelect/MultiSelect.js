@@ -245,6 +245,7 @@ class MultiSelect extends React.Component {
       />;
     }
     return element;
+  }
 }
 
 MultiSelect.propTypes = {

@@ -136,7 +136,7 @@ class EditTransactions extends React.Component {
     const { editForm, transaction } = this.state;
     const edits = Object.keys(editForm);
     const resultantEditForm = editable ?
-      { ...transaction.filter(edits.indexOf(field) === -1).map(field => ({ ...field, disabled: true })), ...editForm } :
+      { ...transaction.filter(field=>edits.indexOf(field) === -1).map(field => ({ ...field, disabled: true })), ...editForm } :
       transaction.map(field => ({ ...field, disabled: true }));
     // let readOnlyContent = null;
     // if (transaction) {
