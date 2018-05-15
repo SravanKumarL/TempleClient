@@ -11,7 +11,7 @@ import Description from 'material-ui-icons/Description';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Cancel from 'material-ui-icons/Cancel';
 import EditIcon from 'material-ui-icons/Edit';
-import SaveIcon from 'material-ui-icons/Save';
+import DoneIcon from 'material-ui-icons/Done';
 import IconButton from 'material-ui/IconButton';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import CreateTransaction from './Containers/CreateTransaction';
@@ -201,7 +201,7 @@ class Transactions extends React.Component {
         title='Edit Transaction'
         cancelled={this.closeDialogHandler}>
         <IconButton title='edit' color='default' onClick={this.onEditClicked}>
-          {editable ? <SaveIcon /> : <EditIcon />}
+          {editable ? <DoneIcon /> : <EditIcon />}
         </IconButton>
         <EditTransactions
           editable={editable}
