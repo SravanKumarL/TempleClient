@@ -18,8 +18,15 @@ import TabContainer from './TabContainer';
 
 const styles = theme => ({
   root: {
-    backgroundColor: blueGrey[800],
+    display: 'flex',
+    flexDirection: 'column',
     flexGrow: 1,
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '90vw',
+    margin: '0 5px',
   },
   flexContainer: {
     display: 'inline-flex',
@@ -42,8 +49,8 @@ const styles = theme => ({
     marginTop: 0,
     marginBottom: 10,
     borderRadius: 8,
-    height: 60,
-    width: 216,
+    height: 48,
+    width: 180,
     color: '#eee',
     background: blueGrey[700],
     boxShadow: theme.shadows[17],
@@ -56,7 +63,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    height: '100%',
   },
   span: {
     height: 18,
@@ -73,7 +79,7 @@ const styles = theme => ({
 
 const initialState = { activeTab: 'transactions' };
 class SimpleTabs extends React.Component {
-  
+
   state = { ...initialState };
 
   handleChange = (event, value) => { this.setState({ activeTab: value }); };
@@ -92,7 +98,7 @@ class SimpleTabs extends React.Component {
       <div className={classes.root}>
         <Tabs
           classes={{
-            root: classes.root,
+            root: classes.header,
             flexContainer: classes.flexContainer,
             indicator: classes.span,
           }}

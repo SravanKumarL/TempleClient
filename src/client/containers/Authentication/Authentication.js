@@ -29,7 +29,7 @@ const styles = theme => ({
 });
 
 const initialState = { open: false };
-class Authentication extends Component {
+export class Authentication extends Component {
   state = { ...initialState };
 
   componentWillReceiveProps(nextProps) {

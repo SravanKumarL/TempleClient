@@ -24,7 +24,7 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
-    width: 200,
+    width: 190,
     marginRight: 20,
     boxShadow: theme.shadows[3],
   },
@@ -95,8 +95,8 @@ class Reports extends React.Component {
   generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (pooja) => this.setState({ pooja });
-  optionClickedHandler = (option) => {this.setState({ selectedOption: option, modalOpen: true, reportOpen: false });}
-  
+  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, reportOpen: false }); }
+
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
@@ -163,13 +163,13 @@ class Reports extends React.Component {
         searchObj = { ...searchObj, pooja };
     }
     return (
-      <div style={{ display: 'flex', height: '100%' }}>
+      <div style={{ display: 'flex', height: '100%', flexGrow: 1 }}>
         <div className={classes.container}>
           {this.getButtons()}
           {this.getModal()}
         </div>
         {reportOpen &&
-          <div style={{ display: 'flex', flexDirection: 'column' }} >
+          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} >
             <Typography variant='display1' align='center' style={{ marginBottom: 20 }}> {selectedOption.name} </Typography>
             <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div>}

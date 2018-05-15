@@ -78,7 +78,7 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      inputElement = <DatePickerWrapper mode={props.mode} onDateSelectionChanged={props.changed} />
+      inputElement = <DatePickerWrapper onDateSelectionChanged={props.changed} />
       break;
     default:
       inputElement = <Input
