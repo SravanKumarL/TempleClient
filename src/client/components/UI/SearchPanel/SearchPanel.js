@@ -6,7 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import Input, { InputAdornment } from 'material-ui/Input';
 import Search from 'material-ui-icons/Search';
 import Popup from './PopupMenu';
-import { Clear } from 'material-ui-icons';
+import Clear from 'material-ui-icons/Clear';
 import Cancel from 'material-ui-icons/Cancel';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Slide from 'material-ui/transitions/Slide';
@@ -95,8 +95,7 @@ const styles = theme => ({
   },
 })
 
-const searchPanel = (props) => {
-  const { loading, classes, value, changed, inputRef, clearClicked, searchClicked, open, transactions, closed, panelExited, optionClicked } = props;
+const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked, searchClicked, open, transactions, closed, panelExited, optionClicked }) => {
   let transactionsList = (
     <Typography style={{ marginTop: 20 }} variant='body1' align='center'> Please enter some value to search...</Typography>
   );
@@ -140,7 +139,6 @@ const searchPanel = (props) => {
       <div className={classes.header}>
         <Input
           placeholder='Search By Name or Phone Number'
-          // onKeyDown={(e) => { if (e.keyCode === 13) searchClicked(); }}
           inputRef={node => inputRef(node)}
           classes={{
             root: classes.textFieldRoot,

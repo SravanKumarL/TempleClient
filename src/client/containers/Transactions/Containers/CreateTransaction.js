@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
 import withStyles from 'material-ui/styles/withStyles';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 import Pageview from 'material-ui-icons/Pageview';
 import Restore from 'material-ui-icons/Restore';
 import classNames from 'classnames';
@@ -16,11 +16,11 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    width: '535px',
+    flexGrow: 1,
+    width: '100%',
     alignItems: 'center',
     boxSizing: 'border-box',
-    boxShadow: '0px 0px 1px 1px #D3D3D3',
-    height: '90%',
+    boxShadow: theme.shadows[2],
     backgroundColor: theme.palette.background.paper,
   },
   leftIcon: {

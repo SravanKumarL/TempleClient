@@ -1,24 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
-import { connect } from 'react-redux';
 import blueGrey from 'material-ui/colors/blueGrey';
 import AppBar from '../../components/Navigation/AppBar/AppBar';
-// import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer';
-import * as actions from '../../../store/actions';
+import createContainer from '../createContainer/createContainer';
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-    height: '100%',
-    zIndex: 1,
-    overflow: 'hidden',
-  },
   appFrame: {
-    position: 'relative',
+    position: 'fixed',
     display: 'flex',
-    width: '100%',
-    height: '100%',
+    width: '100vw',
+    height: '100vh',
   },
   button: {
     margin: theme.spacing.unit,
@@ -27,82 +19,32 @@ const styles = theme => ({
     width: '100%',
     display: 'flex',
     flexGrow: 1,
+    flexDirection: 'column',
     backgroundColor: blueGrey[800],
-    // backgroundColor: theme.palette.background.default,
-    // padding: 24,
-    paddingTop: 30,
-    paddingLeft: 60,
-    height: '94.5vh',
-    marginTop: 56,
+    paddingTop: '1rem',
+    marginTop: '3.5rem',
     [theme.breakpoints.up('sm')]: {
-      height: '94.5vh',
       marginTop: 56,
     },
-    button: {
-      position: 'absolute',
-    }
   },
 });
 
 class Layout extends React.Component {
-  state = {
-    open: false,
-  };
-
-  handleDrawerOpen = () => this.setState({ open: true })
-
-  handleDrawerClose = () => this.setState({ open: false })
-
   handleLogout = () => {
     this.props.history.replace('/');
-    this.props.onLogout();
-  }
-
-  handleNavItemsClick = (itemClicked) => {
-    let url;
-    switch (itemClicked) {
-      case 'home':
-        url = '/';
-        break;
-      case 'receipt':
-        url = '/transactions/create';
-        break;
-      case 'edit':
-        url = '/transactions/edit';
-        break;
-      case 'reports':
-        url = '/reports';
-        break;
-      default:
-        break;
-    }
-    if (this.props.location.pathname !== url) {
-      this.props.history.push(url);
-    }
+    this.props.authLogout();
   }
   render() {
     const { classes, role } = this.props;
     return (
-      <div className={classes.root}>
-        <div className={classes.appFrame}>
-          <AppBar
-            // open={this.state.open}
-            // close={this.handleClose}
-            logout={this.handleLogout}
-            // drawerOpen={this.handleDrawerOpen}
-            role={role}
-          />
-          {/* <SideDrawer
-            open={this.state.open}
-            handleDrawerClose={this.handleDrawerClose}
-            navItemsClicked={this.handleNavItemsClick.bind(this)}
-            user={user}
-            role={role}
-          /> */}
-          <main className={classes.content}>
-            {this.props.children}
-          </main>
-        </div>
+      <div className={classes.appFrame}>
+        <AppBar
+          logout={this.handleLogout}
+          role={role}
+        />
+        <main className={classes.content}>
+          {this.props.children}
+        </main>
       </div>
     );
   }
@@ -113,13 +55,7 @@ const mapStateToProps = (state) => {
     role: state.auth.role,
   }
 }
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    onLogout: () => {
-      dispatch(actions.authLogout());
-    }
-  }
-}
+
 Layout = withStyles(styles)(Layout);
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout));
+export default withRouter(createContainer(Layout, mapStateToProps)); 

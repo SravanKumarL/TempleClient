@@ -151,10 +151,6 @@ class DatePickerWrapper extends Component {
             }}
             onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} />
         </div>
-        {/* <Button onClick={()=>this.setState((prevState)=>({showPaper:!prevState.showPaper}))}>Show Paper</Button> */}
-          {/* {this.state.showPaper && <ContentPaper style={{alignSelf:'flex-end'}}/>} */}
-        <br />
-        {/* <label>{this.getNumberOfDays()}</label> */}
       </div>
     )
   }

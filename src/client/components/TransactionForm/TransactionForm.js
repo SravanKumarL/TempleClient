@@ -11,13 +11,13 @@ const styles = theme => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
     width: '90%',
     // height: '82vh',
     paddingTop: '10px',
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     color: 'white',
+    justifyContent: 'space-evenly'
   },
   button: {
     margin: theme.spacing.unit,
