@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from 'lodash';
 import withStyles from 'material-ui/styles/withStyles';
 import { TableCell, TableRow } from 'material-ui/Table';
 import { updateObject } from '../../../shared/utility';
@@ -132,36 +132,40 @@ class EditTransactions extends React.Component {
   //   this.props.editTransactionClicked(updatedTransaction);
   // }
   render() {
-    const { classes, fieldChanged } = this.props;
+    const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
-    let readOnlyContent = null;
-    if (transaction) {
-      readOnlyContent =
-        <div style={{ display: 'flex', flexDirection: 'column', width: '90%', marginTop: 10 }}>
-          {Object.keys(transaction).map(key => {
-            if (!['phoneNumber', 'names', 'gothram', 'nakshatram', '__v', '_id'].includes(key)) {
-              return (
-                <TableRow key={key}>
-                  <TableCell>{key}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'breafk-word' }}>{transaction[key]}</TableCell>
-                </TableRow>
-              )
-            }
-            return null;
-          })}
-        </div>
-    }
+    const edits = Object.keys(editForm);
+    const resultantEditForm = editable ?
+      { ...transaction.filter(edits.indexOf(field) === -1).map(field => ({ ...field, disabled: true })), ...editForm } :
+      transaction.map(field => ({ ...field, disabled: true }));
+    // let readOnlyContent = null;
+    // if (transaction) {
+    //   readOnlyContent =
+    //     <div style={{ display: 'flex', flexDirection: 'column', width: '90%', marginTop: 10 }}>
+    //       {Object.keys(transaction).map(key => {
+    //         if (!['phoneNumber', 'names', 'gothram', 'nakshatram', '__v', '_id'].includes(key)) {
+    //           return (
+    //             <TableRow key={key}>
+    //               <TableCell>{key}:</TableCell>
+    //               <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'breafk-word' }}>{transaction[key]}</TableCell>
+    //             </TableRow>
+    //           )
+    //         }
+    //         return null;
+    //       })}
+    //     </div>
+    // }
     return (
       <div className={classes.container}>
         <TransactionForm
-          transactionForm={editForm}
+          transactionForm={resultantEditForm}
           showLabels={true}
           fieldChanged={fieldChanged}
           showButtons={false}
           primaryText='Edit'
           secondaryText='Cancel'
         />
-        {readOnlyContent}
+        {/* {readOnlyContent} */}
       </div>);
   }
 };

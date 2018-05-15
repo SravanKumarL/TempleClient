@@ -10,7 +10,9 @@ import Event from 'material-ui-icons/Event';
 import Description from 'material-ui-icons/Description';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Cancel from 'material-ui-icons/Cancel';
-
+import EditIcon from 'material-ui-icons/Edit';
+import SaveIcon from 'material-ui-icons/Save';
+import IconButton from 'material-ui/IconButton';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
@@ -121,6 +123,7 @@ const initialState = {
   selectedTransaction: {},
   dialogOpen: false,
   option: '',
+  editable: false
 };
 class Transactions extends React.Component {
   state = { ...initialState };
@@ -176,9 +179,10 @@ class Transactions extends React.Component {
     });
     this.setState({ selectedTransaction: updatedSelectedTransaction });
   }
+  onEditClicked = () => this.setState((prevState) => ({ editable: prevState.editable }));
   render() {
     const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen } = this.state;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
     // const editForm = {
     //   phoneNumber: { ...transactionInformation.phoneNumber },
     //   names: { ...transactionInformation.names },
@@ -196,26 +200,30 @@ class Transactions extends React.Component {
         secondaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
         title='Edit Transaction'
         cancelled={this.closeDialogHandler}>
+        <IconButton title='edit' color='default' onClick={this.onEditClicked}>
+          {editable ? <SaveIcon /> : <EditIcon />}
+        </IconButton>
         <EditTransactions
+          editable={editable}
           // transactionFormFields={editForm}
           transaction={selectedTransaction}
           fieldChanged={this.fieldEditedHandler}
         />
       </Dialog>
     );
-    if (option.toLowerCase() === 'view') {
-      dialog = (
-        <Dialog
-          open={dialogOpen}
-          primaryClicked={this.closeDialogHandler}
-          primaryText='Close'
-          primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
-          title='View Transaction'>
-          <ViewTransactions
-            transaction={selectedTransaction} />
-        </Dialog>
-      );
-    }
+    // if (option.toLowerCase() === 'view') {
+    //   dialog = (
+    //     <Dialog
+    //       open={dialogOpen}
+    //       primaryClicked={this.closeDialogHandler}
+    //       primaryText='Close'
+    //       primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
+    //       title='View Transaction'>
+    //       <ViewTransactions
+    //         transaction={selectedTransaction} />
+    //     </Dialog>
+    //   );
+    // }
     let message = null;
     if (this.props.message) {
       message = (
