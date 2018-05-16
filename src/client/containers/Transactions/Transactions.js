@@ -10,9 +10,8 @@ import Event from 'material-ui-icons/Event';
 import Description from 'material-ui-icons/Description';
 import ModeEdit from 'material-ui-icons/ModeEdit';
 import Cancel from 'material-ui-icons/Cancel';
-import EditIcon from 'material-ui-icons/Edit';
-import DoneIcon from 'material-ui-icons/Done';
-import IconButton from 'material-ui/IconButton';
+import Done from 'material-ui-icons/Done';
+import Close from 'material-ui-icons/Close';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
@@ -123,7 +122,9 @@ const initialState = {
   selectedTransaction: {},
   dialogOpen: false,
   option: '',
-  editable: false
+  editable: false,
+  touched: false,
+  updates: {}
 };
 class Transactions extends React.Component {
   state = { ...initialState };
@@ -138,7 +139,6 @@ class Transactions extends React.Component {
 
   modalCloseHandler = () => this.setState({ modalOpen: false });
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
-  formSubmitHandler = (transactionInformation) => { this.setState({ modalOpen: true, transactionInformation }); }
 
   printHandler = () => {
     const createdBy = this.props.user;
@@ -172,37 +172,42 @@ class Transactions extends React.Component {
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
   }
-  closeDialogHandler = () => this.setState({ dialogOpen: false })
-  fieldEditedHandler = (event, inputIdentifier) => {
-    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, {
-      [inputIdentifier]: event.target.value,
-    });
-    this.setState({ selectedTransaction: updatedSelectedTransaction });
+  closeDialogHandler = () => {
+    const { updates, selectedTransaction } = this.state;
+    if (updates && Object.keys(updates).length > 0)
+      this.props.commitTransaction(constants.edit, constants.Transactions, updates, selectedTransaction);
+    this.setState({ dialogOpen: false, updates: {} });
   }
-  onEditClicked = () => this.setState((prevState) => ({ editable: prevState.editable }));
+  fieldEditedHandler = (event, inputIdentifier) => {
+    const updates = { [inputIdentifier]: event.target.value };
+    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, updates);
+    this.setState((prevState) => ({ selectedTransaction: updatedSelectedTransaction, updates: { ...prevState.updates, ...updates } }));
+  }
+  onEditClicked = () => this.setState((prevState) => ({ editable: !prevState.editable, touched: true }));
   render() {
     const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable, touched } = this.state;
     // const editForm = {
     //   phoneNumber: { ...transactionInformation.phoneNumber },
     //   names: { ...transactionInformation.names },
     //   gothram: { ...transactionInformation.gothram },
     //   nakshatram: { ...transactionInformation.nakshatram }
     // };
+    const PrimaryIcon = editable ? Done : ModeEdit;
+    const primaryText = editable ? 'Done' : 'Edit';
+    const SecondaryIcon = touched ? Close : Cancel;
+    const secondaryText = touched ? 'Close' : 'Cancel';
     let dialog = (
       <Dialog
         open={dialogOpen}
-        primaryClicked={this.editTransactionHandler}
-        primaryText='Edit'
-        secondaryText='Cancel'
+        primaryClicked={this.onEditClicked}
+        primaryText={primaryText}
+        secondaryText={secondaryText}
         secondaryClicked={this.closeDialogHandler}
-        primaryIcon={<ModeEdit className={classNames(classes.leftIcon, classes.iconSmall)} />}
-        secondaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
+        primaryIcon={<PrimaryIcon className={classNames(classes.leftIcon, classes.iconSmall)} />}
+        secondaryIcon={<SecondaryIcon className={classNames(classes.leftIcon, classes.iconSmall)} />}
         title='Edit Transaction'
         cancelled={this.closeDialogHandler}>
-        <IconButton title='edit' color='default' onClick={this.onEditClicked}>
-          {editable ? <DoneIcon /> : <EditIcon />}
-        </IconButton>
         <EditTransactions
           editable={editable}
           // transactionFormFields={editForm}

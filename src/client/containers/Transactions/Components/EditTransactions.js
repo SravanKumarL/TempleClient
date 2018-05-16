@@ -91,7 +91,13 @@ const initialState = {
   transaction: null,
 };
 class EditTransactions extends React.Component {
-  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...initialState,
+      transaction: props.transaction,
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { transaction } = nextProps;
     if (transaction) {
@@ -134,10 +140,25 @@ class EditTransactions extends React.Component {
   render() {
     const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
-    const edits = Object.keys(editForm);
-    const resultantEditForm = editable ?
-      { ...transaction.filter(field=>edits.indexOf(field) === -1).map(field => ({ ...field, disabled: true })), ...editForm } :
-      transaction.map(field => ({ ...field, disabled: true }));
+    const fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
+    let transactions = _.pick(transaction, fields);
+    const readFieldState = {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: '',
+      },
+      validation: {
+        required: false,
+      },
+      value: '',
+      disabled: true,
+      valid: true,
+      touched: false,
+    };
+    Object.keys(transactions).forEach((field =>
+      transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: field }, value: transactions[field] }));
+    const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
     // let readOnlyContent = null;
     // if (transaction) {
     //   readOnlyContent =
