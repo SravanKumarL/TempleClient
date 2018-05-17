@@ -3,7 +3,7 @@ import _ from 'lodash';
 import withStyles from 'material-ui/styles/withStyles';
 import { TableCell, TableRow } from 'material-ui/Table';
 import { updateObject } from '../../../shared/utility';
-
+import { convertToStartCase } from '../../../shared/utility';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 
 const styles = (theme) => ({
@@ -140,7 +140,9 @@ class EditTransactions extends React.Component {
   render() {
     const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
-    const fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
+    let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
+    if (!transaction.others) fields = fields.filter(field => field !== 'others');
+    fields = fields.filter(field => field !== 'id');
     let transactions = _.pick(transaction, fields);
     const readFieldState = {
       elementType: 'input',
@@ -157,7 +159,7 @@ class EditTransactions extends React.Component {
       touched: false,
     };
     Object.keys(transactions).forEach((field =>
-      transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: field }, value: transactions[field] }));
+      transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: convertToStartCase(field) }, value: transactions[field] }));
     const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
     // let readOnlyContent = null;
     // if (transaction) {
