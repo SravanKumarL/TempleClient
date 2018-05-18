@@ -1,6 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-
+import _ from 'lodash';
 import withStyles from 'material-ui/styles/withStyles';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import blueGrey from 'material-ui/colors/blueGrey';
@@ -9,8 +9,9 @@ import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import Event from 'material-ui-icons/Event';
 import Description from 'material-ui-icons/Description';
 import ModeEdit from 'material-ui-icons/ModeEdit';
-import Cancel from 'material-ui-icons/Cancel';
-
+import Save from 'material-ui-icons/Save';
+import Close from 'material-ui-icons/Close';
+import Undo from 'material-ui-icons/Undo';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
@@ -119,8 +120,11 @@ const initialState = {
   activeTab: 'pooja',
   transactionInformation: [],
   selectedTransaction: {},
+  unchangedTransaction: {},
   dialogOpen: false,
   option: '',
+  editable: false,
+  updates: {}
 };
 class Transactions extends React.Component {
   state = { ...initialState };
@@ -135,7 +139,6 @@ class Transactions extends React.Component {
 
   modalCloseHandler = () => this.setState({ modalOpen: false });
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
-  formSubmitHandler = (transactionInformation) => { this.setState({ modalOpen: true, transactionInformation }); }
 
   printHandler = () => {
     const createdBy = this.props.user;
@@ -164,58 +167,78 @@ class Transactions extends React.Component {
     if (option !== 'use') {
       this.setState({ dialogOpen: true });
     }
-    this.setState({ option, selectedTransaction });
+    this.setState({ option, selectedTransaction, unchangedTransaction: selectedTransaction });
   }
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
   }
-  closeDialogHandler = () => this.setState({ dialogOpen: false })
+  closeDialogHandler = () => {
+    if (!this.state.editable)
+      this.setState({ dialogOpen: false });
+    this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
+  }
   fieldEditedHandler = (event, inputIdentifier) => {
-    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, {
-      [inputIdentifier]: event.target.value,
+    let updates = { [inputIdentifier]: event.target.value };
+    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, updates);
+    this.setState((prevState) => {
+      if (prevState.unchangedTransaction[inputIdentifier] === updates[inputIdentifier])
+        updates = _.pickBy(prevState.updates, (value, key) => key !== inputIdentifier);
+      else
+        updates = { ...prevState.updates, ...updates };
+      return { selectedTransaction: updatedSelectedTransaction, updates };
     });
-    this.setState({ selectedTransaction: updatedSelectedTransaction });
+  }
+  onEditClicked = () => {
+    const { updates, selectedTransaction, editable } = this.state;
+    if (editable && updates && Object.keys(updates).length > 0)
+      this.props.commitTransaction(constants.edit, constants.Transactions, updates, selectedTransaction);
+    this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
     const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen } = this.state;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
     // const editForm = {
     //   phoneNumber: { ...transactionInformation.phoneNumber },
     //   names: { ...transactionInformation.names },
     //   gothram: { ...transactionInformation.gothram },
     //   nakshatram: { ...transactionInformation.nakshatram }
     // };
+    const PrimaryIcon = editable ? Save : ModeEdit;
+    const primaryText = editable ? 'Save' : 'Edit';
+    const SecondaryIcon = editable ? Undo : Close;
+    const secondaryText = editable ? 'Back' : 'Close';
     let dialog = (
       <Dialog
         open={dialogOpen}
-        primaryClicked={this.editTransactionHandler}
-        primaryText='Edit'
-        secondaryText='Cancel'
+        primaryClicked={this.onEditClicked}
+        primaryText={primaryText}
+        secondaryText={secondaryText}
         secondaryClicked={this.closeDialogHandler}
-        primaryIcon={<ModeEdit className={classNames(classes.leftIcon, classes.iconSmall)} />}
-        secondaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
+        primaryIcon={<PrimaryIcon className={classNames(classes.leftIcon, classes.iconSmall)} />}
+        secondaryIcon={<SecondaryIcon className={classNames(classes.leftIcon, classes.iconSmall)} />}
         title='Edit Transaction'
         cancelled={this.closeDialogHandler}>
         <EditTransactions
+          editable={editable}
           // transactionFormFields={editForm}
           transaction={selectedTransaction}
           fieldChanged={this.fieldEditedHandler}
         />
       </Dialog>
     );
-    if (option.toLowerCase() === 'view') {
-      dialog = (
-        <Dialog
-          open={dialogOpen}
-          primaryClicked={this.closeDialogHandler}
-          primaryText='Close'
-          primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
-          title='View Transaction'>
-          <ViewTransactions
-            transaction={selectedTransaction} />
-        </Dialog>
-      );
-    }
+    // if (option.toLowerCase() === 'view') {
+    //   dialog = (
+    //     <Dialog
+    //       open={dialogOpen}
+    //       primaryClicked={this.closeDialogHandler}
+    //       primaryText='Close'
+    //       primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
+    //       title='View Transaction'>
+    //       <ViewTransactions
+    //         transaction={selectedTransaction} />
+    //     </Dialog>
+    //   );
+    // }
     let message = null;
     if (this.props.message) {
       message = (

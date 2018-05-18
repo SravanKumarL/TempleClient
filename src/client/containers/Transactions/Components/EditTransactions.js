@@ -1,9 +1,9 @@
 import React from 'react';
-
+import _ from 'lodash';
 import withStyles from 'material-ui/styles/withStyles';
 import { TableCell, TableRow } from 'material-ui/Table';
 import { updateObject } from '../../../shared/utility';
-
+import { convertToStartCase } from '../../../shared/utility';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 
 const styles = (theme) => ({
@@ -91,7 +91,13 @@ const initialState = {
   transaction: null,
 };
 class EditTransactions extends React.Component {
-  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...initialState,
+      transaction: props.transaction,
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { transaction } = nextProps;
     if (transaction) {
@@ -132,36 +138,57 @@ class EditTransactions extends React.Component {
   //   this.props.editTransactionClicked(updatedTransaction);
   // }
   render() {
-    const { classes, fieldChanged } = this.props;
+    const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
-    let readOnlyContent = null;
-    if (transaction) {
-      readOnlyContent =
-        <div style={{ display: 'flex', flexDirection: 'column', width: '90%', marginTop: 10 }}>
-          {Object.keys(transaction).map(key => {
-            if (!['phoneNumber', 'names', 'gothram', 'nakshatram', '__v', '_id'].includes(key)) {
-              return (
-                <TableRow key={key}>
-                  <TableCell>{key}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'breafk-word' }}>{transaction[key]}</TableCell>
-                </TableRow>
-              )
-            }
-            return null;
-          })}
-        </div>
-    }
+    let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
+    if (!transaction.others) fields = fields.filter(field => field !== 'others');
+    fields = fields.filter(field => field !== 'id');
+    let transactions = _.pick(transaction, fields);
+    const readFieldState = {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: '',
+      },
+      validation: {
+        required: false,
+      },
+      value: '',
+      disabled: true,
+      valid: true,
+      touched: false,
+    };
+    Object.keys(transactions).forEach((field =>
+      transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: convertToStartCase(field) }, value: transactions[field] }));
+    const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
+    // let readOnlyContent = null;
+    // if (transaction) {
+    //   readOnlyContent =
+    //     <div style={{ display: 'flex', flexDirection: 'column', width: '90%', marginTop: 10 }}>
+    //       {Object.keys(transaction).map(key => {
+    //         if (!['phoneNumber', 'names', 'gothram', 'nakshatram', '__v', '_id'].includes(key)) {
+    //           return (
+    //             <TableRow key={key}>
+    //               <TableCell>{key}:</TableCell>
+    //               <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'breafk-word' }}>{transaction[key]}</TableCell>
+    //             </TableRow>
+    //           )
+    //         }
+    //         return null;
+    //       })}
+    //     </div>
+    // }
     return (
       <div className={classes.container}>
         <TransactionForm
-          transactionForm={editForm}
+          transactionForm={resultantEditForm}
           showLabels={true}
           fieldChanged={fieldChanged}
           showButtons={false}
           primaryText='Edit'
           secondaryText='Cancel'
         />
-        {readOnlyContent}
+        {/* {readOnlyContent} */}
       </div>);
   }
 };

@@ -38,6 +38,12 @@ export const searchTransactionsSuccess = (state, action) => {
 export const searchTransactionsFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 }
+export const onTransactionFailed = (state, action) => {
+  return updateObject(state, { error: action.payload.error});
+}
+export const onTransactionCommitted = (state, action) => {
+  return updateObject(state, { message: action.payload.message});
+}
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_TRANSACTION_START:
@@ -60,6 +66,11 @@ const reducer = (state = initialState, action) => {
       return searchTransactionsSuccess(state, action);
     case actionTypes.SEARCH_TRANSACTIONS_FAIL:
       return searchTransactionsFail(state, action);
+
+    case actionTypes.onTransactionCommitted:
+      return onTransactionCommitted(state,action);
+    case actionTypes.onTransactionFailed:
+      return onTransactionFailed(state,action);
     default:
       return state;
   }
