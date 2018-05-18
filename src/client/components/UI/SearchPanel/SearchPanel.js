@@ -59,7 +59,7 @@ const styles = theme => ({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     fontSize: 15,
-    padding: '10px 12px',
+    padding: '1rem 0.625rem',
     width: '290px',
     marginBottom: 'auto',
     marginTop: 'auto',
@@ -169,7 +169,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
     </div>
   );
   return (
-    <Slide in={open} direction='up' timeout={200} mountOnEnter unmountOnExit onExited={panelExited}>
+    <Slide in={open} direction='left' timeout={200} mountOnEnter unmountOnExit onExited={panelExited}>
       {panel}
     </Slide>
   );

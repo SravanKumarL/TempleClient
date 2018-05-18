@@ -19,7 +19,6 @@ import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
-import ViewTransactions from './Components/ViewTransactions';
 import EditTransactions from './Components/EditTransactions';
 import { updateObject } from '../../shared/utility';
 

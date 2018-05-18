@@ -36,5 +36,7 @@ const changeRows = (payload, rows) => {
         case constants.delete:
             const uniquePropVal = change[prop];
             return rows.filter(row => row[prop] !== uniquePropVal);
+        default:
+            return rows;
     }
 }

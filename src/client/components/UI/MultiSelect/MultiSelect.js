@@ -201,7 +201,7 @@ class MultiSelect extends React.Component {
 
   render() {
     const { classes, label, type, changed, value } = this.props;
-    const { values, valueObjs } = this.state
+    const { valueObjs } = this.state
     let element = (
       <Input
         fullWidth

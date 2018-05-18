@@ -170,7 +170,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen &&
           <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} >
-            <Typography variant='display1' align='center' style={{ marginBottom: 20 }}> {selectedOption.name} </Typography>
+            <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}> {selectedOption.name} </Typography>
             <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div>}
       </div>

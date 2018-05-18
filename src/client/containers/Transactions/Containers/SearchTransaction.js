@@ -9,7 +9,7 @@ import Snackbar from 'material-ui/Snackbar';
 import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
 import createContainer from '../../../hoc/createContainer/createContainer';
 
-const transitionUp = (props) => { return (<Slide direction="up" {...props} />) };
+const transitionUp = (props) => { return (<Slide direction="left" {...props} />) };
 
 const initialState = {
   searchPanelOpen: false,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { EnumAvailableRoles, EditCell, Cell } from './Cell/CellFactory';
-import { withStyles } from 'material-ui';
 import {
     SortingState, EditingState, PagingState, FilteringState, /* IntegratedSelection, */
     IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, /* SelectionState */
@@ -11,7 +10,7 @@ import {
     PagingPanel, DragDropProvider, TableColumnReordering, TableColumnVisibility, GroupingPanel, Toolbar
 } from '@devexpress/dx-react-grid-material-ui';
 import DeleteDialog from './DeleteRowDialog';
-import constants, { transactionType } from '../../../../store/sagas/constants';
+import constants from '../../../../store/sagas/constants';
 import { Command } from './CommandButton';
 
 // const styles = theme => ({

@@ -1,5 +1,5 @@
 import axios from '../../axios/poojas';
-import { put, call } from 'redux-saga/effects'
+import { put} from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants, { reportMapping, uniqueProp } from './constants';

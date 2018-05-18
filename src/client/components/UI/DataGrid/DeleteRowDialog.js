@@ -7,7 +7,6 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import { Paper, Button } from 'material-ui';
 import { Cell } from './Cell/CellFactory';
-import constants, { transactionType } from '../../../../store/sagas/constants';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles } from 'material-ui/styles';
 
