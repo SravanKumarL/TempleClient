@@ -120,7 +120,7 @@ export default class GridContainer extends React.PureComponent {
                     columns={columns}
                     getRowId={this.getRowId}
                 >
-                    {!readOnly && <FilteringState />}
+                    <FilteringState />
                     {/* {!readOnly && <SelectionState />} */}
                     <SortingState
                         sorting={sorting}
@@ -133,7 +133,7 @@ export default class GridContainer extends React.PureComponent {
                         pageSize={pageSize}
                         onPageSizeChange={this.changePageSize}
                     />
-                    {!readOnly && <IntegratedFiltering />}
+                    <IntegratedFiltering />
                     {/* {!readOnly && <IntegratedSelection />} */}
                     <IntegratedGrouping />
                     <IntegratedSorting />

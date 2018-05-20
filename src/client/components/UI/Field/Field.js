@@ -78,7 +78,8 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      inputElement = <DatePickerWrapper onDateSelectionChanged={props.changed} />
+      inputElement = <DatePickerWrapper value={props.value} onDateSelectionChanged={props.changed} 
+        minDate={props.minDate} maxDate={props.maxDate} />
       break;
     default:
       inputElement = <Input

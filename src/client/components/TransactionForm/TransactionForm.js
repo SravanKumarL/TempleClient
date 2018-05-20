@@ -63,6 +63,7 @@ const transactionForm = (props) => {
           multiline={formElement.id === 'pooja' && formElement.config.elementType === 'input'}
           touched={formElement.config.touched}
           changed={(event) => props.fieldChanged(event, formElement.id)}
+          minDate={formElement.config.minDate}
         />
       ))}
       {showButtons ?

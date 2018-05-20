@@ -49,7 +49,7 @@ export const getCurrentDate = (date = new Date()) => {
   if (mm < 10) {
     mm = '0' + mm
   }
-  today = `${yyyy}-${mm}-${dd}`;
+  today = `${dd}-${mm}-${yyyy}`;
   return today;
 }
 

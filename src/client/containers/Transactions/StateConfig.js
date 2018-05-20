@@ -81,7 +81,8 @@ export const formStateConfig = () => {
         type: 'text',
         placeholder: 'Selected date(s)',
       },
-      value: [getCurrentDate()],
+      value: [],
+      minDate: getCurrentDate(),
       validation: {
         required: false,
       },

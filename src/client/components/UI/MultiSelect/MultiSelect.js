@@ -160,12 +160,12 @@ const styles = theme => ({
 });
 
 class MultiSelect extends React.Component {
-  state = {
+  defaultState = {
     values: '',
     valueObjs: [],
     nextId: 0
   }
-
+  state = this.defaultState;
   onChange = (selValue) => {
     this.setState((prevState) => {
       let { valueObjs, nextId, values } = prevState;
@@ -197,6 +197,11 @@ class MultiSelect extends React.Component {
 
   onClearAll = () => {
     this.setState({ nextId: 0, values: '', valueObjs: [] });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.value || nextProps.value === '')
+      this.setState({ ...this.defaultState });
   }
 
   render() {

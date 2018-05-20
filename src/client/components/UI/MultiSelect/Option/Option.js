@@ -3,7 +3,7 @@ import React from 'react';
 import { MenuItem } from 'material-ui/Menu';
 
 class Option extends React.Component{
-  handleClick = event => {
+  handleSelect = event => {
     if(!this.props.onOptionSelect)
       this.props.onSelect(this.props.option, event);
     else
@@ -15,7 +15,7 @@ class Option extends React.Component{
       <MenuItem
         onFocus={onFocus}
         selected={isFocused}
-        onClick={this.handleClick.bind(this)}
+        onSelect={this.handleSelect.bind(this)}
         component="div"
         style={{
           fontWeight: isSelected ? 500 : 400,
