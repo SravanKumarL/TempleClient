@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Input from 'material-ui/Input';
+import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
 import 'react-select/dist/react-select.css';
 import _ from 'lodash'
 import SingleSelectWrapped from './SelectWrapped/SingleSelectWrapped';
@@ -200,10 +200,11 @@ class MultiSelect extends React.Component {
   }
 
   render() {
-    const { classes, label, type, changed, value } = this.props;
+    const { classes, label, type, changed, value, showLabels } = this.props;
     const { valueObjs } = this.state
     let element = (
       <Input
+        label={showLabels ? label : null}
         fullWidth
         disableUnderline
         inputComponent={SingleSelectWrapped}
@@ -218,10 +219,10 @@ class MultiSelect extends React.Component {
           simpleValue: true,
           options: this.props.options,
         }}
-      // InputLabelProps={{
-      //   shrink: true,
-      //   className: classes.textFieldFormLabel,
-      // }}
+        // InputLabelProps={{
+        //   shrink: true,
+        //   className: classes.textFieldFormLabel,
+        // }}
       />
     );
     if (type === 'multi') {
@@ -242,6 +243,10 @@ class MultiSelect extends React.Component {
           name: 'react-select-chip',
           options: suggestions
         }}
+        // InputLabelProps={{
+        //   shrink: true,
+        //   className: classes.textFieldFormLabel,
+        // }}
       />;
     }
     return element;

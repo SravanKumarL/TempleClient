@@ -1,10 +1,11 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import TextField from 'material-ui/TextField'
-import Button from 'material-ui/Button';
-import AccountCircle from 'material-ui-icons/AccountCircle';
-import withStyles from 'material-ui/styles/withStyles';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import withStyles from '@material-ui/core/styles/withStyles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 const styles = theme => ({
   container: {
@@ -102,7 +103,7 @@ const renderTextField = ({
       {...custom}
     />
   );
-  
+
 const initialState = { value: 0 };
 class MaterialUiForm extends React.Component {
   state = { ...initialState };

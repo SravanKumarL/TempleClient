@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
-import blueGrey from 'material-ui/colors/blueGrey';
+import withStyles from '@material-ui/core/styles/withStyles';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import AppBar from '../../components/Navigation/AppBar/AppBar';
 import createContainer from '../createContainer/createContainer';
 
@@ -22,9 +22,9 @@ const styles = theme => ({
     flexDirection: 'column',
     backgroundColor: blueGrey[800],
     paddingTop: '1rem',
-    marginTop: '3.5rem',
+    marginTop: '2.5rem',
     [theme.breakpoints.up('sm')]: {
-      marginTop: 56,
+      marginTop: 44,
     },
   },
 });

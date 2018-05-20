@@ -1,9 +1,7 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles'
-import { TableCell, TextField } from 'material-ui';
-const styles={
-    
-};
+import TableCell from '@material-ui/core/TableCell';
+import TextField from '@material-ui/core/TextField';
+
 class PasswordCellBase extends React.Component {
     constructor(props) {
         super(props);
@@ -24,4 +22,4 @@ class PasswordCellBase extends React.Component {
         );
     }
 }
-export default withStyles(styles)(PasswordCellBase);
+export default PasswordCellBase;

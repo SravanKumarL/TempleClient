@@ -1,13 +1,13 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
-import IconButton from 'material-ui/IconButton';
-import AccountCircle from 'material-ui-icons/AccountCircle';
-import Dashboard from 'material-ui-icons/Dashboard';
-import Tooltip from 'material-ui/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Dashboard from '@material-ui/icons/Dashboard';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const drawerWidth = 240;
 
@@ -16,7 +16,7 @@ const styles = theme => ({
     position: 'fixed',
     zIndex: theme.zIndex.drawer + 1,
     flexDirection: 'row',
-    height: 56,
+    height: 44,
     alignItems: 'center',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,

@@ -1,19 +1,19 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import withRouter from 'react-router-dom/withRouter';
-import withStyles from 'material-ui/styles/withStyles';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import Event from 'material-ui-icons/Event';
-import Poll from 'material-ui-icons/Poll';
-import ImportContacts from 'material-ui-icons/ImportContacts';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Event from '@material-ui/icons/Event';
+import Poll from '@material-ui/icons/Poll';
+import ImportContacts from '@material-ui/icons/ImportContacts';
 
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase, getCurrentDate } from '../../shared/utility';
-import Orange from 'material-ui/colors/orange';
-import Blue from 'material-ui/colors/blue';
-import Green from 'material-ui/colors/green';
+import Orange from '@material-ui/core/colors/orange';
+import Blue from '@material-ui/core/colors/blue';
+import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
@@ -143,7 +143,7 @@ class Reports extends React.Component {
             >
               <div className={classes.iconButton}>
                 {option.icon}
-                <Typography variant='button' gutterBottom align='center'>
+                <Typography variant='button' style={{ color: 'white' }} gutterBottom align='center'>
                   {option.name}
                 </Typography>
               </div>

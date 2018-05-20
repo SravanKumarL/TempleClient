@@ -1,9 +1,9 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import withStyles from 'material-ui/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import { isEmpty } from 'lodash';
-import Pageview from 'material-ui-icons/Pageview';
-import Restore from 'material-ui-icons/Restore';
+import Pageview from '@material-ui/icons/Pageview';
+import Restore from '@material-ui/icons/Restore';
 import classNames from 'classnames';
 
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
@@ -34,15 +34,15 @@ const styles = theme => ({
 const initialState = {
   transactionForm: formStateConfig(),
   formIsValid: false,
+  disablePreview: true,
 };
 
 class CreateTransaction extends React.Component {
   constructor() {
     super();
-    this.baseState = { ...this.state };
     this.inputChangedHandler = this.inputChangedHandler.bind(this);
   }
-  state = { ...initialState };
+  state = JSON.parse(JSON.stringify(initialState));
   componentWillReceiveProps(nextProps) {
     const { poojaDetails, selectedTransaction, activeTab } = nextProps;
     if (poojaDetails) {
@@ -87,7 +87,8 @@ class CreateTransaction extends React.Component {
     }
     this.setState({ transactionForm: updatedFormElement });
   }
-  formResetHandler = () => this.setState({ ...this.baseState });
+
+  formResetHandler = () => this.setState({ ...initialState });
 
   inputChangedHandler = (event, inputIdentifier) => {
     let value = ['nakshatram', 'pooja', 'selectedDates', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
@@ -95,11 +96,24 @@ class CreateTransaction extends React.Component {
     if (activeTab === 'other' && inputIdentifier === 'pooja') {
       value = event.target.value;
     }
+    if (inputIdentifier === 'phoneNumber') {
+      if (value.length > 10) {
+        return;
+      }
+      if (!Number(value)) {
+        return;
+      }
+    }
     const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
       value: value,
       valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
       touched: true,
     });
+    if (inputIdentifier === 'amount') {
+      if (value === '') {
+        updatedFormElement['amount'].valid = false;
+      }
+    }
     let updatedtransactionForm = updateObject(this.state.transactionForm, {
       [inputIdentifier]: updatedFormElement,
     });
@@ -121,6 +135,7 @@ class CreateTransaction extends React.Component {
       if (value) {
         updatedtransactionForm['numberOfDays'].value = value.length;
         updatedtransactionForm['amount'].value *= value.length;
+        // updatedtransactionForm['amount'].valid = true;
       }
     }
     else if (inputIdentifier === 'modeOfPayment') {
@@ -167,7 +182,7 @@ class CreateTransaction extends React.Component {
       formIsValid = updatedtransactionForm[inputIdentifier].valid && formIsValid;
     }
     updatedtransactionForm[inputIdentifier] = updatedFormElement;
-    this.setState({ transactionForm: updatedtransactionForm, formIsValid, });
+    this.setState({ transactionForm: updatedtransactionForm, disablePreview: !formIsValid, });
   }
   submitHandler = () => {
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
@@ -180,9 +195,12 @@ class CreateTransaction extends React.Component {
   }
   render() {
     const { classes } = this.props;
+    const { disablePreview } = this.state;
     return (
       <div className={classes.container}>
         <TransactionForm
+        showLabels = {true}
+          disablePreview={disablePreview}
           transactionForm={this.state.transactionForm}
           fieldChanged={this.inputChangedHandler}
           primaryClicked={this.submitHandler}
@@ -198,7 +216,7 @@ class CreateTransaction extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     poojaDetails: state.poojas.rows,
   }

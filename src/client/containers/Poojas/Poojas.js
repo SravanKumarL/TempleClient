@@ -1,6 +1,6 @@
 import React from 'react';
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
-import withStyles from 'material-ui/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import constants from '../../../store/sagas/constants';
 const styles = theme => ({
   root: {

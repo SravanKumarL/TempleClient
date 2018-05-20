@@ -1,6 +1,9 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import { TableCell, Input, Select, MenuItem } from 'material-ui';
+import withStyles from '@material-ui/core/styles/withStyles';
+import TableCell from '@material-ui/core/TableCell';
+import Input from '@material-ui/core/Input';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 const styles = theme => ({
     lookupEditCell: {
         paddingTop: theme.spacing.unit * 0.875,

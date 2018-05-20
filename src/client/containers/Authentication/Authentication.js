@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import CircularProgress from 'material-ui/Progress/CircularProgress';
-import Typography from 'material-ui/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 import Login from './Login/Login';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import createContainer from '../../hoc/createContainer/createContainer';
-import { withStyles } from 'material-ui/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+// import Carousel from '../../components/UI/Carousel/Carousel';
 
 const styles = theme => ({
   Authentication: {
@@ -68,6 +69,7 @@ export class Authentication extends Component {
     return (
       <div className={classes.Authentication}>
         <div className={classes.LeftPane}>
+          {/* <Carousel /> */}
         </div>
         <div className={classes.RightPane}>
           <Login onSubmit={this.submitFormHandler} />

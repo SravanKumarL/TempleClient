@@ -1,10 +1,10 @@
 import React from 'react';
 
-import Typography from 'material-ui/Typography';
-import ArrowDropDownIcon from 'material-ui-icons/ArrowDropDown';
-import ArrowDropUpIcon from 'material-ui-icons/ArrowDropUp';
-import ClearIcon from 'material-ui-icons/Clear';
-import Chip from 'material-ui/Chip';
+import Typography from '@material-ui/core/Typography';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import ClearIcon from '@material-ui/icons/Clear';
+import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
 
 import Option from '../Option/Option';

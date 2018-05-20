@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import withStyles from 'material-ui/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import { updateObject } from '../../../shared/utility';
 import { convertToStartCase } from '../../../shared/utility';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';

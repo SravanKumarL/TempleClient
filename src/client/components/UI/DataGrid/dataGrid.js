@@ -1,11 +1,11 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
-import PrintIcon from 'material-ui-icons/Print'
-import FilterIcon from 'material-ui-icons/FilterList'
+import Paper from '@material-ui/core/Paper';
+import PrintIcon from '@material-ui/icons/Print'
+import FilterIcon from '@material-ui/icons/FilterList'
 import ErrorSnackbar from '../Snackbar/errorSnackBar';
 import { transactionType } from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
 import PrintGrid from './PrintGrid';

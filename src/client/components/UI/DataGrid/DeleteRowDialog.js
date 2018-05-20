@@ -4,11 +4,11 @@ import Dialog, {
     DialogContent,
     DialogContentText,
     DialogTitle,
-} from 'material-ui/Dialog';
-import { Paper, Button } from 'material-ui';
+} from '@material-ui/core/Dialog';
+import { Paper, Button } from '@material-ui/core';
 import { Cell } from './Cell/CellFactory';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     dialog: {

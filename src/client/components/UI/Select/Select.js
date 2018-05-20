@@ -1,8 +1,8 @@
 import React from 'react';
-import withStyles from 'material-ui/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-import { MenuItem } from 'material-ui/Menu';
-import Select from 'material-ui/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 const styles = theme => ({
   textFieldInput: {

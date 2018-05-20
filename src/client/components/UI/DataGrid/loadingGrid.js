@@ -1,6 +1,6 @@
 import React from 'react'
-import { Paper } from 'material-ui';
-import withStyles from 'material-ui/styles/withStyles'
+import { Paper } from '@material-ui/core';
+import withStyles from '@material-ui/core/styles/withStyles'
 import { FilteringState, IntegratedPaging, IntegratedFiltering, PagingState, EditingState } from '@devexpress/dx-react-grid';
 import { Grid, Table, TableHeaderRow, TableEditColumn, TableFilterRow, PagingPanel, DragDropProvider } from '@devexpress/dx-react-grid-material-ui';
 import Loading from '../Progress/progress';

@@ -1,6 +1,6 @@
 import React from 'react';
-import Typography from 'material-ui/Typography';
-import Fade from 'material-ui/transitions/Fade';
+import Typography from '@material-ui/core/Typography';
+import Fade from '@material-ui/core/Fade';
 import PropTypes from 'prop-types';
 
 const tabContainer = ({ children }) => {
