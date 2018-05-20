@@ -120,7 +120,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
             <div key={transaction._id} style={{ display: 'flex' }}>
               <ListItem button disableRipple>
                 <ListItemText inset primary={transaction.names} />
-                <Popup style={{ marginLeft: 'auto' }} options={['View', 'Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
+                <Popup style={{ marginLeft: 'auto' }} options={['View/Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
               </ListItem>
             </div>
           );

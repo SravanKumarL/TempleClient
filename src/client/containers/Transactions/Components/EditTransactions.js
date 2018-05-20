@@ -3,7 +3,7 @@ import _ from 'lodash';
 import withStyles from 'material-ui/styles/withStyles';
 import { TableCell, TableRow } from 'material-ui/Table';
 import { updateObject } from '../../../shared/utility';
-
+import { convertToStartCase } from '../../../shared/utility';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 
 const styles = (theme) => ({
@@ -91,7 +91,13 @@ const initialState = {
   transaction: null,
 };
 class EditTransactions extends React.Component {
-  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...initialState,
+      transaction: props.transaction,
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { transaction } = nextProps;
     if (transaction) {
@@ -134,10 +140,27 @@ class EditTransactions extends React.Component {
   render() {
     const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
-    const edits = Object.keys(editForm);
-    const resultantEditForm = editable ?
-      { ...transaction.filter(field=>edits.indexOf(field) === -1).map(field => ({ ...field, disabled: true })), ...editForm } :
-      transaction.map(field => ({ ...field, disabled: true }));
+    let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
+    if (!transaction.others) fields = fields.filter(field => field !== 'others');
+    fields = fields.filter(field => field !== 'id');
+    let transactions = _.pick(transaction, fields);
+    const readFieldState = {
+      elementType: 'input',
+      elementConfig: {
+        type: 'text',
+        placeholder: '',
+      },
+      validation: {
+        required: false,
+      },
+      value: '',
+      disabled: true,
+      valid: true,
+      touched: false,
+    };
+    Object.keys(transactions).forEach((field =>
+      transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: convertToStartCase(field) }, value: transactions[field] }));
+    const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
     // let readOnlyContent = null;
     // if (transaction) {
     //   readOnlyContent =

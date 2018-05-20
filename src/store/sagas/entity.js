@@ -43,7 +43,7 @@ export function* handleTransaction(action) {
                     case constants.edit:
                         response = yield axios({
                             method: 'put',
-                            url: `/${collection}/${uniqueProp(collection)}`,
+                            url: `/${collection}/${changedObj[uniqueProp(collection)]}`,
                             data: JSON.stringify(change),
                             headers
                         });
