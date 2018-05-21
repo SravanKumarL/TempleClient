@@ -23,7 +23,14 @@ const SelectWrapped = (props) => {
   }
   const onValueClickHandler = () => this.valueSelected = true;
   const onInputKeyDownHandler = (event) => this.valueSelected = event.keyCode === 13;
-
+  class OptionComponent extends React.Component{
+    constructor(props){
+      super(props);
+    }
+    render(){
+      return <Option onValueClick={onValueClickHandler} {...this.props} />
+    }
+  }
   // const { classes, ...other } = props;
   const value = valueProps => {
     // const { value, children, onRemove } = valueProps;
@@ -50,7 +57,7 @@ const SelectWrapped = (props) => {
   }
   return (
     <Select
-      optionComponent={props => (<Option onValueClick={onValueClickHandler.bind(this)} {...props} />)}
+      optionComponent={OptionComponent}
       noResultsText={<Typography>{'No results found'}</Typography>}
       arrowRenderer={arrowProps => {
         return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
