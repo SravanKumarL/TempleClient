@@ -23,22 +23,26 @@ class DatePickerWrapper extends Component {
   }
   state = { ...this.defaultState };
   getRangeStartEnd = (unFilteredRange) => [unFilteredRange[0], unFilteredRange[unFilteredRange.length - 1]];
+  getDate = (dateString) => {
+    const parts = dateString.split('-');
+    return new Date(Date.parse(`${parts[2]}-${parts[1]}-${parts[0]}`));
+  }
   getFilteredDates = (selectedDays, unFilteredRange) => {
     let daysOfWeek = this.getDaysOfWeek();
     if (selectedDays.length === 0) {
       return unFilteredRange;
     }
-    return unFilteredRange.filter(x => selectedDays.indexOf(daysOfWeek[new Date(x).getDay()]) !== -1);
+    return unFilteredRange.filter(x => selectedDays.indexOf(daysOfWeek[this.getDate(x).getDay()]) !== -1);
   }
   isDaysInRange = (unFilteredRange, selDays) => {
     // let filteredDays = _.difference(this.getDaysOfWeek(), selDays);
     selDays = selDays.map(day => this.getDaysOfWeek().indexOf(day));
-    return unFilteredRange.some(date => selDays.indexOf(date.getDay()) !== -1);
+    return unFilteredRange.some(date => selDays.indexOf(this.getDate(date).getDay()) !== -1);
   }
   isFilterApplied = () => (this.state.selectedDays.length > 0 && this.state.selectedDays.length < 7);
   getSelectedDates = (state) => {
     const { datePickerMode, selectedDays, unFilteredRange, selectedDates } = state;
-    if (datePickerMode === 'range' && selectedDays.length > 0) {
+    if (datePickerMode === 'range' && selectedDates.length === 2) {
       return this.getFilteredDates(selectedDays, unFilteredRange);
     }
     return selectedDates;
@@ -94,7 +98,9 @@ class DatePickerWrapper extends Component {
         this.setState({ selectedDates });
       }
     }
-    // this.liftStateUp();
+    else {
+      this.setState({ selectedDates: selectedDates.map(date => getCurrentDate(date)) })
+    }
   }
   onClose = (selDates, dateStr, flatPickr) => {
     const { unFilteredRange } = this.state;
@@ -152,7 +158,8 @@ class DatePickerWrapper extends Component {
     }
     else {
       let value = nextProps.value;
-      if (!_.isEqual(_.sortBy(value), this.getSelectedDates(this.state))) {
+      const selectedDates = this.getSelectedDates(this.state);
+      if (!_.isEqual(_.sortBy(value), _.sortBy(selectedDates))) {
         this.setState({ selectedDates: nextProps.value });
       }
     }
