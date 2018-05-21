@@ -50,7 +50,7 @@ const SelectWrapped = (props) => {
   }
   return (
     <Select
-      optionComponent={props => (<Option onValueClick={onValueClickHandler.bind(this)} />)}
+      optionComponent={props => (<Option onValueClick={onValueClickHandler.bind(this)} {...props} />)}
       noResultsText={<Typography>{'No results found'}</Typography>}
       arrowRenderer={arrowProps => {
         return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
