@@ -2,12 +2,10 @@ import React from 'react';
 
 import { MenuItem } from 'material-ui/Menu';
 
-class Option extends React.Component{
-  handleSelect = event => {
-    if(!this.props.onOptionSelect)
-      this.props.onSelect(this.props.option, event);
-    else
-      this.props.onOptionSelect(this.props.option, event);
+class Option extends React.Component {
+  handleClick = event => {
+    this.props.onValueClick();
+    this.props.onSelect(this.props.option, event);
   };
   render() {
     const { children, isFocused, isSelected, onFocus } = this.props;
@@ -15,7 +13,7 @@ class Option extends React.Component{
       <MenuItem
         onFocus={onFocus}
         selected={isFocused}
-        onSelect={this.handleSelect.bind(this)}
+        onClick={this.handleClick.bind(this)}
         component="div"
         style={{
           fontWeight: isSelected ? 500 : 400,
