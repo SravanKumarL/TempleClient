@@ -30,7 +30,7 @@ const styles = theme => ({
     borderRadius: 4,
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '10px 12px',
+    padding: '22px 12px',
     width: '250px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
@@ -56,6 +56,10 @@ const styles = theme => ({
       transform: 'scale(1.1)',
     },
   },
+  selected: {
+    background: '#3f51b5',
+    color: 'white !important',
+  }
 });
 
 const validate = values => {
@@ -125,8 +129,14 @@ class MaterialUiForm extends React.Component {
           showLabels
           className={classes.root}
         >
-          <BottomNavigationAction label="User" icon={<AccountCircle />} />
-          <BottomNavigationAction label="Admin" icon={<AccountCircle />} />
+          <BottomNavigationAction
+            classes={{
+              selected: classes.selected,
+            }} label="User" icon={<AccountCircle />} />
+          <BottomNavigationAction
+            classes={{
+              selected: classes.selected,
+            }} label="Admin" icon={<AccountCircle />} />
         </BottomNavigation>
         <Field
           name="username"
