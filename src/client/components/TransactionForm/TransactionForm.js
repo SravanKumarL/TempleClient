@@ -1,9 +1,7 @@
 import React from 'react';
 
-import Button from 'material-ui/Button';
-
-import { withStyles } from 'material-ui/styles';
-
+import Button from '@material-ui/core/Button';
+import withStyles from '@material-ui/core/styles/withStyles';
 import Field from '../UI/Field/Field';
 
 
@@ -12,7 +10,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     width: '90%',
-    // height: '82vh',
     paddingTop: '10px',
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -35,11 +32,10 @@ const styles = theme => ({
     paddingTop: 20,
     paddingBottom: 10,
   },
-
 });
 
 const transactionForm = (props) => {
-  const { classes, primaryText, secondaryText, primaryIcon, secondaryIcon, showLabels, showButtons } = props;
+  const { classes, primaryText, secondaryText, primaryIcon, secondaryIcon, showButtons, disablePreview } = props;
   const formElementsArray = [];
   for (let key in props.transactionForm) {
     formElementsArray.push({
@@ -51,7 +47,6 @@ const transactionForm = (props) => {
     <form className={classes.form} >
       {formElementsArray.map(formElement => (
         <Field
-          showLabels={showLabels ? showLabels : false}
           disabled={formElement.config.disabled}
           key={formElement.id}
           label={formElement.config.elementConfig.placeholder}
@@ -68,7 +63,7 @@ const transactionForm = (props) => {
       ))}
       {showButtons ?
         <div className={classes.buttonsContainer}>
-          <Button onClick={props.primaryClicked} color='primary' variant='raised' size='large' className={classes.button}>
+          <Button onClick={props.primaryClicked} color='primary' disabled={disablePreview} variant='raised' size='large' className={classes.button}>
             {primaryIcon}
             {primaryText}
           </Button>

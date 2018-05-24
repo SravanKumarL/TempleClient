@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Input from 'material-ui/Input';
+import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
 import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
 import _ from 'lodash';
@@ -204,10 +204,11 @@ class MultiSelect extends React.Component {
       this.setState({ ...this.defaultState });
   }
   render() {
-    const { classes, label, value, changed, type, options } = this.props;
+    const { classes, label, type, changed, value, showLabels, options } = this.props;
     const { valueObjs } = this.state;
     let element = (
       <Input
+        label={showLabels ? label : null}
         fullWidth
         disableUnderline
         inputComponent={SelectWrapped}
@@ -222,10 +223,10 @@ class MultiSelect extends React.Component {
           simpleValue: true,
           options: options,
         }}
-      // InputLabelProps={{
-      //   shrink: true,
-      //   className: classes.textFieldFormLabel,
-      // }}
+        // InputLabelProps={{
+        //   shrink: true,
+        //   className: classes.textFieldFormLabel,
+        // }}
       />
     );
     if (type === 'multi') {

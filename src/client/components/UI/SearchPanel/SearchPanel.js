@@ -1,18 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import withStyles from 'material-ui/styles/withStyles';
-import IconButton from 'material-ui/IconButton';
-import Input, { InputAdornment } from 'material-ui/Input';
-import Search from 'material-ui-icons/Search';
+import withStyles from '@material-ui/core/styles/withStyles';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Search from '@material-ui/icons/Search';
 import Popup from './PopupMenu';
-import Clear from 'material-ui-icons/Clear';
-import Cancel from 'material-ui-icons/Cancel';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Slide from 'material-ui/transitions/Slide';
-import green from 'material-ui/colors/green';
-import Typography from 'material-ui/Typography';
-import CircularProgress from 'material-ui/Progress/CircularProgress';
+import Clear from '@material-ui/icons/Clear';
+import Cancel from '@material-ui/icons/Cancel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Slide from '@material-ui/core/Slide';
+import green from '@material-ui/core/colors/green';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const styles = theme => ({
@@ -59,7 +62,7 @@ const styles = theme => ({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     fontSize: 15,
-    padding: '10px 12px',
+    padding: '1rem 0.625rem',
     width: '290px',
     marginBottom: 'auto',
     marginTop: 'auto',
@@ -169,7 +172,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
     </div>
   );
   return (
-    <Slide in={open} direction='up' timeout={200} mountOnEnter unmountOnExit onExited={panelExited}>
+    <Slide in={open} direction='left' timeout={200} mountOnEnter unmountOnExit onExited={panelExited}>
       {panel}
     </Slide>
   );

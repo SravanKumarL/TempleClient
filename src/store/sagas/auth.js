@@ -20,10 +20,10 @@ export function* signInSaga(action) {
       return yield put(actions.authFail({ error: 'Please check the role you selected for signin' }));
     }
     const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000);
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('expirationDate', expirationDate);
-    localStorage.setItem('user', response.data.user);
-    localStorage.setItem('role', response.data.role);
+    sessionStorage.setItem('token', response.data.token);
+    sessionStorage.setItem('expirationDate', expirationDate);
+    sessionStorage.setItem('user', response.data.user);
+    sessionStorage.setItem('role', response.data.role);
     yield put(actions.authSuccess(response.data.token, response.data.user, response.data.role));
   }
   catch (error) {
@@ -42,15 +42,15 @@ export function* signInSaga(action) {
 
 export function* autoSigninSaga(action) {
   try {
-    const token = yield localStorage.getItem('token');
-    const user = yield localStorage.getItem('user');
-    const role = yield localStorage.getItem('role');
+    const token = yield sessionStorage.getItem('token');
+    const user = yield sessionStorage.getItem('user');
+    const role = yield sessionStorage.getItem('role');
     if (!token) {
       yield put(actions.authLogout());
     } else {
-      // const expirationDate = yield new Date(localStorage.getItem('expirationDate'));
+      // const expirationDate = yield new Date(sessionStorage.getItem('expirationDate'));
       // if (expirationDate >= new Date()) {
-      // const userId = yield localStorage.getItem('userId');
+      // const userId = yield sessionStorage.getItem('userId');
       yield put(actions.authSuccess(token, user, role));
       // yield put(actions.checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) / 1000));
       // } else {

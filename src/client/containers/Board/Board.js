@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import blueGrey from 'material-ui/colors/blueGrey'
-import Receipt from 'material-ui-icons/Receipt';
-import Pages from 'material-ui-icons/Pages';
-import Event from 'material-ui-icons/Event';
-import AccountCircle from 'material-ui-icons/AccountCircle';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import blueGrey from '@material-ui/core/colors/blueGrey'
+import Receipt from '@material-ui/icons/Receipt';
+import Pages from '@material-ui/icons/Pages';
+import Event from '@material-ui/icons/Event';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
@@ -43,6 +44,9 @@ const styles = theme => ({
   },
   wrapper: {
     flexDirection: 'row',
+  },
+  scroller: {
+    overflow: 'initial',
   },
   rootInherit: {
     margin: 5,
@@ -89,7 +93,7 @@ class SimpleTabs extends React.Component {
     const { activeTab } = this.state;
     const newTabClasses = {
       textColorInherit: classes.rootInherit,
-      textColorInheritSelected: classes.rootInheritSelected,
+      selected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
       label: classes.label,
@@ -101,6 +105,7 @@ class SimpleTabs extends React.Component {
             root: classes.header,
             flexContainer: classes.flexContainer,
             indicator: classes.span,
+            scroller: classes.scroller,
           }}
           fullWidth
           value={activeTab}

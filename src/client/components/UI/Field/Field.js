@@ -1,7 +1,7 @@
 import React from 'react';
-import { FormControl } from 'material-ui/Form';
-import withStyles from 'material-ui/styles/withStyles';
-import purple from 'material-ui/colors/purple';
+import FormControl from '@material-ui/core/FormControl';
+import withStyles from '@material-ui/core/styles/withStyles';
+import purple from '@material-ui/core/colors/purple';
 import DatePickerWrapper from '../DatePicker/FlatPickrWrapper';
 import Input from '../TextField/TextField';
 // import Select from '../Select/Select';
@@ -53,6 +53,7 @@ const input = (props) => {
         options={props.elementConfig.options}
         label={props.label}
         type='single'
+        showLabels={props.showLabels}
       />
       break;
     case ('label'):
@@ -71,6 +72,7 @@ const input = (props) => {
       break;
     case ('multiselect'):
       inputElement = <MultiSelect
+        showLabels={props.showLabels}
         value={props.value}
         changed={props.changed}
         label={props.label}

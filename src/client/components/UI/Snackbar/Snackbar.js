@@ -1,6 +1,6 @@
 import React from 'react';
-import Snackbar from 'material-ui/Snackbar';
-import Slide from 'material-ui/transitions/Slide';
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 
 const transitionUp = (props) => { return (<Slide direction="up" {...props} />) };
 

@@ -1,11 +1,11 @@
 import React from 'react';
-import IconButton from 'material-ui/IconButton';
-import AddIcon from 'material-ui-icons/Add';
-import Typography from 'material-ui/Typography';
-import DeleteIcon from 'material-ui-icons/Delete';
-import EditIcon from 'material-ui-icons/Edit';
-import CancelIcon from 'material-ui-icons/Cancel';
-import SaveIcon from 'material-ui-icons/Save';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import CancelIcon from '@material-ui/icons/Cancel';
+import SaveIcon from '@material-ui/icons/Save';
 
 export const Command = ({ id, collection, onExecute }) => {
     let Icon;

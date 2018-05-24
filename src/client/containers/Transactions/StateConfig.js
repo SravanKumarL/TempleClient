@@ -1,6 +1,4 @@
-import { getCurrentDate } from "../../shared/utility";
-
-// import { getCurrentDate } from "../../shared/utility";
+import { getCurrentDate } from '../../shared/utility';
 
 export const formStateConfig = () => {
   return {
@@ -13,7 +11,8 @@ export const formStateConfig = () => {
       value: '',
       validation: {
         required: true,
-        isPhoneNumber: true,
+        minLength: 8,
+        maxLength: 10
       },
       valid: false,
       disabled: false,
@@ -100,7 +99,7 @@ export const formStateConfig = () => {
       validation: {
         required: true,
       },
-      valid: false,
+      valid: true,
       disabled: true,
       touched: false,
     },
@@ -114,7 +113,7 @@ export const formStateConfig = () => {
       validation: {
         required: true,
       },
-      valid: false,
+      valid: true,
       disabled: true,
       touched: false,
     },
@@ -129,7 +128,7 @@ export const formStateConfig = () => {
       validation: {
         required: true,
       },
-      valid: false,
+      valid: true,
       touched: false,
     },
   }

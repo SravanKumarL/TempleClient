@@ -1,9 +1,9 @@
 import React from 'react';
 import PasswordCell from './PasswordCell';
 import LookupEditCell from './LookupCell';
-import { TableCell } from 'material-ui/Table';
+import TableCell from '@material-ui/core/TableCell';
 import { TableEditRow, Table } from '@devexpress/dx-react-grid-material-ui';
-import Input from 'material-ui/Input'
+import Input from '@material-ui/core/Input'
 
 export const EnumUser = {
     role: 'role',

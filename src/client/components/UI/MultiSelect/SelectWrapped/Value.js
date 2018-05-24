@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Chip from 'material-ui/Chip';
+import Chip from '@material-ui/core/Chip';
 
 const value = valueProps => {
   const { value, children, onRemove, classes } = valueProps;

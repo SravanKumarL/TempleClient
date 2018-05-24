@@ -1,15 +1,15 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import Button from 'material-ui/Button';
-import Search from 'material-ui-icons/Search';
-import Fade from 'material-ui/transitions/Fade';
-import Slide from 'material-ui/transitions/Slide';
-import Snackbar from 'material-ui/Snackbar';
+import Button from '@material-ui/core/Button';
+import Search from '@material-ui/icons/Search';
+import Fade from '@material-ui/core/Fade';
+import Slide from '@material-ui/core/Slide';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
 import createContainer from '../../../hoc/createContainer/createContainer';
 
-const transitionUp = (props) => { return (<Slide direction="up" {...props} />) };
+const transitionUp = (props) => { return (<Slide direction="left" {...props} />) };
 
 const initialState = {
   searchPanelOpen: false,

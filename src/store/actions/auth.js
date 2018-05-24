@@ -51,9 +51,9 @@ export const autoSignIn = () => {
 // }
 
 export const authLogout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expirationDate');
-  localStorage.removeItem('user');
+  sessionStorage.removeItem('token');
+  sessionStorage.removeItem('expirationDate');
+  sessionStorage.removeItem('user');
   return {
     type: actionTypes.AUTH_LOGOUT,
   }

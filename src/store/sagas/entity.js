@@ -1,5 +1,5 @@
 import axios from '../../axios/poojas';
-import { put, call } from 'redux-saga/effects'
+import { put} from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants, { reportMapping, uniqueProp } from './constants';
@@ -10,7 +10,7 @@ export function* handleTransaction(action) {
     }
     else {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${type} ${collection}`);
             }
@@ -75,7 +75,7 @@ export function* handleFetchData(action) {
     else {
         try {
             yield put(actions.onFetchReq(collection));
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
             } else {
@@ -110,7 +110,7 @@ export function* handleFetchSchema(action) {
     const { collection, searchCriteria } = action.payload;
     try {
         yield put(actions.onFetchReq(collection));
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (!token) {
             throw new Error(`You are not allowed to ${constants.get} ${constants.Schema} of the ${collection}`);
         } else {

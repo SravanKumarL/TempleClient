@@ -1,10 +1,11 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
-import TextField from 'material-ui/TextField'
-import Button from 'material-ui/Button';
-import AccountCircle from 'material-ui-icons/AccountCircle';
-import withStyles from 'material-ui/styles/withStyles';
-import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import withStyles from '@material-ui/core/styles/withStyles';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 const styles = theme => ({
   container: {
@@ -29,7 +30,7 @@ const styles = theme => ({
     borderRadius: 4,
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '10px 12px',
+    padding: '22px 12px',
     width: '250px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
@@ -55,6 +56,10 @@ const styles = theme => ({
       transform: 'scale(1.1)',
     },
   },
+  selected: {
+    background: '#3f51b5',
+    color: 'white !important',
+  }
 });
 
 const validate = values => {
@@ -102,7 +107,7 @@ const renderTextField = ({
       {...custom}
     />
   );
-  
+
 const initialState = { value: 0 };
 class MaterialUiForm extends React.Component {
   state = { ...initialState };
@@ -124,8 +129,14 @@ class MaterialUiForm extends React.Component {
           showLabels
           className={classes.root}
         >
-          <BottomNavigationAction label="User" icon={<AccountCircle />} />
-          <BottomNavigationAction label="Admin" icon={<AccountCircle />} />
+          <BottomNavigationAction
+            classes={{
+              selected: classes.selected,
+            }} label="User" icon={<AccountCircle />} />
+          <BottomNavigationAction
+            classes={{
+              selected: classes.selected,
+            }} label="Admin" icon={<AccountCircle />} />
         </BottomNavigation>
         <Field
           name="username"

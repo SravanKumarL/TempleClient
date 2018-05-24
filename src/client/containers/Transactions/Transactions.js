@@ -1,17 +1,18 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
-import withStyles from 'material-ui/styles/withStyles';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import blueGrey from 'material-ui/colors/blueGrey';
-import Fade from 'material-ui/transitions/Fade';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import Fade from '@material-ui/core/Fade';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
-import Event from 'material-ui-icons/Event';
-import Description from 'material-ui-icons/Description';
-import ModeEdit from 'material-ui-icons/ModeEdit';
-import Save from 'material-ui-icons/Save';
-import Close from 'material-ui-icons/Close';
-import Undo from 'material-ui-icons/Undo';
+import Event from '@material-ui/icons/Event';
+import Description from '@material-ui/icons/Description';
+import ModeEdit from '@material-ui/icons/ModeEdit';
+import Save from '@material-ui/icons/Save';
+import Close from '@material-ui/icons/Close';
+import Undo from '@material-ui/icons/Undo';
 import TransactionSummary from '../../components/TransactionSummary/TransacationSummary';
 import CreateTransaction from './Containers/CreateTransaction';
 import SearchTransaction from './Containers/SearchTransaction';
@@ -19,7 +20,6 @@ import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
-import ViewTransactions from './Components/ViewTransactions';
 import EditTransactions from './Components/EditTransactions';
 import { updateObject } from '../../shared/utility';
 
@@ -111,7 +111,10 @@ const styles = theme => ({
   },
   label: {
     fontSize: 16,
-  }
+  },
+  scroller: {
+    overflow: 'initial',
+  },
 });
 
 const initialState = {
@@ -247,7 +250,7 @@ class Transactions extends React.Component {
     }
     const newTabClasses = {
       textColorInherit: classes.rootInherit,
-      textColorInheritSelected: classes.rootInheritSelected,
+      selected: classes.rootInheritSelected,
       wrapper: classes.wrapper,
       labelContainer: classes.labelContainer,
       label: classes.label
@@ -260,6 +263,7 @@ class Transactions extends React.Component {
               root: classes.root,
               flexContainer: classes.flexContainer,
               indicator: classes.span,
+              scroller: classes.scroller,
             }} value={activeTab}
               onChange={this.tabChangeHandler}
             >
