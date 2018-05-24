@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Field from '../../../components/UI/Field/Field';
+import { getCurrentDate } from '../../../shared/utility';
 
 const initialState = { value: '', poojaValue: '' };
 class ReportCriteria extends React.Component {
@@ -35,8 +36,8 @@ class ReportCriteria extends React.Component {
         {pooja}
         <Field
           elementType='date'
-          mode='single'
           changed={dateSelectionChanged}
+          maxDate={getCurrentDate()}
         />
       </div>
     );

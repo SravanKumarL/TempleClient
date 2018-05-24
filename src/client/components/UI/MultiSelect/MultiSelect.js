@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
+import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
-import _ from 'lodash'
-import SingleSelectWrapped from './SelectWrapped/SingleSelectWrapped';
-import MultiSelectWrapped from './SelectWrapped/MultiSelectWrapped';
+import _ from 'lodash';
+
 const suggestions = [
   { label: 'Ashwini' },
   { label: 'Bharani' },
@@ -160,25 +160,25 @@ const styles = theme => ({
 });
 
 class MultiSelect extends React.Component {
-  state = {
+  defaultState = {
     values: '',
     valueObjs: [],
     nextId: 0
   }
-
+  state = this.defaultState;
   onChange = (selValue) => {
     this.setState((prevState) => {
-      let { valueObjs, nextId, values } = prevState;
+      let { valueObjs, nextId, values } = JSON.parse(JSON.stringify(prevState));
       if (this.props.type === 'multi') {
         const selValues = selValue.split(',');
         const prevValues = valueObjs.map(vo => vo.value);
-        nextId++;
         const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
-        if (selValue !== '' || _.isEqual(prevValues, selValues)) {
-          valueObjs.push({ value: selValue, id: nextId });
+        const selected = _.uniq(_.difference(selValues, prevValues)).join(',');
+        if (unselected === '' && selected !== '') {
+          valueObjs.push({ value: selected, id: ++nextId });
         }
         else if (unselected !== '') {
-          valueObjs.push({ value: unselected, id: nextId });
+          valueObjs.push({ value: unselected, id: ++nextId });
         }
         values = valueObjs.map(x => x.value).join(',');
       }
@@ -199,15 +199,19 @@ class MultiSelect extends React.Component {
     this.setState({ nextId: 0, values: '', valueObjs: [] });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.value || nextProps.value === '')
+      this.setState({ ...this.defaultState });
+  }
   render() {
-    const { classes, label, type, changed, value, showLabels } = this.props;
-    const { valueObjs } = this.state
+    const { classes, label, type, changed, value, showLabels, options } = this.props;
+    const { valueObjs } = this.state;
     let element = (
       <Input
         label={showLabels ? label : null}
         fullWidth
         disableUnderline
-        inputComponent={SingleSelectWrapped}
+        inputComponent={SelectWrapped}
         inputProps={{
           classes,
           value: value,
@@ -217,7 +221,7 @@ class MultiSelect extends React.Component {
           id: 'react-select-single',
           name: 'react-select-single',
           simpleValue: true,
-          options: this.props.options,
+          options: options,
         }}
         // InputLabelProps={{
         //   shrink: true,
@@ -230,24 +234,22 @@ class MultiSelect extends React.Component {
         disableUnderline
         fullWidth
         placeholder={label}
-        inputComponent={(props) => (<MultiSelectWrapped removeChip={this.onRemove} {...props} />)}
+        inputComponent={SelectWrapped}
         inputProps={{
           classes,
           value: valueObjs,
           multi: true,
           onChange: this.onChange,
           onClearAll: this.onClearAll,
+          removeChip: this.onRemove,
           placeholder: label,
           instanceId: 'react-select-chip',
           id: 'react-select-chip',
           name: 'react-select-chip',
-          options: suggestions
+          simpleValue: true,
+          options: suggestions,
         }}
-        // InputLabelProps={{
-        //   shrink: true,
-        //   className: classes.textFieldFormLabel,
-        // }}
-      />;
+      />
     }
     return element;
   }

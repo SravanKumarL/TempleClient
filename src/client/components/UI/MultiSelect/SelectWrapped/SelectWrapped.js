@@ -9,15 +9,28 @@ import Select from 'react-select';
 
 import Option from '../Option/Option';
 
-const selectWrapped = (props) => {
-  const handleClear = (change) => {
-    props.onClearAll();
+const SelectWrapped = (props) => {
+  const { classes, removeChip, onChange, onClearAll, ...other } = props;
+  const handleSelect = (change) => {
+    if (change === '' && !this.valueSelected) {
+      this.valueSelected = false;
+      onClearAll();
+    }
+    else {
+      this.valueSelected = false;
+      onChange(change);
+    }
   }
-  const onOptionSelected = (value, event) => {
-    props.onChange(value.value);
+  const onValueClickHandler = () => this.valueSelected = true;
+  const onInputKeyDownHandler = (event) => this.valueSelected = event.keyCode === 13;
+  class OptionComponent extends React.Component{
+    render(){
+      return <Option onValueClick={onValueClickHandler} {...this.props} />
+    }
   }
-  const { classes, removeChip, onChange, ...other } = props;
+  // const { classes, ...other } = props;
   const value = valueProps => {
+    // const { value, children, onRemove } = valueProps;
     let { value } = valueProps;
     let label = value;
     if (value.value)
@@ -41,16 +54,15 @@ const selectWrapped = (props) => {
   }
   return (
     <Select
-      optionComponent={(props) => {
-        const { ref, ...restProps } = props;
-        return <Option id='select-option' onOptionSelect={onOptionSelected} {...restProps} />;
-      }}
+      optionComponent={OptionComponent}
       noResultsText={<Typography>{'No results found'}</Typography>}
       arrowRenderer={arrowProps => {
         return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
       }}
       simpleValue
-      onChange={handleClear}
+      onChange={handleSelect.bind(this)}
+      onInputKeyDown={onInputKeyDownHandler.bind(this)}
+      // onSelectResetsInput
       removeSelected={false}
       clearRenderer={() => <ClearIcon />}
       valueComponent={value}
@@ -58,4 +70,5 @@ const selectWrapped = (props) => {
     />
   );
 }
-export default selectWrapped;
+
+export default SelectWrapped;
