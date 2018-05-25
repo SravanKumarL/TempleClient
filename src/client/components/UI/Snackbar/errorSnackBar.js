@@ -11,9 +11,6 @@ const styles = theme => ({
     width: theme.spacing.unit * 4,
     height: theme.spacing.unit * 4,
   },
-  snackBar:{
-    background:theme.palette.primary.dark
-  }
 });
 
 class ErrorSnackbar extends React.Component {
@@ -62,11 +59,10 @@ class ErrorSnackbar extends React.Component {
     this.setState({actions})
   }
   render() {
-    const { message,open,classes } = this.props;
+    const { message,open } = this.props;
     return (
       <div>
         <Snackbar
-          className={classes.snackBar}
           anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'left',

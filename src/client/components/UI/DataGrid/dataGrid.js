@@ -58,8 +58,6 @@ export default class DataGrid extends React.PureComponent {
   }
   componentWillReceiveProps(nextProps) {
     const { error, message } = nextProps;
-    if (error === '')
-      this.setState({ transaction: null });
     if (message !== '' || error !== '')
       this.setState({ snackBarOpen: true });
   }
@@ -98,7 +96,8 @@ export default class DataGrid extends React.PureComponent {
             <PrintIcon /> Print {collection}
           </Button>
           <Paper id="paperGrid">
-            {isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
+            {(rows && columns && rows.length && columns.length) &&
+              isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
               <GridContainer rows={rows}
                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                 readOnly={readOnly} displayFilter={displayFilter} />}

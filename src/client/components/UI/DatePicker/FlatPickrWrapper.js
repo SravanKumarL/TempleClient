@@ -108,7 +108,7 @@ class DatePickerWrapper extends Component {
       this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: 'range' });
     }
     else {
-      this.setState({ selectedDates: selDates });
+      this.setState({ selectedDates: selDates.map(selDate=>getCurrentDate(selDate)) });
     }
     // this.liftStateUp();
   }

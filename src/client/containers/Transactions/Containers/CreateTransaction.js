@@ -50,6 +50,7 @@ class CreateTransaction extends React.Component {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
+      initialState.transactionForm.pooja.elementConfig.options = options;
       const newFormElement = { ...this.state.transactionForm };
       newFormElement.pooja.elementConfig.options = options;
       this.setState({ transactionForm: newFormElement });
@@ -199,7 +200,7 @@ class CreateTransaction extends React.Component {
     return (
       <div className={classes.container}>
         <TransactionForm
-        showLabels = {true}
+          showLabels={true}
           disablePreview={disablePreview}
           transactionForm={this.state.transactionForm}
           fieldChanged={this.inputChangedHandler}

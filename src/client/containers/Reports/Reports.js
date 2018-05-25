@@ -10,7 +10,7 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase, getCurrentDate } from '../../shared/utility';
+import { convertToStartCase } from '../../shared/utility';
 import Orange from '@material-ui/core/colors/orange';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
@@ -71,10 +71,10 @@ const styles = theme => ({
 const initialState = {
   modalOpen: false,
   selectedOption: {},
-  selectedDates: getCurrentDate(),
+  selectedDates: [],
   poojaDetails: null,
   reportOpen: false,
-  pooja: ''
+  selectedPooja: ''
 };
 class Reports extends React.Component {
   state = { ...initialState };
@@ -94,15 +94,15 @@ class Reports extends React.Component {
   closeDialogHandler = () => { this.setState({ modalOpen: false }); }
   generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
-  poojaSelected = (pooja) => this.setState({ pooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, reportOpen: false }); }
+  poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
+  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, reportOpen: false, selectedDates: [], selectedPooja: '' }); }
 
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
   }
   getModal = () => {
-    const { modalOpen, selectedOption } = this.state;
+    const { modalOpen, selectedOption, selectedDates, selectedPooja } = this.state;
     return (
       <Dialog
         open={modalOpen}
@@ -115,8 +115,10 @@ class Reports extends React.Component {
         <ReportCriteria
           poojas={this.state.poojaDetails}
           title={selectedOption.name}
+          selectedDates={selectedDates}
           dateSelectionChanged={this.dateSelectionChangedHandler}
           poojaSelected={this.poojaSelected}
+          selectedPooja={selectedPooja}
         />
       </Dialog>
     );
@@ -154,13 +156,13 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedOption, selectedDates, pooja } = this.state;
+    const { reportOpen, selectedOption, selectedDates, selectedPooja } = this.state;
     const { classes } = this.props;
     let searchObj = {};
     if (selectedOption.name) {
       searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
       if (searchObj.ReportName === 'Pooja')
-        searchObj = { ...searchObj, pooja };
+        searchObj = { ...searchObj, pooja: selectedPooja };
     }
     return (
       <div style={{ display: 'flex', height: '100%', flexGrow: 1 }}>
