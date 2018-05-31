@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { isEmpty } from 'lodash';
 import Pageview from '@material-ui/icons/Pageview';
@@ -136,7 +135,6 @@ class CreateTransaction extends React.Component {
       if (value) {
         updatedtransactionForm['numberOfDays'].value = value.length;
         updatedtransactionForm['amount'].value *= value.length;
-        // updatedtransactionForm['amount'].valid = true;
       }
     }
     else if (inputIdentifier === 'modeOfPayment') {
@@ -200,7 +198,6 @@ class CreateTransaction extends React.Component {
     return (
       <div className={classes.container}>
         <TransactionForm
-          showLabels={true}
           disablePreview={disablePreview}
           transactionForm={this.state.transactionForm}
           fieldChanged={this.inputChangedHandler}
@@ -223,4 +220,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default withRouter(createContainer(withPoojaDetails(withStyles(styles)(CreateTransaction), mapStateToProps)));
+export default createContainer(withPoojaDetails(withStyles(styles)(CreateTransaction), mapStateToProps));

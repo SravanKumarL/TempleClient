@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import withRouter from 'react-router-dom/withRouter';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -191,4 +190,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default withRouter(createContainer(withPoojaDetails(withStyles(styles)(Reports), mapStateToProps)));
+export default createContainer(withPoojaDetails(withStyles(styles)(Reports), mapStateToProps));

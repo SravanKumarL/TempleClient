@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Tabs from '@material-ui/core/Tabs';
@@ -136,7 +135,10 @@ class Transactions extends React.Component {
       this.setState({ snackOpen: true });
     }
   }
-  closeSnackHandler = () => this.setState({ snackOpen: false });
+  closeSnackHandler = () => {
+    this.setState({ snackOpen: false });
+    this.props.addTransactionFail(null);
+  }
 
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
@@ -300,4 +302,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default withRouter(createContainer(withStyles(styles)(Transactions), mapStateToProps));
+export default createContainer(withStyles(styles)(Transactions), mapStateToProps);

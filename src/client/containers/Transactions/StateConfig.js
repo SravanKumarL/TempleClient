@@ -53,10 +53,7 @@ export const formStateConfig = () => {
         placeholder: 'Nakshatram',
       },
       value: '',
-      validation: {
-        required: true,
-      },
-      valid: false,
+      valid: true,
       disabled: false,
       touched: false,
     },

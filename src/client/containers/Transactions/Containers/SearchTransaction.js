@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Search from '@material-ui/icons/Search';
 import Fade from '@material-ui/core/Fade';
@@ -105,4 +104,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default withRouter(createContainer(SearchTransaction, mapStateToProps));
+export default createContainer(SearchTransaction, mapStateToProps);

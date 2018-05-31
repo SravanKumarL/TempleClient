@@ -41,7 +41,10 @@ export class Authentication extends Component {
 
   submitFormHandler = (username, password, role) => { this.props.authUser(username, password, role); }
 
-  closeHandler = () => { this.setState({ open: false }); }
+  closeHandler = () => { 
+    this.setState({ open: false });
+    this.props.authFail(null);
+   }
 
   render() {
     const { classes } = this.props;
