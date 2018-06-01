@@ -15,7 +15,7 @@
             "type": "node",
             "request": "launch",
             "name": "Node",
-            "program": "${workspaceFolder}\\service\\service.js"
+            "program": "${workspaceFolder}\\service\\serviceInstaller.js"
         }
     ]
 }

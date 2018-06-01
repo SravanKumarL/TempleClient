@@ -1,28 +1,26 @@
-var Service = require('node-windows').Service;
-var log4js= require('log4js');
-log4js.configure({
-  appenders: { installLogger: { type: 'file', filename: 'install.log' } },
-  categories: { default: { appenders: ['installLogger'], level: 'error' } }
+const buildProcess = require('child_process');
+const buildProc = buildProcess.spawn('node', ['../scripts/build.js']);
+const logger = require('./helper').getLogger('buildLog');
+let server = undefined;
+new Promise((resolve, reject) => {
+    buildProc.on('exit', (code, signal) => {
+        if (code === 0) {
+            logger.info('Build completed');
+            resolve('complete');
+        }
+        else {
+            logger.error('Build Failed. See Logs for More details');
+            reject('failed');
+        }
+    });
+}).then((value) => {
+    const express = require('express');
+    const app = express();
+    // const directory= process.cwd();
+    app.get('/', (req, res) => {
+        res.sendfile('../build/index.html');
+    });
+    app.use(express.static('../build/static'));
+    server = app.listen(3000, () => logger.info('Temple starter listening to port 3000'));
 });
-const logger = log4js.getLogger('installLogger');
-// Create a new service object
-var svc = new Service({
-  name:'Temple Starter',
-  description: 'Service for Temple Starter',
-  script: require('path').join('./scripts/start.js'),
-  nodeOptions: [
-    '--harmony',
-    '--max_old_space_size=4096'
-  ],
-});
-svc.on('stop',function(){
-    process.exit(0);
-});
-try{
-  logger.trace('Installing Temple starter service...')
-  svc.install();
-}
-catch(error){
-  logger.error('Installing failed...');
-  logger.error(error);
-}
+module.exports.stop = () => server && server.close();
