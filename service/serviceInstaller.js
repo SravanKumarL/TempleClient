@@ -1,25 +1,39 @@
-var Service = require('node-windows').Service;
-var stopService = require('./service').stop;
-var logger = require('./helper').getLogger('installLog');
+const Service = require('node-windows').Service;
+const templeService = require('./service');
+const logger = require('./helper').getLogger('installLog.log');
 // Create a new service object
 var svc = new Service({
-  name: 'Temple Starter',
-  description: 'Service for Temple Starter',
-  script: require('path').join('./service.js'),
-  nodeOptions: [
-    '--harmony',
-    '--max_old_space_size=4096'
-  ],
+    name: 'Temple Client',
+    description: 'Service for Temple Client',
+    script: __dirname + '/service.js',
+    nodeOptions: [
+        '--harmony',
+        '--max_old_space_size=4096'
+    ],
 });
-svc.on('stop', function () {
-  stopService();
-  process.exit(0);
-});
-try {
-  logger.trace('Installing Temple starter service...')
-  svc.install();
-}
-catch (error) {
-  logger.error('Installing failed...');
-  logger.error(error);
-}
+// svc.on('start', function () {
+//     templeService.start();
+//     logger.info('Starting Temple Client service...');
+// });
+// svc.on('stop', function () {
+//     templeService.stop();
+//     logger.info('Stopping Temple Client service...');
+//     process.exit(0);
+// });
+// //Check if service was installed correctly
+// svc.on('install', function () {
+//     logger.info('Starting Temple Client service...');
+//     templeService.start();
+// });
+
+// try {
+//     logger.info('Installing Temple Client service...');
+//     svc.install();
+// }
+// catch (error) {
+//     logger.error('Installing Temple Client service failed...');
+//     logger.error(error);
+// }
+
+
+svc.uninstall(); // Uninstall service. Comment the above code.

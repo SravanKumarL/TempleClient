@@ -4,3 +4,4 @@ TempleStarter.rar
 build/
 package-lock.json
 .vscode/
+*.log

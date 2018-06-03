@@ -13,7 +13,16 @@ process.on('unhandledRejection', err => {
 
 // Ensure environment variables are read.
 require('../config/env');
-
+const buildLogger = require(require('path').join(process.cwd(), 'service/helper')).getLogger('buildLog.log');
+buildLogger.info(process.argv);
+const logToConsoleAndLogFile = (text, type) => {
+  if (text) {
+    console.log(text);
+    const stringedText = text.toString();
+    type === undefined ? buildLogger.trace(stringedText) : (type === 'error' ? buildLogger.error(stringedText) : buildLogger.warn(stringedText));
+  }
+}
+const logType = { error: 'error', warn: 'warn' };
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs-extra');
@@ -55,20 +64,20 @@ measureFileSizesBeforeBuild(paths.appBuild)
   .then(
     ({ stats, previousFileSizes, warnings }) => {
       if (warnings.length) {
-        console.log(chalk.yellow('Compiled with warnings.\n'));
-        console.log(warnings.join('\n\n'));
-        console.log(
+        logToConsoleAndLogFile(chalk.yellow('Compiled with warnings.\n'), logType.warn);
+        logToConsoleAndLogFile(warnings.join('\n\n'), logType.warn);
+        logToConsoleAndLogFile(
           '\nSearch for the ' +
-            chalk.underline(chalk.yellow('keywords')) +
-            ' to learn more about each warning.'
-        );
-        console.log(
+          chalk.underline(chalk.yellow('keywords')) +
+          ' to learn more about each warning.'
+          , logType.warn);
+        logToConsoleAndLogFile(
           'To ignore, add ' +
-            chalk.cyan('// eslint-disable-next-line') +
-            ' to the line before.\n'
-        );
+          chalk.cyan('// eslint-disable-next-line') +
+          ' to the line before.\n'
+          , logType.warn);
       } else {
-        console.log(chalk.green('Compiled successfully.\n'));
+        logToConsoleAndLogFile(chalk.green('Compiled successfully.\n'));
       }
 
       console.log('File sizes after gzip:\n');
@@ -79,7 +88,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
-      console.log();
+      logToConsoleAndLogFile();
 
       const appPackage = require(paths.appPackageJson);
       const publicUrl = paths.publicUrl;
@@ -95,7 +104,8 @@ measureFileSizesBeforeBuild(paths.appBuild)
       process.exit(0);
     },
     err => {
-      console.log(chalk.red('Failed to compile.\n'));
+      logToConsoleAndLogFile(chalk.red('Failed to compile.\n'), logType.error);
+      buildLogger.error(err);
       printBuildError(err);
       process.exit(1);
     }
@@ -103,7 +113,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
 
 // Create the production build and print the deployment instructions.
 function build(previousFileSizes) {
-  console.log('Creating an optimized production build...');
+  logToConsoleAndLogFile('Creating an optimized production build...');
 
   let compiler = webpack(config);
   return new Promise((resolve, reject) => {
@@ -126,12 +136,11 @@ function build(previousFileSizes) {
           process.env.CI.toLowerCase() !== 'false') &&
         messages.warnings.length
       ) {
-        console.log(
+        logToConsoleAndLogFile(
           chalk.yellow(
             '\nTreating warnings as errors because process.env.CI = true.\n' +
-              'Most CI servers set it automatically.\n'
-          )
-        );
+            'Most CI servers set it automatically.\n'
+          ), logType.warn);
         return reject(new Error(messages.warnings.join('\n\n')));
       }
       return resolve({
