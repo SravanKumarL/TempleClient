@@ -1,3 +1,5 @@
+const path = require('path');
+const logger = require(__dirname + path.sep + 'helper').getLogger('serviceLog.log');
 const stopService = (code) => {
     logger.fatal('Stopping Temple Client service...');
     if (buildProc)
@@ -6,11 +8,11 @@ const stopService = (code) => {
         server.close();
     logger.fatal('Process exited with code ' + code);
 };
-process.on('exit', (code) => {
-    stopService(code);
-});
+process.on('exit', (code) => stopService(code));
+process.on('beforeExit', (code) => stopService(code));
 const killHandler = () => {
     logger.fatal('Killing the process...');
+    stopService(128);
     process.exit(128);
 }
 process.on('SIGKILL', killHandler);
@@ -25,16 +27,20 @@ process.on('unhandledRejection', (reason, p) => {
     process.exit(1);
 });
 let server = undefined;
-const path = require('path');
 const buildProcess = require('child_process');
-const logger = require(__dirname + path.sep + 'helper').getLogger('serviceLog.log');
-const buildProc = buildProcess.spawn('node', [path.join(__dirname, '../scripts/build.js')], { detached: true });
+const buildProc = buildProcess.spawn('node', [path.join(__dirname, '../scripts/build.js')]);
+buildProc.on('message', (message) => {
+    if (message === 'kill') {
+        killHandler();
+    }
+});
 buildProc.on('error', (error) => {
     logger.error(error);
-    process.exit(1);
-})
+    buildProc.send('kill');
+    buildProc.kill();
+});
 new Promise((resolve, reject) => {
-    buildProc.on('exit', (code, signal) => {
+    const closeHandler = (code, signal) => {
         if (buildProc.killed) {
             logger.trace('Process was killed');
             reject('killed');
@@ -49,7 +55,10 @@ new Promise((resolve, reject) => {
                 reject('failed');
             }
         }
-    });
+        buildProc.send('kill');
+    }
+    buildProc.on('exit', closeHandler);
+    buildProc.on('close', closeHandler);
 }).then((value) => {
     const express = require('express');
     const app = express();

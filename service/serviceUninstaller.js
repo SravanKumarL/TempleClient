@@ -10,17 +10,14 @@ var svc = new Service({
         '--max_old_space_size=4096'
     ],
 });
-
-//Check if service was installed correctly
-svc.on('install', function () {
-    logger.info('Temple Client service install complete.');
-});
+// Check if service was uninstalled correctly
+svc.on('uninstall', () => logger.info('Temple Client service uninstalling complete.'));
 
 try {
-    logger.info('Installing Temple Client service...');
-    svc.install();
+    logger.info('Uninstalling Temple Client service...');
+    svc.uninstall();
 }
 catch (error) {
-    logger.error('Installing Temple Client service failed!');
+    logger.error('Uninstalling Temple Client service failed!');
     logger.error(error);
 }
