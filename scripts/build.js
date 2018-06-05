@@ -14,7 +14,6 @@ process.on('unhandledRejection', err => {
 // Ensure environment variables are read.
 require('../config/env');
 const buildLogger = require(require('path').join(process.cwd(), 'service/helper')).getLogger('buildLog.log');
-buildLogger.info(process.argv);
 const logToConsoleAndLogFile = (text, type) => {
   if (text) {
     console.log(text);

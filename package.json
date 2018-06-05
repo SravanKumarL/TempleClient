@@ -79,6 +79,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
+    "install-service": "node service/serviceInstaller.js",
     "server": "nodemon src/server/index.js",
     "build": "node scripts/build.js",
     "bundle": "npm run babel-transpile && webpack --config webpack.js",
