@@ -4,16 +4,18 @@ const stopService = (code) => {
     logger.fatal('Stopping Temple Client service...');
     if (buildProc)
         buildProc.kill();
-    if (server)
+    if (server) {
         server.close();
+        logger.fatal('Temple client serving at port 3000 is closed');
+    }
     logger.fatal('Process exited with code ' + code);
 };
 process.on('exit', (code) => stopService(code));
 process.on('beforeExit', (code) => stopService(code));
 const killHandler = () => {
-    logger.fatal('Killing the process...');
     stopService(128);
-    process.exit(128);
+    logger.fatal('Killing the process...');
+    setTimeout(() => process.exit(128), 100);
 }
 process.on('SIGKILL', killHandler);
 process.on('SIGINT', killHandler);
@@ -26,6 +28,7 @@ process.on('unhandledRejection', (reason, p) => {
     logger.error('Unhandled Rejection at:', p + 'with reason :\n' + reason);
     process.exit(1);
 });
+logger.info('Starting Temple Client Service ...');
 let server = undefined;
 const buildProcess = require('child_process');
 const buildProc = buildProcess.spawn('node', [path.join(__dirname, '../scripts/build.js')]);
@@ -55,13 +58,14 @@ new Promise((resolve, reject) => {
                 reject('failed');
             }
         }
-        buildProc.send('kill');
     }
     buildProc.on('exit', closeHandler);
-    buildProc.on('close', closeHandler);
+    // buildProc.on('close', closeHandler);
 }).then((value) => {
+    console.log('server is going to start');
     const express = require('express');
     const app = express();
+    const http = require('http');
     app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, '../build/index.html'));
     });
@@ -69,5 +73,5 @@ new Promise((resolve, reject) => {
     app.use(express.static(path.join(__dirname, '../build')));
     server = app.listen(3000, () => logger.info('Temple Client listening to port 3000'));
 }, (err) => {
-    //Since logging has been done prior
+    buildProc.send('kill');
 });
