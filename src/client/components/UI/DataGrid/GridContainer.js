@@ -155,7 +155,7 @@ export default class GridContainer extends React.PureComponent {
                         onOrderChange={this.changeColumnOrder}
                     />
                     <TableHeaderRow showSortingControls />
-                    {displayFilter && <TableFilterRow />}
+                    {displayFilter && <TableFilterRow showFilterSelector />}
                     {isGrouped ? <TableGroupRow /> :
                         (!readOnly && <TableEditRow
                             cellComponent={EditCell} rowComponent={EditRow}

@@ -14,7 +14,12 @@ const SelectWrapped = (props) => {
   const handleSelect = (change) => {
     if (change === '' && !this.valueSelected) {
       this.valueSelected = false;
+      this.deleteSelected = false;
       onClearAll();
+    }
+    else if (this.deleteSelected) {
+      this.deleteSelected = false;
+      onChange(change, true);
     }
     else {
       this.valueSelected = false;
@@ -22,9 +27,12 @@ const SelectWrapped = (props) => {
     }
   }
   const onValueClickHandler = () => this.valueSelected = true;
-  const onInputKeyDownHandler = (event) => this.valueSelected = event.keyCode === 13;
-  class OptionComponent extends React.Component{
-    render(){
+  const onInputKeyDownHandler = (event) => {
+    this.valueSelected = event.keyCode === 13;
+    this.deleteSelected = event.keyCode === 46 || event.keyCode === 8;
+  }
+  class OptionComponent extends React.Component {
+    render() {
       return <Option onValueClick={onValueClickHandler} {...this.props} />
     }
   }
