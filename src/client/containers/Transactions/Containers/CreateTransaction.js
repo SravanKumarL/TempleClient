@@ -21,6 +21,10 @@ const styles = theme => ({
     boxSizing: 'border-box',
     boxShadow: theme.shadows[2],
     backgroundColor: theme.palette.background.paper,
+    overflow: 'auto',
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 10,
+    }
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -73,7 +77,7 @@ class CreateTransaction extends React.Component {
       case 'pooja':
         updatedFormElement = updateObject(updatedFormElement, {
           pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Poojas' } },
-          amount: { ...updatedFormElement.amount, disabled: false },
+          amount: { ...updatedFormElement.amount, disabled: true },
         });
         break;
       case 'other':
@@ -118,6 +122,7 @@ class CreateTransaction extends React.Component {
       [inputIdentifier]: updatedFormElement,
     });
     if (inputIdentifier === 'pooja') {
+      updatedtransactionForm['amount'].disabled = false;
       if (!value) {
         updatedtransactionForm['amount'].value = '';
       } else {

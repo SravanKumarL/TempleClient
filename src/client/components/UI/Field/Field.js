@@ -12,6 +12,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     justifyContent: 'center',
+    minHeight: 60,
   },
   formControl: {
     width: '100%',
@@ -68,7 +69,7 @@ const input = (props) => {
         mode={props.value}
         options={props.elementConfig.options}
         onModeSelect={props.changed}
-        label='Payment Mode' />
+        label={props.label} />
       break;
     case ('multiselect'):
       inputElement = <MultiSelect
@@ -80,7 +81,7 @@ const input = (props) => {
       />
       break;
     case ('date'):
-      inputElement = <DatePickerWrapper value={props.value} onDateSelectionChanged={props.changed} 
+      inputElement = <DatePickerWrapper value={props.value} onDateSelectionChanged={props.changed}
         minDate={props.minDate} maxDate={props.maxDate} />
       break;
     default:
@@ -93,7 +94,7 @@ const input = (props) => {
   }
   const { classes } = props;
   return (
-    <div className={classes.container}>
+    <div className={classes.container} style={props.elementType === 'date' ? { minHeight: 140 } : props.elementType === 'radioGroup' ? { minHeight: 88 } : null}>
       <FormControl className={classes.formControl}>
         {inputElement}
       </FormControl>

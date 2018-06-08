@@ -35,12 +35,13 @@ class Layout extends React.Component {
     this.props.authLogout();
   }
   render() {
-    const { classes, role } = this.props;
+    const { classes, role, activeTabChanged } = this.props;
     return (
       <div className={classes.appFrame}>
         <AppBar
           logout={this.handleLogout}
           role={role}
+          activeTabChanged={activeTabChanged}
         />
         <main className={classes.content}>
           {this.props.children}

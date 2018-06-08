@@ -56,10 +56,12 @@ export default class DataGrid extends React.PureComponent {
       this.setState({ isPrintClicked: false });
     }
   }
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps) {
     const { error, message } = nextProps;
-    if (message !== '' || error !== '')
-      this.setState({ snackBarOpen: true });
+    if (message !== '' || error !== '') {
+      return { snackBarOpen: true };
+    }
+    return null;
   }
   render() {
     const {
@@ -83,8 +85,10 @@ export default class DataGrid extends React.PureComponent {
         <div style={{ position: 'relative' }}>
           <Button style={{
             zIndex: 1, position: 'absolute',
-            marginLeft: `${(displayFilter ? (84 - 2) : 84)}%`, marginTop: '1.2%'
+            marginLeft: `${(displayFilter ? (84 - 2) : 84)}%`, marginTop: '1.2%',
           }}
+            color='default'
+            variant='raised'
             onClick={this.onFilterClick}>
             <FilterIcon /> {displayFilter && 'Hide'} Filter
           </Button>
@@ -92,6 +96,8 @@ export default class DataGrid extends React.PureComponent {
             zIndex: 1, position: 'absolute',
             marginLeft: `${(displayFilter ? (70 - 2) : 70)}%`, marginTop: '1.2%'
           }}
+            color='default'
+            variant='raised'
             onClick={this.onPrintClicked}>
             <PrintIcon /> Print {collection}
           </Button>

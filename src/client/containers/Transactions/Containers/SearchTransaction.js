@@ -24,10 +24,11 @@ class SearchTransaction extends React.Component {
     this.baseState = this.state;
   }
   state = { ...initialState };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.searchedTransactions !== this.props.searchedTransactions) {
-      this.setState({ searchedTransactions: nextProps.searchedTransactions });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.searchedTransactions !== prevState.prevSearchedTransactions) {
+      return { searchedTransactions: nextProps.searchedTransactions, prevSearchedTransactions: nextProps.searchedTransactions };
     }
+    return null;
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
   closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });

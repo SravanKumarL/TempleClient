@@ -118,7 +118,7 @@ export const formStateConfig = () => {
       elementType: 'radioGroup',
       elementConfig: {
         options: ['cash', 'cheque'],
-        placeholder: 'Mode'
+        placeholder: 'Payment Mode'
       },
       value: 'cash',
       disabled: false,

@@ -62,7 +62,7 @@ const styles = theme => ({
     borderRadius: 4,
     backgroundColor: theme.palette.common.white,
     fontSize: 15,
-    padding: '1rem 0.625rem',
+    padding: '0.7rem 2.9rem 0.7rem 0.8rem',
     width: '290px',
     marginBottom: 'auto',
     marginTop: 'auto',
@@ -87,15 +87,19 @@ const styles = theme => ({
     height: 40,
   },
   showIconButton: {
-    height: 30,
+    height: 40,
     opacity: 1,
     transition: 'all 0.5s ease-in-out',
   },
   hideIconButton: {
-    height: 30,
+    height: 40,
     opacity: 0,
     transition: 'all 0.5s ease-in-out',
   },
+  listItem: {
+    paddingTop: '6px',
+    paddingBottom: '6px',
+  }
 })
 
 const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked, searchClicked, open, transactions, closed, panelExited, optionClicked }) => {
@@ -120,10 +124,10 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
       <List component="nav" style={{ maxHeight: '89%', overflow: 'auto' }}>
         {transactions.map(transaction => {
           return (
-            <div key={transaction._id} style={{ display: 'flex' }}>
-              <ListItem button disableRipple>
+            <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{ display: 'flex' }}>
+              <ListItem className={classes.listItem} button disableRipple>
                 <ListItemText inset primary={transaction.names} />
-                <Popup style={{ marginLeft: 'auto' }} options={['View/Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
+                <Popup style={{ marginLeft: 'auto' }} options={['Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
               </ListItem>
             </div>
           );
@@ -155,7 +159,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
           disableUnderline
           autoFocus
           endAdornment={
-            <InputAdornment style={{ display: 'flex', height: '40px', position: 'absolute', left: '83%' }} position="end">
+            <InputAdornment style={{ display: 'flex', height: '40px', position: 'absolute', left: '83%', maxHeight: 'initial' }} position="end">
               {!value ?
                 <IconButton className={classes.buttonRoot} disabled>
                   <Search style={{ height: 40 }} />

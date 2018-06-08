@@ -159,13 +159,13 @@ const styles = theme => ({
   },
 });
 
+const defaultState = {
+  values: '',
+  valueObjs: [],
+  nextId: 0
+};
 class MultiSelect extends React.Component {
-  defaultState = {
-    values: '',
-    valueObjs: [],
-    nextId: 0
-  }
-  state = this.defaultState;
+  state = { ...defaultState };
   onChange = (selValue) => {
     this.setState((prevState) => {
       let { valueObjs, nextId, values } = JSON.parse(JSON.stringify(prevState));
@@ -199,9 +199,11 @@ class MultiSelect extends React.Component {
     this.setState({ nextId: 0, values: '', valueObjs: [] });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.value || nextProps.value === '')
-      this.setState({ ...this.defaultState });
+  static getDerivedStateFromProps(nextProps) {
+    if (!nextProps.value || nextProps.value === '') {
+      return { ...defaultState };
+    }
+    return null;
   }
   render() {
     const { classes, label, type, changed, value, showLabels, options } = this.props;
@@ -223,10 +225,10 @@ class MultiSelect extends React.Component {
           simpleValue: true,
           options: options,
         }}
-        // InputLabelProps={{
-        //   shrink: true,
-        //   className: classes.textFieldFormLabel,
-        // }}
+      // InputLabelProps={{
+      //   shrink: true,
+      //   className: classes.textFieldFormLabel,
+      // }}
       />
     );
     if (type === 'multi') {

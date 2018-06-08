@@ -36,8 +36,8 @@ const SelectWrapped = (props) => {
     if (value.value)
       label = value.value;
     const valueRemove = event => {
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
       removeChip(value);
     };
     if (removeChip) {

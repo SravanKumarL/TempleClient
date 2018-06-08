@@ -17,9 +17,9 @@ const styles = (theme) => ({
     boxShadow: theme.shadows[3],
     border: `1px solid ${theme.palette.grey[200]}`,
   },
-  table: {
-    minWidth: 400,
-  },
+  // table: {
+  //   minWidth: 400,
+  // },
 });
 
 const getDates = (dates) => {

@@ -11,7 +11,7 @@ export const withPoojaDetails = (WrappedComponent) => {
     componentDidMount() {
       this.props.fetchData(constants.Poojas);
     }
-    componentWillReceiveProps(nextProps) {
+    static getDerivedStateFromProps(nextProps) {
       if (nextProps.poojaDetails) {
         const poojaDetails = nextProps.poojaDetails.map(item => ({
           [`${item.poojaName}`]: item.amount,
@@ -19,8 +19,9 @@ export const withPoojaDetails = (WrappedComponent) => {
           .reduce(function (acc, item) {
             return Object.assign(acc, item);
           }, {});
-        this.setState({ poojaDetails });
+        return { poojaDetails };
       }
+      return null;
     }
     render() {
       const updatedProps = updateObject(this.props, { poojaDetails: this.state.poojaDetails });

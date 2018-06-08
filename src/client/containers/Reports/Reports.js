@@ -23,9 +23,9 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignContent: 'space-evenly',
-    width: 190,
+    width: 220,
     marginRight: 20,
-    boxShadow: theme.shadows[3],
+    // boxShadow: theme.shadows[3],
   },
   button: {
     display: 'flex',
@@ -77,15 +77,16 @@ const initialState = {
 };
 class Reports extends React.Component {
   state = { ...initialState };
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { poojaDetails } = nextProps;
     if (poojaDetails) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      this.setState({ poojaDetails: options });
+      return { ...prevState, poojaDetails: options };
     }
+    return null;
   }
   //UI State Handlers
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };

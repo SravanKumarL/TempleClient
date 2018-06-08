@@ -17,7 +17,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: '1rem',
-    padding: '1.2rem 0.8rem',
+    padding: '0.7rem 0.8rem',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
       borderColor: '#80bdff',
@@ -51,7 +51,7 @@ const TextBox = ({ type, classes, label, value, changed, disabled, multiline, sh
       margin='dense'
       type={type ? type : 'input'}
       multiline={multiline}
-      rows={6}
+      rows={2}
     />
   );
 }

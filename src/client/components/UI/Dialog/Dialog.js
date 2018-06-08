@@ -11,7 +11,6 @@ function Transition(props) {
 }
 
 const dialog = (props) => {
-  
   const { handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
   let buttons = (
     <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="error">
@@ -37,7 +36,7 @@ const dialog = (props) => {
     <div>
       <Dialog
         open={open}
-        transition={Transition}
+        TransitionComponent={Transition}
         onClose={handleClose}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"

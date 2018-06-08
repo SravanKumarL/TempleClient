@@ -6,6 +6,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import withStyles from '@material-ui/core/styles/withStyles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Logo from '../../../../assets/logo.svg';
 
 const styles = theme => ({
   container: {
@@ -30,7 +31,7 @@ const styles = theme => ({
     borderRadius: 4,
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '22px 12px',
+    padding: '12px 12px',
     width: '250px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
@@ -122,42 +123,45 @@ class MaterialUiForm extends React.Component {
     const { classes, handleSubmit } = this.props;
     const { value } = this.state;
     return (
-      <form className={classes.container} onSubmit={handleSubmit(this.onSubmitHandler)}>
-        <BottomNavigation
-          value={value}
-          onChange={this.handleChange}
-          showLabels
-          className={classes.root}
-        >
-          <BottomNavigationAction
-            classes={{
-              selected: classes.selected,
-            }} label="User" icon={<AccountCircle />} />
-          <BottomNavigationAction
-            classes={{
-              selected: classes.selected,
-            }} label="Admin" icon={<AccountCircle />} />
-        </BottomNavigation>
-        <Field
-          name="username"
-          component={renderTextField}
-          label="Username"
-          autoFocus
-          placeholder={'Username'}
-          classes={classes}
-        />
-        <Field
-          placeholder={'Password'}
-          name="password"
-          type='password'
-          classes={classes}
-          component={renderTextField} label="Password" />
-        <div>
-          <Button type='submit' variant='raised' size='large' className={classes.button} color='primary' >
-            Sign In
+      <div>
+        <img src={`${Logo}`} alt={"Sringeri Collage"} style={{ height: 200, width: 250, marginBottom: 100 }} />
+        <form className={classes.container} onSubmit={handleSubmit(this.onSubmitHandler)}>
+          <BottomNavigation
+            value={value}
+            onChange={this.handleChange}
+            showLabels
+            className={classes.root}
+          >
+            <BottomNavigationAction
+              classes={{
+                selected: classes.selected,
+              }} label="User" icon={<AccountCircle />} />
+            <BottomNavigationAction
+              classes={{
+                selected: classes.selected,
+              }} label="Admin" icon={<AccountCircle />} />
+          </BottomNavigation>
+          <Field
+            name="username"
+            component={renderTextField}
+            label="Username"
+            autoFocus
+            placeholder={'Username'}
+            classes={classes}
+          />
+          <Field
+            placeholder={'Password'}
+            name="password"
+            type='password'
+            classes={classes}
+            component={renderTextField} label="Password" />
+          <div>
+            <Button type='submit' variant='raised' size='large' className={classes.button} color='primary' >
+              Sign In
         </Button>
-        </div>
-      </form>
+          </div>
+        </form>
+      </div>
     );
   }
 }

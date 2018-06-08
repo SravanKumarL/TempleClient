@@ -19,7 +19,9 @@ const styles = (theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    width: '400px',
+    [theme.breakpoints.up('sm')]: {
+      width: '400px',
+    },
     alignItems: 'center',
     boxSizing: 'border-box',
     boxShadow: '0px 0px 1px 1px #D3D3D3',
@@ -97,17 +99,18 @@ class EditTransactions extends React.Component {
       transaction: props.transaction,
     }
   }
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     const { transaction } = nextProps;
     if (transaction) {
-      const updatedForm = updateObject(this.state.editForm, {
-        phoneNumber: { ...this.state.editForm.phoneNumber, value: transaction.phoneNumber },
-        names: { ...this.state.editForm.names, value: transaction.names },
-        gothram: { ...this.state.editForm.gothram, value: transaction.gothram },
-        nakshatram: { ...this.state.editForm.nakshatram, value: transaction.nakshatram },
+      const updatedForm = updateObject(prevState.editForm, {
+        phoneNumber: { ...prevState.editForm.phoneNumber, value: transaction.phoneNumber },
+        names: { ...prevState.editForm.names, value: transaction.names },
+        gothram: { ...prevState.editForm.gothram, value: transaction.gothram },
+        nakshatram: { ...prevState.editForm.nakshatram, value: transaction.nakshatram },
       });
-      this.setState({ editForm: updatedForm, transaction });
+      return { editForm: updatedForm, transaction };
     }
+    return null;
   }
   // inputChangedHandler = (event, inputIdentifier) => {
   //   const value = ['nakshatram', 'pooja', 'date', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;

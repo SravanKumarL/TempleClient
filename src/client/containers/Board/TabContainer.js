@@ -2,20 +2,25 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
 import PropTypes from 'prop-types';
-
-const tabContainer = ({ children }) => {
-  const style = {
+import withStyles from '@material-ui/core/styles/withStyles';
+const styles = (theme) => ({
+  root: {
     display: 'flex',
     flexDirection: 'column',
     background: 'white',
     color: 'black',
-    marginLeft: 5,
-    borderTopRightRadius: '10px',
-    margin: '0 10px',
+    [theme.breakpoints.up('sm')]: {
+      margin: '0 10px',
+      borderTopRightRadius: '10px',
+    },
     flexGrow: 1,
-  };
+  }
+});
+
+const tabContainer = ({ classes, children }) => {
+
   return (
-    <Typography component="div" style={style}>
+    <Typography component="div" className={classes.root}>
       <Fade in={true} timeout={500} mountOnEnter unmountOnExit>
         {children}
       </Fade>
@@ -27,4 +32,4 @@ tabContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default tabContainer;
+export default withStyles(styles)(tabContainer);

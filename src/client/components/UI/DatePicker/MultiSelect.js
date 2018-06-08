@@ -58,6 +58,7 @@ class MultipleSelect extends React.Component {
   }
   render() {
     const { classes, label, items, selItems } = this.props;
+    const { open } = this.state;
     return (
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
@@ -71,7 +72,7 @@ class MultipleSelect extends React.Component {
             input={<Input id="select-multiple-checkbox" />}
             renderValue={selected => selected.join(', ')}
             MenuProps={MenuProps}
-            open={this.state.open}
+            open={open}
           >
             {items.map(item => (
               <MenuItem key={item} value={item}>

@@ -10,14 +10,20 @@ import classes from './App.css';
 import PrivateRoute from './hoc/Router/PropsRoute';
 
 class App extends Component {
+  state = {
+    activeTab: 'transactions',
+  }
   componentDidMount() {
     this.props.autoSignIn();
+  }
+  activeTabChangedHandler = (activeTab) => {
+    this.setState({ activeTab });
   }
   handleLogin = () => this.props.history.push('/');
   render() {
     const layout = () => (
-      <Layout>
-        <Board role={this.props.role} />
+      <Layout activeTabChanged={this.activeTabChangedHandler}>
+        <Board activeTab={this.state.activeTab} role={this.props.role} />
       </Layout>
     );
     let routes = (
@@ -31,7 +37,7 @@ class App extends Component {
       </div>
     );
   }
-} 
+}
 const mapStateToProps = (state, ownProps) => {
   return {
     isAuthenticated: state.auth.token !== null,

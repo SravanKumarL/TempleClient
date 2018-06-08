@@ -24,10 +24,13 @@ const styles = theme => ({
     flexGrow: 1,
   },
   header: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '90vw',
-    margin: '0 5px',
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '90vw',
+      margin: '0 5px',
+    }
   },
   flexContainer: {
     display: 'inline-flex',
@@ -81,10 +84,20 @@ const styles = theme => ({
   }
 });
 
-const initialState = { activeTab: 'transactions' };
 class SimpleTabs extends React.Component {
-
-  state = { ...initialState };
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeTab: props.activeTab,
+      prevActiveTab: null,
+    }
+  }
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    if (nextProps.activeTab !== prevState.prevActiveTab) {
+      return { ...prevState, prevActiveTab: nextProps.activeTab, activeTab: nextProps.activeTab };
+    }
+    return null;
+  }
 
   handleChange = (event, value) => { this.setState({ activeTab: value }); };
 
