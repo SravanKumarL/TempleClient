@@ -12,16 +12,6 @@ import moment from 'moment';
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   getDaysOfWeek = () => this.getAllDays().filter(x => x !== 'All days');
-  defaultState = {
-    selectedDates: [getCurrentDate()],
-    selectedDays: [],
-    filteredRange: [],
-    unFilteredRange: [],
-    datePickerMode: 'single',
-    mode: 'single',
-    closeOnSelect: true
-  }
-  state = { ...this.defaultState };
   getRangeStartEnd = (unFilteredRange) => [unFilteredRange[0], unFilteredRange[unFilteredRange.length - 1]];
   getDate = (dateString) => {
     const parts = dateString.split('-');
@@ -34,12 +24,6 @@ class DatePickerWrapper extends Component {
     }
     return unFilteredRange.filter(x => selectedDays.indexOf(daysOfWeek[this.getDate(x).getDay()]) !== -1);
   }
-  isDaysInRange = (unFilteredRange, selDays) => {
-    // let filteredDays = _.difference(this.getDaysOfWeek(), selDays);
-    selDays = selDays.map(day => this.getDaysOfWeek().indexOf(day));
-    return unFilteredRange.some(date => selDays.indexOf(this.getDate(date).getDay()) !== -1);
-  }
-  isFilterApplied = () => (this.state.selectedDays.length > 0 && this.state.selectedDays.length < 7);
   getSelectedDates = (state) => {
     const { datePickerMode, selectedDays, unFilteredRange, selectedDates } = state;
     if (datePickerMode === 'range' && selectedDates.length === 2) {
@@ -47,6 +31,23 @@ class DatePickerWrapper extends Component {
     }
     return selectedDates;
   }
+  defaultState = {
+    selectedDates: [getCurrentDate()],
+    selectedDays: [],
+    filteredRange: [],
+    unFilteredRange: [],
+    datePickerMode: 'single',
+    mode: 'single',
+    closeOnSelect: true,
+    getSelectedDates: this.getSelectedDates.bind(this)
+  }
+  state = { ...this.defaultState, defaultState: { ...this.defaultState }, prevProps: {} };
+  isDaysInRange = (unFilteredRange, selDays) => {
+    // let filteredDays = _.difference(this.getDaysOfWeek(), selDays);
+    selDays = selDays.map(day => this.getDaysOfWeek().indexOf(day));
+    return unFilteredRange.some(date => selDays.indexOf(this.getDate(date).getDay()) !== -1);
+  }
+  isFilterApplied = () => (this.state.selectedDays.length > 0 && this.state.selectedDays.length < 7);
   onDaySelected = (selectedDays) => {
     const prevSelectedDays = this.state.selectedDays;
     const unselected = _.difference(prevSelectedDays, selectedDays)[0];
@@ -108,7 +109,7 @@ class DatePickerWrapper extends Component {
       this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: 'range' });
     }
     else {
-      this.setState({ selectedDates: selDates.map(selDate=>getCurrentDate(selDate)) });
+      this.setState({ selectedDates: selDates.map(selDate => getCurrentDate(selDate)) });
     }
     // this.liftStateUp();
   }
@@ -152,21 +153,24 @@ class DatePickerWrapper extends Component {
     this.setState((prevState) => ({ selectedDays: prevState.selectedDays.filter(x => x !== 'All days') }));
     // this.liftStateUp();
   }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.value || nextProps.value === '' || nextProps.value.length === 0) {
-      this.setState({ ...this.defaultState });
+  static getDerivedStateFromProps(props, state) {
+    const selectedDates = state.getSelectedDates(state);
+    if (!props.value || props.value === '' || props.value.length === 0) {
+      return { ...state.defaultState, prevProps: props };
     }
     else {
-      let value = nextProps.value;
-      const selectedDates = this.getSelectedDates(this.state);
-      if (!_.isEqual(_.sortBy(value), _.sortBy(selectedDates))) {
-        this.setState({ selectedDates: nextProps.value });
+      if (!_.isEqual(_.sortBy(props.value), _.sortBy(selectedDates)) && !_.isEqual(props.value, state.prevProps.value)) {
+        return { selectedDates: props.value, prevProps: { ...state.prevProps, value: props.value } };
       }
+      else if (!_.isEqual(props.value, state.prevProps.value)) {
+        return { prevProps: { ...state.prevProps, value: props.value } };
+      }
+      return null;
     }
   }
-  componentWillUpdate(nextProps, nextState) {
-    const selectedDates = this.getSelectedDates(nextState);
-    if (!_.isEqual(_.sortBy(nextProps.value), _.sortBy(selectedDates))) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const selectedDates = this.state.getSelectedDates(this.state);
+    if (!_.isEqual(_.sortBy(this.props.value), _.sortBy(selectedDates))) {
       this.props.onDateSelectionChanged(selectedDates);
     }
   }
