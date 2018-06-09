@@ -14,6 +14,16 @@ const styles = theme => ({
 });
 
 class ErrorSnackbar extends React.Component {
+  getActions = (error) => {
+    let actions = this.getDefaultState().actions;
+    if (error && error !== '') {
+      let tryAgain = <Button key="tryagain" color="secondary" size="small" onClick={this.redoTransaction}>
+        Try Again
+        </Button>;
+      actions.unshift(tryAgain);
+    }
+    return actions;
+  }
   constructor(props) {
     super(props);
     this.getDefaultState = () => {
@@ -26,27 +36,18 @@ class ErrorSnackbar extends React.Component {
             className={this.props.classes.close}
             onClick={this.handleClose}
           >
-            <CloseIcon/>
+            <CloseIcon />
           </IconButton>,
-        ]
+        ],
+        getActions: this.getActions.bind(this)
       };
     }
     this.state = this.getDefaultState();
-    this.state.actions=this.getActions();
+    this.state.actions = this.getActions();
   }
-  redoTransaction=()=>{
+  redoTransaction = () => {
     this.props.redoTransaction();
     this.props.onSnackBarClose();
-  }
-  getActions=(redoTransaction)=>{
-    let actions=this.getDefaultState().actions;
-    if (redoTransaction !== null) {
-      let tryAgain = <Button key="tryagain" color="secondary" size="small" onClick={this.redoTransaction}>
-        Try Again
-        </Button>;
-      actions.unshift(tryAgain);
-    }
-    return actions;
   }
   handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -54,12 +55,13 @@ class ErrorSnackbar extends React.Component {
     }
     this.props.onSnackBarClose();
   };
-  componentWillReceiveProps(nextProps){
-    let actions=this.getActions(nextProps.redoTransaction);
-    this.setState({actions})
+  static getDerivedStateFromProps(props, state) {
+    let actions = state.getActions(props.error);
+    return ({ actions });
   }
   render() {
-    const { message,open } = this.props;
+    const { open } = this.props;
+    const message = this.props.error !== '' ? this.props.error : this.props.message;
     return (
       <div>
         <Snackbar
@@ -82,9 +84,10 @@ class ErrorSnackbar extends React.Component {
 }
 ErrorSnackbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  message:PropTypes.string.isRequired,
-  open:PropTypes.bool.isRequired,
-  onSnackBarClose:PropTypes.func.isRequired
+  message: PropTypes.string.isRequired,
+  error: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  onSnackBarClose: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ErrorSnackbar);

@@ -62,22 +62,20 @@ export default class GridContainer extends React.PureComponent {
     changePageSize = pageSize => this.setState({ pageSize });
     commitChanges = (props) => {
         const { added, changed, deleted } = props;
-        const rows = this.props.rows.map((row, index) => ({ ...row, id: index }));
-        if (added && ((this.props.collection !== constants.Users && added[0].keys.length > 0) || ('username' in added[0] && 'password' in added[0]))) {
-            // const modRows = rows.map(row => {
-            //     row['id'] = row['id'] + 1;
-            //     return row;
-            // });
-            // added[0]['id'] = 0;
-            // modRows.unshift(added[0]);
+        const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
+            this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
+        if (added && ((this.props.collection !== constants.Users && Object.keys(added[0]).length > 0) ||
+            (Object.keys(rows[0]).filter(key => key !== 'id').every(prop => this.checkIfNotEmptyAndUndefined(added[0][prop]))))) {
             this.props.setAndCommitTransaction(constants.add, this.props.collection, added[0]);
         }
-        if (changed) {
-            // rows = rows.map(row => (changed[row.id] ? { ...row, ...changed[row.id] } : row));
-            const changes= Object.entries(changed)[0];
-            const changedId = Number(changes[0]);
+        if (changed && Object.keys(changed).some(key => (changed[key]))) {
+            const changesObj = Object.entries(changed)[0];
+            const changedId = Number(changesObj[0]);
+            const changes = changesObj[1];
             const changedObj = rows.filter(row => row.id === changedId)[0];
-            this.props.setAndCommitTransaction(constants.edit, this.props.collection, changes[1], changedObj);
+            if (Object.keys(changes).some(changedField => changes[changedField] !== changedObj[changedField].toString())) {
+                this.props.setAndCommitTransaction(constants.edit, this.props.collection, changes, changedObj);
+            }
         }
         if (deleted) {
             const deletingRows = rows.filter(row => row.id === deleted[0]);
@@ -87,19 +85,22 @@ export default class GridContainer extends React.PureComponent {
     //#endregion
     //#region Misc Handlers
     onDelDialogClick = (toDelete) => {
-        if (toDelete)
+        if (toDelete) {
             this.props.setAndCommitTransaction(constants.delete, this.props.collection, this.state.deletingRows[0]);
+        }
         this.setState({ deletingRows: [], delDialogOpen: false });
     }
     changeColumnOrder = (order) => {
         this.setState({ columnOrder: order });
     };
     getRowId = row => row.id;
+    checkIfNotEmptyAndUndefined = (value) => value && value !== '';
     //#endregion
     render() {
         const { columns, setAndCommitTransaction, collection,
             readOnly, displayFilter } = this.props;
-        const rows = this.props.rows.map((row, index) => ({ ...row, id: index }));
+        const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
+            this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
         const {
             delDialogOpen,
             sorting,

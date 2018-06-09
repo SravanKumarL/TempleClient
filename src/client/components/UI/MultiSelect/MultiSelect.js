@@ -165,7 +165,8 @@ class MultiSelect extends React.Component {
     valueObjs: [],
     nextId: 0
   }
-  state = this.defaultState;
+  defaultState = { ...this.defaultState, defaultState: this.defaultState };
+  state = { ...this.defaultState, prevProps: {} };
   onChange = (selValue, toDelete = false) => {
     this.setState((prevState) => {
       let { valueObjs, nextId, values } = JSON.parse(JSON.stringify(prevState));
@@ -206,16 +207,21 @@ class MultiSelect extends React.Component {
     this.props.changed('');
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.value || nextProps.value === '')
-      this.setState({ ...this.defaultState });
-    else {
-      if (nextProps.type === 'multi' && nextProps.value !== this.state.values) {
-        const values = nextProps.value;
-        const valueObjs = nextProps.value.split(',').map((val, index) => ({ id: index, value: val }));
-        this.setState({ values, valueObjs });
+  static getDerivedStateFromProps(props, state) {
+    if (state.prevProps.value !== props.value) {
+      if (!props.value || props.value === '') {
+        return { ...state.defaultState, prevProps: props };
+      }
+      else {
+        if (props.type === 'multi' && props.value !== state.values) {
+          const values = props.value;
+          const valueObjs = props.value.split(',').map((val, index) => ({ id: index, value: val }));
+          return { values, valueObjs, prevProps: props };
+        }
+        return { prevProps: props };
       }
     }
+    return null;
   }
   render() {
     const { classes, label, type, changed, value, showLabels, options } = this.props;
