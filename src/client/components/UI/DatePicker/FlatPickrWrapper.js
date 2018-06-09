@@ -75,10 +75,12 @@ class DatePickerWrapper extends Component {
     // this.liftStateUp();
   }
   onModeSelected = (selectedMode) => {
-    this.setState((prevState) => ({
-      ...this.defaultState, mode: selectedMode, datePickerMode: selectedMode,
-      closeOnSelect: selectedMode === 'single'
-    }));
+    this.setState((prevState) => {
+      return ({
+        ...this.defaultState, mode: selectedMode, datePickerMode: selectedMode,
+        closeOnSelect: selectedMode === 'single'
+      });
+    });
     // this.liftStateUp();
   }
   onDatesSelected = (selectedDates) => {
@@ -100,7 +102,12 @@ class DatePickerWrapper extends Component {
       }
     }
     else {
-      this.setState({ selectedDates: selectedDates.map(date => getCurrentDate(date)) })
+      this.setState((prevState) => {
+        selectedDates = selectedDates.map(date => getCurrentDate(date));
+        if (selectedDates && selectedDates.length > 0)
+          return { selectedDates };
+        return {};
+      });
     }
   }
   onClose = (selDates, dateStr, flatPickr) => {
@@ -153,6 +160,10 @@ class DatePickerWrapper extends Component {
     this.setState((prevState) => ({ selectedDays: prevState.selectedDays.filter(x => x !== 'All days') }));
     // this.liftStateUp();
   }
+  onClearClicked = () => this.setState(prevState => {
+    const { mode, datePickerMode, ...restProps } = { ...this.defaultState };
+    return { ...restProps, datePickerMode: prevState.mode, closeOnSelect: prevState.mode === 'single' };
+  });
   static getDerivedStateFromProps(props, state) {
     const selectedDates = state.getSelectedDates(state);
     if (!props.value || props.value === '' || props.value.length === 0) {
@@ -199,7 +210,7 @@ class DatePickerWrapper extends Component {
         <div id="datePickerWrap">
           <Flatpickr value={selectedDates}
             options={calendarOptions}
-            onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} />
+            onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} onClearClicked={this.onClearClicked} />
         </div>
       </div>
     )

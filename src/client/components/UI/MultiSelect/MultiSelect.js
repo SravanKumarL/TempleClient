@@ -159,11 +159,6 @@ const styles = theme => ({
   },
 });
 
-const defaultState = {
-  values: '',
-  valueObjs: [],
-  nextId: 0
-};
 class MultiSelect extends React.Component {
   defaultState = {
     values: '',

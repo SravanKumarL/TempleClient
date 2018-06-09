@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Flatpickr from 'flatpickr'
+import Clear from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Input from '@material-ui/core/Input';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const hooks = [
@@ -29,7 +33,7 @@ const styles = theme => ({
     border: '1px solid #ced4da',
     fontSize: 16,
     fontFamily: 'inherit',
-    padding: '10px 12px',
+    padding: '5px 12px',
     width: '100%',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:focus': {
@@ -39,6 +43,9 @@ const styles = theme => ({
   },
   textFieldFormLabel: {
     fontSize: 18,
+  },
+  buttonRoot: {
+    height: '50%',
   },
 });
 
@@ -131,7 +138,7 @@ class DateTimePicker extends Component {
 
   render() {
     // eslint-disable-next-line no-unused-vars
-    const { options, defaultValue, classes, value, children, ...props } = this.props
+    const { options, defaultValue, classes, value, children, onClearClicked, ...props } = this.props
 
     // Don't pass hooks to dom node
     hooks.forEach(hook => {
@@ -146,8 +153,23 @@ class DateTimePicker extends Component {
       )
       : (
         <div className={classes.textFieldRoot}>
-          <input className={classes.textFieldInput} {...props} defaultValue={defaultValue}
-            ref={node => { this.node = node }} />
+          {/* <input className={classes.textFieldInput} {...props} defaultValue={defaultValue}
+            ref={node => { this.node = node }} /> */}
+          <Input
+            inputRef={node => { this.node = node }}
+            className={classes.textFieldInput}
+            type='input'
+            defaultValue={defaultValue}
+            disableUnderline
+            endAdornment={
+              <InputAdornment style={{ position: 'absolute', left: '88%' }} position="end">
+                <IconButton onClick={onClearClicked}>
+                  <Clear />
+                </IconButton>
+              </InputAdornment>
+            }
+            {...props}
+          />
         </div>
       )
   }
