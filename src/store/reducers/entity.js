@@ -30,7 +30,7 @@ const changeRows = (payload, rows) => {
     const prop = uniqueProp(name);
     switch (type) {
         case constants.add:
-            return [...rows, change];
+            return [...rows, { ...change, id: (rows.length + 1) }];
         case constants.edit:
             return rows.map(row => (row[prop] === change[prop] ? change : row));
         case constants.delete:

@@ -16,16 +16,16 @@ const styles = theme => ({
 });
 const DeleteDialog = ({ columns, collection, classes, deletingRows, dialogOpen, onDelDialogClick }) => {
     //#region Delete Handlers
-    this.cancelDelete = () => {
+    const cancelDelete = () => {
         onDelDialogClick(false);
     }
-    this.onRowsDelete = () => {
+    const onRowsDelete = () => {
         onDelDialogClick(true);
     }
     //#endregion
     return (<Dialog
         open={dialogOpen}
-        onClose={this.cancelDelete}
+        onClose={cancelDelete}
         classes={{ paper: classes.dialog }}
     >
         <DialogTitle>Delete Row</DialogTitle>
@@ -45,8 +45,8 @@ const DeleteDialog = ({ columns, collection, classes, deletingRows, dialogOpen, 
             </Paper>
         </DialogContent>
         <DialogActions>
-            <Button onClick={this.cancelDelete} color="primary">Cancel</Button>
-            <Button onClick={this.onRowsDelete} color="secondary">Delete</Button>
+            <Button onClick={cancelDelete} color="primary">Cancel</Button>
+            <Button onClick={onRowsDelete} color="secondary">Delete</Button>
         </DialogActions>
     </Dialog>);
 }

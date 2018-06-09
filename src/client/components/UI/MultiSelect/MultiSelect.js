@@ -165,28 +165,40 @@ const defaultState = {
   nextId: 0
 };
 class MultiSelect extends React.Component {
-  state = { ...defaultState };
-  onChange = (selValue) => {
+  defaultState = {
+    values: '',
+    valueObjs: [],
+    nextId: 0
+  }
+  defaultState = { ...this.defaultState, defaultState: this.defaultState };
+  state = { ...this.defaultState, prevProps: {} };
+  onChange = (selValue, toDelete = false) => {
     this.setState((prevState) => {
       let { valueObjs, nextId, values } = JSON.parse(JSON.stringify(prevState));
-      if (this.props.type === 'multi') {
-        const selValues = selValue.split(',');
-        const prevValues = valueObjs.map(vo => vo.value);
-        const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
-        const selected = _.uniq(_.difference(selValues, prevValues)).join(',');
-        if (unselected === '' && selected !== '') {
-          valueObjs.push({ value: selected, id: ++nextId });
-        }
-        else if (unselected !== '') {
-          valueObjs.push({ value: unselected, id: ++nextId });
-        }
-        values = valueObjs.map(x => x.value).join(',');
+      if (toDelete) {
+        valueObjs.pop();
+        return { valueObjs, nextId: nextId - 1, values: valueObjs.map(x => x.value).join(',') };
       }
       else {
-        values = selValue;
+        if (this.props.type === 'multi') {
+          const selValues = selValue.split(',');
+          const prevValues = valueObjs.map(vo => vo.value);
+          const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
+          const selected = _.uniq(_.difference(selValues, prevValues)).join(',');
+          if (unselected === '' && selected !== '') {
+            valueObjs.push({ value: selected, id: ++nextId });
+          }
+          else if (unselected !== '') {
+            valueObjs.push({ value: unselected, id: ++nextId });
+          }
+          values = valueObjs.map(x => x.value).join(',');
+        }
+        else {
+          values = selValue;
+        }
+        this.props.changed(values);
+        return { values, valueObjs, nextId };
       }
-      this.props.changed(values);
-      return { values, valueObjs, nextId };
     });
   }
 
@@ -197,14 +209,26 @@ class MultiSelect extends React.Component {
 
   onClearAll = () => {
     this.setState({ nextId: 0, values: '', valueObjs: [] });
+    this.props.changed('');
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    if (!nextProps.value || nextProps.value === '') {
-      return { ...defaultState };
+  static getDerivedStateFromProps(props, state) {
+    if (state.prevProps.value !== props.value) {
+      if (!props.value || props.value === '') {
+        return { ...state.defaultState, prevProps: props };
+      }
+      else {
+        if (props.type === 'multi' && props.value !== state.values) {
+          const values = props.value;
+          const valueObjs = props.value.split(',').map((val, index) => ({ id: index, value: val }));
+          return { values, valueObjs, prevProps: props };
+        }
+        return { prevProps: props };
+      }
     }
     return null;
   }
+
   render() {
     const { classes, label, type, changed, value, showLabels, options } = this.props;
     const { valueObjs } = this.state;
