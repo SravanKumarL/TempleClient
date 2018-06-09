@@ -18,6 +18,7 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     width: '20%',
+    color: 'white',
     '&:hover': {
       boxShadow: '0px 0px 10px #000000',
       zIndex: 2,

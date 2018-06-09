@@ -66,7 +66,7 @@ const styles = theme => ({
       width: 180,
     },
     color: '#eee',
-    background: '#AB7554',
+    background: 'seagreen',
     opacity: 1,
     boxShadow: theme.shadows[17],
   },

@@ -27,9 +27,10 @@ const getDates = (dates) => {
 }
 const CustomTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: '#37474f',
     color: theme.palette.common.white,
     fontWeight: 'bold',
+    fontSize: 18
   },
   body: {
     fontSize: 14,
@@ -63,8 +64,8 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
               const placeholder = field.name;
               return (
                 <TableRow key={id}>
-                  <TableCell>{placeholder}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{id === 'selectedDates' ? getDates(field.value) : field.value}</TableCell>
+                  <TableCell style={{fontSize: 16}} >{placeholder}:</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === 'selectedDates' ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );
             })}

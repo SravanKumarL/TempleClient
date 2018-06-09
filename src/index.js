@@ -17,10 +17,11 @@ import { watchAuth } from './store/sagas';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#054153'
+      // main: '#410C40'
+      main: '#60315f'
     },
     secondary: {
-      main: '#6E6D62'
+      main: '#52af92'
     },
     error: red,
     contrastThreshold: 3,
