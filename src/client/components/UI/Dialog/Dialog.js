@@ -44,7 +44,7 @@ const dialog = (props) => {
         <DialogTitle align='center' id="alert-dialog-slide-title">
           {title}
         </DialogTitle>
-        <DialogContent style={{ padding: '24px 24px 24px' }} >
+        <DialogContent>
           {children}
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>

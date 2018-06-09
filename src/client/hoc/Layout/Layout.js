@@ -19,6 +19,7 @@ const styles = theme => ({
     width: '100%',
     display: 'flex',
     flexGrow: 1,
+    opacity: 1,
     flexDirection: 'column',
     backgroundColor: blueGrey[800],
     paddingTop: '1rem',

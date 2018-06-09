@@ -14,9 +14,6 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     color: 'white',
-    [theme.breakpoints.up('sm')] : {
-      justifyContent: 'space-evenly'
-    }
   },
   button: {
     margin: theme.spacing.unit,

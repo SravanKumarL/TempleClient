@@ -58,7 +58,7 @@ const styles = theme => ({
     },
   },
   selected: {
-    background: '#3f51b5',
+    background: theme.palette.primary.main,
     color: 'white !important',
   }
 });

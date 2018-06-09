@@ -85,21 +85,23 @@ export default class DataGrid extends React.PureComponent {
         } = this.state;
         return (
             loading ? <LoadingGrid columns={columns} /> :
-                <div style={{ position: 'relative' }}>
-                    <Button style={{
-                        zIndex: 1, position: 'absolute',
-                        marginLeft: `${(displayFilter ? (84 - 2) : 84)}%`, marginTop: '1.2%'
-                    }}
-                        onClick={this.onFilterClick}>
-                        <FilterIcon /> {displayFilter && 'Hide'} Filter
+                <div style={{ position: 'relative', margin: '2vh 2vw' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }} >
+                        <Button
+                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
+                            color='default'
+                            variant='raised'
+                            onClick={this.onFilterClick}>
+                            <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && 'Hide'} Filter
                     </Button>
-                    <Button style={{
-                        zIndex: 1, position: 'absolute',
-                        marginLeft: `${(displayFilter ? (70 - 2) : 70)}%`, marginTop: '1.2%'
-                    }}
-                        onClick={this.onPrintClicked}>
-                        <PrintIcon /> Print {collection}
-                    </Button>
+                        <Button
+                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5  }}
+                            color='default'
+                            variant='raised'
+                            onClick={this.onPrintClicked}>
+                            <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print 
+                        </Button>
+                    </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length && columns.length) &&
                             isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :

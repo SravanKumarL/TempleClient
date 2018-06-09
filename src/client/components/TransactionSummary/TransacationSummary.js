@@ -25,6 +25,16 @@ const styles = (theme) => ({
 const getDates = (dates) => {
   return dates.join(',');
 }
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    fontWeight: 'bold',
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 const transactionSummary = ({ classes, open, transactionFields, summaryClosed, print, createdBy }) => {
   return (
@@ -36,12 +46,12 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
       secondaryClicked={summaryClosed}
       cancelled={summaryClosed}
       title='Transaction Summary'>
-      <Paper component='div' className={classes.root}>
+      <Paper id='transactionSummary' component='div' className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Value</TableCell>
+              <CustomTableCell>Title</CustomTableCell>
+              <CustomTableCell>Value</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -3,7 +3,6 @@ import _ from 'lodash';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import blueGrey from '@material-ui/core/colors/blueGrey';
 import Fade from '@material-ui/core/Fade';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import Event from '@material-ui/icons/Event';
@@ -20,6 +19,7 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Components/EditTransactions';
+import printHtml from 'print-html-element';
 import { updateObject } from '../../shared/utility';
 
 const styles = theme => ({
@@ -29,6 +29,7 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     position: 'relative',
+    flexShrink: 0,
   },
   middlePane: {
     display: 'flex',
@@ -37,6 +38,11 @@ const styles = theme => ({
     minWidth: 'initial',
     maxWidth: 'initial',
     [theme.breakpoints.up('sm')]: {
+      alignItems: 'center',
+      minWidth: '535px',
+      maxWidth: '535px',
+    },
+    [theme.breakpoints.up('lg')]: {
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
@@ -58,7 +64,7 @@ const styles = theme => ({
   },
   rightPane: {
     display: 'none',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       display: 'flex',
       marginLeft: 'auto',
     }
@@ -78,10 +84,6 @@ const styles = theme => ({
     display: 'flex',
     borderRadius: 8,
     width: '100%',
-    height: 92,
-    [theme.breakpoints.up('sm')]: {
-      height: 'initial',
-    }
   },
   indicator: {
     background: 'white',
@@ -106,9 +108,9 @@ const styles = theme => ({
       height: 60,
     },
     minWidth: 'initial',
-    maxWidth: 'initia',
+    maxWidth: 'initial',
     color: '#eee',
-    background: blueGrey[700],
+    background: '#AB7554',
     boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)',
     opacity: 1,
   },
@@ -179,6 +181,7 @@ class Transactions extends React.Component {
     }
     this.props.commitTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
+    printHtml.printElement(document.getElementById('transactionSummary'));
     // window.print();
     // this.setState({ open: true });
   }

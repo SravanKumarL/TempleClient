@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import blueGrey from '@material-ui/core/colors/blueGrey'
+// import blueGrey from '@material-ui/core/colors/blueGrey'
 import Receipt from '@material-ui/icons/Receipt';
 import Pages from '@material-ui/icons/Pages';
 import Event from '@material-ui/icons/Event';
@@ -30,7 +30,10 @@ const styles = theme => ({
       flexDirection: 'column',
       width: '90vw',
       margin: '0 5px',
-    }
+    },
+    [theme.breakpoints.up('md')]: {
+      minHeight: 58,
+    },
   },
   flexContainer: {
     display: 'inline-flex',
@@ -56,27 +59,42 @@ const styles = theme => ({
     marginTop: 0,
     marginBottom: 10,
     borderRadius: 8,
-    height: 48,
-    width: 180,
+    width: 160,
+    height: 50,
+    [theme.breakpoints.up('md')]: {
+      height: 48,
+      width: 180,
+    },
     color: '#eee',
-    background: blueGrey[700],
+    background: '#AB7554',
+    opacity: 1,
     boxShadow: theme.shadows[17],
   },
   labelContainer: {
     paddingLeft: 8,
     paddingRight: 12,
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: 8,
+      paddingRight: 12
+    }
   },
   tabContainer: {
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
+    [theme.breakpoints.up('md')]: {
+      marginTop: -1,
+    }
   },
   span: {
     height: 18,
     background: 'white',
-    color: blueGrey[500],
+    color: '#008585',
     textAlign: 'center',
-    paddingTop: 20,
+    paddingTop: 0,
+    [theme.breakpoints.up('md')]: {
+      paddingTop: 20,
+    },
     transiton: 'initial',
   },
   label: {

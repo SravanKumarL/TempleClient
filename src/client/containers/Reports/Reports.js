@@ -10,7 +10,6 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
-import Orange from '@material-ui/core/colors/orange';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
@@ -126,7 +125,7 @@ class Reports extends React.Component {
   getButtons = () => {
     const { classes } = this.props;
     const options = [
-      { name: 'Pooja Report', color: Orange[500], icon: <Event className={classes.icon} /> },
+      { name: 'Pooja Report', color: '#DE6400', icon: <Event className={classes.icon} /> },
       { name: 'Management Report', color: Blue[500], icon: <Poll className={classes.icon} /> },
       { name: 'Accounts Report', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
