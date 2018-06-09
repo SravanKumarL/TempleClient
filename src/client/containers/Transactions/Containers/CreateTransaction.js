@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { isEmpty } from 'lodash';
 import Pageview from '@material-ui/icons/Pageview';
@@ -22,6 +21,10 @@ const styles = theme => ({
     boxSizing: 'border-box',
     boxShadow: theme.shadows[2],
     backgroundColor: theme.palette.background.paper,
+    overflow: 'auto',
+    [theme.breakpoints.up('sm')]: {
+      paddingTop: 10,
+    }
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -74,7 +77,7 @@ class CreateTransaction extends React.Component {
       case 'pooja':
         updatedFormElement = updateObject(updatedFormElement, {
           pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Poojas' } },
-          amount: { ...updatedFormElement.amount, disabled: false },
+          amount: { ...updatedFormElement.amount, disabled: true },
         });
         break;
       case 'other':
@@ -119,6 +122,7 @@ class CreateTransaction extends React.Component {
       [inputIdentifier]: updatedFormElement,
     });
     if (inputIdentifier === 'pooja') {
+      updatedtransactionForm['amount'].disabled = false;
       if (!value) {
         updatedtransactionForm['amount'].value = '';
       } else {
@@ -136,7 +140,6 @@ class CreateTransaction extends React.Component {
       if (value) {
         updatedtransactionForm['numberOfDays'].value = value.length;
         updatedtransactionForm['amount'].value *= value.length;
-        // updatedtransactionForm['amount'].valid = true;
       }
     }
     else if (inputIdentifier === 'modeOfPayment') {
@@ -200,7 +203,6 @@ class CreateTransaction extends React.Component {
     return (
       <div className={classes.container}>
         <TransactionForm
-          showLabels={true}
           disablePreview={disablePreview}
           transactionForm={this.state.transactionForm}
           fieldChanged={this.inputChangedHandler}
@@ -223,4 +225,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default withRouter(createContainer(withPoojaDetails(withStyles(styles)(CreateTransaction), mapStateToProps)));
+export default createContainer(withPoojaDetails(withStyles(styles)(CreateTransaction), mapStateToProps));

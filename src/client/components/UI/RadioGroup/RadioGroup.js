@@ -18,10 +18,7 @@ const styles = theme => ({
   formControl: {
     display: 'flex',
     flexDirection: 'row',
-    margin: theme.spacing.unit,
-  },
-  group: {
-    margin: `${theme.spacing.unit}px`,
+    padding: theme.spacing.unit,
   },
 });
 

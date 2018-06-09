@@ -28,6 +28,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.common.white,
     border: '1px solid #ced4da',
     fontSize: 16,
+    fontFamily: 'inherit',
     padding: '10px 12px',
     width: '100%',
     transition: theme.transitions.create(['border-color', 'box-shadow']),

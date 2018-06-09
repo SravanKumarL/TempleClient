@@ -92,7 +92,7 @@ export default class DataGrid extends React.PureComponent {
                     }}
                         onClick={this.onFilterClick}>
                         <FilterIcon /> {displayFilter && 'Hide'} Filter
-          </Button>
+                    </Button>
                     <Button style={{
                         zIndex: 1, position: 'absolute',
                         marginLeft: `${(displayFilter ? (70 - 2) : 70)}%`, marginTop: '1.2%'

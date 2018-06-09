@@ -14,7 +14,9 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     color: 'white',
-    justifyContent: 'space-evenly'
+    [theme.breakpoints.up('sm')] : {
+      justifyContent: 'space-evenly'
+    }
   },
   button: {
     margin: theme.spacing.unit,
@@ -35,7 +37,7 @@ const styles = theme => ({
 });
 
 const transactionForm = (props) => {
-  const { classes, primaryText, secondaryText, primaryIcon, secondaryIcon, showButtons, disablePreview } = props;
+  const { classes, primaryText, showLabels, secondaryText, primaryIcon, secondaryIcon, showButtons, disablePreview } = props;
   const formElementsArray = [];
   for (let key in props.transactionForm) {
     formElementsArray.push({
@@ -49,6 +51,7 @@ const transactionForm = (props) => {
         <Field
           disabled={formElement.config.disabled}
           key={formElement.id}
+          showLabels={showLabels}
           label={formElement.config.elementConfig.placeholder}
           elementType={formElement.config.elementType}
           elementConfig={formElement.config.elementConfig}

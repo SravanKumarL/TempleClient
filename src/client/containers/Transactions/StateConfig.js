@@ -53,10 +53,7 @@ export const formStateConfig = () => {
         placeholder: 'Nakshatram',
       },
       value: '',
-      validation: {
-        required: true,
-      },
-      valid: false,
+      valid: true,
       disabled: false,
       touched: false,
     },
@@ -121,7 +118,7 @@ export const formStateConfig = () => {
       elementType: 'radioGroup',
       elementConfig: {
         options: ['cash', 'cheque'],
-        placeholder: 'Mode'
+        placeholder: 'Payment Mode'
       },
       value: 'cash',
       disabled: false,

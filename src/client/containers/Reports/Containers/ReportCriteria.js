@@ -27,7 +27,7 @@ const ReportCriteria = (props) => {
     )
   }
   return (
-    <div style={{ display: 'flex', width: 450, flexGrow: 1, flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'column' }}>
       <Typography variant='subheading' align='center'>{heading}</Typography>
       {pooja}
       <Field

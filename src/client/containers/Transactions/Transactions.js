@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Tabs from '@material-ui/core/Tabs';
@@ -34,26 +33,35 @@ const styles = theme => ({
   middlePane: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     flexGrow: 1,
-    minWidth: '535px',
-    maxWidth: '535px',
-    marginLeft: 'auto'
+    minWidth: 'initial',
+    maxWidth: 'initial',
+    [theme.breakpoints.up('sm')]: {
+      alignItems: 'center',
+      minWidth: '535px',
+      maxWidth: '535px',
+      marginLeft: 'auto'
+    },
   },
   panes: {
     display: 'flex',
     flexGrow: 1,
     height: '100%',
     justifyContent: 'center',
-    paddingBottom: '1rem',
+    [theme.breakpoints.up('sm')]: {
+      paddingBottom: '1rem',
+    }
 
   },
   leftPane: {
     display: 'flex',
   },
   rightPane: {
-    display: 'flex',
-    marginLeft: 'auto',
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      marginLeft: 'auto',
+    }
   },
   container: {
     display: 'flex',
@@ -67,8 +75,13 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   flexContainer: {
-    display: 'inline-flex',
+    display: 'flex',
     borderRadius: 8,
+    width: '100%',
+    height: 92,
+    [theme.breakpoints.up('sm')]: {
+      height: 'initial',
+    }
   },
   indicator: {
     background: 'white',
@@ -86,8 +99,12 @@ const styles = theme => ({
     margin: 10,
     borderRadius: 8,
     fontSize: 16,
-    height: 60,
-    width: 250,
+    width: '45%',
+    height: 42,
+    [theme.breakpoints.up('sm')]: {
+      width: 250,
+      height: 60,
+    },
     minWidth: 'initial',
     maxWidth: 'initia',
     color: '#eee',
@@ -131,12 +148,16 @@ const initialState = {
 };
 class Transactions extends React.Component {
   state = { ...initialState };
-  componentWillReceiveProps(nextProps) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.message) {
-      this.setState({ snackOpen: true });
+      return { snackOpen: true };
     }
+    return null;
   }
-  closeSnackHandler = () => this.setState({ snackOpen: false });
+  closeSnackHandler = () => {
+    this.setState({ snackOpen: false });
+    this.props.addTransactionFail(null);
+  }
 
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
@@ -163,11 +184,7 @@ class Transactions extends React.Component {
   }
 
   itemSelectionChangedHandler = (option, selectedTransaction) => {
-    // if (option.toLowerCase() !== 'use') {
-    //   this.setState({ dialogOpen: true });
-    // }
-    // this.setState({ option, selectedTransaction });
-    if (option !== 'use') {
+    if (option.toLowerCase() !== 'use') {
       this.setState({ dialogOpen: true });
     }
     this.setState({ option, selectedTransaction, unchangedTransaction: selectedTransaction });
@@ -300,4 +317,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default withRouter(createContainer(withStyles(styles)(Transactions), mapStateToProps));
+export default createContainer(withStyles(styles)(Transactions), mapStateToProps);

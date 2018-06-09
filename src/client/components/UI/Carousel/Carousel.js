@@ -97,9 +97,9 @@ class SwipeableTextMobileStepper extends React.Component {
           onChangeIndex={this.handleStepChange}
           enableMouseEvents
         >
-          {tutorialSteps.map(step => (
+          {tutorialSteps.map((step, index) => (
             // <img key={step.label} className={classes.img} src={step.imgPath} alt={step.label} />
-            <div style={{ backgroundImage: `url(${step.imgPath})`, backgroundPosition: 'center', backgroundSize: 'cover', display: 'flex', flexGrow: 1, }}></div>
+            <div key={`img${index}`} style={{ backgroundImage: `url(${step.imgPath})`, backgroundPosition: 'left top', backgroundSize: 'cover', display: 'flex', flexGrow: 1, }}></div>
           ))}
         </SwipeableViews>
         <MobileStepper

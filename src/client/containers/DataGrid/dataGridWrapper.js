@@ -1,6 +1,6 @@
 import DataGrid from '../../components/UI/DataGrid/dataGrid'
 import createContainer from '../../hoc/createContainer/createContainer';
-import { getFormattedColumns } from '../../shared/utility';
+import { getFormattedColumns, convertToStartCase } from '../../shared/utility';
 
 const mapStateToProps = (state, ownProps) => {
     const { columns, collection, readOnly, searchCriteria } = ownProps;
@@ -13,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
     else
         formattedColumns = getFormattedColumns(state[collection].columns);
     let { loading, rows, error, message } = state[collection];
+    formattedColumns = formattedColumns.map(column => ({ ...column, title: convertToStartCase(column.title) }));
     return { loading, rows, columns: formattedColumns, error, message, collection, readOnly: readOnlyProp, searchCriteria };
 }
 

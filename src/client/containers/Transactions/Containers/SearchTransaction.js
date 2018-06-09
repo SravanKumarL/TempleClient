@@ -1,5 +1,4 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Search from '@material-ui/icons/Search';
 import Fade from '@material-ui/core/Fade';
@@ -25,10 +24,11 @@ class SearchTransaction extends React.Component {
     this.baseState = this.state;
   }
   state = { ...initialState };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.searchedTransactions !== this.props.searchedTransactions) {
-      this.setState({ searchedTransactions: nextProps.searchedTransactions });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.searchedTransactions !== prevState.prevSearchedTransactions) {
+      return { searchedTransactions: nextProps.searchedTransactions, prevSearchedTransactions: nextProps.searchedTransactions };
     }
+    return null;
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
   closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });
@@ -105,4 +105,4 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
-export default withRouter(createContainer(SearchTransaction, mapStateToProps));
+export default createContainer(SearchTransaction, mapStateToProps);

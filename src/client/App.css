@@ -4,20 +4,34 @@
   width: 100vw;
   flex-grow: 1;
 }
-
+image, embed, video , object {
+  max-width: 100%;
+}
 body {
   height: 100vh;
   width: 100vw;
 }
 
 * {
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 
+input:disabled {
+  background: #EEEEEE;
+}
+
+textarea:disabled {
+  background: #EEEEEE;
+}
+
+/* input[type="number"]:disabled {
+  background: #dddddd;
+} */
 textarea {
   /* height: 2rem;
   margin: 1rem; */
-  padding: 12px 0px 35px 10px !important;
+  height: auto !important;
+  padding: 12px 0px 16px 10px !important;
 }
 
 .routeWrapper {

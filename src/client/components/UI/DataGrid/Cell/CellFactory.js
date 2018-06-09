@@ -38,8 +38,3 @@ export const EditCell = (props) => {
     }
     return <TableEditRow.Cell {...props} editingEnabled={props.column.name !== EnumUser.username || props.tableRow.type === "added"} />;
 };
-
-// const groupCell = (props) => {
-//   // return <TableGroupRow.Cell {...props} onToggle={onGroupToggle}/>;
-//   return <TableGroupRow.Cell {...props} key={props.row.key} />
-// }
