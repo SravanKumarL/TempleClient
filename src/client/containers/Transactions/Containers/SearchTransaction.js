@@ -17,6 +17,7 @@ const initialState = {
   searchedTransactions: null,
   searchTextError: false,
   showOverflow: false,
+  count: 0
 };
 class SearchTransaction extends React.Component {
   constructor() {
@@ -36,7 +37,7 @@ class SearchTransaction extends React.Component {
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
     this.setState({ searchValue: value, isLoading: true });
-    this.props.searchTransactions({ searchValue: value });
+    this.props.searchTransactions({ searchValue: value, count: this.state.count, pageSize: 20 }); //update count in scroll event
   }
   clearclickedHandler = () => {
     this.setState({ searchValue: '', searchedTransactions: null });

@@ -33,5 +33,6 @@ export {
   onTransactionFailed,
   onTransactionCommitted,
   onTransactionCommitReq,
-  clearMessages
+  clearMessages,
+  onPagePopulated
 } from './entity'

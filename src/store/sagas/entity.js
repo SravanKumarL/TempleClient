@@ -1,5 +1,5 @@
 import axios from '../../axios/poojas';
-import { put} from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants, { reportMapping, uniqueProp } from './constants';
@@ -69,6 +69,8 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
+    const { count, pageSize } = action.payload.pagingOptions;
+    const pageRefreshed = count !== undefined && pageSize !== undefined;
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
@@ -86,7 +88,7 @@ export function* handleFetchData(action) {
                 if (searchCriteria && collection === constants.Reports) {
                     response = yield axios({
                         method: 'post',
-                        data: searchCriteria,
+                        data: { ...searchCriteria, pageSize, count },
                         url: `/${collection}`,
                         headers
                     });
@@ -94,20 +96,20 @@ export function* handleFetchData(action) {
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}`,
+                        url: `/${collection}?pageSize=${pageSize} & count=${count}`,
                         headers
                     });
                 }
-                yield put(actions.onFetchSuccess(response.data, collection));
+                yield put(actions.onFetchSuccess(response.data, pageRefreshed, collection));
             }
         } catch (error) {
             console.log(error);
-            yield put(actions.onFetchFailed(error.message, collection));
+            yield put(actions.onFetchFailed(error.message, action.payload.pagingOptions, collection));
         }
     }
 }
 export function* handleFetchSchema(action) {
-    const { collection, searchCriteria } = action.payload;
+    const { collection, searchCriteria, pagingOptions } = action.payload;
     try {
         yield put(actions.onFetchReq(collection));
         const token = sessionStorage.getItem('token');

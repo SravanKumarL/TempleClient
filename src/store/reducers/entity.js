@@ -1,13 +1,16 @@
 import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [] };
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], pageRefreshed: false };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:
-            return { ...state, rows: action.payload.rows, loading: action.payload.loading, error: '', name };
+            return {
+                ...state, rows: action.payload.rows, loading: action.payload.loading, error: '', name,
+                pageRefreshed: action.payload.pageRefreshed
+            };
         case actionTypes.onFetchSchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name };
         case actionTypes.onFetchFailed:
@@ -20,6 +23,8 @@ export const entity = (name) => (state = initialState, action) => {
             return { ...state, error: '', message: '' };
         case actionTypes.onTransactionFailed:
             return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
+        case actionTypes.onPagePopulated:
+            return { ...state, name, pageRefreshed: false };
         case actionTypes.resetEntity:
             return initialState;
         default:

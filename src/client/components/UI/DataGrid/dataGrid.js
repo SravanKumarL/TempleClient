@@ -18,7 +18,8 @@ export default class DataGrid extends React.PureComponent {
             displayFilter: false,
             snackBarOpen: false,
             transaction: null,
-            prevProps: {}
+            prevProps: {},
+            cachedRows: []
         };
     }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
@@ -29,12 +30,17 @@ export default class DataGrid extends React.PureComponent {
                 transaction = () => fetchSchema(collection, change);
                 break;
             case transactionType.fetch.data:
-                transaction = () => fetchData(collection, change);
+                transaction = () => fetchData(collection, change, { pageSize: 5, count: 0 });//default paging options
                 break;
             default:
                 transaction = () => commitTransaction(type, collection, change, changedObj);
                 break;
         }
+        this.setState({ transaction });
+        transaction();
+    }
+    fetchPaginatedData = (collection, pagingOptions) => {
+        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions);
         this.setState({ transaction });
         transaction();
     }
@@ -61,12 +67,17 @@ export default class DataGrid extends React.PureComponent {
         }
     }
     static getDerivedStateFromProps(props, state) {
-        const { error, message } = props;
-        if (message !== state.prevProps.message || error !== state.prevProps.error) {
+        const { error, message, pageRefreshed } = props;
+        if (message !== state.prevProps.message || error !== state.prevProps.error || pageRefreshed) {
+            let newState = null;
             if ((message !== '' || error !== '')) {
-                return ({ snackBarOpen: true, prevProps: { error: error, message: message } });
+                newState = ({ snackBarOpen: true, prevProps: { error: error, message: message } });
             }
-            return null;
+            if (pageRefreshed) {
+                newState = { ...newState, cachedRows: [...state.cachedRows, ...props.rows] };
+                this.props.onPagePopulated(props.collection);
+            }
+            return newState;
         }
         return null;
     }
@@ -108,7 +119,7 @@ export default class DataGrid extends React.PureComponent {
                             isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
-                                readOnly={readOnly} displayFilter={displayFilter} />}
+                                readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.fetchPaginatedData} />}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>

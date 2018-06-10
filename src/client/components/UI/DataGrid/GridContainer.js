@@ -58,8 +58,14 @@ export default class GridContainer extends React.PureComponent {
         });
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
-    changeCurrentPage = currentPage => this.setState({ currentPage });
-    changePageSize = pageSize => this.setState({ pageSize });
+    changeCurrentPage = currentPage => {
+        this.props.fetchPaginatedData(this.props.collection, { pageSize: this.state.pageSize, count: this.props.rows.length });
+        this.setState({ currentPage });
+    }
+    changePageSize = pageSize => {
+        this.props.fetchPaginatedData(this.props.collection, { pageSize: pageSize, count: this.props.rows.length });
+        this.setState({ pageSize });
+    }
     commitChanges = (props) => {
         const { added, changed, deleted } = props;
         const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
