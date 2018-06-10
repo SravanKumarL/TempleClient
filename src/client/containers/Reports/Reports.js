@@ -48,6 +48,7 @@ const styles = theme => ({
   button: {
     margin: 8,
     borderRadius: 4,
+    width: '30%',
     [theme.breakpoints.up('sm')]: {
       display: 'flex',
       flexDirection: 'column',
