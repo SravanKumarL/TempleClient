@@ -12,7 +12,7 @@ const ReportCriteria = (props) => {
   const { title, dateSelectionChanged, poojas, selectedPooja, selectedDates } = props;
   const heading = `Select From Date and To Date to generate ${title}`;
   let pooja = null;
-  if (title.trim().toLowerCase() === 'pooja report') {
+  if (title.trim().toLowerCase() === 'pooja') {
     const elementConfig = {
       options: poojas
     }

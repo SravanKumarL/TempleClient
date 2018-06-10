@@ -20,9 +20,11 @@ const theme = createMuiTheme({
       // main: '#410C40'
       main: '#60315f'
     },
-    secondary: {
-      main: '#52af92'
-    },
+    secondary: red,
+    // secondary: {
+    //   // main: '#52af92'
+    //   main: red,
+    // },
     error: red,
     contrastThreshold: 3,
     tonalOffset: 0.2,

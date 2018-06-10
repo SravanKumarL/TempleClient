@@ -22,7 +22,7 @@ class App extends Component {
   handleLogin = () => this.props.history.push('/');
   render() {
     const layout = () => (
-      <Layout activeTabChanged={this.activeTabChangedHandler}>
+      <Layout activeTab={this.state.activeTab} activeTabChanged={this.activeTabChangedHandler}>
         <Board activeTab={this.state.activeTab} role={this.props.role} />
       </Layout>
     );

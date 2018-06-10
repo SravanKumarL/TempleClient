@@ -5,7 +5,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import Logo from '../../../../assets/logo.svg';
+
 // import InboxIcon from '@material-ui/icons/Inbox';
 // import DraftsIcon from '@material-ui/icons/Drafts';
 
@@ -13,14 +14,17 @@ import Receipt from '@material-ui/icons/Receipt';
 import Pages from '@material-ui/icons/Pages';
 import Event from '@material-ui/icons/Event';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
-    marginTop: '40%',
   },
+  logo: {
+    display: 'flex',
+  }
 });
 
 function SimpleList(props) {
@@ -46,6 +50,10 @@ function SimpleList(props) {
   }
   return (
     <div className={classes.root}>
+      <div className={classes.logo}>
+        <img src={Logo} style={{ height: 90, width: 70 }} alt='Logo' />
+        <Typography style={{ display: 'flex', alignItems: 'center' }} variant='title' align='center'>BookMySeva 1.0</Typography>
+      </div>
       <List component="nav">
         <ListItem button onClick={() => itemClicked('transactions')}>
           <ListItemIcon>
@@ -61,7 +69,6 @@ function SimpleList(props) {
         </ListItem>
         {elements}
       </List>
-      <Divider />
     </div>
   );
 }

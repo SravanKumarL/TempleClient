@@ -18,29 +18,52 @@ import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../hoc/createContainer/createContainer';
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignContent: 'space-evenly',
-    width: 220,
-    marginRight: 20,
-    // boxShadow: theme.shadows[3],
-  },
-  button: {
+  root: {
     display: 'flex',
     flexDirection: 'column',
-    height: 50,
-    flexBasis: 136,
-    borderRadius: 10,
-    margin: 'auto',
-    padding: '80px',
-    boxShadow: theme.shadows[5],
-    '&:hover': {
-      boxShadow: '0px 0px 10px #000000',
-      zIndex: 2,
-      transition: 'all 200ms ease-in',
-      transform: 'scale(1.1)',
-    },
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      flexGrow: 1,
+    }
+  },
+  container: {
+    display: 'flex',
+    height: 92,
+    background: 'darkslategray',
+    boxShadow: theme.shadows[3],
+    marginTop: 3,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      height: 'auto',
+      flexWrap: 'wrap',
+      alignContent: 'space-evenly',
+      width: 220,
+      marginRight: 20,
+      flexGrow: 'initial',
+      background: 'initial',
+      boxShadow: 'initial',
+    }
+  },
+  button: {
+    margin: 8,
+    borderRadius: 4,
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: 50,
+      flexBasis: 136,
+      borderRadius: 10,
+      margin: 'auto',
+      padding: '80px',
+      boxShadow: theme.shadows[5],
+      '&:hover': {
+        boxShadow: '0px 0px 10px #000000',
+        zIndex: 2,
+        transition: 'all 200ms ease-in',
+        transform: 'scale(1.1)',
+      },
+    }
   },
   text: {
     display: 'flex',
@@ -53,16 +76,27 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
   },
   icon: {
-    display: 'flex',
-    height: 50,
-    width: 100,
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      height: 50,
+      width: 100,
+    }
   },
   iconButton: {
-    display: 'flex',
-    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+    }
   },
   buttonText: {
     fontWeight: 'bold',
+  },
+  dataGrid: {
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      flexGrow: 1
+    }
   }
 });
 
@@ -125,9 +159,9 @@ class Reports extends React.Component {
   getButtons = () => {
     const { classes } = this.props;
     const options = [
-      { name: 'Pooja Report', color: '#DE6400', icon: <Event className={classes.icon} /> },
-      { name: 'Management Report', color: Blue[500], icon: <Poll className={classes.icon} /> },
-      { name: 'Accounts Report', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
+      { name: 'Pooja ', color: '#DE6400', icon: <Event className={classes.icon} /> },
+      { name: 'Management ', color: Blue[500], icon: <Poll className={classes.icon} /> },
+      { name: 'Accounts ', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
 
     return (
@@ -164,13 +198,13 @@ class Reports extends React.Component {
         searchObj = { ...searchObj, pooja: selectedPooja };
     }
     return (
-      <div style={{ display: 'flex', height: '100%', flexGrow: 1 }}>
+      <div className={classes.root}>
         <div className={classes.container}>
           {this.getButtons()}
           {this.getModal()}
         </div>
         {reportOpen &&
-          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} >
+          <div className={classes.dataGrid}>
             <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}> {selectedOption.name} </Typography>
             <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div>}

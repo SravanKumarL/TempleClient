@@ -9,8 +9,8 @@ const styles = theme => ({
   appFrame: {
     position: 'fixed',
     display: 'flex',
-    width: '100vw',
-    height: '100vh',
+    width: '100%',
+    height: '100%',
   },
   button: {
     margin: theme.spacing.unit,
@@ -36,10 +36,11 @@ class Layout extends React.Component {
     this.props.authLogout();
   }
   render() {
-    const { classes, role, activeTabChanged } = this.props;
+    const { classes, role, activeTabChanged, activeTab } = this.props;
     return (
       <div className={classes.appFrame}>
         <AppBar
+          activeTab = {activeTab}
           logout={this.handleLogout}
           role={role}
           activeTabChanged={activeTabChanged}
