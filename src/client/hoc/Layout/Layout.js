@@ -7,10 +7,12 @@ import createContainer from '../createContainer/createContainer';
 
 const styles = theme => ({
   appFrame: {
-    position: 'fixed',
     display: 'flex',
     width: '100%',
     height: '100%',
+    [theme.breakpoints.up('sm')]: {
+      position: 'fixed',
+    }
   },
   button: {
     margin: theme.spacing.unit,
