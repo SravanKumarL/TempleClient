@@ -29,3 +29,6 @@ export const onTransactionCommitted = (message, change, type, name) => {
 export const onTransactionCommitReq = (type, change, name) => {
     return { type: actionTypes.onTransactionCommitReq, payload: { type, change, name } };
 }
+export const clearMessages = (name) => {
+    return { type: actionTypes.clearMessages, payload: { name } };
+}

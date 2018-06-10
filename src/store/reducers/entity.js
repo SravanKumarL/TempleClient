@@ -16,6 +16,8 @@ export const entity = (name) => (state = initialState, action) => {
             return { ...state, message: action.payload.message, error: '', name, rows: changeRows(payload, state.rows) };
         case actionTypes.onTransactionCommitReq:
             return { ...state, error: '', message: '', rows: changeRows(payload, state.rows), prevRows: state.rows, name };
+        case actionTypes.clearMessages:
+            return { ...state, error: '', message: '' };
         case actionTypes.onTransactionFailed:
             return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
         case actionTypes.resetEntity:

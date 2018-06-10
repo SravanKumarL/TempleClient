@@ -75,7 +75,9 @@ const input = (props) => {
       inputElement = <MultiSelect
         showLabels={props.showLabels}
         value={props.value}
+        options={props.options}
         changed={props.changed}
+        avoidDuplicateSelection={props.avoidDuplicateSelection}
         label={props.label}
         type='multi'
       />

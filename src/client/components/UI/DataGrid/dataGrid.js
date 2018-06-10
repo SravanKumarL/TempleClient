@@ -38,7 +38,10 @@ export default class DataGrid extends React.PureComponent {
         this.setState({ transaction });
         transaction();
     }
-    onSnackBarClose = () => this.setState({ snackBarOpen: false });
+    onSnackBarClose = () => {
+        this.setState({ snackBarOpen: false });
+        this.props.clearMessages(this.props.collection);
+    }
     onFilterClick = () => {
         if (this.props.rows && this.props.rows.length > 0)
             this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));

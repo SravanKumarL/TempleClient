@@ -180,11 +180,23 @@ class MultiSelect extends React.Component {
           const prevValues = valueObjs.map(vo => vo.value);
           const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
           const selected = _.uniq(_.difference(selValues, prevValues)).join(',');
-          if (unselected === '' && selected !== '') {
-            valueObjs.push({ value: selected, id: ++nextId });
+          if (this.props.avoidDuplicateSelection) {
+            if (unselected !== '') {
+              valueObjs.splice(valueObjs.map(valueObj => valueObj.value).indexOf(unselected), 1);
+              valueObjs = valueObjs.map((valueObj, index) => ({ value: valueObj.value, id: index + 1 }));
+              --nextId;
+            }
+            else {
+              valueObjs.push({ value: selected, id: ++nextId });
+            }
           }
-          else if (unselected !== '') {
-            valueObjs.push({ value: unselected, id: ++nextId });
+          else {
+            if (unselected === '' && selected !== '') {
+              valueObjs.push({ value: selected, id: ++nextId });
+            }
+            else if (unselected !== '') {
+              valueObjs.push({ value: unselected, id: ++nextId });
+            }
           }
           values = valueObjs.map(x => x.value).join(',');
         }
@@ -268,7 +280,7 @@ class MultiSelect extends React.Component {
           id: 'react-select-chip',
           name: 'react-select-chip',
           simpleValue: true,
-          options: suggestions,
+          options: options || suggestions,
         }}
       />
     }

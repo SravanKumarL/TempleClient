@@ -13,15 +13,13 @@ const ReportCriteria = (props) => {
   const heading = `Select From Date and To Date to generate ${title}`;
   let pooja = null;
   if (title.trim().toLowerCase() === 'pooja report') {
-    const elementConfig = {
-      options: poojas
-    }
     pooja = (
       <Field
-        elementType='singleselect'
+        elementType='multiselect'
         value={selectedPooja}
         changed={poojaChangedHandler}
-        elementConfig={elementConfig}
+        options={poojas}
+        avoidDuplicateSelection={true}
         label='Pooja Name'
       />
     )
@@ -33,7 +31,7 @@ const ReportCriteria = (props) => {
       <Field
         elementType='date'
         changed={dateSelectionChanged}
-        maxDate={getCurrentDate()}
+        maxDate={pooja ? undefined : getCurrentDate()}
         value={selectedDates}
       />
     </div>
