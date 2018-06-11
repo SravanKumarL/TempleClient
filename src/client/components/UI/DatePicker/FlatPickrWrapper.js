@@ -108,6 +108,7 @@ class DatePickerWrapper extends Component {
           return { selectedDates };
         return {};
       });
+      this.flatPickrInstance.jumpToDate(this.getDate(selectedDates[selectedDates.length-1]));
     }
   }
   onClose = (selDates, dateStr, flatPickr) => {
@@ -164,6 +165,9 @@ class DatePickerWrapper extends Component {
     const { mode, datePickerMode, ...restProps } = { ...this.defaultState };
     return { ...restProps, datePickerMode: prevState.mode, closeOnSelect: prevState.mode === 'single' };
   });
+  onValueUpdate = (e, currentDateString, instance, data) => {
+    this.flatPickrInstance= instance;
+  }
   static getDerivedStateFromProps(props, state) {
     const selectedDates = state.getSelectedDates(state);
     if (!props.value || props.value === '' || props.value.length === 0) {
@@ -210,7 +214,7 @@ class DatePickerWrapper extends Component {
         <div id="datePickerWrap">
           <Flatpickr value={selectedDates}
             options={calendarOptions}
-            onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} onClearClicked={this.onClearClicked} />
+            onChange={this.onDatesSelected} onClose={this.onClose} onOpen={this.onOpen} onClearClicked={this.onClearClicked} onValueUpdate={this.onValueUpdate} />
         </div>
       </div>
     )
