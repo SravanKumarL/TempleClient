@@ -22,7 +22,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    flexShrink: 0,
   },
   header: {
     display: 'none',
