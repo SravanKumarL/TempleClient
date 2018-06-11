@@ -15,8 +15,8 @@ export const Command = ({ id, collection, onExecute }) => {
         case 'add':
             return (<div style={{ width: 120 }}>
                 <IconButton title="Create new row" onClick={onExecute}>
-                    <AddIcon />
-                    <Typography variant="body2" style={{ marginLeft: 10 }}>
+                    <AddIcon style={{ color: 'white' }} />
+                    <Typography variant="body2" style={{ color: 'white', fontWeight: 500, fontSize: '1rem', marginLeft: 10 }}>
                         Add a new {collection.slice(0, collection.length - 1)}
                     </Typography>
                 </IconButton>

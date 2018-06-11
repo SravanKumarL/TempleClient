@@ -4,9 +4,14 @@
   width: 100%;
   flex-grow: 1;
 }
-image, embed, video , object {
+
+image,
+embed,
+video,
+object {
   max-width: 100%;
 }
+
 body {
   height: 100%;
   width: 100%;
@@ -20,6 +25,16 @@ input:disabled {
   background: #EEEEEE;
 }
 
+thead {
+  background: darkslategray;
+}
+
+th {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+}
+
 textarea:disabled {
   background: #EEEEEE;
 }
@@ -27,6 +42,7 @@ textarea:disabled {
 /* input[type="number"]:disabled {
   background: #dddddd;
 } */
+
 textarea {
   /* height: 2rem;
   margin: 1rem; */

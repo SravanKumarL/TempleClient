@@ -18,7 +18,7 @@ export const Cell = (props) => {
     if (props.column.name === "password") {
         const { tableRow, tableColumn, ...rest } = props; // Shows a warning if passed as is
         return (<TableCell>
-            <Input inputProps={{style: { width: '100%', marginLeft: '-1rem'}}} type="password" disabled disableUnderline {...rest} />
+            <Input inputProps={{style: { width: '100%', marginLeft: '-1rem'}}} type="password" disableUnderline {...rest} />
         </TableCell>);
     }
     return <Table.Cell {...props} />;
