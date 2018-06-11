@@ -1,16 +1,13 @@
 import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], pageRefreshed: false };
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [] };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
     switch (action.type) {
         case actionTypes.onFetchReq:
         case actionTypes.onFetchSuccess:
-            return {
-                ...state, rows: action.payload.rows, loading: action.payload.loading, error: '', name,
-                pageRefreshed: action.payload.pageRefreshed
-            };
+            return { ...state, rows: [...state.rows, ...action.payload.rows], loading: action.payload.loading, error: '', name };
         case actionTypes.onFetchSchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name };
         case actionTypes.onFetchFailed:

@@ -5,7 +5,7 @@ const initialState = {
   message: null,
   error: null,
   transactions: null,
-  searchedTransactions: null,
+  searchedTransactions: [],
   loading: false,
 }
 
@@ -33,16 +33,16 @@ export const searchTransactionsStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
 export const searchTransactionsSuccess = (state, action) => {
-  return updateObject(state, { searchedTransactions: action.transactions, loading: false });
+  return updateObject(state, { searchedTransactions: [...state.searchedTransactions, ...action.transactions], loading: false });
 }
 export const searchTransactionsFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 }
 export const onTransactionFailed = (state, action) => {
-  return updateObject(state, { error: action.payload.error});
+  return updateObject(state, { error: action.payload.error });
 }
 export const onTransactionCommitted = (state, action) => {
-  return updateObject(state, { message: action.payload.message});
+  return updateObject(state, { message: action.payload.message });
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -68,9 +68,9 @@ const reducer = (state = initialState, action) => {
       return searchTransactionsFail(state, action);
 
     case actionTypes.onTransactionCommitted:
-      return onTransactionCommitted(state,action);
+      return onTransactionCommitted(state, action);
     case actionTypes.onTransactionFailed:
-      return onTransactionFailed(state,action);
+      return onTransactionFailed(state, action);
     default:
       return state;
   }

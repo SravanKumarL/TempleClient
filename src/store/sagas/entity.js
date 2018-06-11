@@ -70,7 +70,6 @@ const handleResponse = function* (response, collection, type, changedObj) {
 export function* handleFetchData(action) {
     const { collection, searchCriteria } = action.payload;
     const { count, pageSize } = action.payload.pagingOptions;
-    const pageRefreshed = count !== undefined && pageSize !== undefined;
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
@@ -96,15 +95,15 @@ export function* handleFetchData(action) {
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}?pageSize=${pageSize} & count=${count}`,
+                        url: `/${collection}?pageSize=${pageSize}&count=${count}`,
                         headers
                     });
                 }
-                yield put(actions.onFetchSuccess(response.data, pageRefreshed, collection));
+                yield put(actions.onFetchSuccess(response.data, collection));
             }
         } catch (error) {
             console.log(error);
-            yield put(actions.onFetchFailed(error.message, action.payload.pagingOptions, collection));
+            yield put(actions.onFetchFailed(error.message, collection));
         }
     }
 }

@@ -19,6 +19,7 @@ const initialState = {
   showOverflow: false,
   count: 0
 };
+const pageSize = 50;
 class SearchTransaction extends React.Component {
   constructor() {
     super();
@@ -37,7 +38,12 @@ class SearchTransaction extends React.Component {
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
     this.setState({ searchValue: value, isLoading: true });
-    this.props.searchTransactions({ searchValue: value, count: this.state.count, pageSize: 20 }); //update count in scroll event
+    this.props.searchTransactions({ searchValue: value, count: this.state.count, pageSize: pageSize }); //update count in scroll event
+  }
+  scrollHandler = () => {
+    const count = this.state.count + pageSize;
+    this.setState({ count });
+    this.props.searchTransactions({ searchValue: value, count, pageSize: pageSize });
   }
   clearclickedHandler = () => {
     this.setState({ searchValue: '', searchedTransactions: null });

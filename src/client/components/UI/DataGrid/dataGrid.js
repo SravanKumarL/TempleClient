@@ -19,7 +19,6 @@ export default class DataGrid extends React.PureComponent {
             snackBarOpen: false,
             transaction: null,
             prevProps: {},
-            cachedRows: []
         };
     }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
@@ -69,15 +68,10 @@ export default class DataGrid extends React.PureComponent {
     static getDerivedStateFromProps(props, state) {
         const { error, message, pageRefreshed } = props;
         if (message !== state.prevProps.message || error !== state.prevProps.error || pageRefreshed) {
-            let newState = null;
-            if ((message !== '' || error !== '')) {
-                newState = ({ snackBarOpen: true, prevProps: { error: error, message: message } });
+            if (message !== '' || error !== '') {
+                return ({ snackBarOpen: true, prevProps: { error: error, message: message } });
             }
-            if (pageRefreshed) {
-                newState = { ...newState, cachedRows: [...state.cachedRows, ...props.rows] };
-                this.props.onPagePopulated(props.collection);
-            }
-            return newState;
+            return null;
         }
         return null;
     }

@@ -11,8 +11,8 @@ export const fetchSchema = (collection, searchCriteria) => {
 export const onFetchReq = (name) => {
     return { type: actionTypes.onFetchReq, payload: { loading: true, rows: [], name } };
 }
-export const onFetchSuccess = (rows, pageRefreshed, name) => {
-    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows, name, pageRefreshed } };
+export const onFetchSuccess = (rows, name) => {
+    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows, name } };
 }
 export const onFetchSchemaSuccess = (columns, name) => {
     return { type: actionTypes.onFetchSchemaSuccess, payload: { loading: false, columns, name } };
@@ -31,7 +31,4 @@ export const onTransactionCommitReq = (type, change, name) => {
 }
 export const clearMessages = (name) => {
     return { type: actionTypes.clearMessages, payload: { name } };
-}
-export const onPagePopulated = (name) => {
-    return { type: actionTypes.onPagePopulated, payload: { name } }
 }
