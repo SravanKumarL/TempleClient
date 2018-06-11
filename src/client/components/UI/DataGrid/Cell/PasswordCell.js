@@ -18,7 +18,7 @@ class PasswordCellBase extends React.Component {
             <TableCell>
                 <TextField type="password" autoComplete="current-password" margin="normal" value={this.state.value} onChange={this.onPasswordChange} />
             </TableCell>
-            //className={classes.password}
+            
         );
     }
 }

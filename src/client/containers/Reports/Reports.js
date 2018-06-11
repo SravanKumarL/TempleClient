@@ -204,11 +204,13 @@ class Reports extends React.Component {
           {this.getButtons()}
           {this.getModal()}
         </div>
-        {reportOpen &&
+        {reportOpen ?
           <div className={classes.dataGrid}>
             <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}> {selectedOption.name} </Typography>
             <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
-          </div>}
+          </div> :
+          <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
+        }
       </div>
     );
   }

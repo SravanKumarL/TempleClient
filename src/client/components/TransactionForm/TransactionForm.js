@@ -14,6 +14,7 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
     color: 'white',
+    justifyContent: 'space-between'
   },
   button: {
     margin: theme.spacing.unit,
