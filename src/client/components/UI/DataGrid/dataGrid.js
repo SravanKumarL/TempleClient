@@ -29,7 +29,7 @@ export default class DataGrid extends React.PureComponent {
                 transaction = () => fetchSchema(collection, change);
                 break;
             case transactionType.fetch.data:
-                transaction = () => fetchData(collection, change, { pageSize: 5, count: 0 });//default paging options
+                transaction = () => fetchData(collection, change, { pageSize: 5, count: this.props.rows.length });//default paging options
                 break;
             default:
                 transaction = () => commitTransaction(type, collection, change, changedObj);
@@ -39,7 +39,7 @@ export default class DataGrid extends React.PureComponent {
         transaction();
     }
     fetchPaginatedData = (collection, pagingOptions) => {
-        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions);
+        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true);
         this.setState({ transaction });
         transaction();
     }

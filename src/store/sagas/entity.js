@@ -68,14 +68,19 @@ const handleResponse = function* (response, collection, type, changedObj) {
         yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection, searchCriteria } = action.payload;
-    const { count, pageSize } = action.payload.pagingOptions;
+    const { collection, searchCriteria, refetch } = action.payload;
+    const { pagingOptions } = action.payload;
+    let count, pageSize = undefined;
+    if (pagingOptions) {
+        count = pagingOptions.count;
+        pageSize = pagingOptions.pageSize;
+    }
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
     else {
         try {
-            yield put(actions.onFetchReq(collection));
+            yield put(actions.onFetchReq(collection, refetch));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -108,7 +113,7 @@ export function* handleFetchData(action) {
     }
 }
 export function* handleFetchSchema(action) {
-    const { collection, searchCriteria, pagingOptions } = action.payload;
+    const { collection, searchCriteria } = action.payload;
     try {
         yield put(actions.onFetchReq(collection));
         const token = sessionStorage.getItem('token');

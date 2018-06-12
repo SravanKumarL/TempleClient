@@ -43,7 +43,7 @@ class SearchTransaction extends React.Component {
   scrollHandler = () => {
     const count = this.state.count + pageSize;
     this.setState({ count });
-    this.props.searchTransactions({ searchValue: value, count, pageSize: pageSize });
+    this.props.searchTransactions({ searchValue: this.state.searchValue, count, pageSize: pageSize });
   }
   clearclickedHandler = () => {
     this.setState({ searchValue: '', searchedTransactions: null });
