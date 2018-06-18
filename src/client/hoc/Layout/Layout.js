@@ -8,8 +8,8 @@ import createContainer from '../createContainer/createContainer';
 const styles = theme => ({
   appFrame: {
     display: 'flex',
-    width: '100%',
-    height: '100%',
+    width: '100vw',
+    height: '100vh',
     [theme.breakpoints.up('sm')]: {
       position: 'fixed',
     }

@@ -8,6 +8,7 @@ import { Paper, Button } from '@material-ui/core';
 import { Cell } from './Cell/CellFactory';
 import { Grid, Table, TableHeaderRow } from '@devexpress/dx-react-grid-material-ui';
 import { withStyles } from '@material-ui/core/styles';
+import { TABLE } from '../../../../store/constants/components/datagrid';
 
 const styles = theme => ({
     dialog: {
@@ -22,6 +23,7 @@ const DeleteDialog = ({ columns, collection, classes, deletingRows, dialogOpen, 
     const onRowsDelete = () => {
         onDelDialogClick(true);
     }
+    const { ROWS } = TABLE;
     //#endregion
     return (<Dialog
         open={dialogOpen}
@@ -32,7 +34,7 @@ const DeleteDialog = ({ columns, collection, classes, deletingRows, dialogOpen, 
         <DialogContent>
             <DialogContentText>
                 Are you sure to delete the following {(collection ? collection.substring(0, collection.length - 1)
-                    : 'rows')}?
+                    : ROWS)}?
                 </DialogContentText>
             <Paper>
                 <Grid
@@ -45,8 +47,8 @@ const DeleteDialog = ({ columns, collection, classes, deletingRows, dialogOpen, 
             </Paper>
         </DialogContent>
         <DialogActions>
-            <Button onClick={cancelDelete} color="primary">Cancel</Button>
-            <Button onClick={onRowsDelete} color="secondary">Delete</Button>
+            <Button onClick={cancelDelete} variant='raised' color="secondary">Cancel</Button>
+            <Button onClick={onRowsDelete} variant='raised' color="primary">Delete</Button>
         </DialogActions>
     </Dialog>);
 }

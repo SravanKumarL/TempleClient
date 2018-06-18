@@ -10,8 +10,7 @@ const styles = (theme) => ({
     background: 'white',
     color: 'black',
     [theme.breakpoints.up('sm')]: {
-      margin: '0 10px',
-      borderTopRightRadius: '10px',
+      margin: '0 0 0 70px',
     },
     flexGrow: 1,
   }

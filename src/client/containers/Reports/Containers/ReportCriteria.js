@@ -2,6 +2,10 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Field from '../../../components/UI/Field/Field';
 import { getCurrentDate } from '../../../shared/utility';
+import { FIELD_TYPES, FIELDS } from '../../../../store/constants/transactions';
+
+const { MULTISELECT, DATE } = FIELD_TYPES;
+const { POOJA } = FIELDS;
 
 const ReportCriteria = (props) => {
   const poojaChangedHandler = (event, inputIdentifier) => {
@@ -12,13 +16,13 @@ const ReportCriteria = (props) => {
   const { title, dateSelectionChanged, poojas, selectedPooja, selectedDates } = props;
   const heading = `Select From Date and To Date to generate ${title}`;
   let pooja = null;
-  if (title.trim().toLowerCase() === 'pooja') {
+  if (title.trim().toLowerCase() === POOJA) {
     const elementConfig = {
       options: poojas
     }
     pooja = (
       <Field
-        elementType='singleselect'
+        elementType={MULTISELECT}
         value={selectedPooja}
         changed={poojaChangedHandler}
         elementConfig={elementConfig}
@@ -31,7 +35,7 @@ const ReportCriteria = (props) => {
       <Typography variant='subheading' align='center'>{heading}</Typography>
       {pooja}
       <Field
-        elementType='date'
+        elementType={DATE}
         changed={dateSelectionChanged}
         maxDate={getCurrentDate()}
         value={selectedDates}

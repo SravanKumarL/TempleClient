@@ -8,6 +8,9 @@ import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
 import { getCurrentDate } from '../../../shared/utility';
 import moment from 'moment';
+import { CALENDER_MODE } from '../../../../store/constants/transactions';
+
+const { RANGE, SINGLE, MULTIPLE } = CALENDER_MODE;
 
 class DatePickerWrapper extends Component {
   getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -26,7 +29,7 @@ class DatePickerWrapper extends Component {
   }
   getSelectedDates = (state) => {
     const { datePickerMode, selectedDays, unFilteredRange, selectedDates } = state;
-    if (datePickerMode === 'range' && selectedDates.length === 2) {
+    if (datePickerMode === RANGE && selectedDates.length === 2) {
       return this.getFilteredDates(selectedDays, unFilteredRange);
     }
     return selectedDates;
@@ -36,8 +39,8 @@ class DatePickerWrapper extends Component {
     selectedDays: [],
     filteredRange: [],
     unFilteredRange: [],
-    datePickerMode: 'single',
-    mode: 'single',
+    datePickerMode: SINGLE,
+    mode: SINGLE,
     closeOnSelect: true,
     getSelectedDates: this.getSelectedDates.bind(this)
   }
@@ -66,7 +69,7 @@ class DatePickerWrapper extends Component {
     }
     {
       const { datePickerMode, unFilteredRange } = this.state;
-      if (datePickerMode === 'range' && selectedDays.length > 0 && selectedDays.length < 8) {
+      if (datePickerMode === RANGE && selectedDays.length > 0 && selectedDays.length < 8) {
         this.setState({ filteredRange: this.getFilteredDates(selectedDays, unFilteredRange) });
       }
     }
@@ -77,12 +80,12 @@ class DatePickerWrapper extends Component {
   onModeSelected = (selectedMode) => {
     this.setState((prevState) => ({
       ...this.defaultState, mode: selectedMode, datePickerMode: selectedMode,
-      closeOnSelect: selectedMode === 'single'
+      closeOnSelect: selectedMode === SINGLE
     }));
     // this.liftStateUp();
   }
   onDatesSelected = (selectedDates) => {
-    if (this.state.datePickerMode === 'range' && selectedDates.length === 2) {
+    if (this.state.datePickerMode === RANGE && selectedDates.length === 2) {
       let dates = [];
       let i = new Date(selectedDates[0]);
       while (moment(i, "DD/MM/YYYY") <= moment(selectedDates[1], "DD/MM/YYYY")) {
@@ -106,7 +109,7 @@ class DatePickerWrapper extends Component {
   onClose = (selDates, dateStr, flatPickr) => {
     const { unFilteredRange } = this.state;
     if (this.isFilterApplied()) {
-      this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: 'range' });
+      this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: RANGE });
     }
     else {
       this.setState({ selectedDates: selDates.map(selDate => getCurrentDate(selDate)) });
@@ -118,25 +121,25 @@ class DatePickerWrapper extends Component {
       const { unFilteredRange, selectedDays } = this.state;
       const isInRange = this.isDaysInRange(unFilteredRange, selectedDays);
       if (isInRange) {
-        this.setState({ selectedDates: this.getFilteredDates(selectedDays, unFilteredRange), datePickerMode: 'multiple' });
+        this.setState({ selectedDates: this.getFilteredDates(selectedDays, unFilteredRange), datePickerMode: MULTIPLE });
       }
       else {
-        this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: 'range' });
+        this.setState({ selectedDates: this.getRangeStartEnd(unFilteredRange), datePickerMode: RANGE });
       }
       // this.liftStateUp();
     }
   }
   getNumberOfDays = () => {
-    return this.state.datePickerMode === 'range' ? (this.state.selectedDays.length === 0 ? this.state.unFilteredRange.length :
+    return this.state.datePickerMode === RANGE ? (this.state.selectedDays.length === 0 ? this.state.unFilteredRange.length :
       this.state.selectedDates.length) :
       this.state.selectedDates.length;
   }
   // getMode = () => {
   //   if (this.isFilterApplied() && this.state.selectedDates.length===2) {
   //     if(this.state.isCalOpen)
-  //       return 'multiple';
+  //       return MULTIPLE;
   //     else
-  //       return 'range';
+  //       return RANGE;
   //   }
   //   return this.state.mode;
   // }
@@ -190,9 +193,9 @@ class DatePickerWrapper extends Component {
       <div>
         {this.props.mode ||
           <div id="selection" style={{ display: 'flex' }}>
-            <RadioButtonsGroup options={['single', 'multiple', 'range']} label='Calendar mode' mode={mode}
+            <RadioButtonsGroup options={[SINGLE, MULTIPLE, RANGE]} label='Calendar mode' mode={mode}
               onModeSelect={this.onModeSelected} />
-            {mode === 'range' &&
+            {mode === RANGE &&
               <MultipleSelect label='Days' items={this.getAllDays()} selItems={selectedDays} onItemSel={this.onDaySelected}
                 style={{ margin: '24px' }} onOpen={this.onDaySelectOpen} onClose={this.onDaySelectClose} />}
           </div>}

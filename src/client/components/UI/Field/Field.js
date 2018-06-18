@@ -4,10 +4,11 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import purple from '@material-ui/core/colors/purple';
 import DatePickerWrapper from '../DatePicker/FlatPickrWrapper';
 import Input from '../TextField/TextField';
-// import Select from '../Select/Select';
-import MultiSelect from '../MultiSelect/MultiSelect';
 import RadioGroup from '../RadioGroup/RadioGroup';
+import MultiSelect from '../MultiSelect/MultiSelect';
+import { FIELD_TYPES } from '../../../../store/constants/transactions';
 
+const { SINGLESELECT, MULTISELECT, NUMBER, INPUT, RADIO, DATE } = FIELD_TYPES;
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -24,78 +25,74 @@ const styles = theme => ({
 
 })
 const input = (props) => {
+  const { elementConfig, elementType, changed, value, label, disabled, multiline, showLabels, minDate, maxDate } = props;
   let inputElement = null;
-  switch (props.elementType) {
-    case ('input'):
+  switch (elementType) {
+    case INPUT:
       inputElement = <Input
-        elementConfig={props.elementConfig}
-        value={props.value}
-        changed={props.changed}
-        label={props.label}
-        disabled={props.disabled}
-        multiline={props.multiline}
-        showLabels={props.showLabels}
+        elementConfig={elementConfig}
+        value={value}
+        changed={changed}
+        label={label}
+        disabled={disabled}
+        multiline={multiline}
+        showLabels={showLabels}
+        type={INPUT}
       />;
       break;
-    case ('number'):
+    case NUMBER:
       inputElement = <Input
-        elementConfig={props.elementConfig}
-        value={props.value}
-        changed={props.changed}
-        label={props.label}
-        disabled={props.disabled}
-        type='number'
-        showLabels={props.showLabels}
+        elementConfig={elementConfig}
+        value={value}
+        changed={changed}
+        label={label}
+        disabled={disabled}
+        type={NUMBER}
+        showLabels={showLabels}
       />;
       break;
-    case ('singleselect'):
+    case SINGLESELECT:
       inputElement = <MultiSelect
-        value={props.value}
-        changed={props.changed}
-        options={props.elementConfig.options}
-        label={props.label}
-        type='single'
-        showLabels={props.showLabels}
+        value={value}
+        changed={changed}
+        options={elementConfig.options}
+        label={label}
+        type={SINGLESELECT}
+        showLabels={showLabels}
       />
       break;
-    case ('label'):
-      inputElement = <Input
-        value={props.value}
-        options={props.elementConfig.options}
-        label={props.label}
-      />
-      break;
-    case ('radioGroup'):
+    case RADIO:
       inputElement = <RadioGroup
-        mode={props.value}
-        options={props.elementConfig.options}
-        onModeSelect={props.changed}
-        label={props.label} />
+        mode={value}
+        options={elementConfig.options}
+        onModeSelect={changed}
+        label={label} />
       break;
-    case ('multiselect'):
+    case MULTISELECT:
       inputElement = <MultiSelect
-        showLabels={props.showLabels}
-        value={props.value}
-        changed={props.changed}
-        label={props.label}
-        type='multi'
+        showLabels={showLabels}
+        value={value}
+        changed={changed}
+        label={label}
+        type={MULTISELECT}
+        options={elementConfig.options}
       />
       break;
-    case ('date'):
-      inputElement = <DatePickerWrapper value={props.value} onDateSelectionChanged={props.changed}
-        minDate={props.minDate} maxDate={props.maxDate} />
+    case DATE:
+      inputElement = <DatePickerWrapper value={value} onDateSelectionChanged={changed}
+        minDate={minDate} maxDate={maxDate} />
       break;
     default:
       inputElement = <Input
-        elementConfig={props.elementConfig}
-        value={props.value}
-        changed={props.changed}
-        label={props.label}
+        elementConfig={elementConfig}
+        value={value}
+        changed={changed}
+        label={label}
       />;
   }
   const { classes } = props;
   return (
-    <div className={classes.container} style={props.elementType === 'date' ? { minHeight: 140 } : props.elementType === 'radioGroup' ? { minHeight: 88 } : null}>
+    <div className={classes.container} style={elementType === DATE ? { minHeight: 140 } : elementType === RADIO ? { minHeight: 88 } : null}>
       <FormControl className={classes.formControl}>
         {inputElement}
       </FormControl>

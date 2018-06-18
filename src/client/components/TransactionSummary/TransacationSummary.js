@@ -9,6 +9,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
 
+import { FIELDS } from '../../../store/constants/transactions';
+
+const { OTHERS, DATES } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -17,9 +20,6 @@ const styles = (theme) => ({
     boxShadow: theme.shadows[3],
     border: `1px solid ${theme.palette.grey[200]}`,
   },
-  // table: {
-  //   minWidth: 400,
-  // },
 });
 
 const getDates = (dates) => {
@@ -57,7 +57,7 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
           </TableHead>
           <TableBody>
             {Object.keys(transactionFields).map(id => {
-              if (id === 'others') {
+              if (id === OTHERS) {
                 return null;
               }
               const field = transactionFields[id];
@@ -65,7 +65,7 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
               return (
                 <TableRow key={id}>
                   <TableCell style={{fontSize: 16}} >{placeholder}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === 'selectedDates' ? getDates(field.value) : field.value}</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === DATES ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );
             })}

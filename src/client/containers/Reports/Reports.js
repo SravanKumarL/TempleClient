@@ -16,6 +16,9 @@ import constants from '../../../store/sagas/constants'
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../hoc/createContainer/createContainer';
+import { REPORT_TYPES } from '../../../store/constants/reports';
+
+const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
 
 const styles = theme => ({
   root: {
@@ -137,6 +140,13 @@ class Reports extends React.Component {
   }
   getModal = () => {
     const { modalOpen, selectedOption, selectedDates, selectedPooja } = this.state;
+    let generateDisabled = false;
+    if (selectedOption.name === POOJA) {
+      generateDisabled = true;
+      if (selectedPooja) {
+        generateDisabled = false;
+      }
+    }
     return (
       <Dialog
         open={modalOpen}
@@ -145,6 +155,7 @@ class Reports extends React.Component {
         secondaryText='Close'
         secondaryClicked={this.closeDialogHandler}
         title={selectedOption.name}
+        primaryDisabled={generateDisabled}
         cancelled={this.closeDialogHandler}>
         <ReportCriteria
           poojas={this.state.poojaDetails}
@@ -160,9 +171,9 @@ class Reports extends React.Component {
   getButtons = () => {
     const { classes } = this.props;
     const options = [
-      { name: 'Pooja ', color: '#DE6400', icon: <Event className={classes.icon} /> },
-      { name: 'Management ', color: Blue[500], icon: <Poll className={classes.icon} /> },
-      { name: 'Accounts ', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
+      { name: POOJA, color: '#DE6400', icon: <Event className={classes.icon} /> },
+      { name: MANAGEMENT, color: Blue[500], icon: <Poll className={classes.icon} /> },
+      { name: ACCOUNTS, color: Green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
 
     return (
@@ -195,7 +206,7 @@ class Reports extends React.Component {
     let searchObj = {};
     if (selectedOption.name) {
       searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
-      if (searchObj.ReportName === 'Pooja')
+      if (searchObj.ReportName === POOJA)
         searchObj = { ...searchObj, pooja: selectedPooja };
     }
     return (
@@ -206,8 +217,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}> {selectedOption.name} </Typography>
-            <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <DataGridWrapper title={`${selectedOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
           <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
         }
