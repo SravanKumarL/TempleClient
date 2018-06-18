@@ -6,15 +6,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Logo from '../../../../assets/logo.svg';
-
-// import InboxIcon from '@material-ui/icons/Inbox';
-// import DraftsIcon from '@material-ui/icons/Drafts';
-
 import Receipt from '@material-ui/icons/Receipt';
 import Pages from '@material-ui/icons/Pages';
 import Event from '@material-ui/icons/Event';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
+
+import { TABS } from '../../../../store/constants/board';
+import { ROLE } from '../../../../store/constants/auth';
+import { convertToStartCase } from '../../../shared/utility';
 
 const styles = theme => ({
   root: {
@@ -27,23 +27,25 @@ const styles = theme => ({
   }
 });
 
+const { ADMIN } = ROLE;
 function SimpleList(props) {
+  const { POOJAS, TRANSACTIONS, REPORTS, USERS } = TABS;
   const { classes, role, itemClicked } = props;
   let elements;
-  if (role === 'admin') {
+  if (role === ADMIN) {
     elements = (
       <React.Fragment>
-        <ListItem button onClick={() => itemClicked('poojas')}>
+        <ListItem button onClick={() => itemClicked(POOJAS)}>
           <ListItemIcon>
             <Event />
           </ListItemIcon>
-          <ListItemText primary="Poojas" />
+          <ListItemText primary={convertToStartCase(POOJAS)} />
         </ListItem>
-        <ListItem button onClick={() => itemClicked('users')}>
+        <ListItem button onClick={() => itemClicked(USERS)}>
           <ListItemIcon>
             <AccountCircle />
           </ListItemIcon>
-          <ListItemText primary="Users" />
+          <ListItemText primary={convertToStartCase(USERS)} />
         </ListItem>
       </React.Fragment>
     );
@@ -55,17 +57,17 @@ function SimpleList(props) {
         <Typography style={{ display: 'flex', alignItems: 'center' }} variant='title' align='center'>BookMySeva 1.0</Typography>
       </div>
       <List component="nav">
-        <ListItem button onClick={() => itemClicked('transactions')}>
+        <ListItem button onClick={() => itemClicked(TRANSACTIONS)}>
           <ListItemIcon>
             <Receipt />
           </ListItemIcon>
-          <ListItemText primary="Transactions" />
+          <ListItemText primary={convertToStartCase(TRANSACTIONS)} />
         </ListItem>
-        <ListItem button onClick={() => itemClicked('reports')}>
+        <ListItem button onClick={() => itemClicked(REPORTS)}>
           <ListItemIcon>
             <Pages />
           </ListItemIcon>
-          <ListItemText primary="Reports" />
+          <ListItemText primary={convertToStartCase(REPORTS)} />
         </ListItem>
         {elements}
       </List>

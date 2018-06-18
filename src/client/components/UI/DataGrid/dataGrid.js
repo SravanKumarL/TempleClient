@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
 import PrintGrid from './PrintGrid';
+import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
 
 export default class DataGrid extends React.PureComponent {
     constructor(props) {
@@ -75,7 +76,8 @@ export default class DataGrid extends React.PureComponent {
             error,
             message,
             readOnly,
-            collection
+            collection, 
+            title
         } = this.props;
         const {
             isPrintClicked,
@@ -83,6 +85,7 @@ export default class DataGrid extends React.PureComponent {
             displayFilter,
             snackBarOpen,
         } = this.state;
+        const { HIDE } = FILTER_VISIBILITY;
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative', margin: '2vh 2vw' }}>
@@ -92,20 +95,20 @@ export default class DataGrid extends React.PureComponent {
                             color='default'
                             variant='raised'
                             onClick={this.onFilterClick}>
-                            <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && 'Hide'} Filter
+                            <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
                     </Button>
                         <Button
-                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5  }}
+                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
                             color='default'
                             variant='raised'
                             onClick={this.onPrintClicked}>
-                            <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print 
+                            <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
                         </Button>
                     </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length && columns.length) &&
                             isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
-                            <GridContainer rows={rows}
+                            <GridContainer title= {title}rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} />}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}

@@ -8,10 +8,12 @@ import createContainer from './hoc/createContainer/createContainer';
 
 import classes from './App.css';
 import PrivateRoute from './hoc/Router/PropsRoute';
+import { TABS } from '../store/constants/board';
 
+const { TRANSACTIONS } = TABS;
 class App extends Component {
   state = {
-    activeTab: 'transactions',
+    activeTab: TRANSACTIONS,
   }
   componentDidMount() {
     this.props.autoSignIn();

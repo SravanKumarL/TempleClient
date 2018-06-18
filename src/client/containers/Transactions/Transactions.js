@@ -20,7 +20,13 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Components/EditTransactions';
 import printHtml from 'print-html-element';
-import { updateObject } from '../../shared/utility';
+import { updateObject, convertToStartCase } from '../../shared/utility';
+import { SEARCH_OPERATIONS } from '../../../store/constants/transactions';
+import { TABS } from '../../../store/constants/transactions';
+
+
+const { USE } = SEARCH_OPERATIONS;
+const { POOJAS, OTHERS } = TABS;
 
 const styles = theme => ({
   root: {
@@ -41,11 +47,13 @@ const styles = theme => ({
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
+      margin: 25,
     },
     [theme.breakpoints.up('lg')]: {
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
+      margin: 25,
       marginLeft: 'auto'
     },
   },
@@ -134,12 +142,21 @@ const styles = theme => ({
   scroller: {
     overflow: 'initial',
   },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
 });
 
 const initialState = {
   modalOpen: false,
   snackOpen: false,
-  activeTab: 'pooja',
+  activeTab: POOJAS,
   transactionInformation: [],
   selectedTransaction: {},
   unchangedTransaction: {},
@@ -149,6 +166,10 @@ const initialState = {
   updates: {}
 };
 class Transactions extends React.Component {
+  constructor() {
+    super();
+    this.printHandler = this.printHandler.bind(this);
+  }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps) {
     if (nextProps.message) {
@@ -174,7 +195,7 @@ class Transactions extends React.Component {
         return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
       }, {});
     transaction = { ...transaction, createdBy };
-    if (this.state.activeTab === 'others') {
+    if (this.state.activeTab === OTHERS) {
       transaction.others = true;
     } else {
       transaction.others = false;
@@ -182,12 +203,10 @@ class Transactions extends React.Component {
     this.props.commitTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
     printHtml.printElement(document.getElementById('transactionSummary'));
-    // window.print();
-    // this.setState({ open: true });
   }
 
   itemSelectionChangedHandler = (option, selectedTransaction) => {
-    if (option.toLowerCase() !== 'use') {
+    if (option !== USE) {
       this.setState({ dialogOpen: true });
     }
     this.setState({ option, selectedTransaction, unchangedTransaction: selectedTransaction });
@@ -220,12 +239,6 @@ class Transactions extends React.Component {
   render() {
     const { classes } = this.props;
     const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
-    // const editForm = {
-    //   phoneNumber: { ...transactionInformation.phoneNumber },
-    //   names: { ...transactionInformation.names },
-    //   gothram: { ...transactionInformation.gothram },
-    //   nakshatram: { ...transactionInformation.nakshatram }
-    // };
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
@@ -249,19 +262,6 @@ class Transactions extends React.Component {
         />
       </Dialog>
     );
-    // if (option.toLowerCase() === 'view') {
-    //   dialog = (
-    //     <Dialog
-    //       open={dialogOpen}
-    //       primaryClicked={this.closeDialogHandler}
-    //       primaryText='Close'
-    //       primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
-    //       title='View Transaction'>
-    //       <ViewTransactions
-    //         transaction={selectedTransaction} />
-    //     </Dialog>
-    //   );
-    // }
     let message = null;
     if (this.props.message) {
       message = (
@@ -278,7 +278,7 @@ class Transactions extends React.Component {
     return (
       <div className={classes.panes} >
         <div className={classes.middlePane}>
-          <Fade in={activeTab === 'pooja' || activeTab === 'other'} timeout={500} mountOnEnter unmountOnExit>
+          <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
             <Tabs classes={{
               root: classes.root,
               flexContainer: classes.flexContainer,
@@ -287,14 +287,15 @@ class Transactions extends React.Component {
             }} value={activeTab}
               onChange={this.tabChangeHandler}
             >
-              <Tab classes={newTabClasses} value='pooja' label='Pooja' icon={<Event />} />
-              <Tab classes={newTabClasses} value='other' label='Other' icon={<Description />} />
+              <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
+              <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
             </Tabs>
           </Fade>
           <CreateTransaction
+            ref={node => (this.CreateTransaction = node)}
             submit={this.formSubmitHandler}
             activeTab={activeTab}
-            selectedTransaction={selectedTransaction && option.toLowerCase() === 'use' ? selectedTransaction : null}
+            selectedTransaction={selectedTransaction && option === USE ? selectedTransaction : null}
           />
           <TransactionSummary
             open={modalOpen}

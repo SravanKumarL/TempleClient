@@ -15,8 +15,14 @@ import Poojas from '../Poojas/Poojas';
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import constants from '../../../store/sagas/constants';
 import TabContainer from './TabContainer';
+import { ROLE } from '../../../store/constants/auth';
+import { TABS } from '../../../store/constants/board';
+import { convertToStartCase } from '../../shared/utility';
 
 
+
+const { ADMIN } = ROLE;
+const { TRANSACTIONS, REPORTS, POOJAS, USERS } = TABS
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -29,7 +35,7 @@ const styles = theme => ({
       display: 'flex',
       flexDirection: 'column',
       width: '90vw',
-      margin: '0 5px',
+      margin: '0 0 0 65px',
     },
     [theme.breakpoints.up('md')]: {
       minHeight: 58,
@@ -142,25 +148,25 @@ class SimpleTabs extends React.Component {
           value={activeTab}
           onChange={this.handleChange}
         >
-          <Tab classes={newTabClasses} label="Transactions" value='transactions' icon={<Receipt />} />
-          <Tab label="Reports" value='reports' classes={newTabClasses} icon={<Pages />} />
-          {role === 'admin' && <Tab label="Poojas" value='poojas' classes={newTabClasses} icon={<Event />} />}
-          {role === 'admin' && <Tab label="Users" value='users' classes={newTabClasses} icon={<AccountCircle />} />}
+          <Tab classes={newTabClasses} label={convertToStartCase(TRANSACTIONS)} value={TRANSACTIONS} icon={<Receipt />} />
+          <Tab label={convertToStartCase(REPORTS)} value={REPORTS} classes={newTabClasses} icon={<Pages />} />
+          {role === ADMIN && <Tab label={convertToStartCase(POOJAS)} value={POOJAS} classes={newTabClasses} icon={<Event />} />}
+          {role === ADMIN && <Tab label={convertToStartCase(USERS)} value={USERS} classes={newTabClasses} icon={<AccountCircle />} />}
         </Tabs>
         <div className={classes.tabContainer}>
-          {activeTab === 'transactions' &&
+          {activeTab === TRANSACTIONS &&
             <TabContainer>
               <Transactions />
             </TabContainer>}
-          {activeTab === 'reports' &&
+          {activeTab === REPORTS &&
             <TabContainer>
               <Reports />
             </TabContainer>}
-          {activeTab === 'poojas' &&
+          {activeTab === POOJAS &&
             <TabContainer>
               <Poojas />
             </TabContainer>}
-          {activeTab === 'users' &&
+          {activeTab === USERS &&
             <TabContainer>
               <DataGridWrapper style={{ flexGrow: 1 }} collection={constants.Users} />
             </TabContainer>}

@@ -17,6 +17,7 @@ body {
   width: 100%;
 }
 
+
 * {
   box-sizing: border-box;
 }
@@ -25,12 +26,12 @@ input:disabled {
   background: #EEEEEE;
 }
 
-thead {
-  background: darkslategray;
+table > thead:first-of-type {
+  background: #eee;
 }
 
 th {
-  color: white !important;
+  color: rgba(0, 0, 0, 0.87) !important;
   font-weight: 500 !important;
   font-size: 16px !important;
 }
@@ -48,30 +49,5 @@ textarea {
   margin: 1rem; */
   height: auto !important;
   padding: 12px 0px 16px 10px !important;
-}
-
-.routeWrapper {
-  display: flex;
-  flex-grow: 1;
-  /* position: relative; */
-}
-
-.routeWrapper>div {
-  display: flex;
-  flex-grow: 1;
-  /* position: absolute; */
-}
-
-.fadeEnter {
-  display: flex;
-  flex-grow: 1;
-  opacity: 0;
-  z-index: 1;
-}
-
-.fadeEnterActive {
-  display: flex;
-  flex-grow: 1;
-  opacity: 1;
-  transition: opacity 300ms ease-in;
+  margin-bottom: 12px !important;
 }

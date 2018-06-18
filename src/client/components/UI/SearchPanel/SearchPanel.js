@@ -9,6 +9,7 @@ import Search from '@material-ui/icons/Search';
 import Popup from './PopupMenu';
 import Clear from '@material-ui/icons/Clear';
 import Cancel from '@material-ui/icons/Cancel';
+// import Edit from '@material-ui/icons/ModeEdit';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -16,7 +17,10 @@ import Slide from '@material-ui/core/Slide';
 import green from '@material-ui/core/colors/green';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { SEARCH_OPERATIONS } from '../../../../store/constants/transactions';
+import { convertToStartCase } from '../../../shared/utility';
 
+const { USE, EDIT } = SEARCH_OPERATIONS;
 
 const styles = theme => ({
   root: {
@@ -127,7 +131,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
             <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{ display: 'flex' }}>
               <ListItem className={classes.listItem} button disableRipple>
                 <ListItemText inset primary={transaction.names} />
-                <Popup style={{ marginLeft: 'auto' }} options={['Edit', 'Use']} optionClicked={(option) => optionClicked(option, transaction)} />
+                <Popup style={{ marginLeft: 'auto' }} options={[convertToStartCase(EDIT), convertToStartCase(USE)]} optionClicked={(option) => optionClicked(option, transaction)} />
               </ListItem>
             </div>
           );

@@ -3,7 +3,10 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Field from '../UI/Field/Field';
+import { FIELDS, FIELD_TYPES } from '../../../store/constants/transactions';
 
+const { POOJA } = FIELDS;
+const { INPUT } = FIELD_TYPES;
 
 const styles = theme => ({
   form: {
@@ -57,7 +60,7 @@ const transactionForm = (props) => {
           value={formElement.config.value}
           shouldValidate={formElement.config.validation}
           invalid={!formElement.config.valid}
-          multiline={formElement.id === 'pooja' && formElement.config.elementType === 'input'}
+          multiline={formElement.id === POOJA && formElement.config.elementType === INPUT}
           touched={formElement.config.touched}
           changed={(event) => props.fieldChanged(event, formElement.id)}
           minDate={formElement.config.minDate}
