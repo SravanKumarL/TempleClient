@@ -1,15 +1,17 @@
 import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [] };
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], printReq: false };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
+    const fetchState = { ...state, rows: [...state.rows, ...action.payload.rows], loading: action.payload.loading, error: '', name };
     switch (action.type) {
         case actionTypes.onFetchReq:
+            return { ...fetchState, printReq: payload.printReq };
         case actionTypes.onFetchSuccess:
-            return { ...state, rows: [...state.rows, ...action.payload.rows], loading: action.payload.loading, error: '', name };
+            return { ...fetchState, printReq: !payload.printReq };
         case actionTypes.onFetchSchemaSuccess:
-            return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name };
+            return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchFailed:
             return { ...state, rows: [], error: action.payload.error, loading: false, name };
         case actionTypes.onTransactionCommitted:

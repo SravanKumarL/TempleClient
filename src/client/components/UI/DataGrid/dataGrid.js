@@ -36,6 +36,7 @@ export default class DataGrid extends React.PureComponent {
                 break;
         }
         this.setState({ transaction });
+        this.props.clearMessages(this.props.collection);
         transaction();
     }
     fetchPaginatedData = (collection, pagingOptions) => {
@@ -44,7 +45,7 @@ export default class DataGrid extends React.PureComponent {
         transaction();
     }
     onSnackBarClose = () => {
-        this.setState({ snackBarOpen: false });
+        this.setState({ snackBarOpen: false, snackBarClosed: true });
         this.props.clearMessages(this.props.collection);
     }
     onFilterClick = () => {
@@ -52,26 +53,27 @@ export default class DataGrid extends React.PureComponent {
             this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
     }
     onPrintClicked = () => {
-        this.setState({ isPrintClicked: true });
+        if (!this.state.isPrintClicked) {
+            const transaction = () => this.fetchPaginatedData(this.props.collection, { count: this.props.rows.length });
+            this.setState({ transaction, isPrintClicked: true });
+            transaction();
+        }
     }
     componentDidMount() {
         this.setAndCommitTransaction(transactionType.fetch.schema, this.props.collection, this.props.searchCriteria);
         this.setAndCommitTransaction(transactionType.fetch.data, this.props.collection, this.props.searchCriteria);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.isPrintClicked) {
+        if (this.state.isPrintClicked && !this.props.printReq) {
             if (this.props.rows && this.props.rows.length > 0)
                 printHtml.printElement(document.getElementById('paperGrid'));
             this.setState({ isPrintClicked: false });
         }
     }
     static getDerivedStateFromProps(props, state) {
-        const { error, message, pageRefreshed } = props;
-        if (message !== state.prevProps.message || error !== state.prevProps.error || pageRefreshed) {
-            if (message !== '' || error !== '') {
-                return ({ snackBarOpen: true, prevProps: { error: error, message: message } });
-            }
-            return null;
+        const { error, message } = props;
+        if (message !== state.prevProps.message || error !== state.prevProps.error) {
+            return ({ prevProps: { error: error, message: message }, snackBarOpen: error !== '' || message !== '' });
         }
         return null;
     }
@@ -83,7 +85,8 @@ export default class DataGrid extends React.PureComponent {
             error,
             message,
             readOnly,
-            collection
+            collection,
+            searchCriteria,
         } = this.props;
         const {
             isPrintClicked,
@@ -91,6 +94,19 @@ export default class DataGrid extends React.PureComponent {
             displayFilter,
             snackBarOpen,
         } = this.state;
+        let pooja = '';
+        const printRows = searchCriteria && searchCriteria.ReportName === 'Pooja' && rows.length > 0 ? [...rows].reduce((accumulator, currValue) => {
+            pooja = accumulator[currValue.pooja];
+            accumulator[currValue.pooja] = [...(pooja || []), currValue];
+            return accumulator;
+        }, {}) : [...rows];
+        const printColumns = searchCriteria && searchCriteria.ReportName === 'Pooja' ? columns.filter(column => column.name !== 'pooja') : columns;
+        const PrintGridContainer = () => (searchCriteria && searchCriteria.ReportName === 'Pooja' ?
+            Object.keys(printRows).map(key =>
+                (<div key={key}>
+                    {key}
+                    <PrintGrid rows={printRows[key]} columns={printColumns} />
+                </div>)) : <PrintGrid rows={rows} columns={columns} />);
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative' }}>
@@ -109,8 +125,7 @@ export default class DataGrid extends React.PureComponent {
                         <PrintIcon /> Print {collection}
                     </Button>
                     <Paper id="paperGrid">
-                        {(rows && columns && rows.length && columns.length) &&
-                            isPrintClicked ? <PrintGrid rows={rows} columns={columns} /> :
+                        {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.fetchPaginatedData} />}

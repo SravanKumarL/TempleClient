@@ -69,7 +69,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
-    const { pagingOptions } = action.payload;
+    const { pagingOptions, printReq } = action.payload;
     let count, pageSize = undefined;
     if (pagingOptions) {
         count = pagingOptions.count;
@@ -104,7 +104,7 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                yield put(actions.onFetchSuccess(response.data, collection));
+                yield put(actions.onFetchSuccess(response.data, collection, printReq));
             }
         } catch (error) {
             console.log(error);
