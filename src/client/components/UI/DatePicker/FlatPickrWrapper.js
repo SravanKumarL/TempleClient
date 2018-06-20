@@ -185,7 +185,7 @@ class DatePickerWrapper extends Component {
     let calendarOptions = {
       mode: datePickerMode, allowInput: true, closeOnSelect: closeOnSelect,
       ignoredFocusElements: [document.getElementById('datePickerWrap'), document.getElementById('selection')],
-      dateFormat: "d-m-Y"
+      dateFormat: "d-m-Y", disableMobile: true
     };
     calendarOptions = minDate ? { ...calendarOptions, minDate } : calendarOptions;
     calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;
