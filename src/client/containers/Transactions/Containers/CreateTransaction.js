@@ -78,20 +78,17 @@ class CreateTransaction extends React.Component {
       });
       newState.selectedTransaction = selectedTransaction;
     }
-    if (nextProps.activeTab !== prevState.activeTab) {
-      newState.activeTab = nextProps.activeTab;
-      if (nextProps.activeTab === POOJA) {
-        newFormElement[POOJA].elementType = SINGLESELECT;
-        newFormElement[NUMBER_OF_DAYS].value = newFormElement[DATES].value.length;
-        newFormElement[AMOUNT].value = newFormElement[NUMBER_OF_DAYS].value * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0;
-        newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.pooja;
-        newFormElement[AMOUNT].disabled = true;
-      } else {
-        newFormElement[POOJA].elementType = INPUT;
-        newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.others;
-        newFormElement[AMOUNT].disabled = false;
-        newFormElement[AMOUNT].value = 0;
-      }
+    if (nextProps.activeTab === POOJA) {
+      newFormElement[POOJA].elementType = SINGLESELECT;
+      newFormElement[NUMBER_OF_DAYS].value = newFormElement[DATES].value.length;
+      newFormElement[AMOUNT].value = newFormElement[NUMBER_OF_DAYS].value * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0;
+      newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.pooja;
+      newFormElement[AMOUNT].disabled = true;
+    } else {
+      newFormElement[POOJA].elementType = INPUT;
+      newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.others;
+      newFormElement[AMOUNT].disabled = false;
+      newFormElement[AMOUNT].value = 0;
     }
     return { ...newState, transactionForm: newFormElement };
   }
