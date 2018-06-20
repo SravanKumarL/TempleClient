@@ -145,7 +145,6 @@ class EditTransactions extends React.Component {
       <div className={classes.container}>
         <TransactionForm
           transactionForm={resultantEditForm}
-          showLabels={true}
           fieldChanged={fieldChanged}
           showButtons={false}
           primaryText='Edit'

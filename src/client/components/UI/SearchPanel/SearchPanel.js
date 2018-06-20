@@ -131,7 +131,7 @@ const searchPanel = ({ loading, classes, value, changed, inputRef, clearClicked,
             <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{ display: 'flex' }}>
               <ListItem className={classes.listItem} button disableRipple>
                 <ListItemText inset primary={transaction.names} />
-                <Popup style={{ marginLeft: 'auto' }} options={[convertToStartCase(EDIT), convertToStartCase(USE)]} optionClicked={(option) => optionClicked(option, transaction)} />
+                <Popup style={{ marginLeft: 'auto' }} options={[convertToStartCase(EDIT), convertToStartCase(USE)]} optionClicked={(option) => optionClicked(option.toLowerCase(), transaction)} />
               </ListItem>
             </div>
           );

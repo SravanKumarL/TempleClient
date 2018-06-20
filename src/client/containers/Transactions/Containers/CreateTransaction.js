@@ -93,7 +93,7 @@ class CreateTransaction extends React.Component {
           value: newFormElement[DATES].value.length,
         }),
         [AMOUNT]: updateObject(newFormElement[AMOUNT], {
-          value: newFormElement[NUMBER_OF_DAYS].value * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0,
+          value: newFormElement[DATES].value.length * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0,
           disabled: true,
         }),
       });
