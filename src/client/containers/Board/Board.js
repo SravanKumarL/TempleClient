@@ -67,6 +67,7 @@ const styles = theme => ({
     borderRadius: 8,
     width: 160,
     height: 50,
+    minHeight: 50,
     [theme.breakpoints.up('md')]: {
       height: 48,
       width: 180,

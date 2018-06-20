@@ -111,6 +111,7 @@ const styles = theme => ({
     fontSize: 16,
     width: '45%',
     height: 42,
+    minHeight: 42,
     [theme.breakpoints.up('sm')]: {
       width: 250,
       height: 60,
