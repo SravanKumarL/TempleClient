@@ -26,6 +26,9 @@ const styles = theme => ({
   // to provide a better implementation.
   // Also, we had to reset the default style injected by the library.
   '@global': {
+    '.Select': {
+      padding: 0,
+    },
     '.Select-control': {
       display: 'flex',
       alignItems: 'center',
@@ -97,7 +100,7 @@ const styles = theme => ({
       top: `calc(100% + ${theme.spacing.unit}px)`,
       width: '100%',
       zIndex: 2,
-      marginTop: -15,
+      marginTop: -8,
       maxHeight: ITEM_HEIGHT * 4.5,
     },
     '.Select.is-focused:not(.is-open) > .Select-control': {
@@ -206,7 +209,7 @@ class MultiSelect extends React.Component {
           classes,
           value: value,
           onChange: changed,
-          placeholder: label,
+          placeholder: '',
           instanceId: 'react-select-single',
           id: 'react-select-single',
           name: 'react-select-single',
@@ -223,7 +226,7 @@ class MultiSelect extends React.Component {
       element = <Input
         disableUnderline
         fullWidth
-        placeholder={label}
+        placeholder=''
         inputComponent={SelectWrapped}
         inputProps={{
           classes,
@@ -232,7 +235,7 @@ class MultiSelect extends React.Component {
           onChange: this.onChange,
           onClearAll: this.onClearAll,
           removeChip: this.onRemove,
-          placeholder: label,
+          placeholder: '',
           instanceId: 'react-select-chip',
           id: 'react-select-chip',
           name: 'react-select-chip',

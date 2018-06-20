@@ -13,7 +13,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    minHeight: 60,
+    minHeight: 70,
     flexShrink: 0,
   },
   formControl: {
@@ -92,7 +92,7 @@ const input = (props) => {
   }
   const { classes } = props;
   return (
-    <div className={classes.container} style={elementType === DATE ? { minHeight: 140 } : elementType === RADIO ? { minHeight: 88 } : null}>
+    <div className={classes.container} style={elementType === DATE ? { minHeight: 160 } : elementType === RADIO ? { minHeight: 100 } : null}>
       <FormControl className={classes.formControl}>
         {inputElement}
       </FormControl>

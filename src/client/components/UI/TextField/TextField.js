@@ -35,7 +35,7 @@ const TextBox = ({ type, classes, label, value, changed, disabled, multiline, sh
   return (
     <TextField
       label={showLabels ? label : ''}
-      placeholder={showLabels ? '' : label}
+      // placeholder={showLabels ? '' : label}
       InputProps={{
         disableUnderline: true,
         classes: {

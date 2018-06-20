@@ -57,15 +57,14 @@ class CreateTransaction extends React.Component {
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const { poojaDetails, selectedTransaction } = nextProps;
-    let newFormElement;
+    let newFormElement = { ...prevState.transactionForm };
     let newState = { ...prevState };
     if (nextProps.poojaDetails !== prevState.transactionForm.pooja.elementConfig.options) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      initialState.transactionForm.pooja.elementConfig.options = options;
-      newFormElement = { ...prevState.transactionForm };
+      initialState.transactionForm.pooja.options = options;
       newFormElement.pooja.elementConfig.options = options;
       newFormElement.amount.valid = true;
     }
@@ -78,17 +77,31 @@ class CreateTransaction extends React.Component {
       });
       newState.selectedTransaction = selectedTransaction;
     }
+    if (nextProps.activeTab !== newState.activeTab) {
+      newState.activeTab = nextProps.activeTab;
+      newState.transactionForm[POOJA].value = '';
+    }
     if (nextProps.activeTab === POOJA) {
-      newFormElement[POOJA].elementType = SINGLESELECT;
-      newFormElement[NUMBER_OF_DAYS].value = newFormElement[DATES].value.length;
-      newFormElement[AMOUNT].value = newFormElement[NUMBER_OF_DAYS].value * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0;
-      newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.pooja;
-      newFormElement[AMOUNT].disabled = true;
+      newFormElement = updateObject(newFormElement, {
+        [POOJA]: updateObject(newFormElement[POOJA], {
+          elementType: SINGLESELECT,
+          elementConfig: updateObject(newFormElement[POOJA].elementConfig, {
+            placeholder: FIELD_PLACEHOLDERS.pooja
+          }),
+        }),
+        [NUMBER_OF_DAYS]: updateObject(newFormElement[NUMBER_OF_DAYS], {
+          value: newFormElement[DATES].value.length,
+        }),
+        [AMOUNT]: updateObject(newFormElement[AMOUNT], {
+          value: newFormElement[NUMBER_OF_DAYS].value * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0,
+          disabled: true,
+        }),
+      });
     } else {
-      newFormElement[POOJA].elementType = INPUT;
-      newFormElement[POOJA].elementConfig.placeholder = FIELD_PLACEHOLDERS.others;
-      newFormElement[AMOUNT].disabled = false;
-      newFormElement[AMOUNT].value = 0;
+      newFormElement = updateObject(newFormElement, {
+        [POOJA]: updateObject(newFormElement[POOJA], { elementType: INPUT, elementConfig: updateObject(newFormElement[POOJA].elementConfig, { placeholder: FIELD_PLACEHOLDERS.others }) }),
+        [AMOUNT]: updateObject(newFormElement[AMOUNT], { disabled: false, value: 0 })
+      });
     }
     return { ...newState, transactionForm: newFormElement };
   }

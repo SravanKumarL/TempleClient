@@ -4,9 +4,10 @@ import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Field from '../UI/Field/Field';
 import { FIELDS, FIELD_TYPES } from '../../../store/constants/transactions';
+import { Typography } from '@material-ui/core';
 
 const { POOJA } = FIELDS;
-const { INPUT } = FIELD_TYPES;
+const { INPUT, RADIO, DATE } = FIELD_TYPES;
 
 const styles = theme => ({
   form: {
@@ -50,21 +51,24 @@ const transactionForm = (props) => {
   return (
     <form className={classes.form} >
       {formElementsArray.map(formElement => (
-        <Field
-          disabled={formElement.config.disabled}
-          key={formElement.id}
-          showLabels={showLabels}
-          label={formElement.config.elementConfig.placeholder}
-          elementType={formElement.config.elementType}
-          elementConfig={formElement.config.elementConfig}
-          value={formElement.config.value}
-          shouldValidate={formElement.config.validation}
-          invalid={!formElement.config.valid}
-          multiline={formElement.id === POOJA && formElement.config.elementType === INPUT}
-          touched={formElement.config.touched}
-          changed={(event) => props.fieldChanged(event, formElement.id)}
-          minDate={formElement.config.minDate}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }} key={formElement.id}>
+          {formElement.config.elementType !== RADIO && formElement.config.elementType !== DATE && <Typography variant='body1'> {formElement.config.elementConfig.placeholder} </Typography>}
+          <Field
+            disabled={formElement.config.disabled}
+            key={formElement.id}
+            showLabels={showLabels}
+            label={formElement.config.elementConfig.placeholder}
+            elementType={formElement.config.elementType}
+            elementConfig={formElement.config.elementConfig}
+            value={formElement.config.value}
+            shouldValidate={formElement.config.validation}
+            invalid={!formElement.config.valid}
+            multiline={formElement.id === POOJA && formElement.config.elementType === INPUT}
+            touched={formElement.config.touched}
+            changed={(event) => props.fieldChanged(event, formElement.id)}
+            minDate={formElement.config.minDate}
+          />
+        </div>
       ))}
       {showButtons ?
         <div className={classes.buttonsContainer}>

@@ -28,7 +28,7 @@ const getDates = (dates) => {
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: '#37474f',
-    color: theme.palette.common.white,
+    color: 'white !important',
     fontWeight: 'bold',
     fontSize: 18
   },
@@ -49,7 +49,7 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
       title='Transaction Summary'>
       <Paper id='transactionSummary' component='div' className={classes.root}>
         <Table className={classes.table}>
-          <TableHead>
+          <TableHead >
             <TableRow>
               <CustomTableCell>Title</CustomTableCell>
               <CustomTableCell>Value</CustomTableCell>
