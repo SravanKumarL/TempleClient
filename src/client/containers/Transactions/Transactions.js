@@ -97,9 +97,9 @@ const styles = theme => ({
     background: 'white',
   },
   rootInheritSelected: {
-    background: 'white !important',
+    background: 'seagreen !important',
     height: 75,
-    color: 'green !important',
+    color: 'white !important',
     fontWeight: 'bold',
   },
   wrapper: {
@@ -118,8 +118,8 @@ const styles = theme => ({
     },
     minWidth: 'initial',
     maxWidth: 'initial',
-    color: '#eee',
-    background: 'seagreen',
+    color: 'green',
+    background: 'white',
     boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)',
     opacity: 1,
   },
