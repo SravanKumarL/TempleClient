@@ -92,11 +92,13 @@ class Reports extends React.Component {
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
   closeHandler = () => { this.setState({ modalOpen: false, }); }
   closeDialogHandler = () => { this.setState({ modalOpen: false }); }
-  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
+  generateReportHandler = () => {
+    this.props.resetEntity(constants.Reports);
+    this.setState({ reportOpen: true, modalOpen: false });
+  }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, reportOpen: false, selectedDates: [], selectedPooja: '' }); }
-
+  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [], selectedPooja: '' }); }
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');

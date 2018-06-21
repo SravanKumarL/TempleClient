@@ -4,12 +4,15 @@ const initialState = { columns: [], rows: [], loading: false, error: '', message
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
-    const fetchState = { ...state, rows: [...state.rows, ...action.payload.rows], loading: action.payload.loading, error: '', name };
+    const fetchState = {
+        ...state, rows: [...state.rows, ...((payload && payload.rows) || [])],
+        loading: ((payload && payload.loading) || false) || false, error: '', name
+    };
     switch (action.type) {
         case actionTypes.onFetchReq:
             return { ...fetchState, printReq: payload.printReq };
         case actionTypes.onFetchSuccess:
-            return { ...fetchState, printReq: !payload.printReq };
+            return { ...fetchState, printReq: false };
         case actionTypes.onFetchSchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchFailed:
@@ -22,8 +25,6 @@ export const entity = (name) => (state = initialState, action) => {
             return { ...state, error: '', message: '' };
         case actionTypes.onTransactionFailed:
             return { ...state, error: action.payload.error, message: '', name, rows: state.prevRows };/* ,transaction:action.payload.transaction */
-        case actionTypes.onPagePopulated:
-            return { ...state, name, pageRefreshed: false };
         case actionTypes.resetEntity:
             return initialState;
         default:

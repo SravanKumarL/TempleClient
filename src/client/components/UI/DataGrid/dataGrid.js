@@ -8,6 +8,7 @@ import LoadingGrid from './loadingGrid';
 import Button from '@material-ui/core/Button';
 import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
+import Typography from '@material-ui/core/Typography';
 import PrintGrid from './PrintGrid';
 
 export default class DataGrid extends React.PureComponent {
@@ -39,8 +40,8 @@ export default class DataGrid extends React.PureComponent {
         this.props.clearMessages(this.props.collection);
         transaction();
     }
-    fetchPaginatedData = (collection, pagingOptions) => {
-        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true);
+    fetchPaginatedData = (collection, pagingOptions, isPrintReq = false) => {
+        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq);
         this.setState({ transaction });
         transaction();
     }
@@ -54,7 +55,7 @@ export default class DataGrid extends React.PureComponent {
     }
     onPrintClicked = () => {
         if (!this.state.isPrintClicked) {
-            const transaction = () => this.fetchPaginatedData(this.props.collection, { count: this.props.rows.length });
+            const transaction = () => this.fetchPaginatedData(this.props.collection, { count: this.props.rows.length }, true);
             this.setState({ transaction, isPrintClicked: true });
             transaction();
         }
@@ -95,18 +96,26 @@ export default class DataGrid extends React.PureComponent {
             snackBarOpen,
         } = this.state;
         let pooja = '';
-        const printRows = searchCriteria && searchCriteria.ReportName === 'Pooja' && rows.length > 0 ? [...rows].reduce((accumulator, currValue) => {
-            pooja = accumulator[currValue.pooja];
-            accumulator[currValue.pooja] = [...(pooja || []), currValue];
-            return accumulator;
-        }, {}) : [...rows];
-        const printColumns = searchCriteria && searchCriteria.ReportName === 'Pooja' ? columns.filter(column => column.name !== 'pooja') : columns;
+        let printRows = [...rows];
+        let printColumns = [...columns];
+        if (searchCriteria && searchCriteria.ReportName === 'Pooja' && isPrintClicked) {
+            if (rows.length > 0) {
+                printRows = printRows.reduce((accumulator, currValue) => {
+                    pooja = accumulator[currValue.pooja];
+                    accumulator[currValue.pooja] = [...(pooja || []), currValue];
+                    return accumulator;
+                }, {});
+            }
+            printColumns = printColumns.filter(column => column.name !== 'pooja');
+        }
         const PrintGridContainer = () => (searchCriteria && searchCriteria.ReportName === 'Pooja' ?
             Object.keys(printRows).map(key =>
-                (<div key={key}>
-                    {key}
+                (<div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} key={key}>
+                    <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
+                        {key}
+                    </Typography>
                     <PrintGrid rows={printRows[key]} columns={printColumns} />
-                </div>)) : <PrintGrid rows={rows} columns={columns} />);
+                </div>)) : <PrintGrid rows={printRows} columns={printColumns} />);
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative' }}>

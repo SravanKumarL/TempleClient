@@ -8,6 +8,7 @@ import createContainer from './hoc/createContainer/createContainer';
 
 import classes from './App.css';
 import PrivateRoute from './hoc/Router/PropsRoute';
+import constants from '../store/sagas/constants';
 
 class App extends Component {
   state = {
@@ -17,6 +18,9 @@ class App extends Component {
     this.props.autoSignIn();
   }
   activeTabChangedHandler = (activeTab) => {
+    if (this.props.role === 'admin') {
+      [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
+    }
     this.setState({ activeTab });
   }
   handleLogin = () => this.props.history.push('/');

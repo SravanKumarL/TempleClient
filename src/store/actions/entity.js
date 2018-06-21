@@ -2,8 +2,8 @@ import * as actionTypes from './actionTypes';
 export const commitTransaction = (type, collection, change, changedObj) => {
     return { type: actionTypes.commitTransaction, payload: { type, change, changedObj, collection, name: collection } }
 }
-export const fetchData = (collection, searchCriteria, pagingOptions, refetch = false) => {
-    return { type: actionTypes.fetchData, payload: { collection, searchCriteria, pagingOptions, refetch, name: collection } };
+export const fetchData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false) => {
+    return { type: actionTypes.fetchData, payload: { collection, searchCriteria, pagingOptions, refetch, isPrintReq, name: collection } };
 }
 export const fetchSchema = (collection, searchCriteria) => {
     return { type: actionTypes.fetchSchema, payload: { collection, searchCriteria, name: collection } };
@@ -11,8 +11,8 @@ export const fetchSchema = (collection, searchCriteria) => {
 export const onFetchReq = (name, refetch = false, printReq = false) => {
     return { type: actionTypes.onFetchReq, payload: { loading: !refetch, rows: [], name, printReq } };
 }
-export const onFetchSuccess = (rows, name, printReq = false) => {
-    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows, name, printReq } };
+export const onFetchSuccess = (rows, name) => {
+    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows, name } };
 }
 export const onFetchSchemaSuccess = (columns, name) => {
     return { type: actionTypes.onFetchSchemaSuccess, payload: { loading: false, columns, name } };
@@ -31,4 +31,7 @@ export const onTransactionCommitReq = (type, change, name) => {
 }
 export const clearMessages = (name) => {
     return { type: actionTypes.clearMessages, payload: { name } };
+}
+export const resetEntity = (name) => {
+    return { type: actionTypes.resetEntity, payload: { name } };
 }

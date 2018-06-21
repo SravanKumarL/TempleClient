@@ -69,7 +69,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
-    const { pagingOptions, printReq } = action.payload;
+    const { pagingOptions, isPrintReq } = action.payload;
     let count, pageSize = undefined;
     if (pagingOptions) {
         count = pagingOptions.count;
@@ -80,7 +80,7 @@ export function* handleFetchData(action) {
     }
     else {
         try {
-            yield put(actions.onFetchReq(collection, refetch));
+            yield put(actions.onFetchReq(collection, refetch, isPrintReq));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -104,7 +104,7 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                yield put(actions.onFetchSuccess(response.data, collection, printReq));
+                yield put(actions.onFetchSuccess(response.data, collection));
             }
         } catch (error) {
             console.log(error);
