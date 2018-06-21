@@ -20,17 +20,34 @@ export default class DataGrid extends React.PureComponent {
             snackBarOpen: false,
             transaction: null,
             prevProps: {},
+            fetchData: this.fetchData.bind(this)
         };
     }
+    defaultPaginationOptions = { pageSize: 5, count: this.props.rows.length }
+    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false) => {
+        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq);
+        this.setState({ transaction });
+        transaction();
+    }
+    fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions) => {
+        switch (type) {
+            case transactionType.fetch.schema:
+                this.props.fetchSchema(collection, searchCriteria);
+                break;
+            case transactionType.fetch.data:
+                this.props.fetchData(collection, searchCriteria, pagingOptions);//default paging options
+                break;
+            default:
+                return;
+        }
+    }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
-        const { fetchSchema, fetchData, commitTransaction } = this.props;
+        const { commitTransaction } = this.props;
         let transaction = null;
         switch (type) {
             case transactionType.fetch.schema:
-                transaction = () => fetchSchema(collection, change);
-                break;
             case transactionType.fetch.data:
-                transaction = () => fetchData(collection, change, { pageSize: 5, count: this.props.rows.length });//default paging options
+                transaction = () => this.fetchData(type, collection, change);
                 break;
             default:
                 transaction = () => commitTransaction(type, collection, change, changedObj);
@@ -38,11 +55,6 @@ export default class DataGrid extends React.PureComponent {
         }
         this.setState({ transaction });
         this.props.clearMessages(this.props.collection);
-        transaction();
-    }
-    fetchPaginatedData = (collection, pagingOptions, isPrintReq = false) => {
-        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq);
-        this.setState({ transaction });
         transaction();
     }
     onSnackBarClose = () => {
@@ -55,7 +67,7 @@ export default class DataGrid extends React.PureComponent {
     }
     onPrintClicked = () => {
         if (!this.state.isPrintClicked) {
-            const transaction = () => this.fetchPaginatedData(this.props.collection, { count: this.props.rows.length }, true);
+            const transaction = () => this.setAndfetchPaginatedData(this.props.collection, { count: this.props.rows.length }, true);
             this.setState({ transaction, isPrintClicked: true });
             transaction();
         }
@@ -72,9 +84,18 @@ export default class DataGrid extends React.PureComponent {
         }
     }
     static getDerivedStateFromProps(props, state) {
-        const { error, message } = props;
+        const { error, message, searchCriteria, loading } = props;
         if (message !== state.prevProps.message || error !== state.prevProps.error) {
-            return ({ prevProps: { error: error, message: message }, snackBarOpen: error !== '' || message !== '' });
+            return ({ prevProps: { error, message, searchCriteria, loading }, snackBarOpen: error !== '' || message !== '' });
+        }
+        else if (JSON.stringify(searchCriteria) !== JSON.stringify(state.prevProps.searchCriteria)) {
+            state.fetchData(transactionType.fetch.schema, props.collection, searchCriteria);
+            const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria);
+            transaction();
+            return ({ prevProps: { ...state.prevProps, searchCriteria, loading }, transaction });
+        }
+        else if (loading !== state.prevProps.loading) {
+            return ({ prevProps: { ...state.prevProps, loading } });
         }
         return null;
     }
@@ -137,7 +158,7 @@ export default class DataGrid extends React.PureComponent {
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
-                                readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.fetchPaginatedData} />}
+                                readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData} />}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>

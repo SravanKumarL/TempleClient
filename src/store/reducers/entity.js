@@ -5,7 +5,7 @@ export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
     const fetchState = {
-        ...state, rows: [...state.rows, ...((payload && payload.rows) || [])],
+        ...state, rows: mergeRows(state, payload),
         loading: ((payload && payload.loading) || false) || false, error: '', name
     };
     switch (action.type) {
@@ -31,6 +31,14 @@ export const entity = (name) => (state = initialState, action) => {
             return state;
     }
 };
+const mergeRows = (state, payload) => {
+    if (!payload || !payload.rows)
+        return state.rows;
+    const primaryKey = uniqueProp(payload.name);
+    const prevRowKeys = state.rows.map(row => row[primaryKey]);
+    const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
+    return [...state.rows, ...newRows];
+}
 const changeRows = (payload, rows) => {
     const { type, change, name } = payload;
     if (!change) return rows;

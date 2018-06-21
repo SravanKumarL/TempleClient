@@ -25,7 +25,7 @@ const styles = theme => ({
     alignContent: 'space-evenly',
     width: 220,
     marginRight: 20,
-    // boxShadow: theme.shadows[3],
+  // boxShadow: theme.shadows[3],
   },
   button: {
     display: 'flex',
@@ -73,7 +73,8 @@ const initialState = {
   selectedDates: [],
   poojaDetails: null,
   reportOpen: false,
-  selectedPooja: ''
+  selectedPooja: '',
+  searchObj: {}
 };
 class Reports extends React.Component {
   state = { ...initialState };
@@ -94,7 +95,13 @@ class Reports extends React.Component {
   closeDialogHandler = () => { this.setState({ modalOpen: false }); }
   generateReportHandler = () => {
     this.props.resetEntity(constants.Reports);
-    this.setState({ reportOpen: true, modalOpen: false });
+    let searchObj = {};
+    if (this.state.selectedOption.name) {
+      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates };
+      if (searchObj.ReportName === 'Pooja')
+        searchObj = { ...searchObj, pooja: this.state.selectedPooja };
+    }
+    this.setState({ reportOpen: true, modalOpen: false, searchObj });
   }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
@@ -109,6 +116,7 @@ class Reports extends React.Component {
       <Dialog
         open={modalOpen}
         primaryClicked={this.generateReportHandler}
+        handleClose={this.closeHandler}
         primaryText='Generate Report'
         secondaryText='Close'
         secondaryClicked={this.closeDialogHandler}
@@ -158,14 +166,8 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedOption, selectedDates, selectedPooja } = this.state;
+    const { reportOpen, selectedOption, searchObj } = this.state;
     const { classes } = this.props;
-    let searchObj = {};
-    if (selectedOption.name) {
-      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
-      if (searchObj.ReportName === 'Pooja')
-        searchObj = { ...searchObj, pooja: selectedPooja };
-    }
     return (
       <div style={{ display: 'flex', height: '100%', flexGrow: 1 }}>
         <div className={classes.container}>
