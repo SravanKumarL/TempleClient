@@ -101,7 +101,7 @@ class SimpleTabs extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ activeTab: value });
-    [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
+    // [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
   };
 
   render() {

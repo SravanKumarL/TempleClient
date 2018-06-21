@@ -20,10 +20,12 @@ export default class DataGrid extends React.PureComponent {
             snackBarOpen: false,
             transaction: null,
             prevProps: {},
-            fetchData: this.fetchData.bind(this)
+            fetchData: this.fetchData.bind(this),
+            clearMessages: this.clearMessages.bind(this)
         };
     }
     defaultPaginationOptions = { pageSize: 5, count: this.props.rows.length }
+    clearMessages = () => this.props.clearMessages(this.props.collection);
     setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false) => {
         const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq);
         this.setState({ transaction });
@@ -54,7 +56,7 @@ export default class DataGrid extends React.PureComponent {
                 break;
         }
         this.setState({ transaction });
-        this.props.clearMessages(this.props.collection);
+        this.clearMessages();
         transaction();
     }
     onSnackBarClose = () => {
@@ -92,6 +94,7 @@ export default class DataGrid extends React.PureComponent {
             state.fetchData(transactionType.fetch.schema, props.collection, searchCriteria);
             const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria);
             transaction();
+            state.clearMessages();
             return ({ prevProps: { ...state.prevProps, searchCriteria, loading }, transaction });
         }
         else if (loading !== state.prevProps.loading) {
