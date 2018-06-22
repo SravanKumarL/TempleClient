@@ -25,7 +25,7 @@ export default class DataGrid extends React.PureComponent {
             countFetched: false
         };
     }
-    defaultPaginationOptions = { pageSize: 5, count: this.props.rows.length }
+    defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
     clearMessages = () => this.props.clearMessages(this.props.collection);
     setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
         const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq, fetchCount);
@@ -114,7 +114,7 @@ export default class DataGrid extends React.PureComponent {
             readOnly,
             collection,
             searchCriteria,
-            count
+            totalCount
         } = this.props;
         const {
             isPrintClicked,
@@ -164,8 +164,9 @@ export default class DataGrid extends React.PureComponent {
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
-                                readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData} />}
-                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === count) &&
+                                readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
+                                totalCount={totalCount} />}
+                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === totalCount) &&
                             <Paper>
                                 Others
                            </Paper>}

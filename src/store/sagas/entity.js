@@ -70,10 +70,10 @@ const handleResponse = function* (response, collection, type, changedObj) {
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch, fetchCount } = action.payload;
     const { pagingOptions, isPrintReq } = action.payload;
-    let count, pageSize = undefined;
+    let skip, take = undefined;
     if (pagingOptions) {
-        count = pagingOptions.count;
-        pageSize = pagingOptions.pageSize;
+        skip = pagingOptions.skip;
+        take = pagingOptions.take;
     }
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
@@ -92,15 +92,15 @@ export function* handleFetchData(action) {
                 if (searchCriteria && collection === constants.Reports) {
                     response = yield axios({
                         method: 'post',
-                        data: { ...searchCriteria, pageSize, count },
-                        url: `/${collection}?count=${fetchCount}`,
+                        data: { ...searchCriteria, take, skip },
+                        url: `/${collection}?fetchCount=${fetchCount}`,
                         headers
                     });
                 }
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}?pageSize=${pageSize}&count=${count}&fetchCount=${fetchCount}`,
+                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}`,
                         headers
                     });
                 }

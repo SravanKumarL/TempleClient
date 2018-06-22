@@ -12,7 +12,7 @@ export const onFetchReq = (name, refetch = false, printReq = false) => {
     return { type: actionTypes.onFetchReq, payload: { loading: !refetch, rows: [], name, printReq } };
 }
 export const onFetchSuccess = (responseData, name) => {
-    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows: responseData.rows, name, count: responseData.count } };
+    return { type: actionTypes.onFetchSuccess, payload: { loading: false, rows: responseData.rows, name, totalCount: responseData.totalCount } };
 }
 export const onFetchSchemaSuccess = (columns, name) => {
     return { type: actionTypes.onFetchSchemaSuccess, payload: { loading: false, columns, name } };

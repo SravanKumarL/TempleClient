@@ -56,7 +56,7 @@ export const searchTransactionsSuccess = (responseData) => {
   return {
     type: actionTypes.SEARCH_TRANSACTIONS_SUCCESS,
     transactions: responseData.transactions,
-    count: responseData.count
+    totalCount: responseData.totalCount
   }
 }
 

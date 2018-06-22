@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], printReq: false, count: 0 };
+const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], printReq: false, totalCount: 0 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
@@ -12,7 +12,7 @@ export const entity = (name) => (state = initialState, action) => {
         case actionTypes.onFetchReq:
             return { ...fetchState, printReq: payload.printReq };
         case actionTypes.onFetchSuccess:
-            return { ...fetchState, printReq: false, count: payload.count || state.count };
+            return { ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount };
         case actionTypes.onFetchSchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchFailed:

@@ -2,7 +2,7 @@ import React from 'react';
 import { EnumAvailableRoles, EditCell, Cell } from './Cell/CellFactory';
 import {
     SortingState, EditingState, PagingState, FilteringState, /* IntegratedSelection, */
-    IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, /* SelectionState */
+    IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, CustomPaging, /* SelectionState */
 } from '@devexpress/dx-react-grid';
 import {
     Grid,
@@ -59,11 +59,11 @@ export default class GridContainer extends React.PureComponent {
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
     changeCurrentPage = currentPage => {
-        this.props.fetchPaginatedData(this.props.collection, { pageSize: this.state.pageSize, count: this.props.rows.length });
+        this.props.fetchPaginatedData(this.props.collection, { take: this.state.pageSize, skip: this.props.rows.length });
         this.setState({ currentPage });
     }
     changePageSize = pageSize => {
-        this.props.fetchPaginatedData(this.props.collection, { pageSize: pageSize, count: this.props.rows.length });
+        this.props.fetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
         this.setState({ pageSize });
     }
     commitChanges = (props) => {
@@ -104,7 +104,7 @@ export default class GridContainer extends React.PureComponent {
     //#endregion
     render() {
         const { columns, setAndCommitTransaction, collection,
-            readOnly, displayFilter } = this.props;
+            readOnly, displayFilter, totalCount } = this.props;
         const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
             this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
         const {
@@ -144,6 +144,7 @@ export default class GridContainer extends React.PureComponent {
                     <IntegratedGrouping />
                     <IntegratedSorting />
                     <IntegratedPaging />
+                    <CustomPaging totalCount={totalCount} />
                     {!readOnly &&
                         <EditingState
                             editingRowIds={editingRowIds}
