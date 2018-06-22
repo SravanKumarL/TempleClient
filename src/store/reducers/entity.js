@@ -1,6 +1,9 @@
 import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
-const initialState = { columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [], printReq: false, totalCount: 0 };
+const initialState = {
+    columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
+    printReq: false, totalCount: 0
+};
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;

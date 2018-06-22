@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Event from '@material-ui/icons/Event';
 import Poll from '@material-ui/icons/Poll';
 import ImportContacts from '@material-ui/icons/ImportContacts';
-
+import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
@@ -25,7 +25,7 @@ const styles = theme => ({
     alignContent: 'space-evenly',
     width: 220,
     marginRight: 20,
-  // boxShadow: theme.shadows[3],
+    // boxShadow: theme.shadows[3],
   },
   button: {
     display: 'flex',
@@ -91,13 +91,13 @@ class Reports extends React.Component {
   }
   //UI State Handlers
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
-  closeHandler = () => { this.setState({ modalOpen: false, }); }
+  closeHandler = () => { this.setState({ modalOpen: false }); }
   closeDialogHandler = () => { this.setState({ modalOpen: false }); }
   generateReportHandler = () => {
     this.props.resetEntity(constants.Reports);
     let searchObj = {};
     if (this.state.selectedOption.name) {
-      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates };
+      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
       if (searchObj.ReportName === 'Pooja')
         searchObj = { ...searchObj, pooja: this.state.selectedPooja };
     }

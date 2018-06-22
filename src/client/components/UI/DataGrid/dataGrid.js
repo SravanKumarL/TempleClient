@@ -167,6 +167,7 @@ export default class DataGrid extends React.PureComponent {
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
                                 totalCount={totalCount} />}
                         {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === totalCount) &&
+                            rows.length > 0 && columns.length > 0 &&
                             <Paper>
                                 Others
                            </Paper>}
