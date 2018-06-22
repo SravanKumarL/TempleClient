@@ -175,7 +175,7 @@ class Transactions extends React.Component {
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.message !== prevState.message) {
-      return {...prevState, message: nextProps.message, snackOpen: true };
+      return { ...prevState, message: nextProps.message, snackOpen: true };
     }
     return null;
   }
@@ -204,6 +204,7 @@ class Transactions extends React.Component {
     }
     this.props.commitTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
+    this.setState({ ...initialState });
     printHtml.printElement(document.getElementById('transactionSummary'));
   }
 
