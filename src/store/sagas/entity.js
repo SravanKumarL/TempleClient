@@ -1,5 +1,5 @@
 import axios from '../../axios/poojas';
-import { put} from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants, { reportMapping, uniqueProp } from './constants';
@@ -68,13 +68,19 @@ const handleResponse = function* (response, collection, type, changedObj) {
         yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection, searchCriteria } = action.payload;
+    const { collection, searchCriteria, refetch, fetchCount } = action.payload;
+    const { pagingOptions, isPrintReq } = action.payload;
+    let skip, take = undefined;
+    if (pagingOptions) {
+        skip = pagingOptions.skip;
+        take = pagingOptions.take;
+    }
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
     else {
         try {
-            yield put(actions.onFetchReq(collection));
+            yield put(actions.onFetchReq(collection, refetch, isPrintReq));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -86,15 +92,15 @@ export function* handleFetchData(action) {
                 if (searchCriteria && collection === constants.Reports) {
                     response = yield axios({
                         method: 'post',
-                        data: searchCriteria,
-                        url: `/${collection}`,
+                        data: { ...searchCriteria, take, skip },
+                        url: `/${collection}?fetchCount=${fetchCount}`,
                         headers
                     });
                 }
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}`,
+                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}`,
                         headers
                     });
                 }

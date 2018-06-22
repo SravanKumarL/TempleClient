@@ -17,9 +17,13 @@ const initialState = {
   showSearchButton: true,
   searchValue: '',
   searchedTransactions: null,
+  prevProps: {},
   searchTextError: false,
   showOverflow: false,
+  count: 0,
+  countFetched: false,
 };
+const pageSize = 50;
 
 class SearchTransaction extends React.Component {
   constructor() {
@@ -28,8 +32,8 @@ class SearchTransaction extends React.Component {
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.searchedTransactions !== prevState.prevSearchedTransactions) {
-      return { searchedTransactions: nextProps.searchedTransactions, prevSearchedTransactions: nextProps.searchedTransactions };
+    if (nextProps.searchValue !== prevState.prevProps.searchValue) {
+      return { prevProps: { ...prevState.prevProps, searchValue: nextProps.searchValue } };
     }
     return null;
   }
@@ -38,8 +42,13 @@ class SearchTransaction extends React.Component {
   panelExitHandler = () => this.setState({ ...initialState });
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
-    this.setState({ searchValue: value, isLoading: true });
-    this.props.searchTransactions({ searchValue: value });
+    this.props.searchTransactions({ searchValue: value, skip: this.state.count, take: pageSize }, !this.state.countFetched); //update count in scroll event
+    this.setState({ searchValue: value, isLoading: true, countFetched: true });
+  }
+  scrollHandler = () => {
+    const count = this.state.count + pageSize;
+    this.setState({ count });
+    this.props.searchTransactions({ searchValue: this.state.searchValue, skip: count, take: pageSize });
   }
   clearclickedHandler = () => {
     this.setState({ searchValue: '', searchedTransactions: null });
@@ -104,6 +113,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     searchedTransactions: state.transactions.searchedTransactions,
     loading: state.transactions.loading,
+    totalCount: state.transactions.totalCount
   }
 }
 

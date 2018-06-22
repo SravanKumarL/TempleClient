@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Event from '@material-ui/icons/Event';
 import Poll from '@material-ui/icons/Poll';
 import ImportContacts from '@material-ui/icons/ImportContacts';
-
+import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
@@ -113,7 +113,8 @@ const initialState = {
   selectedDates: [],
   poojaDetails: null,
   reportOpen: false,
-  selectedPooja: ''
+  selectedPooja: '',
+  searchObj: {}
 };
 class Reports extends React.Component {
   state = { ...initialState };
@@ -130,13 +131,21 @@ class Reports extends React.Component {
   }
   //UI State Handlers
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
-  closeHandler = () => { this.setState({ modalOpen: false, }); }
+  closeHandler = () => { this.setState({ modalOpen: false }); }
   closeDialogHandler = () => { this.setState({ modalOpen: false }); }
-  generateReportHandler = () => this.setState({ reportOpen: true, modalOpen: false });
+  generateReportHandler = () => {
+    this.props.resetEntity(constants.Reports);
+    let searchObj = {};
+    if (this.state.selectedOption.name) {
+      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
+      if (searchObj.ReportName === POOJA)
+        searchObj = { ...searchObj, pooja: this.state.selectedPooja };
+    }
+    this.setState({ reportOpen: true, modalOpen: false, searchObj });
+  }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, reportOpen: false, selectedDates: [], selectedPooja: '' }); }
-
+  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [], selectedPooja: '' }); }
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
@@ -154,6 +163,7 @@ class Reports extends React.Component {
       <Dialog
         open={modalOpen}
         primaryClicked={this.generateReportHandler}
+        handleClose={this.closeHandler}
         primaryText='Generate Report'
         secondaryText='Close'
         secondaryClicked={this.closeDialogHandler}
@@ -204,14 +214,8 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedOption, selectedDates, selectedPooja } = this.state;
+    const { reportOpen, selectedOption, searchObj } = this.state;
     const { classes } = this.props;
-    let searchObj = {};
-    if (selectedOption.name) {
-      searchObj = { ReportName: selectedOption.name.split(' ')[0], selectedDates };
-      if (searchObj.ReportName === POOJA)
-        searchObj = { ...searchObj, pooja: selectedPooja };
-    }
     return (
       <div className={classes.root}>
         <div className={classes.container}>

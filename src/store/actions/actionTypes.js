@@ -35,3 +35,4 @@ export const onFetchSuccess= 'ON_FETCH_SUCCESS';
 export const onFetchFailed= 'ON_FETCH_FAILED';
 export const onTransactionFailed='ON_TRANSACTION_FAILED';
 export const onTransactionCommitted='ON_TRANSACTION_COMMITTED';
+export const clearMessages='CLEAR_MESSAGES';

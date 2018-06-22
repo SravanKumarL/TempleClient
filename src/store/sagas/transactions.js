@@ -56,7 +56,7 @@ export function* searchTransactionsSaga(action) {
   try {
     yield delay(500);
     yield put(actions.searchTransactionsStarted());
-    const searchData = action.searchData;
+    const { searchData, fetchCount } = action;
     const token = sessionStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to do the transaction' };
@@ -67,11 +67,11 @@ export function* searchTransactionsSaga(action) {
       }
       const response = yield axios({
         method: 'post',
-        url: `${constants.Transactions}/${constants.get}`,
+        url: `${constants.Transactions}?fetchCount=${fetchCount}`,
         headers,
         data: searchData
       });
-      yield put(actions.searchTransactionsSuccess(response.data.transactions));
+      yield put(actions.searchTransactionsSuccess(response.data));
     }
   } catch (error) {
     yield put(actions.searchTransactionsFail(error));
