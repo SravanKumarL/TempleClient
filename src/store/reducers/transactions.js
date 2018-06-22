@@ -7,6 +7,7 @@ const initialState = {
   transactions: null,
   searchedTransactions: [],
   loading: false,
+  count: 0
 }
 
 export const addTransactionStarted = (state, action) => {
@@ -33,7 +34,10 @@ export const searchTransactionsStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
 export const searchTransactionsSuccess = (state, action) => {
-  return updateObject(state, { searchedTransactions: [...state.searchedTransactions, ...action.transactions], loading: false });
+  return updateObject(state, {
+    searchedTransactions: [...state.searchedTransactions, ...action.transactions], loading: false,
+    count: action.count || state.count
+  });
 }
 export const searchTransactionsFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });

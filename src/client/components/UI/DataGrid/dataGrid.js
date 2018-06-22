@@ -21,23 +21,24 @@ export default class DataGrid extends React.PureComponent {
             transaction: null,
             prevProps: {},
             fetchData: this.fetchData.bind(this),
-            clearMessages: this.clearMessages.bind(this)
+            clearMessages: this.clearMessages.bind(this),
+            countFetched: false
         };
     }
     defaultPaginationOptions = { pageSize: 5, count: this.props.rows.length }
     clearMessages = () => this.props.clearMessages(this.props.collection);
-    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false) => {
-        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq);
+    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
+        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq, fetchCount);
         this.setState({ transaction });
         transaction();
     }
-    fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions) => {
+    fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions, fetchCount = false) => {
         switch (type) {
             case transactionType.fetch.schema:
                 this.props.fetchSchema(collection, searchCriteria);
                 break;
             case transactionType.fetch.data:
-                this.props.fetchData(collection, searchCriteria, pagingOptions);//default paging options
+                this.props.fetchData(collection, searchCriteria, pagingOptions, false, false, fetchCount);//default paging options
                 break;
             default:
                 return;
@@ -49,7 +50,8 @@ export default class DataGrid extends React.PureComponent {
         switch (type) {
             case transactionType.fetch.schema:
             case transactionType.fetch.data:
-                transaction = () => this.fetchData(type, collection, change);
+                transaction = () => this.fetchData(type, collection, change, undefined, !this.state.countFetched);//Let paging options be default
+                this.setState({ countFetched: true });
                 break;
             default:
                 transaction = () => commitTransaction(type, collection, change, changedObj);
@@ -112,6 +114,7 @@ export default class DataGrid extends React.PureComponent {
             readOnly,
             collection,
             searchCriteria,
+            count
         } = this.props;
         const {
             isPrintClicked,
@@ -162,6 +165,10 @@ export default class DataGrid extends React.PureComponent {
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData} />}
+                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === count) &&
+                            <Paper>
+                                Others
+                           </Paper>}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>

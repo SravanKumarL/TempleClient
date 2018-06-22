@@ -68,7 +68,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
         yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection, searchCriteria, refetch } = action.payload;
+    const { collection, searchCriteria, refetch, fetchCount } = action.payload;
     const { pagingOptions, isPrintReq } = action.payload;
     let count, pageSize = undefined;
     if (pagingOptions) {
@@ -93,14 +93,14 @@ export function* handleFetchData(action) {
                     response = yield axios({
                         method: 'post',
                         data: { ...searchCriteria, pageSize, count },
-                        url: `/${collection}`,
+                        url: `/${collection}?count=${fetchCount}`,
                         headers
                     });
                 }
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}?pageSize=${pageSize}&count=${count}`,
+                        url: `/${collection}?pageSize=${pageSize}&count=${count}&fetchCount=${fetchCount}`,
                         headers
                     });
                 }
