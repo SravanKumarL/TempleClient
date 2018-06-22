@@ -42,7 +42,7 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
     <Dialog
       open={open}
       primaryClicked={print}
-      primaryText='Print'
+      primaryText='Save & Print'
       secondaryText='Cancel'
       secondaryClicked={summaryClosed}
       cancelled={summaryClosed}
