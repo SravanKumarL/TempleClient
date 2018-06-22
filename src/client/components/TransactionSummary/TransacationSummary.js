@@ -27,8 +27,8 @@ const getDates = (dates) => {
 }
 const CustomTableCell = withStyles(theme => ({
   head: {
-    backgroundColor: '#37474f',
-    color: 'white !important',
+    backgroundColor: '#eee',
+    color: 'black !important',
     fontWeight: 'bold',
     fontSize: 18
   },
