@@ -35,7 +35,7 @@ class SearchTransaction extends React.Component {
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
   closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });
-  panelExitHandler = () => this.setState({ showSearchButton: true, });
+  panelExitHandler = () => this.setState({ ...initialState });
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
     this.setState({ searchValue: value, isLoading: true });

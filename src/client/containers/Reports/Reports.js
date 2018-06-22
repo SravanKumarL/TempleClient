@@ -24,6 +24,7 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
+    flexGrow: 1,
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row',
       flexGrow: 1,
@@ -32,17 +33,19 @@ const styles = theme => ({
   container: {
     display: 'flex',
     height: 92,
-    background: 'darkslategray',
-    boxShadow: theme.shadows[3],
-    marginTop: 3,
+    boxShadow: theme.shadows[10],
+    marginTop: 'auto',
     width: '100%',
+    order: 1,
+    marginBottom: 10,
     [theme.breakpoints.up('sm')]: {
       display: 'flex',
       height: 'auto',
+      marginTop: 3,
+      order: 'initial',
       flexWrap: 'wrap',
       alignContent: 'space-evenly',
       width: 220,
-      marginRight: 20,
       flexGrow: 'initial',
       background: 'initial',
       boxShadow: 'initial',

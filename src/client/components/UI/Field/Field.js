@@ -13,7 +13,7 @@ const styles = theme => ({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    minHeight: 70,
+    minHeight: 52,
     flexShrink: 0,
   },
   formControl: {

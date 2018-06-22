@@ -120,6 +120,7 @@ class EditTransactions extends React.Component {
   render() {
     const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
+    
     let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
     if (!transaction.others) fields = fields.filter(field => field !== OTHERS);
     fields = fields.filter(field => field !== ID);

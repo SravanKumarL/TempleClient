@@ -18,7 +18,7 @@ import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
-import EditTransactions from './Components/EditTransactions';
+import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
 import { updateObject, convertToStartCase } from '../../shared/utility';
 import { SEARCH_OPERATIONS } from '../../../store/constants/transactions';
@@ -62,9 +62,9 @@ const styles = theme => ({
     flexGrow: 1,
     height: '100%',
     justifyContent: 'center',
-    [theme.breakpoints.up('sm')]: {
-      paddingBottom: '1rem',
-    }
+    // [theme.breakpoints.up('sm')]: {
+    //   paddingBottom: '1rem',
+    // }
 
   },
   leftPane: {
@@ -164,7 +164,8 @@ const initialState = {
   dialogOpen: false,
   option: '',
   editable: false,
-  updates: {}
+  updates: {},
+  message: null,
 };
 class Transactions extends React.Component {
   constructor() {
@@ -172,9 +173,9 @@ class Transactions extends React.Component {
     this.printHandler = this.printHandler.bind(this);
   }
   state = { ...initialState };
-  static getDerivedStateFromProps(nextProps) {
-    if (nextProps.message) {
-      return { snackOpen: true };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.message !== prevState.message) {
+      return {...prevState, message: nextProps.message, snackOpen: true };
     }
     return null;
   }
