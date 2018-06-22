@@ -17,7 +17,7 @@ export const addTransactionSuccess = (state, action) => {
   return updateObject(state, { message: action.message, loading: false });
 }
 export const addTransactionFail = (state, action) => {
-  return updateObject(state, { error: action.error, loading: false });
+  return updateObject(state, { error: action.error, message: null, loading: false });
 }
 
 export const getTransactionStarted = (state, action) => {

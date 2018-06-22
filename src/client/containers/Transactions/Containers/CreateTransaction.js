@@ -1,6 +1,5 @@
 import React from 'react'
 import withStyles from '@material-ui/core/styles/withStyles';
-import { isEmpty } from 'lodash';
 import Pageview from '@material-ui/icons/Pageview';
 import Restore from '@material-ui/icons/Restore';
 import classNames from 'classnames';
@@ -8,8 +7,14 @@ import classNames from 'classnames';
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
-import { formStateConfig } from '../StateConfig';
+import { formStateConfig, createTextField } from '../StateConfig';
 import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
+import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS } from '../../../../store/constants/transactions';
+
+
+const { PHONE_NUMBER, NAKSHATRAM, POOJA, DATES, NUMBER_OF_DAYS, AMOUNT, PAYMENT_MODE, CHEQUE_NO, BANK_NAME } = FIELDS;
+const { CHEQUE } = PAYMENT_MODES;
+const { INPUT, SINGLESELECT, NUMBER } = FIELD_TYPES;
 
 const styles = theme => ({
   container: {
@@ -40,152 +45,109 @@ const initialState = {
   disablePreview: true,
 };
 
+
 class CreateTransaction extends React.Component {
   constructor() {
     super();
     this.inputChangedHandler = this.inputChangedHandler.bind(this);
+    this.formResetHandler = this.formResetHandler.bind(this);
+    this.getUpdatedTransacationForm = this.getUpdatedTransacationForm.bind(this);
   }
   state = JSON.parse(JSON.stringify(initialState));
-  componentWillReceiveProps(nextProps) {
-    const { poojaDetails, selectedTransaction, activeTab } = nextProps;
-    if (poojaDetails) {
+
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    const { poojaDetails, selectedTransaction } = nextProps;
+    let newFormElement = { ...prevState.transactionForm };
+    let newState = { ...prevState };
+    if (nextProps.poojaDetails !== prevState.transactionForm.pooja.elementConfig.options) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      initialState.transactionForm.pooja.elementConfig.options = options;
-      const newFormElement = { ...this.state.transactionForm };
+      initialState.transactionForm.pooja.options = options;
       newFormElement.pooja.elementConfig.options = options;
-      this.setState({ transactionForm: newFormElement });
+      newFormElement.amount.valid = true;
     }
-    if (!isEmpty(selectedTransaction)) {
-      const newFormElement = updateObject(this.state.transactionForm, {
-        phoneNumber: { ...this.state.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber },
-        names: { ...this.state.transactionForm.names, value: selectedTransaction.names },
-        gothram: { ...this.state.transactionForm.gothram, value: selectedTransaction.gothram },
-        nakshatram: { ...this.state.transactionForm.nakshatram, value: selectedTransaction.nakshatram },
+    if (selectedTransaction && selectedTransaction !== prevState.selectedTransaction) {
+      newFormElement = updateObject(prevState.transactionForm, {
+        phoneNumber: { ...prevState.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber },
+        names: { ...prevState.transactionForm.names, value: selectedTransaction.names },
+        gothram: { ...prevState.transactionForm.gothram, value: selectedTransaction.gothram },
+        nakshatram: { ...prevState.transactionForm.nakshatram, value: selectedTransaction.nakshatram },
       });
-      this.setState({ transactionForm: newFormElement });
+      newState.selectedTransaction = selectedTransaction;
     }
-    if (activeTab !== this.props.activeTab) {
-      this.getUpdatedFormElement(activeTab);
+    if (nextProps.activeTab !== newState.activeTab) {
+      newState.activeTab = nextProps.activeTab;
+      newState.transactionForm[POOJA].value = '';
     }
+    if (nextProps.activeTab === POOJA) {
+      newFormElement = updateObject(newFormElement, {
+        [POOJA]: updateObject(newFormElement[POOJA], {
+          elementType: SINGLESELECT,
+          elementConfig: updateObject(newFormElement[POOJA].elementConfig, {
+            placeholder: FIELD_PLACEHOLDERS.pooja
+          }),
+        }),
+        [NUMBER_OF_DAYS]: updateObject(newFormElement[NUMBER_OF_DAYS], {
+          value: newFormElement[DATES].value.length,
+        }),
+        [AMOUNT]: updateObject(newFormElement[AMOUNT], {
+          value: newFormElement[DATES].value.length * poojaDetails[newFormElement[POOJA].value ? newFormElement[POOJA].value.toLowerCase() : newFormElement[POOJA].value] || 0,
+          disabled: true,
+        }),
+      });
+    } else {
+      newFormElement = updateObject(newFormElement, {
+        [POOJA]: updateObject(newFormElement[POOJA], { elementType: INPUT, elementConfig: updateObject(newFormElement[POOJA].elementConfig, { placeholder: FIELD_PLACEHOLDERS.others }) }),
+        [AMOUNT]: updateObject(newFormElement[AMOUNT], { disabled: false, value: 0 })
+      });
+    }
+    return { ...newState, transactionForm: newFormElement };
   }
-  getUpdatedFormElement = (activeTab) => {
-    let updatedFormElement = { ...this.state.transactionForm };
-    switch (activeTab) {
-      case 'pooja':
-        updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'singleselect', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Poojas' } },
-          amount: { ...updatedFormElement.amount, disabled: true },
-        });
-        break;
-      case 'other':
-        updatedFormElement = updateObject(updatedFormElement, {
-          pooja: { ...updatedFormElement.pooja, elementType: 'input', elementConfig: { ...updatedFormElement.pooja.elementConfig, placeholder: 'Special Offerings' }, value: '' },
-          amount: { ...updatedFormElement.amount, disabled: false, value: '' },
-        });
-        break;
-      default:
-        break;
-    }
-    this.setState({ transactionForm: updatedFormElement });
-  }
-
   formResetHandler = () => this.setState({ ...initialState });
-
+  canPhoneNumberBeUpdated = (value) => (!(!Number(value) || value.charAt(value.length - 1) === '.' || value.length > 10));
+  updatedFormElement = (inputIdentifier, value) => updateObject(this.state.transactionForm[inputIdentifier], {
+    value: value,
+    valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
+    touched: true,
+  });
+  getUpdatedTransacationForm = (value, form) => {
+    let updatedTransactionForm;
+    if (value === CHEQUE) {
+      updatedTransactionForm = updateObject(form, {
+        chequeNo: createTextField(CHEQUE_NO, NUMBER, { required: true }),
+        bankName: createTextField(BANK_NAME, INPUT, { required: true }),
+      });
+    } else {
+      const newForm = { ...form };
+      delete newForm.chequeNo;
+      delete newForm.bankName;
+      updatedTransactionForm = newForm;
+    }
+    return updatedTransactionForm;
+  }
   inputChangedHandler = (event, inputIdentifier) => {
-    let value = ['nakshatram', 'pooja', 'selectedDates', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
-    const { activeTab } = this.props;
-    if (activeTab === 'other' && inputIdentifier === 'pooja') {
+    let value = [NAKSHATRAM, POOJA, DATES, PAYMENT_MODE].includes(inputIdentifier) ? event : event.target.value;
+    if (inputIdentifier === POOJA && this.state.transactionForm.pooja.elementConfig.placeholder === FIELD_PLACEHOLDERS.others) {
       value = event.target.value;
     }
-    if (inputIdentifier === 'phoneNumber') {
-      if (value.length > 10) {
-        return;
-      }
-      if (!Number(value)) {
-        return;
-      }
+    let updatedFormElement;
+    let updatedtransactionForm = { ...this.state.transactionForm };
+    if (inputIdentifier === PHONE_NUMBER && !this.canPhoneNumberBeUpdated(value) && value !== '') {
+      return;
     }
-    const updatedFormElement = updateObject(this.state.transactionForm[inputIdentifier], {
-      value: value,
-      valid: checkValidity(value, this.state.transactionForm[inputIdentifier].validation),
-      touched: true,
-    });
-    if (inputIdentifier === 'amount') {
-      if (value === '') {
-        updatedFormElement['amount'].valid = false;
-      }
-    }
-    let updatedtransactionForm = updateObject(this.state.transactionForm, {
+    updatedFormElement = this.updatedFormElement(inputIdentifier, value);
+    updatedtransactionForm = updateObject(this.state.transactionForm, {
       [inputIdentifier]: updatedFormElement,
     });
-    if (inputIdentifier === 'pooja') {
-      updatedtransactionForm['amount'].disabled = false;
-      if (!value) {
-        updatedtransactionForm['amount'].value = '';
-      } else {
-        if (activeTab === 'other') {
-          updatedtransactionForm['amount'].disabled = false;
-          updatedtransactionForm['amount'].value = '';
-
-        } else {
-          const pooja = value.toLowerCase();
-          updatedtransactionForm['amount'].value = Number(this.state.transactionForm.numberOfDays.value) * this.props.poojaDetails[`${pooja}`];
-        }
-      }
-    }
-    else if (inputIdentifier === 'selectedDates') {
-      if (value) {
-        updatedtransactionForm['numberOfDays'].value = value.length;
-        updatedtransactionForm['amount'].value *= value.length;
-      }
-    }
-    else if (inputIdentifier === 'modeOfPayment') {
-      if (value === 'cheque') {
-        updatedtransactionForm = updateObject(this.state.transactionForm, {
-          chequeNo: {
-            elementType: 'input',
-            elementConfig: {
-              type: 'text',
-              placeholder: 'Cheque No',
-            },
-            validation: {
-              required: true,
-            },
-            value: '',
-            disabled: false,
-            valid: false,
-            touched: false,
-          },
-          bankName: {
-            elementType: 'input',
-            elementConfig: {
-              type: 'text',
-              placeholder: 'Bank Name',
-            },
-            validation: {
-              required: true,
-            },
-            value: '',
-            disabled: false,
-            valid: false,
-            touched: false,
-          },
-        });
-      } else {
-        const newForm = { ...this.state.transactionForm };
-        delete newForm.chequeNo;
-        delete newForm.bankName;
-        updatedtransactionForm = newForm;
-      }
+    if (inputIdentifier === PAYMENT_MODE) {
+      updatedtransactionForm = this.getUpdatedTransacationForm(value, updatedtransactionForm);
     }
     let formIsValid = true;
     for (let inputIdentifier in updatedtransactionForm) {
       formIsValid = updatedtransactionForm[inputIdentifier].valid && formIsValid;
     }
-    updatedtransactionForm[inputIdentifier] = updatedFormElement;
     this.setState({ transactionForm: updatedtransactionForm, disablePreview: !formIsValid, });
   }
   submitHandler = () => {

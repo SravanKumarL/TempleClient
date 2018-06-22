@@ -1,16 +1,22 @@
 .App {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   flex-grow: 1;
 }
-image, embed, video , object {
+
+image,
+embed,
+video,
+object {
   max-width: 100%;
 }
+
 body {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
+
 
 * {
   box-sizing: border-box;
@@ -20,6 +26,16 @@ input:disabled {
   background: #EEEEEE;
 }
 
+table > thead:first-of-type {
+  background: #eee;
+}
+
+th {
+  color: rgba(0, 0, 0, 0.87) !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+}
+
 textarea:disabled {
   background: #EEEEEE;
 }
@@ -27,35 +43,11 @@ textarea:disabled {
 /* input[type="number"]:disabled {
   background: #dddddd;
 } */
+
 textarea {
   /* height: 2rem;
   margin: 1rem; */
   height: auto !important;
   padding: 12px 0px 16px 10px !important;
-}
-
-.routeWrapper {
-  display: flex;
-  flex-grow: 1;
-  /* position: relative; */
-}
-
-.routeWrapper>div {
-  display: flex;
-  flex-grow: 1;
-  /* position: absolute; */
-}
-
-.fadeEnter {
-  display: flex;
-  flex-grow: 1;
-  opacity: 0;
-  z-index: 1;
-}
-
-.fadeEnterActive {
-  display: flex;
-  flex-grow: 1;
-  opacity: 1;
-  transition: opacity 300ms ease-in;
+  margin-bottom: 12px !important;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EnumAvailableRoles, EditCell, Cell } from './Cell/CellFactory';
+import { EditCell, Cell } from './Cell/CellFactory';
 import {
     SortingState, EditingState, PagingState, FilteringState, /* IntegratedSelection, */
     IntegratedPaging, IntegratedSorting, IntegratedFiltering, GroupingState, IntegratedGrouping, CustomPaging, /* SelectionState */
@@ -12,10 +12,10 @@ import {
 import DeleteDialog from './DeleteRowDialog';
 import constants from '../../../../store/sagas/constants';
 import { Command } from './CommandButton';
+import { ROLE } from '../../../../store/constants/auth';
+import { convertToStartCase } from '../../../shared/utility';
+import Typography from '@material-ui/core/Typography';
 
-// const styles = theme => ({
-
-// });
 const EditRow = (props) => {
     return <TableEditRow.Row {...props} key={props.row.id} />
 }
@@ -54,7 +54,7 @@ export default class GridContainer extends React.PureComponent {
     changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
     changeAddedRows = addedRows => {
         this.setState({
-            addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: EnumAvailableRoles.user } : {})))
+            addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: ROLE.user } : {})))
         });
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
@@ -104,7 +104,7 @@ export default class GridContainer extends React.PureComponent {
     //#endregion
     render() {
         const { columns, setAndCommitTransaction, collection,
-            readOnly, displayFilter, totalCount } = this.props;
+            readOnly, displayFilter, title, totalCount } = this.props;
         const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
             this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
         const {
@@ -181,6 +181,7 @@ export default class GridContainer extends React.PureComponent {
                         pageSizes={pageSizes}
                     />
                     <Toolbar />
+                    <Typography style={{ display: 'flex', justifyContent: 'center', padding: 20, background: '#37474f', color: 'white', fontWeight: 500 }} variant='title'> { collection === constants.Reports ? title : convertToStartCase(collection)} </Typography>
                     {!readOnly && <GroupingPanel showSortingControls />}
                     {!readOnly && <ColumnChooser />}
                 </Grid>

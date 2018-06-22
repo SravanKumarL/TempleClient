@@ -5,40 +5,9 @@ import Input from '@material-ui/core/Input';
 import SelectWrapped from './SelectWrapped/SelectWrapped';
 import 'react-select/dist/react-select.css';
 import _ from 'lodash';
+import { FIELD_TYPES } from '../../../../store/constants/transactions';
 
-const suggestions = [
-  { label: 'Ashwini' },
-  { label: 'Bharani' },
-  { label: 'Kritika' },
-  { label: 'Rohini' },
-  { label: 'Mrugasira' },
-  { label: 'Arudra' },
-  { label: 'Punarvasu' },
-  { label: 'Pushyami' },
-  { label: 'Aslesha' },
-  { label: 'Makha' },
-  { label: 'Pubba' },
-  { label: 'Uttara' },
-  { label: 'Hasta' },
-  { label: 'Chitta' },
-  { label: 'Swati' },
-  { label: 'Vishaka' },
-  { label: 'Anuradha' },
-  { label: 'Jyesta' },
-  { label: 'Moola' },
-  { label: 'Purvashada' },
-  { label: 'Uttarashada' },
-  { label: 'Sravana' },
-  { label: 'Dhanista' },
-  { label: 'Satabisha' },
-  { label: 'Purvabhadra' },
-  { label: 'Uttarabhadra' },
-  { label: 'Revati' },
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label,
-}));
-
+const { MULTISELECT } = FIELD_TYPES;
 
 
 
@@ -57,6 +26,9 @@ const styles = theme => ({
   // to provide a better implementation.
   // Also, we had to reset the default style injected by the library.
   '@global': {
+    '.Select': {
+      padding: 0,
+    },
     '.Select-control': {
       display: 'flex',
       alignItems: 'center',
@@ -128,6 +100,7 @@ const styles = theme => ({
       top: `calc(100% + ${theme.spacing.unit}px)`,
       width: '100%',
       zIndex: 2,
+      marginTop: -8,
       maxHeight: ITEM_HEIGHT * 4.5,
     },
     '.Select.is-focused:not(.is-open) > .Select-control': {
@@ -175,7 +148,7 @@ class MultiSelect extends React.Component {
         return { valueObjs, nextId: nextId - 1, values: valueObjs.map(x => x.value).join(',') };
       }
       else {
-        if (this.props.type === 'multi') {
+        if (this.props.type === MULTISELECT) {
           const selValues = selValue.split(',');
           const prevValues = valueObjs.map(vo => vo.value);
           const unselected = _.uniq(_.difference(prevValues, selValues)).join(',');
@@ -225,7 +198,7 @@ class MultiSelect extends React.Component {
         return { ...state.defaultState, prevProps: props };
       }
       else {
-        if (props.type === 'multi' && props.value !== state.values) {
+        if (props.type === MULTISELECT && props.value !== state.values) {
           const values = props.value;
           const valueObjs = props.value.split(',').map((val, index) => ({ id: index, value: val }));
           return { values, valueObjs, prevProps: props };
@@ -249,7 +222,7 @@ class MultiSelect extends React.Component {
           classes,
           value: value,
           onChange: changed,
-          placeholder: label,
+          placeholder: '',
           instanceId: 'react-select-single',
           id: 'react-select-single',
           name: 'react-select-single',
@@ -262,11 +235,11 @@ class MultiSelect extends React.Component {
       // }}
       />
     );
-    if (type === 'multi') {
+    if (type === MULTISELECT) {
       element = <Input
         disableUnderline
         fullWidth
-        placeholder={label}
+        placeholder=''
         inputComponent={SelectWrapped}
         inputProps={{
           classes,
@@ -275,7 +248,7 @@ class MultiSelect extends React.Component {
           onChange: this.onChange,
           onClearAll: this.onClearAll,
           removeChip: this.onRemove,
-          placeholder: label,
+          placeholder: '',
           instanceId: 'react-select-chip',
           id: 'react-select-chip',
           name: 'react-select-chip',

@@ -4,7 +4,10 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { updateObject } from '../../../shared/utility';
 import { convertToStartCase } from '../../../shared/utility';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
+import { FIELDS, FIELD_TYPES } from '../../../../store/constants/transactions';
 
+const { INPUT, NUMBER } = FIELD_TYPES;
+const { ID, OTHERS } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -33,7 +36,7 @@ const styles = (theme) => ({
 const initialState = {
   editForm: {
     phoneNumber: {
-      elementType: 'number',
+      elementType: NUMBER,
       elementConfig: {
         type: 'text',
         placeholder: 'Phone Number',
@@ -47,7 +50,7 @@ const initialState = {
       touched: false,
     },
     names: {
-      elementType: 'input',
+      elementType: INPUT,
       elementConfig: {
         type: 'text',
         placeholder: 'Names',
@@ -61,7 +64,7 @@ const initialState = {
       touched: false,
     },
     gothram: {
-      elementType: 'input',
+      elementType: INPUT,
       elementConfig: {
         type: 'text',
         placeholder: 'Gothram',
@@ -75,7 +78,7 @@ const initialState = {
       touched: false,
     },
     nakshatram: {
-      elementType: 'input',
+      elementType: INPUT,
       elementConfig: {
         type: 'text',
         placeholder: 'Nakshatram',
@@ -91,6 +94,7 @@ const initialState = {
   },
   transaction: null,
 };
+
 class EditTransactions extends React.Component {
   constructor(props) {
     super(props);
@@ -112,42 +116,17 @@ class EditTransactions extends React.Component {
     }
     return null;
   }
-  // inputChangedHandler = (event, inputIdentifier) => {
-  //   const value = ['nakshatram', 'pooja', 'date', 'modeOfPayment'].includes(inputIdentifier) ? event : event.target.value;
-  //   const updatedFormElement = updateObject(this.state.editForm[inputIdentifier], {
-  //     value: value,
-  //     valid: checkValidity(value, this.state.editForm[inputIdentifier].validation),
-  //     touched: true,
-  //   });
-  //   let updatededitForm = updateObject(this.state.editForm, {
-  //     [inputIdentifier]: updatedFormElement,
-  //   });
-  //   let formIsValid = true;
-  //   for (let inputIdentifier in updatededitForm) {
-  //     formIsValid = updatededitForm[inputIdentifier].valid && formIsValid;
-  //   }
-  //   updatededitForm[inputIdentifier] = updatedFormElement;
-  //   this.setState({ editForm: updatededitForm, formIsValid, });
-  // }
-  // submitHandler = () => {
-  //   let updatedTransaction = { ...this.state.transaction };
-  //   updatedTransaction = updateObject(updatedTransaction, {
-  //     phoneNumber: this.state.editForm.names.value,
-  //     names: this.state.editForm.names.value,
-  //     gothram: this.state.editForm.names.value,
-  //     nakshatram: this.state.editForm.names.value,
-  //   });
-  //   this.props.editTransactionClicked(updatedTransaction);
-  // }
+
   render() {
     const { classes, fieldChanged, editable } = this.props;
     const { editForm, transaction } = this.state;
+    
     let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
-    if (!transaction.others) fields = fields.filter(field => field !== 'others');
-    fields = fields.filter(field => field !== 'id');
-    let transactions = _.pick(transaction, fields);
+    if (!transaction.others) fields = fields.filter(field => field !== OTHERS);
+    fields = fields.filter(field => field !== ID);
+  let transactions = _.pick(transaction, fields);
     const readFieldState = {
-      elementType: 'input',
+      elementType: INPUT,
       elementConfig: {
         type: 'text',
         placeholder: '',
@@ -163,34 +142,15 @@ class EditTransactions extends React.Component {
     Object.keys(transactions).forEach((field =>
       transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: convertToStartCase(field) }, value: transactions[field] }));
     const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
-    // let readOnlyContent = null;
-    // if (transaction) {
-    //   readOnlyContent =
-    //     <div style={{ display: 'flex', flexDirection: 'column', width: '90%', marginTop: 10 }}>
-    //       {Object.keys(transaction).map(key => {
-    //         if (!['phoneNumber', 'names', 'gothram', 'nakshatram', '__v', '_id'].includes(key)) {
-    //           return (
-    //             <TableRow key={key}>
-    //               <TableCell>{key}:</TableCell>
-    //               <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'breafk-word' }}>{transaction[key]}</TableCell>
-    //             </TableRow>
-    //           )
-    //         }
-    //         return null;
-    //       })}
-    //     </div>
-    // }
     return (
       <div className={classes.container}>
         <TransactionForm
           transactionForm={resultantEditForm}
-          showLabels={true}
           fieldChanged={fieldChanged}
           showButtons={false}
           primaryText='Edit'
           secondaryText='Cancel'
         />
-        {/* {readOnlyContent} */}
       </div>);
   }
 };

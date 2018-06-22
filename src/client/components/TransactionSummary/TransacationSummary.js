@@ -9,6 +9,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
 
+import { FIELDS } from '../../../store/constants/transactions';
+
+const { OTHERS, DATES } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -17,44 +20,52 @@ const styles = (theme) => ({
     boxShadow: theme.shadows[3],
     border: `1px solid ${theme.palette.grey[200]}`,
   },
-  // table: {
-  //   minWidth: 400,
-  // },
 });
 
 const getDates = (dates) => {
   return dates.join(',');
 }
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: '#eee',
+    color: 'black !important',
+    fontWeight: 'bold',
+    fontSize: 18
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 const transactionSummary = ({ classes, open, transactionFields, summaryClosed, print, createdBy }) => {
   return (
     <Dialog
       open={open}
       primaryClicked={print}
-      primaryText='Print'
+      primaryText='Save & Print'
       secondaryText='Cancel'
       secondaryClicked={summaryClosed}
       cancelled={summaryClosed}
       title='Transaction Summary'>
-      <Paper component='div' className={classes.root}>
+      <Paper id='transactionSummary' component='div' className={classes.root}>
         <Table className={classes.table}>
-          <TableHead>
+          <TableHead >
             <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Value</TableCell>
+              <CustomTableCell>Title</CustomTableCell>
+              <CustomTableCell>Value</CustomTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(transactionFields).map(id => {
-              if (id === 'others') {
+              if (id === OTHERS) {
                 return null;
               }
               const field = transactionFields[id];
               const placeholder = field.name;
               return (
                 <TableRow key={id}>
-                  <TableCell>{placeholder}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}>{id === 'selectedDates' ? getDates(field.value) : field.value}</TableCell>
+                  <TableCell style={{fontSize: 16}} >{placeholder}:</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === DATES ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );
             })}

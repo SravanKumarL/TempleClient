@@ -7,7 +7,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 import SearchPanel from '../../../components/UI/SearchPanel/SearchPanel';
 import createContainer from '../../../hoc/createContainer/createContainer';
+import { SEARCH_OPERATIONS } from '../../../../store/constants/transactions';
 
+const { USE } = SEARCH_OPERATIONS;
 const transitionUp = (props) => { return (<Slide direction="left" {...props} />) };
 
 const initialState = {
@@ -22,6 +24,7 @@ const initialState = {
   countFetched: false,
 };
 const pageSize = 50;
+
 class SearchTransaction extends React.Component {
   constructor() {
     super();
@@ -36,7 +39,7 @@ class SearchTransaction extends React.Component {
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
   closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });
-  panelExitHandler = () => this.setState({ showSearchButton: true, });
+  panelExitHandler = () => this.setState({ ...initialState });
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
     this.props.searchTransactions({ searchValue: value, skip: this.state.count, take: pageSize }, !this.state.countFetched); //update count in scroll event
@@ -53,7 +56,7 @@ class SearchTransaction extends React.Component {
   }
   inputRefHandler = (node) => { this.input = node; }
   optionClickedHandler = (option, transaction) => {
-    if (option.toLowerCase() === 'use') {
+    if (option === USE) {
       this.setState({ ...this.baseState })
     }
     this.props.itemSelected(option, transaction);
@@ -93,7 +96,6 @@ class SearchTransaction extends React.Component {
           clearClicked={this.clearclickedHandler}
           loading={loading}
           open={searchPanelOpen}
-          // itemSelected={this.itemSelectinChangedHandler}
           transactions={searchedTransactions}
           radioNames={['Names', 'Phone Number']}
           radioValue={this.state.radioValue}

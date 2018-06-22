@@ -7,10 +7,12 @@ import createContainer from '../createContainer/createContainer';
 
 const styles = theme => ({
   appFrame: {
-    position: 'fixed',
     display: 'flex',
     width: '100vw',
     height: '100vh',
+    [theme.breakpoints.up('sm')]: {
+      position: 'fixed',
+    }
   },
   button: {
     margin: theme.spacing.unit,
@@ -19,6 +21,7 @@ const styles = theme => ({
     width: '100%',
     display: 'flex',
     flexGrow: 1,
+    opacity: 1,
     flexDirection: 'column',
     backgroundColor: blueGrey[800],
     paddingTop: '1rem',
@@ -35,10 +38,11 @@ class Layout extends React.Component {
     this.props.authLogout();
   }
   render() {
-    const { classes, role, activeTabChanged } = this.props;
+    const { classes, role, activeTabChanged, activeTab } = this.props;
     return (
       <div className={classes.appFrame}>
         <AppBar
+          activeTab = {activeTab}
           logout={this.handleLogout}
           role={role}
           activeTabChanged={activeTabChanged}

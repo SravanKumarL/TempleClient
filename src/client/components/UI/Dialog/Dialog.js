@@ -5,13 +5,20 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import { Typography } from '@material-ui/core';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
 const dialog = (props) => {
-  const { handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
+  const classes = {
+    root: {
+      color: 'white',
+      fontWeight: 500
+    }
+  };
+  const { primaryDisabled, handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
   let buttons = (
     <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="error">
       {primaryIcon}
@@ -21,7 +28,7 @@ const dialog = (props) => {
   if (secondaryText) {
     buttons = (
       <React.Fragment>
-        <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="primary">
+        <Button style={{ minWidth: 100, margin: 10 }} disabled={primaryDisabled} variant='raised' onClick={primaryClicked} color="primary">
           {primaryIcon}
           {primaryText}
         </Button>
@@ -41,10 +48,10 @@ const dialog = (props) => {
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle align='center' id="alert-dialog-slide-title">
-          {title}
+        <DialogTitle disableTypography style={{ background: '#37474f', marginBottom: 10 }} align='center' id="alert-dialog-slide-title">
+          <Typography variant='title' style={classes.root}> {title} </Typography>
         </DialogTitle>
-        <DialogContent style={{ padding: '24px 24px 24px' }} >
+        <DialogContent>
           {children}
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>

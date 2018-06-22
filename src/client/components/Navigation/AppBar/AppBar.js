@@ -24,7 +24,6 @@ const styles = theme => ({
     zIndex: theme.zIndex.drawer + 1,
     flexDirection: 'row',
     height: 56,
-
     alignItems: 'center',
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -39,7 +38,7 @@ const styles = theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  
+
   hide: {
     display: 'none',
   },
@@ -76,7 +75,7 @@ const styles = theme => ({
     flexGrow: 1,
     height: 56,
     [theme.breakpoints.up('sm')]: {
-      height: 44,
+      height: 48,
     },
     minHeight: 'initial',
   },
@@ -108,7 +107,7 @@ class MyAppBar extends React.Component {
     this.setState({ anchorEl: null });
   };
   render() {
-    const { classes, theme, logout, role, activeTabChanged } = this.props;
+    const { classes, theme, logout, role, activeTabChanged, activeTab } = this.props;
     const { anchorEl, drawerOpen } = this.state;
     const open = Boolean(anchorEl);
     return (
@@ -120,10 +119,17 @@ class MyAppBar extends React.Component {
                 <MenuIcon />
               </IconButton>
             </Hidden>
-            <Typography variant="title" color="inherit" className={classes.flex}>
-              BookMySeva 1.0
+            <Hidden xsDown>
+              <Typography variant="title" color="inherit" className={classes.flex}>
+                BookMySeva 1.0
             </Typography>
-            <Hidden mdUp>
+            </Hidden>
+            <Hidden smUp>
+              <Typography variant="title" style={{ textTransform: 'capitalize' }} color="inherit" className={classes.flex}>
+                {activeTab}
+              </Typography>
+            </Hidden>
+            <Hidden lgUp>
               <IconButton
                 aria-owns={open ? 'menu-appbar' : null}
                 aria-haspopup="true"

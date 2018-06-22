@@ -3,7 +3,6 @@ import _ from 'lodash';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import blueGrey from '@material-ui/core/colors/blueGrey';
 import Fade from '@material-ui/core/Fade';
 import Snackbar from '../../components/UI/Snackbar/Snackbar';
 import Event from '@material-ui/icons/Event';
@@ -19,8 +18,15 @@ import createContainer from '../../hoc/createContainer/createContainer';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
-import EditTransactions from './Components/EditTransactions';
-import { updateObject } from '../../shared/utility';
+import EditTransactions from './Containers/EditTransactions';
+import printHtml from 'print-html-element';
+import { updateObject, convertToStartCase } from '../../shared/utility';
+import { SEARCH_OPERATIONS } from '../../../store/constants/transactions';
+import { TABS } from '../../../store/constants/transactions';
+
+
+const { USE } = SEARCH_OPERATIONS;
+const { POOJAS, OTHERS } = TABS;
 
 const styles = theme => ({
   root: {
@@ -29,6 +35,7 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     position: 'relative',
+    flexShrink: 0,
   },
   middlePane: {
     display: 'flex',
@@ -40,6 +47,13 @@ const styles = theme => ({
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
+      margin: 25,
+    },
+    [theme.breakpoints.up('lg')]: {
+      alignItems: 'center',
+      minWidth: '535px',
+      maxWidth: '535px',
+      margin: 25,
       marginLeft: 'auto'
     },
   },
@@ -48,9 +62,9 @@ const styles = theme => ({
     flexGrow: 1,
     height: '100%',
     justifyContent: 'center',
-    [theme.breakpoints.up('sm')]: {
-      paddingBottom: '1rem',
-    }
+    // [theme.breakpoints.up('sm')]: {
+    //   paddingBottom: '1rem',
+    // }
 
   },
   leftPane: {
@@ -58,7 +72,7 @@ const styles = theme => ({
   },
   rightPane: {
     display: 'none',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       display: 'flex',
       marginLeft: 'auto',
     }
@@ -78,18 +92,14 @@ const styles = theme => ({
     display: 'flex',
     borderRadius: 8,
     width: '100%',
-    height: 92,
-    [theme.breakpoints.up('sm')]: {
-      height: 'initial',
-    }
   },
   indicator: {
     background: 'white',
   },
   rootInheritSelected: {
-    background: 'white !important',
+    background: 'seagreen !important',
     height: 75,
-    color: 'green !important',
+    color: 'white !important',
     fontWeight: 'bold',
   },
   wrapper: {
@@ -101,14 +111,15 @@ const styles = theme => ({
     fontSize: 16,
     width: '45%',
     height: 42,
+    minHeight: 42,
     [theme.breakpoints.up('sm')]: {
       width: 250,
       height: 60,
     },
     minWidth: 'initial',
-    maxWidth: 'initia',
-    color: '#eee',
-    background: blueGrey[700],
+    maxWidth: 'initial',
+    color: 'green',
+    background: 'white',
     boxShadow: '0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12)',
     opacity: 1,
   },
@@ -132,25 +143,39 @@ const styles = theme => ({
   scroller: {
     overflow: 'initial',
   },
+  leftIcon: {
+    marginRight: theme.spacing.unit,
+  },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
+  iconSmall: {
+    fontSize: 20,
+  },
 });
 
 const initialState = {
   modalOpen: false,
   snackOpen: false,
-  activeTab: 'pooja',
+  activeTab: POOJAS,
   transactionInformation: [],
   selectedTransaction: {},
   unchangedTransaction: {},
   dialogOpen: false,
   option: '',
   editable: false,
-  updates: {}
+  updates: {},
+  message: null,
 };
 class Transactions extends React.Component {
+  constructor() {
+    super();
+    this.printHandler = this.printHandler.bind(this);
+  }
   state = { ...initialState };
-  static getDerivedStateFromProps(nextProps) {
-    if (nextProps.message) {
-      return { snackOpen: true };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.message !== prevState.message) {
+      return { ...prevState, message: nextProps.message, snackOpen: true };
     }
     return null;
   }
@@ -172,19 +197,19 @@ class Transactions extends React.Component {
         return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
       }, {});
     transaction = { ...transaction, createdBy };
-    if (this.state.activeTab === 'others') {
+    if (this.state.activeTab === OTHERS) {
       transaction.others = true;
     } else {
       transaction.others = false;
     }
     this.props.commitTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
-    // window.print();
-    // this.setState({ open: true });
+    this.setState({ ...initialState });
+    printHtml.printElement(document.getElementById('transactionSummary'));
   }
 
   itemSelectionChangedHandler = (option, selectedTransaction) => {
-    if (option.toLowerCase() !== 'use') {
+    if (option !== USE) {
       this.setState({ dialogOpen: true });
     }
     this.setState({ option, selectedTransaction, unchangedTransaction: selectedTransaction });
@@ -217,12 +242,6 @@ class Transactions extends React.Component {
   render() {
     const { classes } = this.props;
     const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
-    // const editForm = {
-    //   phoneNumber: { ...transactionInformation.phoneNumber },
-    //   names: { ...transactionInformation.names },
-    //   gothram: { ...transactionInformation.gothram },
-    //   nakshatram: { ...transactionInformation.nakshatram }
-    // };
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
@@ -246,19 +265,6 @@ class Transactions extends React.Component {
         />
       </Dialog>
     );
-    // if (option.toLowerCase() === 'view') {
-    //   dialog = (
-    //     <Dialog
-    //       open={dialogOpen}
-    //       primaryClicked={this.closeDialogHandler}
-    //       primaryText='Close'
-    //       primaryIcon={<Cancel className={classNames(classes.leftIcon, classes.iconSmall)} />}
-    //       title='View Transaction'>
-    //       <ViewTransactions
-    //         transaction={selectedTransaction} />
-    //     </Dialog>
-    //   );
-    // }
     let message = null;
     if (this.props.message) {
       message = (
@@ -275,7 +281,7 @@ class Transactions extends React.Component {
     return (
       <div className={classes.panes} >
         <div className={classes.middlePane}>
-          <Fade in={activeTab === 'pooja' || activeTab === 'other'} timeout={500} mountOnEnter unmountOnExit>
+          <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
             <Tabs classes={{
               root: classes.root,
               flexContainer: classes.flexContainer,
@@ -284,14 +290,15 @@ class Transactions extends React.Component {
             }} value={activeTab}
               onChange={this.tabChangeHandler}
             >
-              <Tab classes={newTabClasses} value='pooja' label='Pooja' icon={<Event />} />
-              <Tab classes={newTabClasses} value='other' label='Other' icon={<Description />} />
+              <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
+              <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
             </Tabs>
           </Fade>
           <CreateTransaction
+            ref={node => (this.CreateTransaction = node)}
             submit={this.formSubmitHandler}
             activeTab={activeTab}
-            selectedTransaction={selectedTransaction && option.toLowerCase() === 'use' ? selectedTransaction : null}
+            selectedTransaction={selectedTransaction && option === USE ? selectedTransaction : null}
           />
           <TransactionSummary
             open={modalOpen}

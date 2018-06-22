@@ -10,38 +10,67 @@ import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
 import { convertToStartCase } from '../../shared/utility';
-import Orange from '@material-ui/core/colors/orange';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../hoc/createContainer/createContainer';
+import { REPORT_TYPES } from '../../../store/constants/reports';
+
+const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
 
 const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    alignContent: 'space-evenly',
-    width: 220,
-    marginRight: 20,
-    // boxShadow: theme.shadows[3],
-  },
-  button: {
+  root: {
     display: 'flex',
     flexDirection: 'column',
-    height: 50,
-    flexBasis: 136,
-    borderRadius: 10,
-    margin: 'auto',
-    padding: '80px',
-    boxShadow: theme.shadows[5],
-    '&:hover': {
-      boxShadow: '0px 0px 10px #000000',
-      zIndex: 2,
-      transition: 'all 200ms ease-in',
-      transform: 'scale(1.1)',
-    },
+    flexGrow: 1,
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+      flexGrow: 1,
+    }
+  },
+  container: {
+    display: 'flex',
+    height: 92,
+    boxShadow: theme.shadows[10],
+    marginTop: 'auto',
+    width: '100%',
+    order: 1,
+    marginBottom: 10,
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      height: 'auto',
+      marginTop: 3,
+      order: 'initial',
+      flexWrap: 'wrap',
+      alignContent: 'space-evenly',
+      width: 220,
+      flexGrow: 'initial',
+      background: 'initial',
+      boxShadow: 'initial',
+    }
+  },
+  button: {
+    margin: 8,
+    borderRadius: 4,
+    width: '30%',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: 50,
+      flexBasis: 136,
+      borderRadius: 10,
+      margin: 'auto',
+      padding: '80px',
+      boxShadow: theme.shadows[5],
+      '&:hover': {
+        boxShadow: '0px 0px 10px #000000',
+        zIndex: 2,
+        transition: 'all 200ms ease-in',
+        transform: 'scale(1.1)',
+      },
+    }
   },
   text: {
     display: 'flex',
@@ -54,16 +83,27 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
   },
   icon: {
-    display: 'flex',
-    height: 50,
-    width: 100,
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      height: 50,
+      width: 100,
+    }
   },
   iconButton: {
-    display: 'flex',
-    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+    }
   },
   buttonText: {
     fontWeight: 'bold',
+  },
+  dataGrid: {
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.up('sm')]: {
+      flexGrow: 1
+    }
   }
 });
 
@@ -98,7 +138,7 @@ class Reports extends React.Component {
     let searchObj = {};
     if (this.state.selectedOption.name) {
       searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
-      if (searchObj.ReportName === 'Pooja')
+      if (searchObj.ReportName === POOJA)
         searchObj = { ...searchObj, pooja: this.state.selectedPooja };
     }
     this.setState({ reportOpen: true, modalOpen: false, searchObj });
@@ -112,6 +152,13 @@ class Reports extends React.Component {
   }
   getModal = () => {
     const { modalOpen, selectedOption, selectedDates, selectedPooja } = this.state;
+    let generateDisabled = false;
+    if (selectedOption.name === POOJA) {
+      generateDisabled = true;
+      if (selectedPooja) {
+        generateDisabled = false;
+      }
+    }
     return (
       <Dialog
         open={modalOpen}
@@ -121,6 +168,7 @@ class Reports extends React.Component {
         secondaryText='Close'
         secondaryClicked={this.closeDialogHandler}
         title={selectedOption.name}
+        primaryDisabled={generateDisabled}
         cancelled={this.closeDialogHandler}>
         <ReportCriteria
           poojas={this.state.poojaDetails}
@@ -136,9 +184,9 @@ class Reports extends React.Component {
   getButtons = () => {
     const { classes } = this.props;
     const options = [
-      { name: 'Pooja Report', color: Orange[500], icon: <Event className={classes.icon} /> },
-      { name: 'Management Report', color: Blue[500], icon: <Poll className={classes.icon} /> },
-      { name: 'Accounts Report', color: Green[500], icon: <ImportContacts className={classes.icon} /> },
+      { name: POOJA, color: '#DE6400', icon: <Event className={classes.icon} /> },
+      { name: MANAGEMENT, color: Blue[500], icon: <Poll className={classes.icon} /> },
+      { name: ACCOUNTS, color: Green[500], icon: <ImportContacts className={classes.icon} /> },
     ];
 
     return (
@@ -169,16 +217,17 @@ class Reports extends React.Component {
     const { reportOpen, selectedOption, searchObj } = this.state;
     const { classes } = this.props;
     return (
-      <div style={{ display: 'flex', height: '100%', flexGrow: 1 }}>
+      <div className={classes.root}>
         <div className={classes.container}>
           {this.getButtons()}
           {this.getModal()}
         </div>
-        {reportOpen &&
-          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} >
-            <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}> {selectedOption.name} </Typography>
-            <DataGridWrapper collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
-          </div>}
+        {reportOpen ?
+          <div className={classes.dataGrid}>
+            <DataGridWrapper title={`${selectedOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+          </div> :
+          <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
+        }
       </div>
     );
   }

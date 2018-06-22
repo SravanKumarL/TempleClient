@@ -11,14 +11,20 @@ import createSagaMiddleware from 'redux-saga';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import reducer from './store/reducers/index';
-import indigo from '@material-ui/core/colors/indigo';
 import red from '@material-ui/core/colors/red';
 import { watchAuth } from './store/sagas';
 
 const theme = createMuiTheme({
   palette: {
-    primary: indigo,
+    primary: {
+      // main: '#410C40'
+      main: '#60315f'
+    },
     secondary: red,
+    // secondary: {
+    //   // main: '#52af92'
+    //   main: red,
+    // },
     error: red,
     contrastThreshold: 3,
     tonalOffset: 0.2,

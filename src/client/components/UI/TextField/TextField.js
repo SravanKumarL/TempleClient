@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField/TextField';
+import { FIELD_TYPES } from '../../../../store/constants/transactions';
 
+const { INPUT } = FIELD_TYPES;
 const styles = theme => ({
   textFieldRoot: {
     padding: 0,
@@ -33,7 +35,7 @@ const TextBox = ({ type, classes, label, value, changed, disabled, multiline, sh
   return (
     <TextField
       label={showLabels ? label : ''}
-      placeholder={showLabels ? '' : label}
+      // placeholder={showLabels ? '' : label}
       InputProps={{
         disableUnderline: true,
         classes: {
@@ -48,8 +50,7 @@ const TextBox = ({ type, classes, label, value, changed, disabled, multiline, sh
       value={value}
       onChange={changed}
       disabled={disabled}
-      margin='dense'
-      type={type ? type : 'input'}
+      type={type ? type : INPUT}
       multiline={multiline}
       rows={2}
     />

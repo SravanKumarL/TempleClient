@@ -10,6 +10,7 @@ import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
 import Typography from '@material-ui/core/Typography';
 import PrintGrid from './PrintGrid';
+import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
 
 export default class DataGrid extends React.PureComponent {
     constructor(props) {
@@ -114,7 +115,8 @@ export default class DataGrid extends React.PureComponent {
             readOnly,
             collection,
             searchCriteria,
-            totalCount
+            totalCount,
+            title
         } = this.props;
         const {
             isPrintClicked,
@@ -143,23 +145,26 @@ export default class DataGrid extends React.PureComponent {
                     </Typography>
                     <PrintGrid rows={printRows[key]} columns={printColumns} />
                 </div>)) : <PrintGrid rows={printRows} columns={printColumns} />);
+        const { HIDE } = FILTER_VISIBILITY;
         return (
             loading ? <LoadingGrid columns={columns} /> :
-                <div style={{ position: 'relative' }}>
-                    <Button style={{
-                        zIndex: 1, position: 'absolute',
-                        marginLeft: `${(displayFilter ? (84 - 2) : 84)}%`, marginTop: '1.2%'
-                    }}
-                        onClick={this.onFilterClick}>
-                        <FilterIcon /> {displayFilter && 'Hide'} Filter
+                <div style={{ position: 'relative', margin: '2vh 2vw' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }} >
+                        <Button
+                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
+                            color='default'
+                            variant='raised'
+                            onClick={this.onFilterClick}>
+                            <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
                     </Button>
-                    <Button style={{
-                        zIndex: 1, position: 'absolute',
-                        marginLeft: `${(displayFilter ? (70 - 2) : 70)}%`, marginTop: '1.2%'
-                    }}
-                        onClick={this.onPrintClicked}>
-                        <PrintIcon /> Print {collection}
-                    </Button>
+                        <Button
+                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
+                            color='default'
+                            variant='raised'
+                            onClick={this.onPrintClicked}>
+                            <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
+                        </Button>
+                    </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
                             <GridContainer rows={rows}

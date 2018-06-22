@@ -7,6 +7,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Logo from '../../../../assets/logo.svg';
+import { ROLE } from '../../../../store/constants/auth';
 
 const styles = theme => ({
   container: {
@@ -58,7 +59,7 @@ const styles = theme => ({
     },
   },
   selected: {
-    background: '#3f51b5',
+    background: theme.palette.primary.main,
     color: 'white !important',
   }
 });
@@ -110,10 +111,12 @@ const renderTextField = ({
   );
 
 const initialState = { value: 0 };
+
+const { USER, ADMIN } = ROLE;
 class MaterialUiForm extends React.Component {
   state = { ...initialState };
   onSubmitHandler = ({ username, password }) => {
-    const role = this.state.value === 0 ? 'user' : 'admin';
+    const role = this.state.value === 0 ? USER : ADMIN;
     this.props.onSubmit(username, password, role);
   }
   handleChange = (event, value) => {
