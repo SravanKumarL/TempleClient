@@ -34,5 +34,5 @@ export {
   onTransactionCommitted,
   onTransactionCommitReq,
   clearMessages,
-  onPagePopulated
+  resetEntity
 } from './entity'

@@ -68,19 +68,19 @@ const handleResponse = function* (response, collection, type, changedObj) {
         yield put(actions.onTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection, searchCriteria, refetch } = action.payload;
-    const { pagingOptions } = action.payload;
-    let count, pageSize = undefined;
+    const { collection, searchCriteria, refetch, fetchCount } = action.payload;
+    const { pagingOptions, isPrintReq } = action.payload;
+    let skip, take = undefined;
     if (pagingOptions) {
-        count = pagingOptions.count;
-        pageSize = pagingOptions.pageSize;
+        skip = pagingOptions.skip;
+        take = pagingOptions.take;
     }
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
     else {
         try {
-            yield put(actions.onFetchReq(collection, refetch));
+            yield put(actions.onFetchReq(collection, refetch, isPrintReq));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -92,15 +92,15 @@ export function* handleFetchData(action) {
                 if (searchCriteria && collection === constants.Reports) {
                     response = yield axios({
                         method: 'post',
-                        data: { ...searchCriteria, pageSize, count },
-                        url: `/${collection}`,
+                        data: { ...searchCriteria, take, skip },
+                        url: `/${collection}?fetchCount=${fetchCount}`,
                         headers
                     });
                 }
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}?pageSize=${pageSize}&count=${count}`,
+                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}`,
                         headers
                     });
                 }

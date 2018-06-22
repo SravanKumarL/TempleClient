@@ -12,9 +12,12 @@ const mapStateToProps = (state, ownProps) => {
         formattedColumns = getFormattedColumns(columns);
     else
         formattedColumns = getFormattedColumns(state[collection].columns);
-    let { loading, rows, error, message } = state[collection];
+    let { loading, rows, error, message, printReq, totalCount } = state[collection];
     formattedColumns = formattedColumns.map(column => ({ ...column, title: convertToStartCase(column.title) }));
-    return { loading, rows, columns: formattedColumns, error, message, collection, readOnly: readOnlyProp, searchCriteria };
+    return {
+        loading, rows, columns: formattedColumns, error, message, collection,
+        readOnly: readOnlyProp, searchCriteria, printReq, totalCount
+    };
 }
 
 export default createContainer(DataGrid, mapStateToProps);

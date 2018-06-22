@@ -24,7 +24,7 @@ export const transactionType = {
 export const uniqueProp = collection => collection === constants.Users ? 'username' : 'id';
 
 export const ManagementReport = ['pooja','total poojas','total amount'];
-export const PoojaReport=['names','gothram','nakshatram'];
+export const PoojaReport=['names','gothram','nakshatram','pooja'];
 export const AccountReport=['names','id','pooja','amount','chequeNo','bankName','createdDate'];
 export default constants;
 export const reportMapping={

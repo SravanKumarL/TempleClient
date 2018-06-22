@@ -16,14 +16,12 @@ class App extends Component {
   componentDidMount() {
     this.props.autoSignIn();
   }
-  activeTabChangedHandler = (activeTab) => {
-    this.setState({ activeTab });
-  }
+  activeTabChangedHandler = (activeTab) => { this.setState({ activeTab }); }
   handleLogin = () => this.props.history.push('/');
   render() {
     const layout = () => (
       <Layout activeTabChanged={this.activeTabChangedHandler}>
-        <Board activeTab={this.state.activeTab} role={this.props.role} />
+        <Board activeTab={this.state.activeTab} role={this.props.role} resetEntity={this.props.resetEntity}/>
       </Layout>
     );
     let routes = (

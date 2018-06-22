@@ -36,4 +36,3 @@ export const onFetchFailed= 'ON_FETCH_FAILED';
 export const onTransactionFailed='ON_TRANSACTION_FAILED';
 export const onTransactionCommitted='ON_TRANSACTION_COMMITTED';
 export const clearMessages='CLEAR_MESSAGES';
-export const onPagePopulated="ON_PAGE_POPULATED";
