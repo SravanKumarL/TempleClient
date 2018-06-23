@@ -40,11 +40,12 @@ export const getTransactionsFail = (error) => {
   }
 }
 
-export const searchTransactions = (searchData, fetchCount = false) => {
+export const searchTransactions = (searchData, fetchCount = false, refetch = false) => {
   return {
     type: actionTypes.SEARCH_TRANSACTIONS,
     fetchCount,
     searchData,
+    refetch
   }
 }
 export const searchTransactionsStarted = () => {
@@ -52,11 +53,12 @@ export const searchTransactionsStarted = () => {
     type: actionTypes.SEARCH_TRANSACTIONS_START,
   }
 }
-export const searchTransactionsSuccess = (responseData) => {
+export const searchTransactionsSuccess = (responseData, refetch = false) => {
   return {
     type: actionTypes.SEARCH_TRANSACTIONS_SUCCESS,
     transactions: responseData.transactions,
-    totalCount: responseData.totalCount
+    totalCount: responseData.totalCount,
+    refetch
   }
 }
 

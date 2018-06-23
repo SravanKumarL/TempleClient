@@ -35,7 +35,7 @@ export const searchTransactionsStarted = (state, action) => {
 }
 export const searchTransactionsSuccess = (state, action) => {
   return updateObject(state, {
-    searchedTransactions: [...state.searchedTransactions, ...action.transactions], loading: false,
+    searchedTransactions: action.refetch ? [...state.transactions, ...action.transactions] : action.transactions, loading: false,
     totalCount: action.totalCount || state.totalCount
   });
 }

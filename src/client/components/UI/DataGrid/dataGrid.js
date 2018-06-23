@@ -154,6 +154,7 @@ export default class DataGrid extends React.PureComponent {
                             style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
                             color='default'
                             variant='raised'
+                            disabled={rows && columns && rows.length > 0 && columns.length > 0}
                             onClick={this.onFilterClick}>
                             <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
                     </Button>
@@ -161,6 +162,7 @@ export default class DataGrid extends React.PureComponent {
                             style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
                             color='default'
                             variant='raised'
+                            disabled={rows && columns && rows.length > 0 && columns.length > 0}
                             onClick={this.onPrintClicked}>
                             <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
                         </Button>

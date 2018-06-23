@@ -76,7 +76,7 @@ export default class GridContainer extends React.PureComponent {
         }
         if (changed && Object.keys(changed).some(key => (changed[key]))) {
             const changesObj = Object.entries(changed)[0];
-            const changedId = Number(changesObj[0]);
+            const changedId = changesObj[0];
             const changes = changesObj[1];
             const changedObj = rows.filter(row => row.id === changedId)[0];
             if (Object.keys(changes).some(changedField => changes[changedField] !== changedObj[changedField].toString())) {
