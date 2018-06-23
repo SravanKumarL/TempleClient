@@ -56,7 +56,7 @@ export function* searchTransactionsSaga(action) {
   try {
     yield delay(500);
     yield put(actions.searchTransactionsStarted());
-    const { searchData, fetchCount } = action;
+    const { searchData, fetchCount, refetch } = action;
     const token = sessionStorage.getItem('token');
     if (!token) {
       const error = { message: 'You are not allowed to do the transaction' };
@@ -71,7 +71,7 @@ export function* searchTransactionsSaga(action) {
         headers,
         data: searchData
       });
-      yield put(actions.searchTransactionsSuccess(response.data));
+      yield put(actions.searchTransactionsSuccess(response.data, refetch));
     }
   } catch (error) {
     yield put(actions.searchTransactionsFail(error));

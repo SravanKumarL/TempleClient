@@ -16,12 +16,10 @@ const initialState = {
   searchPanelOpen: false,
   showSearchButton: true,
   searchValue: '',
-  searchedTransactions: null,
-  prevProps: {},
+  searchedTransactions: [],
   searchTextError: false,
   showOverflow: false,
   count: 0,
-  countFetched: false,
 };
 const pageSize = 50;
 
@@ -32,26 +30,29 @@ class SearchTransaction extends React.Component {
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.searchValue !== prevState.prevProps.searchValue) {
-      return { prevProps: { ...prevState.prevProps, searchValue: nextProps.searchValue } };
+    if (nextProps.searchedTransactions !== prevState.prevSearchedTransactions) {
+      return {
+        searchedTransactions: nextProps.searchedTransactions, prevSearchedTransactions: nextProps.searchedTransactions,
+        count: nextProps.searchedTransactions.length
+      };
     }
     return null;
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
-  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false });
+  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false, count: 0, searchedTransactions: null });
   panelExitHandler = () => this.setState({ ...initialState });
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
-    this.props.searchTransactions({ searchValue: value, skip: this.state.count, take: pageSize }, !this.state.countFetched); //update count in scroll event
-    this.setState({ searchValue: value, isLoading: true, countFetched: true });
+    this.props.searchTransactions({ searchValue: value, skip: 0, take: pageSize }, true); //update count in scroll event
+    this.setState({ searchValue: value, isLoading: true, searchedTransactions: null, count: 0 });
   }
   scrollHandler = () => {
     const count = this.state.count + pageSize;
     this.setState({ count });
-    this.props.searchTransactions({ searchValue: this.state.searchValue, skip: count, take: pageSize });
+    this.props.searchTransactions({ searchValue: this.state.searchValue, skip: count, take: pageSize }, false);
   }
   clearclickedHandler = () => {
-    this.setState({ searchValue: '', searchedTransactions: null });
+    this.setState({ searchValue: '', searchedTransactions: null, count: 0 });
     this.input.focus();
   }
   inputRefHandler = (node) => { this.input = node; }
