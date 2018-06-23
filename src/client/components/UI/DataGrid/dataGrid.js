@@ -170,7 +170,7 @@ export default class DataGrid extends React.PureComponent {
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
-                                totalCount={totalCount} />}
+                                totalCount={totalCount} title={title}/>}
                         {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === totalCount) &&
                             rows.length > 0 && columns.length > 0 &&
                             <Paper>

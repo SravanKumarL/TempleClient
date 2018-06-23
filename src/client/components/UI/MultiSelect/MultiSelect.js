@@ -253,7 +253,7 @@ class MultiSelect extends React.Component {
           id: 'react-select-chip',
           name: 'react-select-chip',
           simpleValue: true,
-          options: options || suggestions,
+          options
         }}
       />
     }
