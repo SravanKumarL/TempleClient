@@ -17,13 +17,16 @@ const ReportCriteria = (props) => {
   const heading = `Select From Date and To Date to generate ${title}`;
   let pooja = null;
   if (title.trim().toLowerCase() === POOJA) {
+    const elementConfig = {
+      options: poojas,
+      avoidDuplicateSelection: true
+    }
     pooja = (
       <Field
         elementType={MULTISELECT}
         value={selectedPooja}
+        elementConfig={elementConfig}
         changed={poojaChangedHandler}
-        options={poojas}
-        avoidDuplicateSelection={true}
         label='Pooja Name'
       />
     )

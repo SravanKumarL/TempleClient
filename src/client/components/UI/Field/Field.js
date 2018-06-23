@@ -70,12 +70,12 @@ const input = (props) => {
       break;
     case MULTISELECT:
       inputElement = <MultiSelect
-        showLabels={props.showLabels}
-        value={props.value}
-        options={props.options}
-        changed={props.changed}
-        avoidDuplicateSelection={props.avoidDuplicateSelection}
-        label={props.label}
+        showLabels={showLabels}
+        value={value}
+        options={elementConfig.options}
+        changed={changed}
+        avoidDuplicateSelection={elementConfig.avoidDuplicateSelection}
+        label={label}
         type={MULTISELECT}
       />
       break;
