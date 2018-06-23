@@ -72,7 +72,7 @@ class ErrorSnackbar extends React.Component {
           open={open}
           autoHideDuration={6000}
           onClose={this.handleClose}
-          SnackbarContentProps={{
+          snackbarcontentprops={{
             'aria-describedby': 'message-id',
           }}
           message={<span id="message-id">{message}</span>}

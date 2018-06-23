@@ -9,7 +9,7 @@ export const withPoojaDetails = (WrappedComponent) => {
   class withPoojaDetails extends Component {
     state = { ...initialState };
     componentDidMount() {
-      this.props.fetchData(constants.Poojas);
+      this.props.fetchEntityData(constants.Poojas);
     }
     static getDerivedStateFromProps(nextProps) {
       if (nextProps.poojaDetails) {

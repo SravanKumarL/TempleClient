@@ -7,7 +7,7 @@ export function* watchAuth() {
   yield takeEvery(actionTypes.AUTHENTICATE, signInSaga);
   yield takeEvery(actionTypes.AUTH_AUTO_SIGNIN, autoSigninSaga);
   yield takeEvery(actionTypes.SEARCH_TRANSACTIONS, searchTransactionsSaga);
-  yield takeEvery(actionTypes.fetchData, handleFetchData);
-  yield takeEvery(actionTypes.fetchSchema, handleFetchSchema);
-  yield takeEvery(actionTypes.commitTransaction, handleTransaction);
+  yield takeEvery(actionTypes.fetchEntityData, handleFetchData);
+  yield takeEvery(actionTypes.fetchEntitySchema, handleFetchSchema);
+  yield takeEvery(actionTypes.commitEntityTransaction, handleTransaction);
 }

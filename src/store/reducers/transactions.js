@@ -71,9 +71,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SEARCH_TRANSACTIONS_FAIL:
       return searchTransactionsFail(state, action);
 
-    case actionTypes.onTransactionCommitted:
+    case actionTypes.ON_TRANSACTION_COMMITTED:
       return onTransactionCommitted(state, action);
-    case actionTypes.onTransactionFailed:
+    case actionTypes.ON_TRANSACTION_FAILED:
       return onTransactionFailed(state, action);
     default:
       return state;

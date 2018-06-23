@@ -23,16 +23,19 @@ export const SEARCH_TRANSACTIONS_START = 'SEARCH_TRANSACTIONS_START';
 export const SEARCH_TRANSACTIONS_SUCCESS = 'SEARCH_TRANSACTIONS_SUCCESS';
 export const SEARCH_TRANSACTIONS_FAIL = 'SEARCH_TRANSACTIONS_FAIL';
 
+export const ON_TRANSACTION_COMMITTED = 'ON_TRANSACTION_COMMITTED';
+export const ON_TRANSACTION_FAILED = 'ON_TRANSACTION_FAILED';
+
 //Entity
-export const resetEntity='RESET_ENTITY';
-export const commitTransaction='COMMIT_TRANSACTION';
-export const onTransactionCommitReq='ON_TRANSACTION_COMMIT_REQ';
-export const fetchData='FETCH_DATA';
-export const fetchSchema='FETCH_SCHEMA';
-export const onFetchSchemaSuccess= 'ON_FETCH_SCHEMA_SUCCESS';
-export const onFetchReq= 'ON_FETCH_REQ';
-export const onFetchSuccess= 'ON_FETCH_SUCCESS';
-export const onFetchFailed= 'ON_FETCH_FAILED';
-export const onTransactionFailed='ON_TRANSACTION_FAILED';
-export const onTransactionCommitted='ON_TRANSACTION_COMMITTED';
-export const clearMessages='CLEAR_MESSAGES';
+export const resetEntity = 'RESET_ENTITY';
+export const commitEntityTransaction = 'COMMIT_ENTITY_TRANSACTION';
+export const onEntityTransactionCommitReq = 'ON_ENTITY_TRANSACTION_COMMIT_REQ';
+export const fetchEntityData = 'FETCH_ENTITY_DATA';
+export const fetchEntitySchema = 'FETCH_ENTITY_SCHEMA';
+export const onFetchEntitySchemaSuccess = 'ON_FETCH_ENTITY_SCHEMA_SUCCESS';
+export const onFetchEntityReq = 'ON_FETCH_ENTITY_REQ';
+export const onFetchEntitySuccess = 'ON_FETCH_ENTITY_SUCCESS';
+export const onFetchEntityFailed = 'ON_FETCH_ENTITY_FAILED';
+export const onEntityTransactionFailed = 'ON_ENTITY_TRANSACTION_FAILED';
+export const onEntityTransactionCommitted = 'ON_ENTITY_TRANSACTION_COMMITTED';
+export const clearEntityMessages = 'CLEAR_ENTITY_MESSAGES';

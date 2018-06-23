@@ -23,16 +23,16 @@ export {
 } from './transactions.js';
 
 export {
-  commitTransaction,
-  fetchData,
-  fetchSchema,
-  onFetchSchemaSuccess,
-  onFetchReq,
-  onFetchSuccess,
-  onFetchFailed,
-  onTransactionFailed,
-  onTransactionCommitted,
-  onTransactionCommitReq,
-  clearMessages,
+  commitEntityTransaction,
+  fetchEntityData,
+  fetchEntitySchema,
+  onFetchEntitySchemaSuccess,
+  onFetchEntityReq,
+  onFetchEntitySuccess,
+  onFetchEntityFailed,
+  onEntityTransactionFailed,
+  onEntityTransactionCommitted,
+  onEntityTransactionCommitReq,
+  clearEntityMessages,
   resetEntity
 } from './entity'
