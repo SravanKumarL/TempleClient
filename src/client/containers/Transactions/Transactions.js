@@ -202,7 +202,7 @@ class Transactions extends React.Component {
     } else {
       transaction.others = false;
     }
-    this.props.commitTransaction(constants.add, constants.Transactions, transaction);
+    this.props.commitEntityTransaction(constants.add, constants.Transactions, transaction);
     this.modalCloseHandler();
     this.setState({ ...initialState });
     printHtml.printElement(document.getElementById('transactionSummary'));
@@ -236,7 +236,7 @@ class Transactions extends React.Component {
   onEditClicked = () => {
     const { updates, selectedTransaction, editable } = this.state;
     if (editable && updates && Object.keys(updates).length > 0)
-      this.props.commitTransaction(constants.edit, constants.Transactions, updates, selectedTransaction);
+      this.props.commitEntityTransaction(constants.edit, constants.Transactions, updates, selectedTransaction);
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {

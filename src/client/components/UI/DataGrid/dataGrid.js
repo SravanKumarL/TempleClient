@@ -27,26 +27,26 @@ export default class DataGrid extends React.PureComponent {
         };
     }
     defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
-    clearMessages = () => this.props.clearMessages(this.props.collection);
+    clearMessages = () => this.props.clearEntityMessages(this.props.collection);
     setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
-        const transaction = () => this.props.fetchData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq, fetchCount);
+        const transaction = () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq, fetchCount);
         this.setState({ transaction });
         transaction();
     }
     fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions, fetchCount = false) => {
         switch (type) {
             case transactionType.fetch.schema:
-                this.props.fetchSchema(collection, searchCriteria);
+                this.props.fetchEntitySchema(collection, searchCriteria);
                 break;
             case transactionType.fetch.data:
-                this.props.fetchData(collection, searchCriteria, pagingOptions, false, false, fetchCount);//default paging options
+                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount);//default paging options
                 break;
             default:
                 return;
         }
     }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
-        const { commitTransaction } = this.props;
+        const { commitEntityTransaction } = this.props;
         let transaction = null;
         switch (type) {
             case transactionType.fetch.schema:
@@ -55,7 +55,7 @@ export default class DataGrid extends React.PureComponent {
                 this.setState({ countFetched: true });
                 break;
             default:
-                transaction = () => commitTransaction(type, collection, change, changedObj);
+                transaction = () => commitEntityTransaction(type, collection, change, changedObj);
                 break;
         }
         this.setState({ transaction });
@@ -64,7 +64,7 @@ export default class DataGrid extends React.PureComponent {
     }
     onSnackBarClose = () => {
         this.setState({ snackBarOpen: false, snackBarClosed: true });
-        this.props.clearMessages(this.props.collection);
+        this.props.clearEntityMessages(this.props.collection);
     }
     onFilterClick = () => {
         if (this.props.rows && this.props.rows.length > 0)
@@ -170,7 +170,7 @@ export default class DataGrid extends React.PureComponent {
                             <GridContainer rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
-                                totalCount={totalCount} title={title}/>}
+                                totalCount={totalCount} title={title} />}
                         {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === totalCount) &&
                             rows.length > 0 && columns.length > 0 &&
                             <Paper>
