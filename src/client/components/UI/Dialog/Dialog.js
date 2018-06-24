@@ -15,7 +15,7 @@ const dialog = (props) => {
   const classes = {
     root: {
       color: 'white',
-      fontWeight: 500
+      fontWeight: 500,
     }
   };
   const { primaryDisabled, handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;

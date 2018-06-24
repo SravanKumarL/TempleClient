@@ -153,8 +153,6 @@ class DateTimePicker extends Component {
       )
       : (
         <div className={classes.textFieldRoot}>
-          {/* <input className={classes.textFieldInput} {...props} defaultValue={defaultValue}
-            ref={node => { this.node = node }} /> */}
           <Input
             inputRef={node => { this.node = node }}
             className={classes.textFieldInput}
@@ -162,8 +160,8 @@ class DateTimePicker extends Component {
             defaultValue={defaultValue}
             disableUnderline
             endAdornment={
-              <InputAdornment style={{ position: 'absolute', left: '88%' }} position="end">
-                <IconButton onClick={onClearClicked}>
+              <InputAdornment position="end">
+                <IconButton style={{height: 36, width: 36}} onClick={onClearClicked}>
                   <Clear />
                 </IconButton>
               </InputAdornment>

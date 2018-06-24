@@ -120,14 +120,24 @@ class Reports extends React.Component {
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
     const { poojaDetails } = nextProps;
+    const { selectedOption, selectedPooja } = prevState;
+    let newState = null;
     if (poojaDetails) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      return { ...prevState, poojaDetails: options };
+      newState = { ...prevState, poojaDetails: options };
     }
-    return null;
+    if (selectedOption.name === POOJA) {
+      let generateDisabled = false;
+      generateDisabled = true;
+      if (selectedPooja && selectedPooja !== '') {
+        generateDisabled = false;
+      }
+      newState = { ...prevState, generateDisabled };
+    }
+    return newState;
   }
   //UI State Handlers
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
@@ -151,14 +161,8 @@ class Reports extends React.Component {
     this.props.history.push('/reports/managementReport');
   }
   getModal = () => {
-    const { modalOpen, selectedOption, selectedDates, selectedPooja } = this.state;
-    let generateDisabled = false;
-    if (selectedOption.name === POOJA) {
-      generateDisabled = true;
-      if (selectedPooja) {
-        generateDisabled = false;
-      }
-    }
+    const { modalOpen, selectedOption, selectedDates, selectedPooja, generateDisabled } = this.state;
+
     return (
       <Dialog
         open={modalOpen}
