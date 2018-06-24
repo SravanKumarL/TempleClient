@@ -126,7 +126,7 @@ class MyAppBar extends React.Component {
             </Hidden>
             <Hidden smUp>
               <Typography variant="title" style={{ textTransform: 'capitalize' }} color="inherit" className={classes.flex}>
-                {activeTab}
+                {activeTab} 
               </Typography>
             </Hidden>
             <Hidden lgUp>

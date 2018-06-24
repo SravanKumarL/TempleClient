@@ -93,7 +93,7 @@ const input = (props) => {
   }
   const { classes } = props;
   return (
-    <div className={classes.container} style={elementType === DATE ? { minHeight: 155 } : elementType === RADIO ? { minHeight: 100 } : null}>
+    <div className={classes.container} style={elementType === DATE ? { minHeight: 155 } : elementType === RADIO ? { minHeight: 70 } : null}>
       <FormControl className={classes.formControl}>
         {inputElement}
       </FormControl>

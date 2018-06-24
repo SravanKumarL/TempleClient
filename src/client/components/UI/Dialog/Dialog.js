@@ -18,7 +18,7 @@ const dialog = (props) => {
       fontWeight: 500,
     }
   };
-  const { primaryDisabled, handleClose, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
+  const { primaryDisabled, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
   let buttons = (
     <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="error">
       {primaryIcon}
@@ -44,7 +44,6 @@ const dialog = (props) => {
       <Dialog
         open={open}
         TransitionComponent={Transition}
-        onClose={handleClose}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >

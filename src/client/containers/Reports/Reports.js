@@ -104,6 +104,28 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: {
       flexGrow: 1
     }
+  },
+  centerTextboxContainer: {
+    display: 'flex',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centerTextbox: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      height: '30vh',
+      width: '50vw',
+      border: '4px dashed #eee',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
+  },
+  centerText: {
+    fontSize: 16,
+    [theme.breakpoints.up('sm')]: {
+      fontSize: 24,
+    }
   }
 });
 
@@ -114,29 +136,30 @@ const initialState = {
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',
-  searchObj: {}
+  searchObj: {},
+  generateDisabled: false,
 };
 class Reports extends React.Component {
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
     const { poojaDetails } = nextProps;
     const { selectedOption, selectedPooja } = prevState;
-    let newState = null;
+    let newState = { ...prevState };
     if (poojaDetails) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      newState = { ...prevState, poojaDetails: options };
+      newState = { ...newState, poojaDetails: options };
     }
+    let generateDisabled = false;
     if (selectedOption.name === POOJA) {
-      let generateDisabled = false;
       generateDisabled = true;
       if (selectedPooja && selectedPooja !== '') {
         generateDisabled = false;
       }
-      newState = { ...prevState, generateDisabled };
     }
+    newState = { ...newState, generateDisabled };
     return newState;
   }
   //UI State Handlers
@@ -230,7 +253,11 @@ class Reports extends React.Component {
           <div className={classes.dataGrid}>
             <DataGridWrapper title={`${selectedOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
-          <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
+          <div className={classes.centerTextboxContainer}>
+            <div className={classes.centerTextbox}>
+              <Typography variant='subheading' className={classes.centerText}> Select a report... </Typography>
+            </div>
+          </div>
         }
       </div>
     );
