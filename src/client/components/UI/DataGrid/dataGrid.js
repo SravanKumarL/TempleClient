@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import PrintIcon from '@material-ui/icons/Print'
 import FilterIcon from '@material-ui/icons/FilterList'
 import ErrorSnackbar from '../Snackbar/errorSnackBar';
-import { transactionType } from '../../../../store/sagas/constants';
+import constants, { transactionType } from '../../../../store/sagas/constants';
 import LoadingGrid from './loadingGrid';
 import Button from '@material-ui/core/Button';
 import printHtml from 'print-html-element';
@@ -11,6 +11,7 @@ import GridContainer from './GridContainer';
 import Typography from '@material-ui/core/Typography';
 import PrintGrid from './PrintGrid';
 import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
+import { Grid, Table } from '@devexpress/dx-react-grid-material-ui';
 
 export default class DataGrid extends React.PureComponent {
     constructor(props) {
@@ -28,8 +29,11 @@ export default class DataGrid extends React.PureComponent {
     }
     defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
     clearMessages = () => this.props.clearEntityMessages(this.props.collection);
+    fetchOthers = () => this.props.collection === constants.Reports && this.props.searchCriteria.ReportName === constants.Management ?
+        this.props.rows.length === this.props.totalCount : undefined;
     setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
-        const transaction = () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true, isPrintReq, fetchCount);
+        const transaction = () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true,
+            isPrintReq, fetchCount, this.fetchOthers());
         this.setState({ transaction });
         transaction();
     }
@@ -39,7 +43,7 @@ export default class DataGrid extends React.PureComponent {
                 this.props.fetchEntitySchema(collection, searchCriteria);
                 break;
             case transactionType.fetch.data:
-                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount);//default paging options
+                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount, this.fetchOthers());//default paging options
                 break;
             default:
                 return;
@@ -146,6 +150,7 @@ export default class DataGrid extends React.PureComponent {
                     <PrintGrid rows={printRows[key]} columns={printColumns} />
                 </div>)) : <PrintGrid rows={printRows} columns={printColumns} />);
         const { HIDE } = FILTER_VISIBILITY;
+        const disableFilterPrint = !(rows && columns && rows.length > 0 && columns.length > 0);
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative', margin: '2vh 2vw' }}>
@@ -154,7 +159,7 @@ export default class DataGrid extends React.PureComponent {
                             style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
                             color='default'
                             variant='raised'
-                            disabled={rows && columns && rows.length > 0 && columns.length > 0}
+                            disabled={disableFilterPrint}
                             onClick={this.onFilterClick}>
                             <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
                     </Button>
@@ -162,14 +167,14 @@ export default class DataGrid extends React.PureComponent {
                             style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
                             color='default'
                             variant='raised'
-                            disabled={rows && columns && rows.length > 0 && columns.length > 0}
+                            disabled={disableFilterPrint}
                             onClick={this.onPrintClicked}>
                             <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
                         </Button>
                     </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
-                            <GridContainer rows={rows}
+                            <GridContainer rows={rows.filter(row => !row.changed)}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
                                 totalCount={totalCount} title={title} />}
@@ -177,7 +182,11 @@ export default class DataGrid extends React.PureComponent {
                             rows.length > 0 && columns.length > 0 &&
                             <Paper>
                                 Others
-                           </Paper>}
+                                <br />
+                                <Grid rows={rows.filter(row => row.others)} columns={columns}>
+                                    <Table />
+                                </Grid>
+                            </Paper>}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>

@@ -2,8 +2,13 @@ import * as actionTypes from './actionTypes';
 export const commitEntityTransaction = (type, collection, change, changedObj) => {
     return { type: actionTypes.commitEntityTransaction, payload: { type, change, changedObj, collection, name: collection } }
 }
-export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false, fetchCount = false) => {
-    return { type: actionTypes.fetchEntityData, payload: { collection, searchCriteria, pagingOptions, refetch, isPrintReq, name: collection, fetchCount } };
+export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false, fetchCount = false, fetchOthers) => {
+    return {
+        type: actionTypes.fetchEntityData, payload: {
+            collection, searchCriteria, pagingOptions,
+            refetch, isPrintReq, name: collection, fetchCount, fetchOthers
+        }
+    };
 }
 export const fetchEntitySchema = (collection, searchCriteria) => {
     return { type: actionTypes.fetchEntitySchema, payload: { collection, searchCriteria, name: collection } };
