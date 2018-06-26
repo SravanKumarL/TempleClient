@@ -104,18 +104,7 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                if (fetchOthers === false && response.data.totalCount === response.data.rows.length) {
-                    response = yield axios({
-                        method: 'post',
-                        data: { ...searchCriteria, take, skip },
-                        url: `/${collection}?fetchOthers=${true}`,
-                        headers
-                    });
-                    yield put(actions.onFetchEntitySuccess(response.data, collection));
-                }
-                else {
-                    yield put(actions.onFetchEntitySuccess(response.data, collection));
-                }
+                yield put(actions.onFetchEntitySuccess(response.data, collection));
             }
         } catch (error) {
             console.log(error);

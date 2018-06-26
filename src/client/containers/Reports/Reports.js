@@ -140,6 +140,8 @@ class Reports extends React.Component {
       searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
       if (searchObj.ReportName === POOJA)
         searchObj = { ...searchObj, pooja: this.state.selectedPooja };
+      else if (searchObj.ReportName === MANAGEMENT)
+        searchObj = { ...searchObj, createdBy: this.props.user };
     }
     this.setState({ reportOpen: true, modalOpen: false, searchObj });
   }
@@ -162,7 +164,7 @@ class Reports extends React.Component {
     return (
       <Dialog
         open={modalOpen}
-        primaryClicked={this.generateReportHandler}
+        primaryClicked={this.generateReportHandler.bind(this)}
         handleClose={this.closeHandler}
         primaryText='Generate Report'
         secondaryText='Close'
@@ -244,4 +246,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default createContainer(withPoojaDetails(withStyles(styles)(Reports), mapStateToProps));
+export default createContainer(withStyles(styles)(Reports), mapStateToProps);

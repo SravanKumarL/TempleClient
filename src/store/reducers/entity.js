@@ -38,6 +38,9 @@ const mergeRows = (state, payload) => {
     if (!payload || !payload.rows)
         return state.rows;
     const primaryKey = uniqueProp(payload.name);
+    if (!(state.rows.every(row => primaryKey in row) && payload.rows.every(row => primaryKey in row))){
+        return [...state.rows, ...payload.rows];
+    }
     const prevRowKeys = state.rows.map(row => row[primaryKey]);
     const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
     return [...state.rows, ...newRows];
@@ -48,10 +51,10 @@ const changeRows = (payload, rows, commitSucessful = false) => {
     const prop = uniqueProp(name);
     switch (type) {
         case constants.add:
-            if (commitSucessful){
+            if (commitSucessful) {
                 return [...rows.filter(row => !row.toChange), { ...change }];
             }
-            else{
+            else {
                 return [...rows, { ...change, toChange: true }]
             }
         case constants.edit:

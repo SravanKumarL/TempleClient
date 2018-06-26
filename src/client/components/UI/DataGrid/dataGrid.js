@@ -22,20 +22,23 @@ export default class DataGrid extends React.PureComponent {
             snackBarOpen: false,
             transaction: null,
             prevProps: {},
+            countFetched: false,
+            othersFetched: false,
             fetchData: this.fetchData.bind(this),
             clearMessages: this.clearMessages.bind(this),
-            countFetched: false
+            fetchOthers: this.fetchOthers.bind(this),
+            fetchPaginatedData: this.fetchPaginatedData.bind(this),
         };
     }
     defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
+
+    //#region Fetch handlers
     clearMessages = () => this.props.clearEntityMessages(this.props.collection);
     fetchOthers = () => this.props.collection === constants.Reports && this.props.searchCriteria.ReportName === constants.Management ?
         this.props.rows.length === this.props.totalCount : undefined;
-    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
-        const transaction = () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true,
-            isPrintReq, fetchCount, this.fetchOthers());
-        this.setState({ transaction });
-        transaction();
+    fetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
+        return () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true,
+            isPrintReq, fetchCount, !this.state.othersFetched && this.fetchOthers());
     }
     fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions, fetchCount = false) => {
         switch (type) {
@@ -43,11 +46,20 @@ export default class DataGrid extends React.PureComponent {
                 this.props.fetchEntitySchema(collection, searchCriteria);
                 break;
             case transactionType.fetch.data:
-                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount, this.fetchOthers());//default paging options
+                const initialFetchOthers = this.props.collection === constants.Reports &&
+                    this.props.searchCriteria.ReportName === constants.Management ? false : undefined;
+                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount, initialFetchOthers);//default paging options
                 break;
             default:
                 return;
         }
+    }
+    //#endregion
+
+    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
+        const transaction = this.fetchPaginatedData(collection, pagingOptions, isPrintReq, fetchCount);
+        this.setState({ transaction });
+        transaction();
     }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
         const { commitEntityTransaction } = this.props;
@@ -99,13 +111,23 @@ export default class DataGrid extends React.PureComponent {
         }
         else if (JSON.stringify(searchCriteria) !== JSON.stringify(state.prevProps.searchCriteria)) {
             state.fetchData(transactionType.fetch.schema, props.collection, searchCriteria);
-            const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria);
+            const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria, undefined, true);
             transaction();
             state.clearMessages();
-            return ({ prevProps: { ...state.prevProps, searchCriteria, loading }, transaction });
+            return ({
+                prevProps: { ...state.prevProps, searchCriteria, loading }, transaction,
+                othersFetched: false, countFetched: true
+            });
         }
         else if (loading !== state.prevProps.loading) {
-            return ({ prevProps: { ...state.prevProps, loading } });
+            let update = {};
+            if (!loading && state.fetchOthers() && !state.othersFetched) {
+                const transaction = state.fetchPaginatedData(props.collection, {}, false, false);
+                transaction();
+                state.clearMessages();
+                update = { transaction, othersFetched: true };
+            }
+            return { ...update, prevProps: { ...state.prevProps, loading } };
         }
         return null;
     }
@@ -174,11 +196,11 @@ export default class DataGrid extends React.PureComponent {
                     </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
-                            <GridContainer rows={rows.filter(row => !row.changed)}
+                            <GridContainer rows={rows.filter(row => !row.others)}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
                                 totalCount={totalCount} title={title} />}
-                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.length === totalCount) &&
+                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.filter(row=>!row.others).length === totalCount) &&
                             rows.length > 0 && columns.length > 0 &&
                             <Paper>
                                 Others
