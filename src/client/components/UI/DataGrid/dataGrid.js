@@ -8,10 +8,9 @@ import LoadingGrid from './loadingGrid';
 import Button from '@material-ui/core/Button';
 import printHtml from 'print-html-element';
 import GridContainer from './GridContainer';
-import Typography from '@material-ui/core/Typography';
-import PrintGrid from './PrintGrid';
+import PrintGridContainer from './PrintGridContainer';
 import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
-import { Grid, Table } from '@devexpress/dx-react-grid-material-ui';
+import OthersPaper from './OthersPaper';
 
 export default class DataGrid extends React.PureComponent {
     constructor(props) {
@@ -23,7 +22,6 @@ export default class DataGrid extends React.PureComponent {
             transaction: null,
             prevProps: {},
             countFetched: false,
-            othersFetched: false,
             fetchData: this.fetchData.bind(this),
             clearMessages: this.clearMessages.bind(this),
             fetchOthers: this.fetchOthers.bind(this),
@@ -31,15 +29,21 @@ export default class DataGrid extends React.PureComponent {
         };
     }
     defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
-
     //#region Fetch handlers
+
     clearMessages = () => this.props.clearEntityMessages(this.props.collection);
-    fetchOthers = () => this.props.collection === constants.Reports && this.props.searchCriteria.ReportName === constants.Management ?
-        this.props.rows.length === this.props.totalCount : undefined;
+
+    fetchOthers = (collection, ReportName = '', rows, totalCount, newPageCount = 0) =>
+        collection === constants.Reports && ReportName === constants.Management ?
+            rows.length + newPageCount >= totalCount : undefined;
+
     fetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
-        return () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true,
-            isPrintReq, fetchCount, !this.state.othersFetched && this.fetchOthers());
+        const { fetchEntityData, searchCriteria, rows, totalCount } = this.props;
+        return () => fetchEntityData(collection, searchCriteria, pagingOptions, true,
+            isPrintReq, fetchCount, this.fetchOthers(collection, searchCriteria && searchCriteria.ReportName, rows, totalCount,
+                pagingOptions.take));
     }
+
     fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions, fetchCount = false) => {
         switch (type) {
             case transactionType.fetch.schema:
@@ -114,20 +118,10 @@ export default class DataGrid extends React.PureComponent {
             const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria, undefined, true);
             transaction();
             state.clearMessages();
-            return ({
-                prevProps: { ...state.prevProps, searchCriteria, loading }, transaction,
-                othersFetched: false, countFetched: true
-            });
+            return { prevProps: { ...state.prevProps, searchCriteria, loading }, transaction, countFetched: true };
         }
         else if (loading !== state.prevProps.loading) {
-            let update = {};
-            if (!loading && state.fetchOthers() && !state.othersFetched) {
-                const transaction = state.fetchPaginatedData(props.collection, {}, false, false);
-                transaction();
-                state.clearMessages();
-                update = { transaction, othersFetched: true };
-            }
-            return { ...update, prevProps: { ...state.prevProps, loading } };
+            return { prevProps: { ...state.prevProps, loading } };
         }
         return null;
     }
@@ -163,14 +157,7 @@ export default class DataGrid extends React.PureComponent {
             }
             printColumns = printColumns.filter(column => column.name !== 'pooja');
         }
-        const PrintGridContainer = () => (searchCriteria && searchCriteria.ReportName === 'Pooja' ?
-            Object.keys(printRows).map(key =>
-                (<div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} key={key}>
-                    <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
-                        {key}
-                    </Typography>
-                    <PrintGrid rows={printRows[key]} columns={printColumns} />
-                </div>)) : <PrintGrid rows={printRows} columns={printColumns} />);
+
         const { HIDE } = FILTER_VISIBILITY;
         const disableFilterPrint = !(rows && columns && rows.length > 0 && columns.length > 0);
         return (
@@ -195,20 +182,15 @@ export default class DataGrid extends React.PureComponent {
                         </Button>
                     </div>
                     <Paper id="paperGrid">
-                        {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ? <PrintGridContainer /> :
+                        {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ?
+                            <PrintGridContainer printRows={printRows} printColumns={printColumns} searchCriteria={searchCriteria} /> :
                             <GridContainer rows={rows.filter(row => !row.others)}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
                                 totalCount={totalCount} title={title} />}
-                        {searchCriteria && searchCriteria.ReportName === 'Management' && (isPrintClicked || rows.filter(row=>!row.others).length === totalCount) &&
-                            rows.length > 0 && columns.length > 0 &&
-                            <Paper>
-                                Others
-                                <br />
-                                <Grid rows={rows.filter(row => row.others)} columns={columns}>
-                                    <Table />
-                                </Grid>
-                            </Paper>}
+
+                        <OthersPaper toFetchOthers={this.fetchOthers(collection, searchCriteria && searchCriteria.ReportName, rows, totalCount)} />
+
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>

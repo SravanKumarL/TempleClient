@@ -6,7 +6,7 @@ export const fetchEntityData = (collection, searchCriteria, pagingOptions, refet
     return {
         type: actionTypes.fetchEntityData, payload: {
             collection, searchCriteria, pagingOptions,
-            refetch, isPrintReq, name: collection, fetchCount, fetchOthers
+            refetch, isPrintReq, name: collection, fetchCount, fetchOthers: isPrintReq || fetchOthers
         }
     };
 }
