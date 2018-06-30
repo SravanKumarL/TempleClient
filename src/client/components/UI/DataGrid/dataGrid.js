@@ -11,7 +11,30 @@ import GridContainer from './GridContainer';
 import PrintGridContainer from './PrintGridContainer';
 import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
 import OthersPaper from './OthersPaper';
-
+// import { defaultInitialState } from '../../../../store/reducers/entity';
+// const getCurrentReduxState = (props) => {
+//     const { rows,
+//         loading,
+//         columns,
+//         error,
+//         message,
+//         totalCount,
+//         printReq
+//     } = props;
+//     return {
+//         rows,
+//         loading,
+//         columns,
+//         error,
+//         message,
+//         totalCount,
+//         printReq
+//     };
+// }
+const fetchOthers = (collection, ReportName = '', rows, totalCount, newPageCount = 0, countFetched = false) => {
+    return collection === constants.Reports && ReportName === constants.Management ?
+        (countFetched && rows.length + newPageCount >= totalCount) : undefined;
+}
 export default class DataGrid extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -23,9 +46,6 @@ export default class DataGrid extends React.PureComponent {
             prevProps: {},
             countFetched: false,
             fetchData: this.fetchData.bind(this),
-            clearMessages: this.clearMessages.bind(this),
-            fetchOthers: this.fetchOthers.bind(this),
-            fetchPaginatedData: this.fetchPaginatedData.bind(this),
         };
     }
     defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
@@ -33,15 +53,11 @@ export default class DataGrid extends React.PureComponent {
 
     clearMessages = () => this.props.clearEntityMessages(this.props.collection);
 
-    fetchOthers = (collection, ReportName = '', rows, totalCount, newPageCount = 0) =>
-        collection === constants.Reports && ReportName === constants.Management ?
-            rows.length + newPageCount >= totalCount : undefined;
-
     fetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
         const { fetchEntityData, searchCriteria, rows, totalCount } = this.props;
-        return () => fetchEntityData(collection, searchCriteria, pagingOptions, true,
-            isPrintReq, fetchCount, this.fetchOthers(collection, searchCriteria && searchCriteria.ReportName, rows, totalCount,
-                pagingOptions.take));
+        fetchEntityData(collection, searchCriteria, pagingOptions, true,
+            isPrintReq, fetchCount, fetchOthers(collection, searchCriteria && searchCriteria.ReportName, rows, totalCount,
+                pagingOptions.take, false));
     }
 
     fetchData = (type, collection, searchCriteria = {}, pagingOptions = this.defaultPaginationOptions, fetchCount = false) => {
@@ -50,8 +66,8 @@ export default class DataGrid extends React.PureComponent {
                 this.props.fetchEntitySchema(collection, searchCriteria);
                 break;
             case transactionType.fetch.data:
-                const initialFetchOthers = this.props.collection === constants.Reports &&
-                    this.props.searchCriteria.ReportName === constants.Management ? false : undefined;
+                const initialFetchOthers = collection === constants.Reports &&
+                    searchCriteria.ReportName === constants.Management ? false : undefined;
                 this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false, fetchCount, initialFetchOthers);//default paging options
                 break;
             default:
@@ -61,8 +77,8 @@ export default class DataGrid extends React.PureComponent {
     //#endregion
 
     setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions, isPrintReq = false, fetchCount = false) => {
-        const transaction = this.fetchPaginatedData(collection, pagingOptions, isPrintReq, fetchCount);
-        this.setState({ transaction });
+        const transaction = () => this.fetchPaginatedData(collection, pagingOptions, isPrintReq, fetchCount);
+        this.setState({ transaction, isPrintClicked: isPrintReq });
         transaction();
     }
     setAndCommitTransaction = (type, collection, change, changedObj) => {
@@ -72,7 +88,6 @@ export default class DataGrid extends React.PureComponent {
             case transactionType.fetch.schema:
             case transactionType.fetch.data:
                 transaction = () => this.fetchData(type, collection, change, undefined, !this.state.countFetched);//Let paging options be default
-                this.setState({ countFetched: true });
                 break;
             default:
                 transaction = () => commitEntityTransaction(type, collection, change, changedObj);
@@ -92,10 +107,11 @@ export default class DataGrid extends React.PureComponent {
     }
     onPrintClicked = () => {
         if (!this.state.isPrintClicked) {
-            const transaction = () => this.setAndfetchPaginatedData(this.props.collection, { count: this.props.rows.length }, true);
-            this.setState({ transaction, isPrintClicked: true });
-            transaction();
+            this.setAndfetchPaginatedData(this.props.collection, { count: this.props.rows.length }, true);
         }
+    }
+    onFetchOthers = (transaction) => {
+        this.setState({ transaction });
     }
     componentDidMount() {
         this.setAndCommitTransaction(transactionType.fetch.schema, this.props.collection, this.props.searchCriteria);
@@ -114,14 +130,18 @@ export default class DataGrid extends React.PureComponent {
             return ({ prevProps: { error, message, searchCriteria, loading }, snackBarOpen: error !== '' || message !== '' });
         }
         else if (JSON.stringify(searchCriteria) !== JSON.stringify(state.prevProps.searchCriteria)) {
+            // const currentReduxState = getCurrentReduxState(props);
+            // if (Object.keys(currentReduxState).every(prop => currentReduxState[prop].toString() !== defaultInitialState[prop].toString())) {
+            //     props.resetEntity(props.collection);
+            //     return null;
+            // }
             state.fetchData(transactionType.fetch.schema, props.collection, searchCriteria);
             const transaction = () => state.fetchData(transactionType.fetch.data, props.collection, searchCriteria, undefined, true);
             transaction();
-            state.clearMessages();
-            return { prevProps: { ...state.prevProps, searchCriteria, loading }, transaction, countFetched: true };
+            return { prevProps: { ...state.prevProps, searchCriteria, loading }, transaction, countFetched: false };
         }
         else if (loading !== state.prevProps.loading) {
-            return { prevProps: { ...state.prevProps, loading } };
+            return { prevProps: { ...state.prevProps, loading }, countFetched: true };
         }
         return null;
     }
@@ -142,6 +162,7 @@ export default class DataGrid extends React.PureComponent {
             isPrintClicked,
             transaction,
             displayFilter,
+            countFetched,
             snackBarOpen,
         } = this.state;
         let pooja = '';
@@ -189,7 +210,9 @@ export default class DataGrid extends React.PureComponent {
                                 readOnly={readOnly} displayFilter={displayFilter} fetchPaginatedData={this.setAndfetchPaginatedData}
                                 totalCount={totalCount} title={title} />}
 
-                        <OthersPaper toFetchOthers={this.fetchOthers(collection, searchCriteria && searchCriteria.ReportName, rows, totalCount)} />
+                        <OthersPaper toFetchOthers={fetchOthers(collection, searchCriteria && searchCriteria.ReportName,
+                            rows, totalCount, this.defaultPaginationOptions.take, countFetched)} onFetchOthers={this.onFetchOthers}
+                            collection={collection} searchCriteria={searchCriteria} />
 
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}

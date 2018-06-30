@@ -104,7 +104,7 @@ export function* handleFetchData(action) {
                         headers
                     });
                 }
-                yield put(actions.onFetchEntitySuccess(response.data, collection));
+                yield put(actions.onFetchEntitySuccess(response.data, collection, fetchOthers));
             }
         } catch (error) {
             console.log(error);

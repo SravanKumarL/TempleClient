@@ -2,7 +2,8 @@ import * as actionTypes from './actionTypes';
 export const commitEntityTransaction = (type, collection, change, changedObj) => {
     return { type: actionTypes.commitEntityTransaction, payload: { type, change, changedObj, collection, name: collection } }
 }
-export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false, fetchCount = false, fetchOthers) => {
+export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false, fetchCount = false,
+    fetchOthers) => {
     return {
         type: actionTypes.fetchEntityData, payload: {
             collection, searchCriteria, pagingOptions,
@@ -16,8 +17,13 @@ export const fetchEntitySchema = (collection, searchCriteria) => {
 export const onFetchEntityReq = (name, refetch = false, printReq = false) => {
     return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, printReq } };
 }
-export const onFetchEntitySuccess = (responseData, name) => {
-    return { type: actionTypes.onFetchEntitySuccess, payload: { loading: false, rows: responseData.rows, name, totalCount: responseData.totalCount } };
+export const onFetchEntitySuccess = (responseData, name, fetchOthers = false) => {
+    return {
+        type: actionTypes.onFetchEntitySuccess, payload: {
+            loading: false, rows: responseData.rows, name,
+            [fetchOthers ? 'othersTotalCount' : 'totalCount']: responseData.totalCount
+        }
+    };
 }
 export const onFetchEntitySchemaSuccess = (columns, name) => {
     return { type: actionTypes.onFetchEntitySchemaSuccess, payload: { loading: false, columns, name } };

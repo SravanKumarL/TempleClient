@@ -114,6 +114,7 @@ const initialState = {
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',
+  selectedGenerateOption: {},
   searchObj: {}
 };
 class Reports extends React.Component {
@@ -121,8 +122,8 @@ class Reports extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const { poojaDetails } = nextProps;
     if (poojaDetails) {
-      const options = Object.keys(poojaDetails).map(key => {
-        const newkey = convertToStartCase(key);
+      const options = poojaDetails.map(pooja => {
+        const newkey = convertToStartCase(pooja.poojaName);
         return { value: newkey, label: newkey }
       });
       return { ...prevState, poojaDetails: options };
@@ -143,7 +144,7 @@ class Reports extends React.Component {
       else if (searchObj.ReportName === MANAGEMENT)
         searchObj = { ...searchObj, createdBy: this.props.user };
     }
-    this.setState({ reportOpen: true, modalOpen: false, searchObj });
+    this.setState({ reportOpen: true, modalOpen: false, searchObj, selectedGenerateOption: this.state.selectedOption });
   }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
@@ -216,7 +217,7 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedOption, searchObj } = this.state;
+    const { reportOpen, selectedGenerateOption, searchObj } = this.state;
     const { classes } = this.props;
     return (
       <div className={classes.root}>
@@ -226,7 +227,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <DataGridWrapper title={`${selectedOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <DataGridWrapper title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
           <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
         }
