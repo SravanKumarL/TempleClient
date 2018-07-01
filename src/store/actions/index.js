@@ -19,7 +19,8 @@ export {
   searchTransactions,
   searchTransactionsStarted,
   searchTransactionsSuccess,
-  searchTransactionsFail
+  searchTransactionsFail,
+  selectedTransactionChanged
 } from './transactions.js';
 
 export {

@@ -60,7 +60,7 @@ class SearchTransaction extends React.Component {
     if (option === USE) {
       this.setState({ ...this.baseState })
     }
-    this.props.itemSelected(option, transaction);
+    this.props.selectedTransactionChanged(transaction, option);
   }
   render() {
     const { searchTextError, showSearchButton, searchPanelOpen, searchedTransactions } = this.state;

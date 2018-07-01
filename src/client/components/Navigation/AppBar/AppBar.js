@@ -15,7 +15,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
 import List from './List';
+import MobileSearchPanel from '../../UI/MobileSearchPanel/MobileSearchPanel';
+import { SEARCH_OPERATIONS } from '../../../../store/constants/transactions';
 
+const { USE } = SEARCH_OPERATIONS;
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -50,7 +53,7 @@ const styles = theme => ({
   },
   searchDrawerPaper: {
     width: 'auto',
-    height: '50vh',
+    height: '70vh',
     [theme.breakpoints.up('md')]: {
       position: 'relative',
     },
@@ -109,7 +112,12 @@ class MyAppBar extends React.Component {
       return { ...prevState, searchPanelOpen: !prevState.searchPanelOpen }
     });
   };
-
+  optionClickedHander = (option, selectedTransaction) => {
+    if (option !== USE) {
+      this.setState({ dialogOpen: true });
+    }
+    this.props.selectedTransactionChanged({ option, selectedTransaction, });
+  }
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
@@ -186,6 +194,7 @@ class MyAppBar extends React.Component {
             keepMounted: true, // Better open performance on mobile.
           }}
         >
+          <MobileSearchPanel optionClicked={this.optionClickedHander} closed={this.handleSearchPanelToggle} />
         </Drawer>
         <Hidden mdUp>
           <Drawer

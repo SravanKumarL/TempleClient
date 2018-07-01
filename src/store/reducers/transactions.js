@@ -7,7 +7,9 @@ const initialState = {
   transactions: null,
   searchedTransactions: [],
   loading: false,
-  totalCount: 0
+  totalCount: 0,
+  selectedTransaction: null,
+  option: null
 }
 
 export const addTransactionStarted = (state, action) => {
@@ -48,6 +50,9 @@ export const onTransactionFailed = (state, action) => {
 export const onTransactionCommitted = (state, action) => {
   return updateObject(state, { message: action.payload.message });
 }
+export const selectedTransactionChanged = (state, action) => {
+  return updateObject(state, { selectedTransaction: action.transaction, option: action.option });
+}
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.ADD_TRANSACTION_START:
@@ -75,6 +80,9 @@ const reducer = (state = initialState, action) => {
       return onTransactionCommitted(state, action);
     case actionTypes.ON_TRANSACTION_FAILED:
       return onTransactionFailed(state, action);
+
+    case actionTypes.SELECTED_TRANSACTION_CHANGED:
+      return selectedTransactionChanged(state, action);
     default:
       return state;
   }

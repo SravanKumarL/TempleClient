@@ -174,10 +174,17 @@ class Transactions extends React.Component {
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
+    let newState = { ...prevState };
     if (nextProps.message !== prevState.message) {
-      return { ...prevState, message: nextProps.message, snackOpen: true };
+      newState = { ...newState, message: nextProps.message, snackOpen: true };
     }
-    return null;
+    if (nextProps.selectedTransaction && nextProps.selectedTransaction !== prevState.unchangedTransaction) {
+      if (nextProps.option && nextProps.option !== USE) {
+        newState = { ...newState, dialogOpen: true };
+      }
+      newState = { ...newState, selectedTransaction: nextProps.selectedTransaction, unchangedTransaction: nextProps.selectedTransaction, option: nextProps.option }
+    }
+    return newState;
   }
   closeSnackHandler = () => {
     this.setState({ snackOpen: false });
@@ -206,13 +213,6 @@ class Transactions extends React.Component {
     this.modalCloseHandler();
     this.setState({ ...initialState });
     printHtml.printElement(document.getElementById('transactionSummary'));
-  }
-
-  itemSelectionChangedHandler = (option, selectedTransaction) => {
-    if (option !== USE) {
-      this.setState({ dialogOpen: true });
-    }
-    this.setState({ option, selectedTransaction, unchangedTransaction: selectedTransaction });
   }
   formSubmitHandler = (transactionInformation) => {
     this.setState({ modalOpen: true, transactionInformation });
@@ -309,7 +309,7 @@ class Transactions extends React.Component {
           {message}
         </div>
         <div className={classes.rightPane}>
-          <SearchTransaction itemSelected={this.itemSelectionChangedHandler} />
+          <SearchTransaction />
         </div>
         {dialog}
       </div >
@@ -321,6 +321,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     message: state.transactions.message,
     user: state.auth.user,
+    selectedTransaction: state.transactions.selectedTransaction,
+    option: state.transactions.option
   }
 }
 
