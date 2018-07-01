@@ -48,6 +48,13 @@ const styles = theme => ({
       position: 'relative',
     },
   },
+  searchDrawerPaper: {
+    width: 'auto',
+    height: '50vh',
+    [theme.breakpoints.up('md')]: {
+      position: 'relative',
+    },
+  },
   profileButton: {
     marginLeft: 'auto',
     marginRight: 36,
@@ -108,8 +115,9 @@ class MyAppBar extends React.Component {
   };
   render() {
     const { classes, theme, logout, role, activeTabChanged, activeTab } = this.props;
-    const { anchorEl, drawerOpen } = this.state;
+    const { anchorEl, drawerOpen, searchPanelOpen } = this.state;
     const open = Boolean(anchorEl);
+
     return (
       <div>
         <AppBar className={classNames(classes.root)}>
@@ -126,7 +134,7 @@ class MyAppBar extends React.Component {
             </Hidden>
             <Hidden smUp>
               <Typography variant="title" style={{ textTransform: 'capitalize' }} color="inherit" className={classes.flex}>
-                {activeTab} 
+                {activeTab}
               </Typography>
             </Hidden>
             <Hidden lgUp>
@@ -166,20 +174,19 @@ class MyAppBar extends React.Component {
             </div>
           </Toolbar>
         </AppBar>
-        {/* <Drawer
+        <Drawer
           variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'left' : 'right'}
+          anchor={'top'}
           open={searchPanelOpen}
           onClose={this.handleSearchPanelToggle}
           classes={{
-            paper: classes.drawerPaper,
+            paper: classes.searchDrawerPaper,
           }}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          <SearchTransaction searchPanelOpen={searchPanelOpen} itemSelected={this.itemSelectionChangedHandler} />
-        </Drawer> */}
+        </Drawer>
         <Hidden mdUp>
           <Drawer
             variant="temporary"

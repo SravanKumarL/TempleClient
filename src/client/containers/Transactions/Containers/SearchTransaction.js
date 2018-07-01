@@ -98,9 +98,6 @@ class SearchTransaction extends React.Component {
           loading={loading}
           open={searchPanelOpen}
           transactions={searchedTransactions}
-          radioNames={['Names', 'Phone Number']}
-          radioValue={this.state.radioValue}
-          radioChanged={this.radioChangedHandler}
           closed={this.closeSearchPanelHandler}
           panelExited={this.panelExitHandler}
         />
