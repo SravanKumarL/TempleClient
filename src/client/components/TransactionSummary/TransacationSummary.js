@@ -11,7 +11,7 @@ import Dialog from '../../components/UI/Dialog/Dialog';
 
 import { FIELDS } from '../../../store/constants/transactions';
 
-const { OTHERS, DATES } = FIELDS;
+const { DATES } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -57,14 +57,11 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
           </TableHead>
           <TableBody>
             {Object.keys(transactionFields).map(id => {
-              if (id === OTHERS) {
-                return null;
-              }
               const field = transactionFields[id];
               const placeholder = field.name;
               return (
                 <TableRow key={id}>
-                  <TableCell style={{fontSize: 16}} >{placeholder}:</TableCell>
+                  <TableCell style={{ fontSize: 16 }} >{placeholder}:</TableCell>
                   <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === DATES ? getDates(field.value) : field.value}</TableCell>
                 </TableRow>
               );

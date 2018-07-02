@@ -15,7 +15,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
 import List from './List';
+import MobileSearchPanel from '../../UI/MobileSearchPanel/MobileSearchPanel';
+import { SEARCH_OPERATIONS } from '../../../../store/constants/transactions';
 
+const { USE } = SEARCH_OPERATIONS;
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -44,6 +47,13 @@ const styles = theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    [theme.breakpoints.up('md')]: {
+      position: 'relative',
+    },
+  },
+  searchDrawerPaper: {
+    width: 'auto',
+    height: '70vh',
     [theme.breakpoints.up('md')]: {
       position: 'relative',
     },
@@ -102,14 +112,20 @@ class MyAppBar extends React.Component {
       return { ...prevState, searchPanelOpen: !prevState.searchPanelOpen }
     });
   };
-
+  optionClickedHander = (option, selectedTransaction) => {
+    if (option !== USE) {
+      this.setState({ dialogOpen: true });
+    }
+    this.props.selectedTransactionChanged({ option, selectedTransaction, });
+  }
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
   render() {
     const { classes, theme, logout, role, activeTabChanged, activeTab } = this.props;
-    const { anchorEl, drawerOpen } = this.state;
+    const { anchorEl, drawerOpen, searchPanelOpen } = this.state;
     const open = Boolean(anchorEl);
+
     return (
       <div>
         <AppBar className={classNames(classes.root)}>
@@ -166,20 +182,20 @@ class MyAppBar extends React.Component {
             </div>
           </Toolbar>
         </AppBar>
-        {/* <Drawer
+        <Drawer
           variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'left' : 'right'}
+          anchor={'top'}
           open={searchPanelOpen}
           onClose={this.handleSearchPanelToggle}
           classes={{
-            paper: classes.drawerPaper,
+            paper: classes.searchDrawerPaper,
           }}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
         >
-          <SearchTransaction searchPanelOpen={searchPanelOpen} itemSelected={this.itemSelectionChangedHandler} />
-        </Drawer> */}
+          <MobileSearchPanel optionClicked={this.optionClickedHander} closed={this.handleSearchPanelToggle} />
+        </Drawer>
         <Hidden mdUp>
           <Drawer
             variant="temporary"

@@ -33,7 +33,6 @@ class PasswordCellBase extends React.Component {
                     type={this.state.showPassword ? 'text' : 'password'}
                     value={this.state.value}
                     onChange={this.handlePasswordChange}
-                    disableUnderline={true}
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton

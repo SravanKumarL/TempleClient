@@ -104,6 +104,28 @@ const styles = theme => ({
     [theme.breakpoints.up('sm')]: {
       flexGrow: 1
     }
+  },
+  centerTextboxContainer: {
+    display: 'flex',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centerTextbox: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      height: '30vh',
+      width: '50vw',
+      border: '4px dashed #eee',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
+  },
+  centerText: {
+    fontSize: 16,
+    [theme.breakpoints.up('sm')]: {
+      fontSize: 24,
+    }
   }
 });
 
@@ -115,20 +137,31 @@ const initialState = {
   reportOpen: false,
   selectedPooja: '',
   selectedGenerateOption: {},
-  searchObj: {}
+  searchObj: {},
+  generateDisabled: false,
 };
 class Reports extends React.Component {
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
     const { poojaDetails } = nextProps;
+    const { selectedOption, selectedPooja } = prevState;
+    let newState = { ...prevState };
     if (poojaDetails) {
       const options = poojaDetails.map(pooja => {
         const newkey = convertToStartCase(pooja.poojaName);
         return { value: newkey, label: newkey }
       });
-      return { ...prevState, poojaDetails: options };
+      newState = { ...newState, poojaDetails: options };
     }
-    return null;
+    let generateDisabled = false;
+    if (selectedOption.name === POOJA) {
+      generateDisabled = true;
+      if (selectedPooja && selectedPooja !== '') {
+        generateDisabled = false;
+      }
+    }
+    newState = { ...newState, generateDisabled };
+    return newState;
   }
   //UI State Handlers
   poojaReportsClickedHandler = () => { this.setState({ modalOpen: true }); };
@@ -154,14 +187,8 @@ class Reports extends React.Component {
     this.props.history.push('/reports/managementReport');
   }
   getModal = () => {
-    const { modalOpen, selectedOption, selectedDates, selectedPooja } = this.state;
-    let generateDisabled = false;
-    if (selectedOption.name === POOJA) {
-      generateDisabled = true;
-      if (selectedPooja) {
-        generateDisabled = false;
-      }
-    }
+    const { modalOpen, selectedOption, selectedDates, selectedPooja, generateDisabled } = this.state;
+
     return (
       <Dialog
         open={modalOpen}
@@ -229,7 +256,11 @@ class Reports extends React.Component {
           <div className={classes.dataGrid}>
             <DataGridWrapper title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
-          <Typography variant='title' style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', marginTop: '20%' }}> Please Select any one of the reports to display...</Typography>
+          <div className={classes.centerTextboxContainer}>
+            <div className={classes.centerTextbox}>
+              <Typography variant='subheading' className={classes.centerText}> Select a report... </Typography>
+            </div>
+          </div>
         }
       </div>
     );

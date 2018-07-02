@@ -19,7 +19,7 @@ const styles = theme => ({
     margin: 'auto',
   },
   chip: {
-    margin: theme.spacing.unit / 4,
+    height: 24,
   },
   // We had to use a lot of global selectors in order to style react-select.
   // We are waiting on https://github.com/JedWatson/react-select/issues/1679
@@ -116,8 +116,8 @@ const styles = theme => ({
     '.Select-arrow-zone, .Select-clear-zone': {
       color: theme.palette.action.active,
       cursor: 'pointer',
-      height: 21,
-      width: 21,
+      height: 24,
+      width: '24px !important',
       zIndex: 1,
     },
     // Only for screen readers. We can't use display none.

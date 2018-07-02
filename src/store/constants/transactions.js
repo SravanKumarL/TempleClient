@@ -55,7 +55,7 @@ export const CALENDER_MODE = {
 };
 
 export const TABS = {
-    OTHERS: 'other',
+    OTHERS: 'others',
     POOJAS: 'pooja',
 }
 

@@ -6,7 +6,17 @@ export const updateObject = (oldObject, updatedObject) => {
     ...updatedObject
   };
 }
-
+export const replaceObjectKey = (oldObject, source, target, targetObj) => {
+  const newObject = Object.keys(oldObject).reduce((acc, item) => {
+    if (item === source) {
+      acc[target] = targetObj;
+    } else {
+      acc[item] = oldObject[item];
+    }
+    return acc;
+  }, {});
+  return newObject;
+}
 export const checkValidity = (value, rules) => {
   let isValid = true;
   if (!rules) {

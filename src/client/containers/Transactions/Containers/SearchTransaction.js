@@ -60,7 +60,7 @@ class SearchTransaction extends React.Component {
     if (option === USE) {
       this.setState({ ...this.baseState })
     }
-    this.props.itemSelected(option, transaction);
+    this.props.selectedTransactionChanged(transaction, option);
   }
   render() {
     const { searchTextError, showSearchButton, searchPanelOpen, searchedTransactions } = this.state;
@@ -98,9 +98,6 @@ class SearchTransaction extends React.Component {
           loading={loading}
           open={searchPanelOpen}
           transactions={searchedTransactions}
-          radioNames={['Names', 'Phone Number']}
-          radioValue={this.state.radioValue}
-          radioChanged={this.radioChangedHandler}
           closed={this.closeSearchPanelHandler}
           panelExited={this.panelExitHandler}
         />

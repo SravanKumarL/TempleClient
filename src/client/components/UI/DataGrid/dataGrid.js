@@ -180,24 +180,26 @@ export default class DataGrid extends React.PureComponent {
         }
 
         const { HIDE } = FILTER_VISIBILITY;
-        const disableFilterPrint = !(rows && columns && rows.length > 0 && columns.length > 0);
+        const disabled = !(rows && columns && rows.length > 0 && columns.length > 0);
+        const style = { margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 };
+        const buttonStyle = disabled ? { ...style, background: '#eee', color: 'grey' } : style;
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative', margin: '2vh 2vw' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }} >
                         <Button
-                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
+                            style={buttonStyle}
                             color='default'
                             variant='raised'
-                            disabled={disableFilterPrint}
+                            disabled={disabled}
                             onClick={this.onFilterClick}>
                             <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
                     </Button>
                         <Button
-                            style={{ margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 }}
+                            style={buttonStyle}
                             color='default'
                             variant='raised'
-                            disabled={disableFilterPrint}
+                            disabled={disabled}
                             onClick={this.onPrintClicked}>
                             <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
                         </Button>

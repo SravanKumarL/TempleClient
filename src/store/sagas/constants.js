@@ -25,7 +25,7 @@ export const uniqueProp = collection => collection === constants.Users ? 'userna
 
 export const ManagementReport = ['pooja', 'total poojas', 'total amount'];
 export const PoojaReport = ['names', 'gothram', 'nakshatram', 'pooja'];
-export const AccountReport = ['names', 'phoneNumber', 'pooja', 'amount', 'chequeNo', 'bankName', 'createdDate'];
+export const AccountReport = ['names', 'phoneNumber', 'pooja', 'chequeNo', 'bankName', 'createdDate','amount'];
 export default constants;
 export const reportMapping = {
     'Accounts': AccountReport,

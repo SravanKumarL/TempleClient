@@ -8,7 +8,7 @@ export const formStateConfig = () => {
     [PHONE_NUMBER]: createTextField(PHONE_NUMBER, NUMBER, { required: true, minLenght: 8, maxLength: 10 }),
     [NAMES]: createTextField(NAMES, INPUT, { required: true }),
     [GOTHRAM]: createTextField(GOTHRAM, INPUT, { required: true }),
-    [NAKSHATRAM]: createSelectField(NAKSHATRAM, MULTISELECT, NAKSHATRAMS),
+    [NAKSHATRAM]: { ...createSelectField(NAKSHATRAM, MULTISELECT, NAKSHATRAMS), required: false },
     [POOJA]: createSelectField(POOJA, SINGLESELECT, null, '', { required: true }),
     [DATES]: createDate(DATES, DATE, getCurrentDate(), { required: false }),
     [NUMBER_OF_DAYS]: { ...(createTextField(NUMBER_OF_DAYS, INPUT, { required: true })), valid: true, disabled: true },
