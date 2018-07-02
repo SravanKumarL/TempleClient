@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
-    printReq: false, totalCount: 0
+    printReq: false, totalCount: 0, othersTotalCount: 0
 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
@@ -15,7 +15,10 @@ export const entity = (name) => (state = initialState, action) => {
         case actionTypes.onFetchEntityReq:
             return { ...fetchState, printReq: payload.printReq };
         case actionTypes.onFetchEntitySuccess:
-            return { ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount };
+            return {
+                ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount,
+                othersTotalCount: payload.othersTotalCount || state.othersTotalCount
+            };
         case actionTypes.onFetchEntitySchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchEntityFailed:
@@ -38,6 +41,9 @@ const mergeRows = (state, payload) => {
     if (!payload || !payload.rows)
         return state.rows;
     const primaryKey = uniqueProp(payload.name);
+    if (!(state.rows.every(row => primaryKey in row) && payload.rows.every(row => primaryKey in row))) {
+        return [...state.rows, ...payload.rows];
+    }
     const prevRowKeys = state.rows.map(row => row[primaryKey]);
     const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
     return [...state.rows, ...newRows];
@@ -48,10 +54,10 @@ const changeRows = (payload, rows, commitSucessful = false) => {
     const prop = uniqueProp(name);
     switch (type) {
         case constants.add:
-            if (commitSucessful){
+            if (commitSucessful) {
                 return [...rows.filter(row => !row.toChange), { ...change }];
             }
-            else{
+            else {
                 return [...rows, { ...change, toChange: true }]
             }
         case constants.edit:
@@ -63,3 +69,4 @@ const changeRows = (payload, rows, commitSucessful = false) => {
             return rows;
     }
 }
+export const defaultInitialState = initialState;

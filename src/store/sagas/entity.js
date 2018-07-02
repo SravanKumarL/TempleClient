@@ -69,7 +69,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch, fetchCount } = action.payload;
-    const { pagingOptions, isPrintReq } = action.payload;
+    const { pagingOptions, isPrintReq, fetchOthers } = action.payload;
     let skip, take = undefined;
     if (pagingOptions) {
         skip = pagingOptions.skip;
@@ -93,18 +93,18 @@ export function* handleFetchData(action) {
                     response = yield axios({
                         method: 'post',
                         data: { ...searchCriteria, take, skip },
-                        url: `/${collection}?fetchCount=${fetchCount}`,
+                        url: `/${collection}?fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
                         headers
                     });
                 }
                 else {
                     response = yield axios({
                         method: 'get',
-                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}`,
+                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
                         headers
                     });
                 }
-                yield put(actions.onFetchEntitySuccess(response.data, collection));
+                yield put(actions.onFetchEntitySuccess(response.data, collection, fetchOthers));
             }
         } catch (error) {
             console.log(error);
