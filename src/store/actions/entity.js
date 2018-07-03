@@ -21,7 +21,8 @@ export const onFetchEntitySuccess = (responseData, name, fetchOthers = false) =>
     return {
         type: actionTypes.onFetchEntitySuccess, payload: {
             loading: false, rows: responseData.rows, name,
-            [fetchOthers ? 'othersTotalCount' : 'totalCount']: responseData.totalCount
+            [fetchOthers ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
+            totalAmount: responseData.totalAmount
         }
     };
 }

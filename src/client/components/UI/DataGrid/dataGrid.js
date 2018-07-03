@@ -11,6 +11,7 @@ import GridContainer from './GridContainer';
 import PrintGridContainer from './PrintGridContainer';
 import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
 import OthersPaper from './OthersPaper';
+import TotalPaper from './TotalPaper';
 // import { defaultInitialState } from '../../../../store/reducers/entity';
 // const getCurrentReduxState = (props) => {
 //     const { rows,
@@ -156,7 +157,8 @@ export default class DataGrid extends React.PureComponent {
             collection,
             searchCriteria,
             totalCount,
-            title
+            title,
+            totalAmount
         } = this.props;
         const {
             isPrintClicked,
@@ -178,7 +180,7 @@ export default class DataGrid extends React.PureComponent {
             }
             printColumns = printColumns.filter(column => column.name !== 'pooja');
         }
-
+        const chequedRows = rows.filter(row => row.chequeNo).length;
         const { HIDE } = FILTER_VISIBILITY;
         const disabled = !(rows && columns && rows.length > 0 && columns.length > 0);
         const style = { margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 };
@@ -216,6 +218,12 @@ export default class DataGrid extends React.PureComponent {
                             rows, totalCount, this.defaultPaginationOptions.take, countFetched)} onFetchOthers={this.onFetchOthers}
                             collection={collection} searchCriteria={searchCriteria} />
 
+                        {collection === constants.Reports && searchCriteria && searchCriteria.ReportName === constants.Management
+                            && Object.keys(totalAmount).length > 0 &&
+                            <TotalPaper rows={[['Total Cash Amount (Rs)', rows.length - chequedRows, totalAmount.cash],
+                            ['Total Cheque Amount (Rs)', chequedRows, totalAmount.cheque],
+                            ['Total Amount Received (Rs)', rows.length, totalAmount.cheque + totalAmount.cash]]
+                                .map(row => ({ category: row[0], totalPoojas: row[1], amount: row[2] }))} />}
                         {!isPrintClicked && <ErrorSnackbar message={message} open={snackBarOpen} redoTransaction={transaction}
                             onSnackBarClose={this.onSnackBarClose} error={error} />}
                     </Paper>
