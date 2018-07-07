@@ -3,6 +3,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Pageview from '@material-ui/icons/Pageview';
 import Restore from '@material-ui/icons/Restore';
 import classNames from 'classnames';
+import _ from 'lodash';
 
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
@@ -10,13 +11,31 @@ import TransactionForm from '../../../components/TransactionForm/TransactionForm
 import { formStateConfig, createTextField } from '../StateConfig';
 import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
 import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS } from '../../../../store/constants/transactions';
+import { Button } from '@material-ui/core';
 
 
-const { PHONE_NUMBER, NAKSHATRAM, POOJA, DATES, NUMBER_OF_DAYS, AMOUNT, PAYMENT_MODE, CHEQUE_NO, BANK_NAME } = FIELDS;
+const { NAMES, GOTHRAM, PHONE_NUMBER, NAKSHATRAM, POOJA, DATES, NUMBER_OF_DAYS, AMOUNT, PAYMENT_MODE, CHEQUE_NO, BANK_NAME } = FIELDS;
 const { CHEQUE } = PAYMENT_MODES;
 const { INPUT, SINGLESELECT, NUMBER } = FIELD_TYPES;
 
 const styles = theme => ({
+  formContainer: {
+    display: 'flex',
+    flexGrow: 1,
+    flexDirection: 'column',
+    width: '100%',
+  },
+  button: {
+    margin: theme.spacing.unit,
+    width: '20%',
+    color: 'white',
+    '&:hover': {
+      boxShadow: '0px 0px 10px #000000',
+      zIndex: 2,
+      transition: 'all 200ms ease-in',
+      transform: 'scale(1.1)',
+    },
+  },
   container: {
     display: 'flex',
     flexDirection: 'column',
@@ -37,12 +56,17 @@ const styles = theme => ({
   iconSmall: {
     fontSize: 20,
   },
+  buttonsContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
 });
 
 const initialState = {
   transactionForm: formStateConfig(),
   formIsValid: false,
-  disablePreview: true,
 };
 
 
@@ -53,33 +77,35 @@ class CreateTransaction extends React.Component {
     this.formResetHandler = this.formResetHandler.bind(this);
     this.getUpdatedTransacationForm = this.getUpdatedTransacationForm.bind(this);
   }
-  state = JSON.parse(JSON.stringify(initialState));
+  state = { ...JSON.parse(JSON.stringify(initialState)) };
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     const { poojaDetails, selectedTransaction } = nextProps;
     let newFormElement = { ...prevState.transactionForm };
     let newState = { ...prevState };
-    if (nextProps.poojaDetails !== prevState.transactionForm.pooja.elementConfig.options) {
+    if (!_.isEqual(nextProps.poojaDetails, newState.poojaDetails)) {
       const options = Object.keys(poojaDetails).map(key => {
         const newkey = convertToStartCase(key);
         return { value: newkey, label: newkey }
       });
-      initialState.transactionForm.pooja.options = options;
-      newFormElement.pooja.elementConfig.options = options;
-      newFormElement.amount.valid = true;
+      newState.poojaDetails = nextProps.poojaDetails;
+      newState.transactionForm.pooja.elementConfig.options = options;
     }
-    if (selectedTransaction && selectedTransaction !== prevState.selectedTransaction) {
+    if (selectedTransaction && !_.isEqual(selectedTransaction, prevState.selectedTransaction)) {
       newFormElement = updateObject(prevState.transactionForm, {
-        phoneNumber: { ...prevState.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber },
-        names: { ...prevState.transactionForm.names, value: selectedTransaction.names },
-        gothram: { ...prevState.transactionForm.gothram, value: selectedTransaction.gothram },
-        nakshatram: { ...prevState.transactionForm.nakshatram, value: selectedTransaction.nakshatram },
+        phoneNumber: { ...prevState.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber, valid: checkValidity(PHONE_NUMBER, selectedTransaction.phoneNumber), touched: true },
+        names: { ...prevState.transactionForm.names, value: selectedTransaction.names, valid: checkValidity(NAMES, selectedTransaction.names), touched: true },
+        gothram: { ...prevState.transactionForm.gothram, value: selectedTransaction.gothram, valid: checkValidity(GOTHRAM, selectedTransaction.gothram), touched: true },
+        nakshatram: { ...prevState.transactionForm.nakshatram, value: selectedTransaction.nakshatram, valid: checkValidity(NAKSHATRAM, selectedTransaction.nakshatram), touched: true },
       });
       newState.selectedTransaction = selectedTransaction;
     }
     if (nextProps.activeTab !== newState.activeTab) {
       newState.activeTab = nextProps.activeTab;
-      newState.transactionForm[POOJA].value = '';
+      newFormElement[POOJA].value = '';
+      newFormElement[POOJA].valid = false;
+      newFormElement[AMOUNT].value = '';
+      newFormElement[AMOUNT].valid = nextProps.activeTab === POOJA;
     }
     if (nextProps.activeTab === POOJA) {
       newFormElement = updateObject(newFormElement, {
@@ -100,7 +126,10 @@ class CreateTransaction extends React.Component {
     } else {
       newFormElement = updateObject(newFormElement, {
         [POOJA]: updateObject(newFormElement[POOJA], { elementType: INPUT, elementConfig: updateObject(newFormElement[POOJA].elementConfig, { placeholder: FIELD_PLACEHOLDERS.others }) }),
-        [AMOUNT]: updateObject(newFormElement[AMOUNT], { disabled: false, value: 0 })
+        [NUMBER_OF_DAYS]: updateObject(newFormElement[NUMBER_OF_DAYS], {
+          value: newFormElement[DATES].value.length,
+        }),
+        [AMOUNT]: updateObject(newFormElement[AMOUNT], { disabled: false, validation: { required: true } })
       });
     }
     return { ...newState, transactionForm: newFormElement };
@@ -144,11 +173,14 @@ class CreateTransaction extends React.Component {
     if (inputIdentifier === PAYMENT_MODE) {
       updatedtransactionForm = this.getUpdatedTransacationForm(value, updatedtransactionForm);
     }
+    this.setState({ transactionForm: updatedtransactionForm });
+  }
+  getIsFormValid = (updatedTransactionForm = this.state.transactionForm) => {
     let formIsValid = true;
-    for (let inputIdentifier in updatedtransactionForm) {
-      formIsValid = updatedtransactionForm[inputIdentifier].valid && formIsValid;
+    for (let inputIdentifier in updatedTransactionForm) {
+      formIsValid = updatedTransactionForm[inputIdentifier].valid && formIsValid;
     }
-    this.setState({ transactionForm: updatedtransactionForm, disablePreview: !formIsValid, });
+    return formIsValid;
   }
   submitHandler = () => {
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
@@ -161,26 +193,29 @@ class CreateTransaction extends React.Component {
   }
   render() {
     const { classes } = this.props;
-    const { disablePreview } = this.state;
     return (
-      <div className={classes.container}>
-        <TransactionForm
-          disablePreview={disablePreview}
-          transactionForm={this.state.transactionForm}
-          fieldChanged={this.inputChangedHandler}
-          primaryClicked={this.submitHandler}
-          showButtons={true}
-          secondaryClicked={this.formResetHandler}
-          primaryText='Preview'
-          secondaryText='Reset'
-          primaryIcon={<Pageview className={classNames(classes.leftIcon, classes.iconSmall)} />}
-          secondaryIcon={<Restore className={classNames(classes.leftIcon, classes.iconSmall)} />}
-        />
+      <div className={classes.formContainer}>
+        <div className={classes.container}>
+          <TransactionForm
+            transactionForm={this.state.transactionForm}
+            fieldChanged={this.inputChangedHandler}
+            showButtons={false}
+          />
+        </div>
+        <div className={classes.buttonsContainer}>
+          <Button onClick={this.submitHandler} color='primary' disabled={!this.getIsFormValid()} variant='raised' size='large' className={classes.button}>
+            <Pageview className={classNames(classes.leftIcon, classes.iconSmall)} />
+            Preview
+          </Button>
+          <Button onClick={this.formResetHandler} color='secondary' variant='raised' size='large' className={classes.button}>
+            <Restore className={classNames(classes.leftIcon, classes.iconSmall)} />
+            Reset
+          </Button>
+        </div>
       </div>
     );
   }
 }
-
 const mapStateToProps = (state) => {
   return {
     poojaDetails: state.poojas.rows,

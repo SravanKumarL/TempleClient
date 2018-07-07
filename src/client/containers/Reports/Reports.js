@@ -14,7 +14,6 @@ import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
 import DataGridWrapper from '../DataGrid/dataGridWrapper';
-import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../hoc/createContainer/createContainer';
 import { REPORT_TYPES } from '../../../store/constants/reports';
 
