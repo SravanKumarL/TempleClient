@@ -1,5 +1,5 @@
 import axios from '../../axios/poojas';
-import { put } from 'redux-saga/effects'
+import { put, select } from 'redux-saga/effects'
 import * as actions from '../actions/entity';
 import * as transactionSagas from './transactions';
 import constants, { reportMapping, uniqueProp } from './constants';
@@ -68,8 +68,8 @@ const handleResponse = function* (response, collection, type, changedObj) {
         yield put(actions.onEntityTransactionCommitted(message, (changedObj ? { ...changedObj, ...change } : change), type, collection));
 }
 export function* handleFetchData(action) {
-    const { collection, searchCriteria, refetch, fetchCount } = action.payload;
-    const { pagingOptions, isPrintReq, fetchOthers } = action.payload;
+    const { collection, searchCriteria, refetch } = action.payload;
+    const { pagingOptions, isPrintReq } = action.payload;
     let skip, take = undefined;
     if (pagingOptions) {
         skip = pagingOptions.skip;
@@ -88,28 +88,66 @@ export function* handleFetchData(action) {
                 const headers = {
                     'authorization': `${token}`,
                 }
-                let response = {};
-                if (searchCriteria && collection === constants.Reports) {
-                    response = yield axios({
-                        method: 'post',
-                        data: { ...searchCriteria, take, skip },
-                        url: `/${collection}?fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
-                        headers
-                    });
+                let response;
+                const fetchCount = yield checkFetchCount(collection);
+                //If Count has already been fetched
+                const toFetch = yield checkFetch(collection, fetchCount);
+                const fetchOthers = yield checkFetchOthers(collection, isPrintReq, searchCriteria.ReportName);
+                if (fetchOthers || toFetch) {
+                    if (collection === constants.Reports && searchCriteria) {
+                        response = yield axios({
+                            method: 'post',
+                            data: { ...searchCriteria, take, skip },
+                            url: `/${collection}?fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
+                            headers
+                        });
+                    }
+                    else {
+                        response = yield axios({
+                            method: 'get',
+                            url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}&fetchOthers=${undefined}`,
+                            headers
+                        });
+                    }
+                    if ((response && response.data.error)) {
+                        throw new Error(response.data.error);
+                    }
+                    else {
+                        yield put(actions.onFetchEntitySuccess(response.data, collection, fetchCount, fetchOthers));
+                    }
                 }
-                else {
-                    response = yield axios({
-                        method: 'get',
-                        url: `/${collection}?take=${take}&skip=${skip}&fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
-                        headers
-                    });
-                }
-                yield put(actions.onFetchEntitySuccess(response.data, collection, fetchOthers));
             }
         } catch (error) {
             console.log(error);
             yield put(actions.onFetchEntityFailed(error.message, collection));
         }
+    }
+}
+export function* handleFetchTotal(action) {
+    const { collection, searchCriteria } = action.payload;
+    const token = sessionStorage.getItem('token');
+    try {
+        if (!token) {
+            throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
+        } else {
+            const headers = {
+                'authorization': `${token}`,
+            }
+            const totalAmountResponse = yield axios({
+                method: 'post',
+                data: { ...searchCriteria },
+                url: `/${collection}/totalAmount`,
+                headers
+            });
+            if (totalAmountResponse.data.error) {
+                yield put(actions.onFetchTotalFailure(totalAmountResponse.data, collection));
+            }
+            yield put(actions.onFetchTotalSuccess(totalAmountResponse.data, collection));
+        }
+    }
+    catch (error) {
+        console.log(error);
+        yield put(actions.onFetchEntityFailed(error.message, collection));
     }
 }
 export function* handleFetchSchema(action) {
@@ -139,4 +177,28 @@ export function* handleFetchSchema(action) {
         console.log(error);
         yield put(actions.onFetchEntityFailed(error.message, collection));
     }
+}
+const checkFetchOthers = function* (collection, isPrintReq, reportName) {
+    if (reportName !== constants.Management)
+        yield undefined;
+    else {
+        if (isPrintReq)
+            yield true;
+        const rowState = yield select(getRowState(collection));
+        if (rowState.rows.length === rowState.totalCount)
+            yield true;
+        yield false;
+    }
+}
+const getRowState = collection => state => ({ rows: state[collection].rows, totalCount: state[collection].totalCount });
+const checkFetchCount = function* (collection) {
+    yield select(state => !state[collection].countFetched);
+}
+const checkFetch = function* (collection, toFetchCount) {
+    if (toFetchCount)
+        yield true;
+    const rowState = yield select(getRowState(collection));
+    if (rowState.rows.length < rowState.totalCount)
+        yield true;
+    yield false;
 }

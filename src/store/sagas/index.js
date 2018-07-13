@@ -2,7 +2,7 @@ import { takeEvery } from 'redux-saga/effects';
 import * as actionTypes from '../actions/actionTypes';
 import { signInSaga, autoSigninSaga } from './auth';
 import { searchTransactionsSaga } from './transactions';
-import {handleFetchData,handleFetchSchema,handleTransaction} from './entity';
+import {handleFetchData,handleFetchSchema,handleTransaction, handleFetchTotal} from './entity';
 export function* watchAuth() {
   yield takeEvery(actionTypes.AUTHENTICATE, signInSaga);
   yield takeEvery(actionTypes.AUTH_AUTO_SIGNIN, autoSigninSaga);
@@ -10,4 +10,5 @@ export function* watchAuth() {
   yield takeEvery(actionTypes.fetchEntityData, handleFetchData);
   yield takeEvery(actionTypes.fetchEntitySchema, handleFetchSchema);
   yield takeEvery(actionTypes.commitEntityTransaction, handleTransaction);
+  yield takeEvery(actionTypes.fetchTotal,handleFetchTotal);
 }

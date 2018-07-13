@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
-    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}
+    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false
 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
@@ -18,8 +18,17 @@ export const entity = (name) => (state = initialState, action) => {
             return {
                 ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount,
                 othersTotalCount: payload.othersTotalCount || state.othersTotalCount,
-                totalAmount: payload.totalAmount || state.totalAmount
+                countFetched: payload.countFetched || state.countFetched
             };
+        case actionTypes.onFetchTotalSuccess:
+            return {
+                ...fetchState, totalAmount: payload.totalAmount || state.totalAmount
+            };
+        case actionTypes.onFetchTotalFailure: {
+            return {
+                ...fetchState, totalAmount: {}, error: action.payload.error
+            };
+        }
         case actionTypes.onFetchEntitySchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchEntityFailed:

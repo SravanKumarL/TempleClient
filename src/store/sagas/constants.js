@@ -10,7 +10,10 @@ const constants = {
     Accounts: 'Accounts',
     Pooja: 'Pooja',
     Management: 'Management',
-    Users: 'users'
+    Users: 'users',
+    totalCashAmount:'Total Cash Amount (Rs)',
+    totalChequeAmount:'Total Cheque Amount (Rs)',
+    totalAmount:'Total Amount Received (Rs)'
 }
 
 export const transactionType = {

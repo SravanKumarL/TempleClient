@@ -13,8 +13,7 @@ import { convertToStartCase } from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
-import DataGridWrapper from '../DataGrid/dataGridWrapper';
-import withPoojaDetails from '../../hoc/withPoojaDetails/withPoojaDetails';
+import ReportsGrid from '../DataGrid/reportsGrid';
 import createContainer from '../../hoc/createContainer/createContainer';
 import { REPORT_TYPES } from '../../../store/constants/reports';
 
@@ -254,7 +253,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <DataGridWrapper title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <ReportsGrid title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
           <div className={classes.centerTextboxContainer}>
             <div className={classes.centerTextbox}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGridWrapper from '../DataGrid/dataGridWrapper';
+import PoojasUsersGrid from '../DataGrid/poojasUsersGrid';
 import withStyles from '@material-ui/core/styles/withStyles';
 import constants from '../../../store/sagas/constants';
 const styles = theme => ({
@@ -9,7 +9,7 @@ const styles = theme => ({
 })
 const Poojas= ({classes})=>(
   <div className={classes.root}>
-    <DataGridWrapper collection={constants.Poojas}/>
+    <PoojasUsersGrid collection={constants.Poojas}/>
   </div>
 )
 export default withStyles(styles)(Poojas);
