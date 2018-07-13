@@ -64,9 +64,11 @@ export default class DataGridContainer extends React.PureComponent {
     //#endregion
     currentPageChangedHandler = (currentPage, pageSize) => {
         this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+        this.props.checkShowTotalOthers(currentPage, pageSize);
     }
     pageSizeChangedHandler = pageSize => {
         this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+        this.props.checkShowTotalOthers(undefined, pageSize);
     }
     snackBarClosedHandler = () => {
         this.setState({ snackBarOpen: false, snackBarClosed: true });
