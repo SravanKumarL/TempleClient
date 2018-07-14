@@ -19,12 +19,12 @@ export const fetchTotal = (collection, searchCriteria) => {
 export const onFetchEntityReq = (name, refetch = false, printReq = false) => {
     return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, printReq } };
 }
-export const onFetchEntitySuccess = (responseData, name, countFetched = false, fetchOthers = false) => {
+export const onFetchEntitySuccess = (responseData, name, countFetched = false, othersFetched = false) => {
     return {
         type: actionTypes.onFetchEntitySuccess, payload: {
             loading: false, rows: responseData.rows, name,
-            [fetchOthers ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
-            countFetched
+            [othersFetched ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
+            countFetched, othersFetched
         }
     };
 }

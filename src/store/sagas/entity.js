@@ -70,6 +70,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
     const { pagingOptions, isPrintReq } = action.payload;
+    const reportName = searchCriteria ? searchCriteria.ReportName : undefined;
     let skip, take = undefined;
     if (pagingOptions) {
         skip = pagingOptions.skip;
@@ -89,16 +90,16 @@ export function* handleFetchData(action) {
                     'authorization': `${token}`,
                 }
                 let response;
-                const fetchCount = yield checkFetchCount(collection);
+                const fetchCount = yield* checkFetchCount(collection);
                 //If Count has already been fetched
-                const toFetch = yield checkFetch(collection, fetchCount);
-                const fetchOthers = yield checkFetchOthers(collection, isPrintReq, searchCriteria.ReportName);
+                const toFetch = yield* checkFetch(collection, fetchCount);
+                const fetchOthers = yield* checkFetchOthers(collection, isPrintReq, reportName, !fetchCount);
                 if (fetchOthers || toFetch) {
                     if (collection === constants.Reports && searchCriteria) {
                         response = yield axios({
                             method: 'post',
                             data: { ...searchCriteria, take, skip },
-                            url: `/${collection}?fetchCount=${fetchCount}&fetchOthers=${fetchOthers}`,
+                            url: `/${collection}?fetchCount=${fetchCount || fetchOthers}&fetchOthers=${fetchOthers}`,
                             headers
                         });
                     }
@@ -178,27 +179,30 @@ export function* handleFetchSchema(action) {
         yield put(actions.onFetchEntityFailed(error.message, collection));
     }
 }
-const checkFetchOthers = function* (collection, isPrintReq, reportName) {
+const checkFetchOthers = function* (collection, isPrintReq, reportName, countFetched) {
     if (reportName !== constants.Management)
-        yield undefined;
+        return undefined;
     else {
         if (isPrintReq)
-            yield true;
-        const rowState = yield select(getRowState(collection));
-        if (rowState.rows.length === rowState.totalCount)
-            yield true;
-        yield false;
+            return true;
+        else if (countFetched) {
+            const rowState = yield select(getRowState(collection));
+            if (rowState.rows.length === rowState.totalCount)
+                return true;
+            return false;
+        }
+        return false;
     }
 }
 const getRowState = collection => state => ({ rows: state[collection].rows, totalCount: state[collection].totalCount });
 const checkFetchCount = function* (collection) {
-    yield select(state => !state[collection].countFetched);
+    return yield select(state => !state[collection].countFetched);
 }
 const checkFetch = function* (collection, toFetchCount) {
     if (toFetchCount)
-        yield true;
+        return true;
     const rowState = yield select(getRowState(collection));
     if (rowState.rows.length < rowState.totalCount)
-        yield true;
-    yield false;
+        return true;
+    return false;
 }

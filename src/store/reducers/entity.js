@@ -2,7 +2,7 @@ import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
-    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false
+    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false, othersFetched: false
 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
@@ -18,21 +18,17 @@ export const entity = (name) => (state = initialState, action) => {
             return {
                 ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount,
                 othersTotalCount: payload.othersTotalCount || state.othersTotalCount,
-                countFetched: payload.countFetched || state.countFetched
+                countFetched: payload.countFetched || state.countFetched,
+                othersFetched: payload.othersFetched || state.othersFetched
             };
         case actionTypes.onFetchTotalSuccess:
-            return {
-                ...fetchState, totalAmount: payload.totalAmount || state.totalAmount
-            };
-        case actionTypes.onFetchTotalFailure: {
-            return {
-                ...fetchState, totalAmount: {}, error: action.payload.error
-            };
-        }
+            return { ...fetchState, totalAmount: payload.totalAmount || state.totalAmount };
+        case actionTypes.onFetchTotalFailure:
+            return { ...fetchState, totalAmount: {}, error: action.payload.error };
         case actionTypes.onFetchEntitySchemaSuccess:
             return { ...state, columns: action.payload.columns, loading: action.payload.loading, error: '', name, printReq: action.payload.printReq };
         case actionTypes.onFetchEntityFailed:
-            return { ...state, rows: [], error: action.payload.error, loading: false, name };
+            return { ...state, rows: state.rows, error: action.payload.error, loading: false, name };
         case actionTypes.onEntityTransactionCommitted:
             return { ...state, message: action.payload.message, error: '', name, rows: changeRows(payload, state.rows, true) };
         case actionTypes.onEntityTransactionCommitReq:

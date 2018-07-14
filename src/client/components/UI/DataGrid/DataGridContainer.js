@@ -10,6 +10,20 @@ import printHtml from 'print-html-element';
 import DataGrid from './DataGrid';
 import PrintGridContainer from './PrintGridContainer';
 import { FILTER_VISIBILITY } from '../../../../store/constants/components/datagrid';
+
+const getDefaultPaginationOptions = props => ({ take: 5, skip: props.rows.length });
+const fetchData = props => (type, collection, searchCriteria, pagingOptions = getDefaultPaginationOptions(props)) => {
+    switch (type) {
+        case transactionType.fetch.schema:
+            props.fetchEntitySchema(collection, searchCriteria);
+            break;
+        case transactionType.fetch.data:
+            props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false);//default paging options
+            break;
+        default:
+            return;
+    }
+}
 export default class DataGridContainer extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -20,27 +34,14 @@ export default class DataGridContainer extends React.PureComponent {
             transaction: null,
             prevProps: {},
         };
+        this.fetchData = fetchData(this.props).bind(this)
     }
-    defaultPaginationOptions = { take: 5, skip: this.props.rows.length }
 
     //#region Fetch handlers
 
     clearMessages = () => this.props.clearEntityMessages(this.props.collection);
 
-    fetchData = (type, collection, searchCriteria, pagingOptions = this.defaultPaginationOptions) => {
-        switch (type) {
-            case transactionType.fetch.schema:
-                this.props.fetchEntitySchema(collection, searchCriteria);
-                break;
-            case transactionType.fetch.data:
-                this.props.fetchEntityData(collection, searchCriteria, pagingOptions, false, false);//default paging options
-                break;
-            default:
-                return;
-        }
-    }
-
-    setAndfetchPaginatedData = (collection, pagingOptions = this.defaultPaginationOptions) => {
+    setAndfetchPaginatedData = (collection, pagingOptions = getDefaultPaginationOptions(this.props)) => {
         const transaction = () => this.props.fetchEntityData(collection, this.props.searchCriteria, pagingOptions, true);
         this.setState({ transaction });
         transaction();
@@ -166,3 +167,4 @@ export default class DataGridContainer extends React.PureComponent {
         );
     }
 }
+export const handleFetchData = fetchData;

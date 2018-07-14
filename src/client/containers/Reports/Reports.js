@@ -9,7 +9,7 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate } from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
@@ -245,6 +245,9 @@ class Reports extends React.Component {
   render() {
     const { reportOpen, selectedGenerateOption, searchObj } = this.state;
     const { classes } = this.props;
+    const selectedReportName = selectedGenerateOption.name;
+    const title = `${selectedReportName === POOJA ? { 'Pooja': searchObj.poojaName } :
+      (selectedReportName === MANAGEMENT ? { 'Generated date': getCurrentDate() } : '')}`;
     return (
       <div className={classes.root}>
         <div className={classes.container}>
@@ -253,7 +256,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <ReportsGrid title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <ReportsGrid title={`${selectedReportName} Report ${title}`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
           <div className={classes.centerTextboxContainer}>
             <div className={classes.centerTextbox}>

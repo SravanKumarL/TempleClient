@@ -35,5 +35,8 @@ export {
   onEntityTransactionCommitted,
   onEntityTransactionCommitReq,
   clearEntityMessages,
-  resetEntity
+  resetEntity,
+  fetchTotal,
+  onFetchTotalFailure,
+  onFetchTotalSuccess
 } from './entity'
