@@ -32,9 +32,12 @@ export default class DataGridContainer extends React.PureComponent {
             displayFilter: false,
             snackBarOpen: false,
             transaction: null,
+            navigatedPages: [0],
             prevProps: {},
         };
-        this.fetchData = fetchData(this.props).bind(this)
+        this.fetchData = fetchData(this.props).bind(this);
+        this.currentPageChangedHandler = this.currentPageChangedHandler.bind(this);
+        this.pageSizeChangedHandler = this.pageSizeChangedHandler.bind(this);
     }
 
     //#region Fetch handlers
@@ -63,12 +66,18 @@ export default class DataGridContainer extends React.PureComponent {
         transaction();
     }
     //#endregion
-    currentPageChangedHandler = (currentPage, pageSize) => {
-        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+    currentPageChangedHandler = (currentPage, pageSize, fetchData = false) => {
+        if (fetchData && this.state.navigatedPages.indexOf(currentPage) === -1) {
+            const skipable = (currentPage + 1) * pageSize;
+            this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
+            this.setState(prevState => ({ navigatedPages: [...prevState.navigatedPages, currentPage] }));
+        }
         this.props.checkShowTotalOthers(currentPage, pageSize);
     }
-    pageSizeChangedHandler = pageSize => {
-        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+    pageSizeChangedHandler = (pageSize, fetchData = false) => {
+        if (fetchData && pageSize > this.props.rows.length) {
+            this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+        }
         this.props.checkShowTotalOthers(undefined, pageSize);
     }
     snackBarClosedHandler = () => {
@@ -97,15 +106,15 @@ export default class DataGridContainer extends React.PureComponent {
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { error, message, searchCriteria, loading, transaction } = nextProps;
+        const { error, message, loading, transaction } = nextProps;
         let update = null;
         if (message !== prevState.prevProps.message || error !== prevState.prevProps.error) {
-            update = ({ prevProps: { error, message, searchCriteria, loading }, snackBarOpen: error !== '' || message !== '' });
+            update = ({ prevProps: { error, message, loading }, snackBarOpen: error !== '' || message !== '' });
             if (transaction)
                 update = { ...update, transaction };
         }
         else if (loading !== prevState.prevProps.loading) {
-            update = { prevProps: { ...prevState.prevProps, loading } };
+            update = { prevProps: { ...prevState.prevProps, loading }, navigatedPages: [0] };
         }
         return update;
     }
@@ -159,7 +168,7 @@ export default class DataGridContainer extends React.PureComponent {
                             <PrintGridContainer rows={rows} columns={columns} searchCriteria={searchCriteria}>
                                 {OtherPrintComponents ? <OtherPrintComponents /> : null}
                             </PrintGridContainer> :
-                            <DataGrid rows={rows.filter(row => !row.others)}
+                            <DataGrid rows={rows}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} onCurrentPageChanged={this.currentPageChangedHandler}
                                 onPageSizeChanged={this.pageSizeChangedHandler} totalCount={totalCount} title={title} />}

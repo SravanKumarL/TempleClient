@@ -16,8 +16,8 @@ export const fetchEntitySchema = (collection, searchCriteria) => {
 export const fetchTotal = (collection, searchCriteria) => {
     return { type: actionTypes.fetchTotal, payload: { collection, searchCriteria } };
 }
-export const onFetchEntityReq = (name, refetch = false) => {
-    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name } };
+export const onFetchEntityReq = (name, refetch = false, pagingOptions) => {
+    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, pagingOptions } };
 }
 export const onFetchEntitySuccess = (responseData, name, countFetched = false, othersFetched = false, printReq = false) => {
     return {

@@ -81,7 +81,7 @@ export function* handleFetchData(action) {
     }
     else {
         try {
-            yield put(actions.onFetchEntityReq(collection, refetch));
+            yield put(actions.onFetchEntityReq(collection, refetch, pagingOptions));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -183,11 +183,13 @@ const checkFetchOthers = function* (collection, reportName, countFetched) {
     if (reportName !== constants.Management)
         return undefined;
     else {
-        if (countFetched) {
-            const rowState = yield select(getRowState(collection));
-            if (rowState.rows.length === rowState.totalCount)
-                return true;
-            return true;//false
+        const othersFetched = yield select(state => state[collection].othersFetched);
+        if (countFetched && !othersFetched) {
+            // const rowState = yield select(getRowState(collection));
+            // if (rowState.rows.length === rowState.totalCount)
+            //     return true;
+            // return false;
+            return true;
         }
         return false;
     }

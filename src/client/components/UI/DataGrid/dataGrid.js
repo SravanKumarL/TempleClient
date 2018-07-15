@@ -34,7 +34,7 @@ export default class DataGrid extends React.PureComponent {
             addedRows: [],
             rowChanges: {},
             currentPage: 0,
-            pageSize: 5,
+            pageSize: constants.minimumPageSize,
             pageSizes: [5, 10, 0],
             columnOrder: [],
         };
@@ -59,11 +59,11 @@ export default class DataGrid extends React.PureComponent {
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
     changeCurrentPage = currentPage => {
-        this.props.onCurrentPageChanged(currentPage, this.state.pageSize);
+        this.props.onCurrentPageChanged(currentPage, this.state.pageSize, currentPage > this.state.currentPage);
         this.setState({ currentPage });
     }
     changePageSize = pageSize => {
-        this.props.onPageSizeChanged(pageSize);
+        this.props.onPageSizeChanged(pageSize, pageSize > this.state.pageSize);
         this.setState({ pageSize });
     }
     commitChanges = (props) => {

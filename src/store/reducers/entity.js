@@ -2,24 +2,26 @@ import * as actionTypes from '../actions/actionTypes';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
-    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false, othersFetched: false
+    printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false, othersFetched: false,
+    pagingOptions: {}, unAlteredRows: []
 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
     if (payload && name !== payload.name) return state;
+    let unAlteredRows = mergeRows(state, payload);
     const fetchState = {
-        ...state, rows: mergeRows(state, payload),
+        ...state, rows: unAlteredRows.filter(row => row !== 0),
         loading: ((payload && payload.loading) || false) || false, error: '', name
     };
     switch (action.type) {
         case actionTypes.onFetchEntityReq:
-            return fetchState;
+            return { ...fetchState, pagingOptions: payload.pagingOptions || state.pagingOptions };
         case actionTypes.onFetchEntitySuccess:
             return {
                 ...fetchState, printReq: payload.printReq, totalCount: payload.totalCount || state.totalCount,
                 othersTotalCount: payload.othersTotalCount || state.othersTotalCount,
                 countFetched: payload.countFetched || state.countFetched,
-                othersFetched: payload.othersFetched || state.othersFetched
+                othersFetched: payload.othersFetched || state.othersFetched, unAlteredRows
             };
         case actionTypes.onFetchTotalSuccess:
             return { ...fetchState, totalAmount: payload.totalAmount || state.totalAmount };
@@ -30,9 +32,17 @@ export const entity = (name) => (state = initialState, action) => {
         case actionTypes.onFetchEntityFailed:
             return { ...state, rows: state.rows, error: action.payload.error, loading: false, name };
         case actionTypes.onEntityTransactionCommitted:
-            return { ...state, message: action.payload.message, error: '', name, rows: changeRows(payload, state.rows, true) };
+            unAlteredRows = changeRows(payload, unAlteredRows, true);
+            return {
+                ...state, message: action.payload.message, error: '', name, rows: unAlteredRows.filter(row => row !== 0),
+                unAlteredRows
+            };
         case actionTypes.onEntityTransactionCommitReq:
-            return { ...state, error: '', message: '', rows: changeRows(payload, state.rows), prevRows: state.rows, name };
+            unAlteredRows = changeRows(payload, unAlteredRows);
+            return {
+                ...state, error: '', message: '', rows: unAlteredRows.filter(row => row !== 0), prevRows: state.rows, name,
+                unAlteredRows
+            };
         case actionTypes.clearEntityMessages:
             return { ...state, error: '', message: '' };
         case actionTypes.onEntityTransactionFailed:
@@ -46,13 +56,25 @@ export const entity = (name) => (state = initialState, action) => {
 const mergeRows = (state, payload) => {
     if (!payload || !payload.rows)
         return state.rows;
+    let rows = state.unAlteredRows;
+    if (rows.length === 0 && payload.totalCount)
+        rows = new Array(payload.totalCount).fill(0);
+    const skip = state.pagingOptions.skip || state.rows.length;
     const primaryKey = uniqueProp(payload.name);
     if (!(state.rows.every(row => primaryKey in row) && payload.rows.every(row => primaryKey in row))) {
-        return [...state.rows, ...payload.rows];
+        // return [...state.rows, ...payload.rows];
+        if (payload.rows.length > 0) {
+            rows.splice(skip, payload.rows.length, ...payload.rows);
+        }
+        return rows;
     }
     const prevRowKeys = state.rows.map(row => row[primaryKey]);
     const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
-    return [...state.rows, ...newRows];
+    // return [...state.rows, ...newRows];
+    if (newRows.length > 0) {
+        rows.splice(skip, newRows.length, ...newRows);
+    }
+    return rows
 }
 const changeRows = (payload, rows, commitSucessful = false) => {
     const { type, change, name } = payload;

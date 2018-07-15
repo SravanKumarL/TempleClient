@@ -25,7 +25,7 @@ class ReportsGrid extends React.Component {
                 const transaction = () => prevState.fetchData(nextProps)(transactionType.fetch.data, collection, searchCriteria);
                 transaction();
                 return {
-                    prevProps: { ...prevState.prevProps, searchCriteria, loading }, transaction,
+                    prevProps: { ...prevState.prevProps, searchCriteria, loading, othersFetched: false }, transaction,
                     showTotalOthers: false, othersFetchReq: false
                 };
             }
@@ -40,8 +40,11 @@ class ReportsGrid extends React.Component {
                 }
                 return { prevProps: { ...prevState.prevProps, loading }, transaction, othersFetchReq };
             }
-            else if (nextProps.othersFetched && (constants.minimumPageSize >= nextProps.totalCount)) {
-                return { showTotalOthers: true }
+            else if (prevState.prevProps.othersFetched !== nextProps.othersFetched) {
+                let stateUpdate = { prevProps: { ...prevState.prevProps, othersFetched: nextProps.othersFetched } };
+                if (constants.minimumPageSize >= nextProps.totalCount)
+                    stateUpdate = { ...stateUpdate, showTotalOthers: true };
+                return stateUpdate;
             }
             return null;
         }
@@ -59,7 +62,8 @@ class ReportsGrid extends React.Component {
         this.setState({ showTotalOthers });
     }
     render() {
-        const { rows, searchCriteria, columns, totalAmount } = this.props;
+        const { searchCriteria, columns, totalAmount } = this.props;
+        let { rows, ...restProps } = this.props;
         const { showTotalOthers } = this.state;
         const OthersTotalComponent = () => (
             (searchCriteria.ReportName === constants.Management &&
@@ -70,7 +74,7 @@ class ReportsGrid extends React.Component {
         );
         return (
             <Fragment>
-                <DataGridContainer {...this.props} checkShowTotalOthers={this.checkShowTotalOthersHandler}
+                <DataGridContainer {...restProps} rows={rows.filter(row => !row.others)} checkShowTotalOthers={this.checkShowTotalOthersHandler}
                     OtherPrintComponents={OthersTotalComponent} />
                 {showTotalOthers && <OthersTotalComponent />}
             </Fragment>
