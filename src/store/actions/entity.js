@@ -16,15 +16,15 @@ export const fetchEntitySchema = (collection, searchCriteria) => {
 export const fetchTotal = (collection, searchCriteria) => {
     return { type: actionTypes.fetchTotal, payload: { collection, searchCriteria } };
 }
-export const onFetchEntityReq = (name, refetch = false, printReq = false) => {
-    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, printReq } };
+export const onFetchEntityReq = (name, refetch = false) => {
+    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name } };
 }
-export const onFetchEntitySuccess = (responseData, name, countFetched = false, othersFetched = false) => {
+export const onFetchEntitySuccess = (responseData, name, countFetched = false, othersFetched = false, printReq = false) => {
     return {
         type: actionTypes.onFetchEntitySuccess, payload: {
             loading: false, rows: responseData.rows, name,
             [othersFetched ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
-            countFetched, othersFetched
+            countFetched, othersFetched, printReq
         }
     };
 }

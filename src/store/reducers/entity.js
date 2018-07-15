@@ -13,10 +13,10 @@ export const entity = (name) => (state = initialState, action) => {
     };
     switch (action.type) {
         case actionTypes.onFetchEntityReq:
-            return { ...fetchState, printReq: payload.printReq };
+            return fetchState;
         case actionTypes.onFetchEntitySuccess:
             return {
-                ...fetchState, printReq: false, totalCount: payload.totalCount || state.totalCount,
+                ...fetchState, printReq: payload.printReq, totalCount: payload.totalCount || state.totalCount,
                 othersTotalCount: payload.othersTotalCount || state.othersTotalCount,
                 countFetched: payload.countFetched || state.countFetched,
                 othersFetched: payload.othersFetched || state.othersFetched

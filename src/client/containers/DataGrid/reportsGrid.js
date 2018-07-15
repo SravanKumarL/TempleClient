@@ -12,29 +12,35 @@ class ReportsGrid extends React.Component {
             prevProps: {},
             transaction: null,
             showTotalOthers: false,
+            othersFetchReq: false,
             fetchData: props => handleFetchData(props)
         }
         this.checkShowTotalOthersHandler = this.checkShowTotalOthersHandler.bind(this);
     }
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { searchCriteria, collection, loading, rows } = nextProps;
+        const { searchCriteria, collection, loading } = nextProps;
         if (prevState.prevProps.searchCriteria) {
             if (JSON.stringify(searchCriteria) !== JSON.stringify(prevState.prevProps.searchCriteria)) {
                 prevState.fetchData(nextProps)(transactionType.fetch.schema, nextProps.collection, searchCriteria);
                 const transaction = () => prevState.fetchData(nextProps)(transactionType.fetch.data, collection, searchCriteria);
                 transaction();
-                return { prevProps: { ...prevState.prevProps, searchCriteria, loading }, transaction, showTotalOthers: false };
+                return {
+                    prevProps: { ...prevState.prevProps, searchCriteria, loading }, transaction,
+                    showTotalOthers: false, othersFetchReq: false
+                };
             }
             else if (loading !== prevState.prevProps.loading) {
                 let transaction = null;
-                if (nextProps.countFetched && searchCriteria.ReportName === constants.Management && !nextProps.othersFetched) {
+                let othersFetchReq = false;
+                if (nextProps.countFetched && searchCriteria.ReportName === constants.Management && !prevState.othersFetchReq) {
+                    othersFetchReq = true;
                     nextProps.fetchEntityData(collection, searchCriteria, {}, true);
                     transaction = () => nextProps.fetchTotal(collection, searchCriteria);
                     transaction();
                 }
-                return { prevProps: { ...prevState.prevProps, loading }, transaction };
+                return { prevProps: { ...prevState.prevProps, loading }, transaction, othersFetchReq };
             }
-            else if (nextProps.othersFetched && (rows.length === nextProps.totalCount + nextProps.othersTotalCount)) {
+            else if (nextProps.othersFetched && (constants.minimumPageSize >= nextProps.totalCount)) {
                 return { showTotalOthers: true }
             }
             return null;
@@ -43,26 +49,30 @@ class ReportsGrid extends React.Component {
             return { prevProps: { ...prevState.prevProps, searchCriteria } };
     }
     checkShowTotalOthersHandler = (currentPage, pageSize) => {
-        const lastPageNumber = Math.ceil(this.props.rows.length / pageSize);
+        const rows = this.props.rows.filter(row => !row.others);
+        const lastPageNumber = Math.floor(rows.length / pageSize);
         let showTotalOthers = false;
-        showTotalOthers = pageSize >= this.props.rows.length;
+        showTotalOthers = pageSize >= rows.length;
         if (!showTotalOthers && currentPage) {
             showTotalOthers = currentPage === lastPageNumber;
         }
-        if (showTotalOthers)
-            this.setState({ showTotalOthers });
+        this.setState({ showTotalOthers });
     }
     render() {
         const { rows, searchCriteria, columns, totalAmount } = this.props;
         const { showTotalOthers } = this.state;
+        const OthersTotalComponent = () => (
+            (searchCriteria.ReportName === constants.Management &&
+                <Fragment>
+                    <PaperedGrid rows={rows.filter(row => row.others)} columns={columns} title='Others' />
+                    {Object.keys(totalAmount).length > 0 && <TotalPaper rows={rows} totalAmount={totalAmount} />}
+                </Fragment>)
+        );
         return (
             <Fragment>
-                <DataGridContainer {...this.props} checkShowTotalOthers={this.checkShowTotalOthersHandler} />
-                {searchCriteria.ReportName === constants.Management && showTotalOthers &&
-                    <Fragment>
-                        <PaperedGrid rows={rows.filter(row => row.others)} columns={columns} title='Others' />
-                        {Object.keys(totalAmount).length > 0 && <TotalPaper rows={rows} totalAmount={totalAmount} />}
-                    </Fragment>}
+                <DataGridContainer {...this.props} checkShowTotalOthers={this.checkShowTotalOthersHandler}
+                    OtherPrintComponents={OthersTotalComponent} />
+                {showTotalOthers && <OthersTotalComponent />}
             </Fragment>
         );
     }

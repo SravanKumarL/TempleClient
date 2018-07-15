@@ -81,7 +81,7 @@ export function* handleFetchData(action) {
     }
     else {
         try {
-            yield put(actions.onFetchEntityReq(collection, refetch, isPrintReq));
+            yield put(actions.onFetchEntityReq(collection, refetch));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -92,8 +92,8 @@ export function* handleFetchData(action) {
                 let response;
                 const fetchCount = yield* checkFetchCount(collection);
                 //If Count has already been fetched
-                const toFetch = yield* checkFetch(collection, fetchCount);
-                const fetchOthers = yield* checkFetchOthers(collection, isPrintReq, reportName, !fetchCount);
+                const toFetch = yield* checkFetch(collection, fetchCount, isPrintReq);
+                const fetchOthers = yield* checkFetchOthers(collection, reportName, !fetchCount);
                 if (fetchOthers || toFetch) {
                     if (collection === constants.Reports && searchCriteria) {
                         response = yield axios({
@@ -114,7 +114,7 @@ export function* handleFetchData(action) {
                         throw new Error(response.data.error);
                     }
                     else {
-                        yield put(actions.onFetchEntitySuccess(response.data, collection, fetchCount, fetchOthers));
+                        yield put(actions.onFetchEntitySuccess(response.data, collection, fetchCount, fetchOthers, isPrintReq));
                     }
                 }
             }
@@ -179,30 +179,33 @@ export function* handleFetchSchema(action) {
         yield put(actions.onFetchEntityFailed(error.message, collection));
     }
 }
-const checkFetchOthers = function* (collection, isPrintReq, reportName, countFetched) {
+const checkFetchOthers = function* (collection, reportName, countFetched) {
     if (reportName !== constants.Management)
         return undefined;
     else {
-        if (isPrintReq)
-            return true;
-        else if (countFetched) {
+        if (countFetched) {
             const rowState = yield select(getRowState(collection));
             if (rowState.rows.length === rowState.totalCount)
                 return true;
-            return false;
+            return true;//false
         }
         return false;
     }
 }
-const getRowState = collection => state => ({ rows: state[collection].rows, totalCount: state[collection].totalCount });
+const getRowState = collection => state => ({
+    rows: state[collection].rows, totalCount: state[collection].totalCount,
+    othersTotalCount: state[collection].othersTotalCount
+});
 const checkFetchCount = function* (collection) {
     return yield select(state => !state[collection].countFetched);
 }
-const checkFetch = function* (collection, toFetchCount) {
-    if (toFetchCount)
+const checkFetch = function* (collection, toFetchCount, isPrintReq) {
+    if (toFetchCount || isPrintReq)
         return true;
     const rowState = yield select(getRowState(collection));
-    if (rowState.rows.length < rowState.totalCount)
+    console.log(rowState.rows.length, rowState.totalCount, rowState.othersTotalCount);
+    if (rowState.rows.length < rowState.totalCount + rowState.othersTotalCount) {
         return true;
+    }
     return false;
 }
