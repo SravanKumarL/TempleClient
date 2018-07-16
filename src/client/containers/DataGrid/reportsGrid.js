@@ -34,8 +34,8 @@ class ReportsGrid extends React.Component {
                 let othersFetchReq = false;
                 if (nextProps.countFetched && searchCriteria.ReportName === constants.Management && !prevState.othersFetchReq) {
                     othersFetchReq = true;
-                    nextProps.fetchEntityData(collection, searchCriteria, {}, true);
-                    transaction = () => nextProps.fetchTotal(collection, searchCriteria);
+                    nextProps.fetchEntityData(collection, searchCriteria, {}, true);//Fetch Others
+                    transaction = () => nextProps.fetchTotal(collection, searchCriteria);//Fetch Total
                     transaction();
                 }
                 return { prevProps: { ...prevState.prevProps, loading }, transaction, othersFetchReq };

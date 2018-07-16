@@ -59,7 +59,7 @@ const mergeRows = (state, payload) => {
     else if (payload.printReq)
         return payload.rows;
     else {
-        let rows = state.unAlteredRows;
+        let rows = [...state.unAlteredRows];
         if (rows.length === 0 && payload.totalCount)
             rows = new Array(payload.totalCount).fill(0);
         const skip = payload.pagingOptions.skip || state.rows.length;

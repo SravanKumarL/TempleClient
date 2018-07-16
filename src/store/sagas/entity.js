@@ -69,7 +69,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
-    const { pagingOptions, isPrintReq } = action.payload;
+    let { pagingOptions, isPrintReq } = action.payload;
     const reportName = searchCriteria ? searchCriteria.ReportName : undefined;
     let skip, take = undefined;
     if (pagingOptions) {
@@ -208,10 +208,11 @@ const checkFetch = function* (collection, toFetchCount, pagingOptions, isPrintRe
     const unAlteredRows = yield select(state => state[collection].unAlteredRows);
     if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
         const slicedRows = unAlteredRows.slice(unAlteredRows[pagingOptions.skip], pagingOptions.take);
-        const skip = slicedRows.indexOf(0);
+        let skip = slicedRows.indexOf(0);//Check for any previously filled rows
         if (skip === -1)
             return { toFetch: false }
         const take = pagingOptions.take - skip;
+        skip += pagingOptions.skip;
         const newPagingOptions = { skip, take };
         return { toFetch: true, newPagingOptions };
     }
