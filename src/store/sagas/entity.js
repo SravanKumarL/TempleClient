@@ -205,9 +205,11 @@ const checkFetchCount = function* (collection) {
 const checkFetch = function* (collection, toFetchCount, pagingOptions, isPrintReq) {
     if (toFetchCount || isPrintReq)
         return { toFetch: true };
-    const unAlteredRows = yield select(state => state[collection].unAlteredRows);
+    const rowState = yield select(getRowState(collection));
     if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
-        const slicedRows = unAlteredRows.slice(unAlteredRows[pagingOptions.skip], pagingOptions.take);
+        const rows = rowState.rows;
+        const slicedRows = rows.filter(row => row === 0 || !row.others).slice(pagingOptions.skip,
+            pagingOptions.skip + pagingOptions.take);
         let skip = slicedRows.indexOf(0);//Check for any previously filled rows
         if (skip === -1)
             return { toFetch: false }

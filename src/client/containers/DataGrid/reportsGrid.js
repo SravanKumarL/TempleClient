@@ -52,12 +52,12 @@ class ReportsGrid extends React.Component {
             return { prevProps: { ...prevState.prevProps, searchCriteria } };
     }
     checkShowTotalOthersHandler = (currentPage, pageSize) => {
-        const rows = this.props.rows.filter(row => !row.others);
-        const lastPageNumber = Math.floor(rows.length / pageSize);
+        const { totalCount } = this.props;
+        const lastPageNumber = Math.floor(totalCount / pageSize);
         let showTotalOthers = false;
-        showTotalOthers = pageSize >= rows.length;
+        showTotalOthers = pageSize === 0 || pageSize >= totalCount; // For 'All' in pagesize, value of pagesize = 0
         if (!showTotalOthers && currentPage) {
-            showTotalOthers = currentPage === lastPageNumber;
+            showTotalOthers = (currentPage + 1) >= lastPageNumber;
         }
         this.setState({ showTotalOthers });
     }
