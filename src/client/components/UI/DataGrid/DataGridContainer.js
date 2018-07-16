@@ -66,15 +66,13 @@ export default class DataGridContainer extends React.PureComponent {
     }
     //#endregion
     currentPageChangedHandler = (currentPage, pageSize) => {
-        const skipable = (currentPage + 1) * pageSize;
-        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
+        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: currentPage * pageSize });
         if (this.props.checkShowTotalOthers) {
             this.props.checkShowTotalOthers(currentPage, pageSize);
         }
     }
     pageSizeChangedHandler = (currentPage, pageSize) => {
-        const skipable = (currentPage + 1) * pageSize;
-        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
+        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: currentPage * pageSize });
         if (this.props.checkShowTotalOthers) {
             this.props.checkShowTotalOthers(undefined, pageSize);
         }

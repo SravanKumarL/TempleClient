@@ -209,10 +209,10 @@ const checkFetch = function* (collection, toFetchCount, pagingOptions, isPrintRe
     if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
         const slicedRows = unAlteredRows.slice(unAlteredRows[pagingOptions.skip], pagingOptions.take);
         const skip = slicedRows.indexOf(0);
-        const take = pagingOptions.take - skip;
-        const newPagingOptions = { skip, take };
         if (skip === -1)
             return { toFetch: false }
+        const take = pagingOptions.take - skip;
+        const newPagingOptions = { skip, take };
         return { toFetch: true, newPagingOptions };
     }
     else {
