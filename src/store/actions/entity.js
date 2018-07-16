@@ -16,13 +16,13 @@ export const fetchEntitySchema = (collection, searchCriteria) => {
 export const fetchTotal = (collection, searchCriteria) => {
     return { type: actionTypes.fetchTotal, payload: { collection, searchCriteria } };
 }
-export const onFetchEntityReq = (name, refetch = false, pagingOptions) => {
-    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, pagingOptions } };
+export const onFetchEntityReq = (name, refetch = false) => {
+    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name } };
 }
-export const onFetchEntitySuccess = (responseData, name, countFetched = false, othersFetched = false, printReq = false) => {
+export const onFetchEntitySuccess = (responseData, name, pagingOptions, countFetched = false, othersFetched = false, printReq = false) => {
     return {
         type: actionTypes.onFetchEntitySuccess, payload: {
-            loading: false, rows: responseData.rows, name,
+            loading: false, rows: responseData.rows, name, pagingOptions,
             [othersFetched ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
             countFetched, othersFetched, printReq
         }

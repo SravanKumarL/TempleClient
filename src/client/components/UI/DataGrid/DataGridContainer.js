@@ -32,7 +32,6 @@ export default class DataGridContainer extends React.PureComponent {
             displayFilter: false,
             snackBarOpen: false,
             transaction: null,
-            navigatedPages: [0],
             prevProps: {},
         };
         this.fetchData = fetchData(this.props).bind(this);
@@ -66,19 +65,19 @@ export default class DataGridContainer extends React.PureComponent {
         transaction();
     }
     //#endregion
-    currentPageChangedHandler = (currentPage, pageSize, fetchData = false) => {
-        if (fetchData && this.state.navigatedPages.indexOf(currentPage) === -1) {
-            const skipable = (currentPage + 1) * pageSize;
-            this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
-            this.setState(prevState => ({ navigatedPages: [...prevState.navigatedPages, currentPage] }));
+    currentPageChangedHandler = (currentPage, pageSize) => {
+        const skipable = (currentPage + 1) * pageSize;
+        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
+        if (this.props.checkShowTotalOthers) {
+            this.props.checkShowTotalOthers(currentPage, pageSize);
         }
-        this.props.checkShowTotalOthers(currentPage, pageSize);
     }
-    pageSizeChangedHandler = (pageSize, fetchData = false) => {
-        if (fetchData && pageSize > this.props.rows.length) {
-            this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+    pageSizeChangedHandler = (currentPage, pageSize) => {
+        const skipable = (currentPage + 1) * pageSize;
+        this.setAndfetchPaginatedData(this.props.collection, { take: pageSize, skip: skipable });
+        if (this.props.checkShowTotalOthers) {
+            this.props.checkShowTotalOthers(undefined, pageSize);
         }
-        this.props.checkShowTotalOthers(undefined, pageSize);
     }
     snackBarClosedHandler = () => {
         this.setState({ snackBarOpen: false, snackBarClosed: true });
@@ -114,7 +113,7 @@ export default class DataGridContainer extends React.PureComponent {
                 update = { ...update, transaction };
         }
         else if (loading !== prevState.prevProps.loading) {
-            update = { prevProps: { ...prevState.prevProps, loading }, navigatedPages: [0] };
+            update = { prevProps: { ...prevState.prevProps, loading } };
         }
         return update;
     }

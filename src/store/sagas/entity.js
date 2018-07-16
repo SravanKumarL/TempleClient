@@ -81,7 +81,7 @@ export function* handleFetchData(action) {
     }
     else {
         try {
-            yield put(actions.onFetchEntityReq(collection, refetch, pagingOptions));
+            yield put(actions.onFetchEntityReq(collection, refetch));
             const token = sessionStorage.getItem('token');
             if (!token) {
                 throw new Error(`You are not allowed to ${constants.get} the ${collection}`);
@@ -92,7 +92,8 @@ export function* handleFetchData(action) {
                 let response;
                 const fetchCount = yield* checkFetchCount(collection);
                 //If Count has already been fetched
-                const toFetch = yield* checkFetch(collection, fetchCount, isPrintReq);
+                const { toFetch, newPagingOptions } = yield* checkFetch(collection, fetchCount, pagingOptions, isPrintReq);
+                pagingOptions = newPagingOptions || pagingOptions;
                 const fetchOthers = yield* checkFetchOthers(collection, reportName, !fetchCount);
                 if (fetchOthers || toFetch) {
                     if (collection === constants.Reports && searchCriteria) {
@@ -114,7 +115,7 @@ export function* handleFetchData(action) {
                         throw new Error(response.data.error);
                     }
                     else {
-                        yield put(actions.onFetchEntitySuccess(response.data, collection, fetchCount, fetchOthers, isPrintReq));
+                        yield put(actions.onFetchEntitySuccess(response.data, collection, pagingOptions, fetchCount, fetchOthers, isPrintReq));
                     }
                 }
             }
@@ -201,13 +202,24 @@ const getRowState = collection => state => ({
 const checkFetchCount = function* (collection) {
     return yield select(state => !state[collection].countFetched);
 }
-const checkFetch = function* (collection, toFetchCount, isPrintReq) {
+const checkFetch = function* (collection, toFetchCount, pagingOptions, isPrintReq) {
     if (toFetchCount || isPrintReq)
-        return true;
-    const rowState = yield select(getRowState(collection));
-    console.log(rowState.rows.length, rowState.totalCount, rowState.othersTotalCount);
-    if (rowState.rows.length < rowState.totalCount + rowState.othersTotalCount) {
-        return true;
+        return { toFetch: true };
+    const unAlteredRows = yield select(state => state[collection].unAlteredRows);
+    if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
+        const slicedRows = unAlteredRows.slice(unAlteredRows[pagingOptions.skip], pagingOptions.take);
+        const skip = slicedRows.indexOf(0);
+        const take = pagingOptions.take - skip;
+        const newPagingOptions = { skip, take };
+        if (skip === -1)
+            return { toFetch: false }
+        return { toFetch: true, newPagingOptions };
     }
-    return false;
+    else {
+        const rowState = yield select(getRowState(collection));
+        if (rowState.rows.length < rowState.totalCount + rowState.othersTotalCount) {
+            return { toFetch: true };
+        }
+        return { toFetch: false };
+    }
 }

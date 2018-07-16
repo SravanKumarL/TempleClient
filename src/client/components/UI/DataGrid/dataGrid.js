@@ -59,11 +59,11 @@ export default class DataGrid extends React.PureComponent {
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
     changeCurrentPage = currentPage => {
-        this.props.onCurrentPageChanged(currentPage, this.state.pageSize, currentPage > this.state.currentPage);
+        this.props.onCurrentPageChanged(currentPage, this.state.pageSize);
         this.setState({ currentPage });
     }
     changePageSize = pageSize => {
-        this.props.onPageSizeChanged(pageSize, pageSize > this.state.pageSize);
+        this.props.onPageSizeChanged(this.state.currentPage, pageSize);
         this.setState({ pageSize });
     }
     commitChanges = (props) => {
