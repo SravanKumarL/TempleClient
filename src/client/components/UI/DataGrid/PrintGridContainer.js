@@ -22,7 +22,7 @@ const PrintGridContainer = ({ searchCriteria, rows, columns, children }) => {
                 return accumulator;
             }, {});
         }
-        printColumns = printColumns.filter(column => column.name !== 'pooja');
+        printColumns = printColumns.filter(column => column.name !== constants.pooja);
     }
     const PrintGridWrapped = ({ rows, columns }) => (
         <Fragment>
@@ -30,7 +30,7 @@ const PrintGridContainer = ({ searchCriteria, rows, columns, children }) => {
             {children}
         </Fragment>
     )
-    return (searchCriteria && searchCriteria.ReportName === 'Pooja' ?
+    return (searchCriteria && searchCriteria.ReportName === constants.Pooja ?
         Object.keys(printRows).map(key =>
             (<div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} key={key}>
                 <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>

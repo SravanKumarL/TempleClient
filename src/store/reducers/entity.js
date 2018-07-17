@@ -1,4 +1,5 @@
 import * as actionTypes from '../actions/actionTypes';
+import _ from 'lodash';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
@@ -56,7 +57,7 @@ const mergeRows = (state, payload) => {
     else if (payload.printReq)
         return payload.rows;
     else {
-        let rows = [...state.rows];
+        let rows = _.cloneDeep(state.rows);
         if (rows.length === 0 && payload.totalCount)
             rows = new Array(payload.totalCount).fill(0);
         if (payload.rows.some(row => row.others)) {

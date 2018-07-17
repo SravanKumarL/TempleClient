@@ -9,6 +9,7 @@ const constants = {
     Schema: 'schema',
     Accounts: 'Accounts',
     Pooja: 'Pooja',
+    pooja:'pooja',
     Management: 'Management',
     Users: 'users',
     totalCashAmount: 'Total Cash Amount (Rs)',
