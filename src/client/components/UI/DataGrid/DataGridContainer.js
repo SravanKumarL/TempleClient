@@ -86,8 +86,10 @@ export default class DataGridContainer extends React.PureComponent {
             this.setState((prevState) => ({ displayFilter: !prevState.displayFilter }));
     }
     printClickedHandler = () => {
-        if (!this.state.isPrintClicked && !this.props.isPrintReq) {
-            this.setAndfetchPaginatedData(this.props.collection, { skip: this.props.rows.length }, true);
+        if (!this.state.isPrintClicked) {
+            if (!this.props.isPrintReq) {
+                this.setAndfetchPaginatedData(this.props.collection, { skip: this.props.rows.length }, true);
+            }
             this.setState({ isPrintClicked: true });
         }
     }

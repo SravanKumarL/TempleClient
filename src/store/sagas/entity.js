@@ -69,7 +69,7 @@ const handleResponse = function* (response, collection, type, changedObj) {
 }
 export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
-    let { pagingOptions, isPrintReq } = action.payload;
+    let { pagingOptions, printReq } = action.payload;
     const reportName = searchCriteria ? searchCriteria.ReportName : undefined;
     let skip, take = undefined;
     if (pagingOptions) {
@@ -92,7 +92,7 @@ export function* handleFetchData(action) {
                 let response;
                 const fetchCount = yield* checkFetchCount(collection);
                 //If Count has already been fetched
-                const { toFetch, newPagingOptions } = yield* checkFetch(collection, fetchCount, pagingOptions, isPrintReq);
+                const { toFetch, newPagingOptions } = yield* checkFetch(collection, fetchCount, pagingOptions, printReq);
                 pagingOptions = newPagingOptions || pagingOptions;
                 const fetchOthers = yield* checkFetchOthers(collection, reportName, !fetchCount);
                 if (fetchOthers || toFetch) {
@@ -115,7 +115,7 @@ export function* handleFetchData(action) {
                         throw new Error(response.data.error);
                     }
                     else {
-                        yield put(actions.onFetchEntitySuccess(response.data, collection, pagingOptions, fetchCount, fetchOthers, isPrintReq));
+                        yield put(actions.onFetchEntitySuccess(response.data, collection, pagingOptions, fetchCount, fetchOthers, printReq));
                     }
                 }
             }
@@ -202,8 +202,8 @@ const getRowState = collection => state => ({
 const checkFetchCount = function* (collection) {
     return yield select(state => !state[collection].countFetched);
 }
-const checkFetch = function* (collection, toFetchCount, pagingOptions, isPrintReq) {
-    if (toFetchCount || isPrintReq)
+const checkFetch = function* (collection, toFetchCount, pagingOptions, printReq) {
+    if (toFetchCount || printReq)
         return { toFetch: true };
     const rowState = yield select(getRowState(collection));
     if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
