@@ -2,28 +2,42 @@ import * as actionTypes from './actionTypes';
 export const commitEntityTransaction = (type, collection, change, changedObj) => {
     return { type: actionTypes.commitEntityTransaction, payload: { type, change, changedObj, collection, name: collection } }
 }
-export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, isPrintReq = false, fetchCount = false,
-    fetchOthers) => {
+export const fetchEntityData = (collection, searchCriteria, pagingOptions, refetch = false, printReq = false) => {
     return {
         type: actionTypes.fetchEntityData, payload: {
             collection, searchCriteria, pagingOptions,
-            refetch, isPrintReq, name: collection, fetchCount, fetchOthers: isPrintReq || fetchOthers
+            refetch, printReq, name: collection
         }
     };
 }
 export const fetchEntitySchema = (collection, searchCriteria) => {
     return { type: actionTypes.fetchEntitySchema, payload: { collection, searchCriteria, name: collection } };
 }
-export const onFetchEntityReq = (name, refetch = false, printReq = false) => {
-    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name, printReq } };
+export const fetchTotal = (collection, searchCriteria) => {
+    return { type: actionTypes.fetchTotal, payload: { collection, searchCriteria } };
 }
-export const onFetchEntitySuccess = (responseData, name, fetchOthers = false) => {
+export const onFetchEntityReq = (name, refetch = false) => {
+    return { type: actionTypes.onFetchEntityReq, payload: { loading: !refetch, rows: [], name } };
+}
+export const onFetchEntitySuccess = (responseData, name, pagingOptions, countFetched = false, othersFetched = false, printReq = false) => {
     return {
         type: actionTypes.onFetchEntitySuccess, payload: {
-            loading: false, rows: responseData.rows, name,
-            [fetchOthers ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
-            totalAmount: responseData.totalAmount
+            loading: false, rows: responseData.rows, name, pagingOptions,
+            [othersFetched ? 'othersTotalCount' : 'totalCount']: responseData.totalCount,
+            countFetched, othersFetched, printReq
         }
+    };
+}
+export const onFetchTotalSuccess = (responseData, name) => {
+    return {
+        type: actionTypes.onFetchTotalSuccess, payload: {
+            name, totalAmount: responseData.totalAmount,
+        }
+    };
+}
+export const onFetchTotalFailure = (responseData, name) => {
+    return {
+        type: actionTypes.onFetchTotalFailure, payload: { error: responseData.error, name }
     };
 }
 export const onFetchEntitySchemaSuccess = (columns, name) => {

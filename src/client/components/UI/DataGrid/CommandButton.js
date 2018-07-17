@@ -32,7 +32,7 @@ export const Command = ({ id, collection, onExecute }) => {
     switch (id) {
         case ADD:
             return (<div>
-                <Button variant="raised" size="small" style={{ background: 'seagreen', color: 'white' }} title={CREATE_ROW} className={classes.button} onClick={onExecute}>
+                <Button variant="raised" size="small" style={{ background: 'seagreen', color: 'white' }} title={CREATE_ROW} className={classNames(classes.button)} onClick={onExecute}>
                     <AddIcon style={{ color: 'white' }} className={classNames(classes.leftIcon, classes.iconSmall)} />
                     New {collection.slice(0, collection.length - 1)}
                 </Button>

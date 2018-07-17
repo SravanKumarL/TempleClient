@@ -40,3 +40,6 @@ export const onFetchEntityFailed = 'ON_FETCH_ENTITY_FAILED';
 export const onEntityTransactionFailed = 'ON_ENTITY_TRANSACTION_FAILED';
 export const onEntityTransactionCommitted = 'ON_ENTITY_TRANSACTION_COMMITTED';
 export const clearEntityMessages = 'CLEAR_ENTITY_MESSAGES';
+export const onFetchTotalSuccess= 'ON_FETCH_TOTAL_SUCCESS';
+export const onFetchTotalFailure='ON_FETCH_TOTAL_FAILURE';
+export const fetchTotal= 'FETCH_TOTAL';

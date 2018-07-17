@@ -12,12 +12,12 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
 import Poojas from '../Poojas/Poojas';
-import DataGridWrapper from '../DataGrid/dataGridWrapper';
 import constants from '../../../store/sagas/constants';
 import TabContainer from './TabContainer';
 import { ROLE } from '../../../store/constants/auth';
 import { TABS } from '../../../store/constants/board';
 import { convertToStartCase } from '../../shared/utility';
+import PoojasUsersGrid from '../DataGrid/poojasUsersGrid';
 
 
 
@@ -172,7 +172,7 @@ class SimpleTabs extends React.Component {
             </TabContainer>}
           {activeTab === USERS &&
             <TabContainer>
-              <DataGridWrapper style={{ flexGrow: 1 }} collection={constants.Users} />
+              <PoojasUsersGrid style={{ flexGrow: 1 }} collection={constants.Users} />
             </TabContainer>}
         </div>
       </div>

@@ -9,11 +9,11 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate } from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
-import DataGridWrapper from '../DataGrid/dataGridWrapper';
+import ReportsGrid from '../DataGrid/reportsGrid';
 import createContainer from '../../hoc/createContainer/createContainer';
 import { REPORT_TYPES } from '../../../store/constants/reports';
 
@@ -245,6 +245,9 @@ class Reports extends React.Component {
   render() {
     const { reportOpen, selectedGenerateOption, searchObj } = this.state;
     const { classes } = this.props;
+    const selectedReportName = selectedGenerateOption.name;
+    let title = `${selectedReportName === POOJA ? (searchObj.pooja.split(',').length > 1 ? '' : ('of ' + searchObj.pooja)) :
+      (selectedReportName === MANAGEMENT ? 'generated on ' + getCurrentDate() : '')}`;
     return (
       <div className={classes.root}>
         <div className={classes.container}>
@@ -253,7 +256,7 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <DataGridWrapper title={`${selectedGenerateOption.name} Report`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <ReportsGrid title={`${selectedReportName} Report ${title}`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
           </div> :
           <div className={classes.centerTextboxContainer}>
             <div className={classes.centerTextbox}>

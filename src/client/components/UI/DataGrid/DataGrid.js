@@ -22,7 +22,7 @@ const EditRow = (props) => {
 const Row = (props) => {
     return <Table.Row {...props} key={props.row.id} />;
 }
-export default class GridContainer extends React.PureComponent {
+export default class DataGrid extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,7 +34,7 @@ export default class GridContainer extends React.PureComponent {
             addedRows: [],
             rowChanges: {},
             currentPage: 0,
-            pageSize: 5,
+            pageSize: constants.minimumPageSize,
             pageSizes: [5, 10, 0],
             columnOrder: [],
         };
@@ -59,11 +59,11 @@ export default class GridContainer extends React.PureComponent {
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
     changeCurrentPage = currentPage => {
-        this.props.fetchPaginatedData(this.props.collection, { take: this.state.pageSize, skip: this.props.rows.length });
+        this.props.onCurrentPageChanged(currentPage, this.state.pageSize);
         this.setState({ currentPage });
     }
     changePageSize = pageSize => {
-        this.props.fetchPaginatedData(this.props.collection, { take: pageSize, skip: this.props.rows.length });
+        this.props.onPageSizeChanged(this.state.currentPage, pageSize);
         this.setState({ pageSize });
     }
     commitChanges = (props) => {
@@ -89,6 +89,7 @@ export default class GridContainer extends React.PureComponent {
         }
     };
     //#endregion
+
     //#region Misc Handlers
     onDelDialogClick = (toDelete) => {
         if (toDelete) {
@@ -102,6 +103,7 @@ export default class GridContainer extends React.PureComponent {
     getRowId = row => row.id;
     checkIfNotEmptyAndUndefined = (value) => value && value !== '';
     //#endregion
+
     render() {
         const { columns, setAndCommitTransaction, collection,
             readOnly, displayFilter, title, totalCount } = this.props;
@@ -181,7 +183,7 @@ export default class GridContainer extends React.PureComponent {
                         pageSizes={pageSizes}
                     />
                     <Toolbar />
-                    <Typography style={{ display: 'flex', justifyContent: 'center', padding: 20, background: '#37474f', color: 'white', fontWeight: 500 }} variant='title'> { collection === constants.Reports ? title : convertToStartCase(collection)} </Typography>
+                    <Typography style={{ display: 'flex', justifyContent: 'center', padding: 20, background: '#37474f', color: 'white', fontWeight: 500 }} variant='title'> {collection === constants.Reports ? title : convertToStartCase(collection)} </Typography>
                     {!readOnly && <GroupingPanel showSortingControls />}
                     {!readOnly && <ColumnChooser />}
                 </Grid>
