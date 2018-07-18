@@ -19,7 +19,7 @@ const searchCriteriaChangedHandler = (nextProps, prevState) => {
 
 const loadingChangedHandler = (nextProps, prevState) => {
     let transaction = null;
-    const { searchCriteria, collection, countFetched } = nextProps;
+    const { searchCriteria, collection, countFetched, loading } = nextProps;
     let othersFetchReq = false;
     if (countFetched && searchCriteria.ReportName === constants.Management && !prevState.othersFetchReq) {
         othersFetchReq = true;
@@ -77,6 +77,7 @@ class ReportsGrid extends React.Component {
             return getStateUpdate(nextProps, prevState);
         }
         else {
+            const { searchCriteria } = nextProps;
             return { prevProps: { ...prevState.prevProps, searchCriteria } };
         }
     }
