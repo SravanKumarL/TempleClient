@@ -137,30 +137,13 @@ export default class DataGridContainer extends React.PureComponent {
             displayFilter,
             snackBarOpen,
         } = this.state;
-        const { HIDE } = FILTER_VISIBILITY;
         const disabled = !(rows && columns && rows.length > 0 && columns.length > 0);
-        const style = { margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 };
-        const buttonStyle = disabled ? { ...style, background: '#eee', color: 'grey' } : style;
         return (
             loading ? <LoadingGrid columns={columns} /> :
                 <div style={{ position: 'relative', margin: '2vh 2vw' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', flexGrow: 1 }} >
-                        <Button
-                            style={buttonStyle}
-                            color='default'
-                            variant='raised'
-                            disabled={disabled}
-                            onClick={this.filterClickedHandler}>
-                            <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
-                    </Button>
-                        <Button
-                            style={buttonStyle}
-                            color='default'
-                            variant='raised'
-                            disabled={disabled}
-                            onClick={this.printClickedHandler}>
-                            <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
-                        </Button>
+                        <FilterButton disabled={disabled} onFilterClicked={this.filterClickedHandler} displayFilter={displayFilter} />
+                        <PrintButton disabled={disabled} onPrintClicked={this.printClickedHandler} />
                     </div>
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ?
@@ -179,3 +162,30 @@ export default class DataGridContainer extends React.PureComponent {
     }
 }
 export const handleFetchData = fetchData;
+
+const FilterButton = ({ disabled, onFilterClicked, displayFilter }) => {
+    const { HIDE } = FILTER_VISIBILITY;
+    const buttonStyle = getButtonStyle(disabled);
+    return (<Button
+        style={buttonStyle}
+        color='default'
+        variant='raised'
+        disabled={disabled}
+        onClick={onFilterClicked}>
+        <FilterIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> {displayFilter && HIDE} Filter
+    </Button>);
+}
+const PrintButton = ({ disabled, onPrintClicked }) => (
+    <Button
+        style={getButtonStyle(disabled)}
+        color='default'
+        variant='raised'
+        disabled={disabled}
+        onClick={onPrintClicked}>
+        <PrintIcon style={{ margin: '0px 10px', fontWeight: 'bold' }} /> Print
+    </Button>
+);
+const getButtonStyle = disabled => {
+    const style = { margin: 10, color: 'white', background: 'seagreen', borderRadius: 5 };
+    return disabled ? { ...style, background: '#eee', color: 'grey' } : style;
+}
