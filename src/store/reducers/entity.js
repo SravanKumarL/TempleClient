@@ -1,5 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 import _ from 'lodash';
+import shortid from 'shortid';
 import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
@@ -55,13 +56,13 @@ const mergeRows = (state, payload) => {
     if (!payload || !payload.rows)
         return state.rows;
     else if (payload.printReq)
-        return payload.rows;
+        return [...payload.rows, ...state.rows.filter(row => row.others)].map(row => ({ ...row, id: shortid.generate() }));
     else {
         let rows = _.cloneDeep(state.rows);
         if (rows.length === 0 && payload.totalCount)
             rows = new Array(payload.totalCount).fill(0);
         if (payload.rows.some(row => row.others)) {
-            return [...rows, ...payload.rows];
+            return [...rows, ...payload.rows.map(row => ({ ...row, id: shortid.generate() }))];
         }
         const skip = (payload.pagingOptions && payload.pagingOptions.skip) || state.rows.length;
         const primaryKey = uniqueProp(payload.name);
@@ -69,14 +70,14 @@ const mergeRows = (state, payload) => {
             if (payload.rows.length > 0) {
                 rows.splice(skip, payload.rows.length, ...payload.rows);
             }
-            return rows;
+            return rows.map(row => ({ ...row, id: shortid.generate() }));
         }
         const prevRowKeys = state.rows.map(row => row[primaryKey]);
         const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
         if (newRows.length > 0) {
             rows.splice(skip, newRows.length, ...newRows);
         }
-        return rows
+        return rows.map(row => ({ ...row, id: row[primaryKey] }));
     }
 }
 const changeRows = (payload, rows, commitSucessful = false) => {
