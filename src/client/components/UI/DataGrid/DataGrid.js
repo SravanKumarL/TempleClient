@@ -35,7 +35,7 @@ export default class DataGrid extends React.PureComponent {
             rowChanges: {},
             currentPage: 0,
             pageSize: constants.minimumPageSize,
-            pageSizes: [5, 10, 0],
+            pageSizes: [constants.minimumPageSize, 10, 0],
             columnOrder: [],
         };
     }
@@ -105,10 +105,10 @@ export default class DataGrid extends React.PureComponent {
     //#endregion
 
     render() {
-        const { columns, setAndCommitTransaction, collection,
+        const { columns, rows, setAndCommitTransaction, collection,
             readOnly, displayFilter, title, totalCount } = this.props;
-        const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
-            this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
+        // const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
+        //     this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
         const {
             delDialogOpen,
             sorting,
