@@ -3,7 +3,7 @@ import PaperedGrid from './PaperedGrid';
 import constants from '../../../../store/sagas/constants';
 const getTotalRows = (rows, totalAmount) => {
     const rowLength = rows.length;
-    const chequedRowLength = rows.filter(row => row.chequeNo).length;
+    const chequedRowLength = rows.filter(row => row.chequeNo).reduce((acc, currVal) => acc + currVal.chequeNo.toString().split(',').length, 0);
     const cashRowLength = rowLength - chequedRowLength;
     const categories = [constants.totalCashAmount, constants.totalChequeAmount, constants.totalAmount];
     return [[cashRowLength, totalAmount.cash], [chequedRowLength, totalAmount.cheque], [rowLength, totalAmount.cheque + totalAmount.cash]]
