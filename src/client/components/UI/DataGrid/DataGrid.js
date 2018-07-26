@@ -147,16 +147,14 @@ export default class DataGrid extends React.PureComponent {
                     <IntegratedSorting />
                     <IntegratedPaging />
                     <CustomPaging totalCount={totalCount} />
-                    {!readOnly &&
-                        <EditingState
-                            editingRowIds={editingRowIds}
-                            onEditingRowIdsChange={this.changeEditingRowIds}
-                            rowChanges={rowChanges}
-                            onRowChangesChange={this.changeRowChanges}
-                            addedRows={addedRows}
-                            onAddedRowsChange={this.changeAddedRows}
-                            onCommitChanges={this.commitChanges}
-                        />}
+                    <EditingState
+                        editingRowIds={editingRowIds}
+                        onEditingRowIdsChange={this.changeEditingRowIds}
+                        rowChanges={rowChanges}
+                        onRowChangesChange={this.changeRowChanges}
+                        addedRows={addedRows}
+                        onAddedRowsChange={this.changeAddedRows}
+                        onCommitChanges={this.commitChanges} />
                     <DragDropProvider />
                     <Table cellComponent={Cell} rowComponent={Row} />
                     {/* {!readOnly && <TableSelection showSelectionColumn={!isGrouped} />} */}
@@ -167,25 +165,23 @@ export default class DataGrid extends React.PureComponent {
                     <TableHeaderRow showSortingControls />
                     {displayFilter && <TableFilterRow showFilterSelector />}
                     {isGrouped ? <TableGroupRow /> :
-                        (!readOnly && <TableEditRow
-                            cellComponent={EditCell} rowComponent={EditRow}
-                        />)}
-                    {(!isGrouped && !readOnly) &&
+                        <TableEditRow cellComponent={EditCell} rowComponent={EditRow} />}
+                    {!isGrouped &&
                         <TableEditColumn
-                            width={180}
-                            showAddCommand={!addedRows.length}
-                            showEditCommand
-                            showDeleteCommand
+                            width={readOnly ? 0 : 180}
+                            showAddCommand={!addedRows.length && !readOnly}
+                            showEditCommand={!readOnly}
+                            showDeleteCommand={!readOnly}
                             commandComponent={props => (<Command collection={collection} {...props} />)}
                         />}
-                    {!readOnly && <TableColumnVisibility />}
+                    <TableColumnVisibility />
                     <PagingPanel
                         pageSizes={pageSizes}
                     />
                     <Toolbar />
                     <Typography style={{ display: 'flex', justifyContent: 'center', padding: 20, background: '#37474f', color: 'white', fontWeight: 500 }} variant='title'> {collection === constants.Reports ? title : convertToStartCase(collection)} </Typography>
-                    {!readOnly && <GroupingPanel showSortingControls />}
-                    {!readOnly && <ColumnChooser />}
+                    <GroupingPanel showSortingControls />
+                    <ColumnChooser />
                 </Grid>
                 {!readOnly && <DeleteDialog setAndCommitTransaction={setAndCommitTransaction} deletingRows={deletingRows}
                     collection={collection} columns={columns} onDelDialogClick={this.onDelDialogClick} dialogOpen={delDialogOpen} />}
