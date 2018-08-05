@@ -9,9 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
 
-import { FIELDS } from '../../../store/constants/transactions';
-
-const { DATES } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -22,9 +19,6 @@ const styles = (theme) => ({
   },
 });
 
-const getDates = (dates) => {
-  return dates.join(',');
-}
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: '#eee',
@@ -62,7 +56,7 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
               return (
                 <TableRow key={id}>
                   <TableCell style={{ fontSize: 16 }} >{placeholder}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{id === DATES ? getDates(field.value) : field.value}</TableCell>
+                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{field.value}</TableCell>
                 </TableRow>
               );
             })}

@@ -131,7 +131,7 @@ const styles = theme => ({
 const initialState = {
   modalOpen: false,
   selectedOption: {},
-  selectedDates: [],
+  selectedDates: [getCurrentDate()],
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',

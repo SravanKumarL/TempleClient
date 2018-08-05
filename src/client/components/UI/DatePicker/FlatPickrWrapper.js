@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { sortBy, isEqual, difference } from 'lodash';
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/material_blue.css'
 import React, { Component } from 'react';
@@ -6,22 +6,21 @@ import PropTypes from 'prop-types';
 import Flatpickr from './Flatpickr'
 import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import MultipleSelect from './MultiSelect';
-import { getCurrentDate } from '../../../shared/utility';
+import { getCurrentDate, getDaysOfWeek } from '../../../shared/utility';
 import moment from 'moment';
 import { CALENDER_MODE } from '../../../../store/constants/transactions';
 
 const { RANGE, SINGLE, MULTIPLE } = CALENDER_MODE;
 
 class DatePickerWrapper extends Component {
-  getAllDays = () => ['All days', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  getDaysOfWeek = () => this.getAllDays().filter(x => x !== 'All days');
+  getAllDays = () => ['All days', ...getDaysOfWeek()];
   getRangeStartEnd = (unFilteredRange) => [unFilteredRange[0], unFilteredRange[unFilteredRange.length - 1]];
   getDate = (dateString) => {
     const parts = dateString.split('-');
     return new Date(Date.parse(`${parts[2]}-${parts[1]}-${parts[0]}`));
   }
   getFilteredDates = (selectedDays, unFilteredRange) => {
-    let daysOfWeek = this.getDaysOfWeek();
+    let daysOfWeek = getDaysOfWeek();
     if (selectedDays.length === 0) {
       return unFilteredRange;
     }
@@ -34,27 +33,31 @@ class DatePickerWrapper extends Component {
     }
     return selectedDates;
   }
-  defaultState = {
-    selectedDates: [getCurrentDate()],
-    selectedDays: [],
-    filteredRange: [],
-    unFilteredRange: [],
-    datePickerMode: SINGLE,
-    mode: SINGLE,
-    closeOnSelect: true,
-    getSelectedDates: this.getSelectedDates.bind(this)
+  constructor(props) {
+    super(props);
+    this.defaultState = {
+      selectedDates: [getCurrentDate()],
+      selectedDays: getDaysOfWeek(),
+      filteredRange: [],
+      unFilteredRange: [],
+      datePickerMode: SINGLE,
+      mode: SINGLE,
+      closeOnSelect: true,
+      getSelectedDates: this.getSelectedDates.bind(this)
+    }
+    this.state = { ...this.defaultState, defaultState: { ...this.defaultState }, prevProps: {} };
+    this.onDatesSelected = this.onDatesSelected.bind(this);
   }
-  state = { ...this.defaultState, defaultState: { ...this.defaultState }, prevProps: {} };
   isDaysInRange = (unFilteredRange, selDays) => {
-    // let filteredDays = _.difference(this.getDaysOfWeek(), selDays);
-    selDays = selDays.map(day => this.getDaysOfWeek().indexOf(day));
+    // let filteredDays = difference(getDaysOfWeek(), selDays);
+    selDays = selDays.map(day => getDaysOfWeek().indexOf(day));
     return unFilteredRange.some(date => selDays.indexOf(this.getDate(date).getDay()) !== -1);
   }
   isFilterApplied = () => (this.state.selectedDays.length > 0 && this.state.selectedDays.length < 7);
   onDaySelected = (selectedDays) => {
     const prevSelectedDays = this.state.selectedDays;
-    const unselected = _.difference(prevSelectedDays, selectedDays)[0];
-    const selected = _.difference(selectedDays, prevSelectedDays)[0];
+    const unselected = difference(prevSelectedDays, selectedDays)[0];
+    const selected = difference(selectedDays, prevSelectedDays)[0];
     if (selected === 'All days') {
       selectedDays = this.getAllDays();
     }
@@ -111,8 +114,8 @@ class DatePickerWrapper extends Component {
           return { selectedDates };
         return {};
       });
-      this.flatPickrInstance.jumpToDate(this.getDate(selectedDates[selectedDates.length-1]));
     }
+    this.flatPickrInstance.jumpToDate(this.getDate(selectedDates[selectedDates.length - 1]));
   }
   onClose = (selDates, dateStr, flatPickr) => {
     const { unFilteredRange } = this.state;
@@ -169,7 +172,7 @@ class DatePickerWrapper extends Component {
     return { ...restProps, datePickerMode: prevState.mode, closeOnSelect: prevState.mode === 'single' };
   });
   onValueUpdate = (e, currentDateString, instance, data) => {
-    this.flatPickrInstance= instance;
+    this.flatPickrInstance = instance;
   }
   static getDerivedStateFromProps(props, state) {
     const selectedDates = state.getSelectedDates(state);
@@ -177,19 +180,24 @@ class DatePickerWrapper extends Component {
       return { ...state.defaultState, prevProps: props };
     }
     else {
-      if (!_.isEqual(_.sortBy(props.value), _.sortBy(selectedDates)) && !_.isEqual(props.value, state.prevProps.value)) {
-        return { selectedDates: props.value, prevProps: { ...state.prevProps, value: props.value } };
+      let update = {};
+      const propValChanged = !isEqual(sortBy(props.value), sortBy(state.prevProps.value));
+      if (!isEqual(sortBy(props.value), sortBy(selectedDates)) && propValChanged) {
+        update = { ...update, selectedDates: props.value };
       }
-      else if (!_.isEqual(props.value, state.prevProps.value)) {
-        return { prevProps: { ...state.prevProps, value: props.value } };
+      if (propValChanged) {
+        update = { ...update, prevProps: { ...state.prevProps, value: props.value } };
+      }
+      if (Object.keys(update).length > 0) {
+        return update;
       }
       return null;
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const selectedDates = this.state.getSelectedDates(this.state);
-    if (!_.isEqual(_.sortBy(this.props.value), _.sortBy(selectedDates))) {
-      this.props.onDateSelectionChanged(selectedDates);
+    let selectedDates = this.state.getSelectedDates(this.state);
+    if (!isEqual(sortBy(this.props.value), sortBy(selectedDates))) {
+      this.props.onDateSelectionChanged(selectedDates, this.state.selectedDays, this.state.datePickerMode);
     }
   }
   render() {

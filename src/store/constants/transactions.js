@@ -13,7 +13,8 @@ export const FIELDS = {
     AMOUNT: 'amount',
     ID: 'id',
 }
-
+export const SELECTED_DAYS = 'selectedDays';
+export const DATEPICKER_MODE='datepickerMode';
 export const FIELD_PLACEHOLDERS = {
     phoneNumber: 'Phone Number',
     names: 'Names',
