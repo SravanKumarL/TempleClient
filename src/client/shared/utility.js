@@ -1,5 +1,6 @@
 import moment from 'moment';
-import { startCase, toLower } from 'lodash';
+import { startCase, toLower, sampleSize, sortBy } from 'lodash';
+import { CALENDER_MODE } from '../../store/constants/transactions';
 export const updateObject = (oldObject, updatedObject) => {
   return {
     ...oldObject,
@@ -62,6 +63,18 @@ export const getCurrentDate = (date = new Date()) => {
   today = `${dd}-${mm}-${yyyy}`;
   return today;
 }
+export const getFormattedDate = (selectedDates, dateMode) => {
+  if (dateMode === CALENDER_MODE.RANGE) {
+    return `${selectedDates[0]} - ${selectedDates[selectedDates.length - 1]}`;
+  }
+  else if (dateMode === CALENDER_MODE.MULTIPLE) {
+    let sampledDates = selectedDates.slice(1, selectedDates.length - 2);
+    return sortBy([selectedDates[0], ...sampleSize(sampledDates, 3), selectedDates[selectedDates.length - 1]]).join(',');
+  }
+  return selectedDates[0];
+}
+
+export const getDaysOfWeek = () => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export const getDateDifference = (from, to) => {
   const fromDate = moment(from); //todays date

@@ -9,8 +9,13 @@ import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
 import { formStateConfig, createTextField } from '../StateConfig';
-import { updateObject, checkValidity, convertToStartCase } from '../../../shared/utility';
-import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS } from '../../../../store/constants/transactions';
+import {
+  updateObject,
+  checkValidity,
+  convertToStartCase,
+  getFormattedDate
+} from '../../../shared/utility';
+import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS, SELECTED_DAYS, DATEPICKER_MODE } from '../../../../store/constants/transactions';
 import { Button } from '@material-ui/core';
 
 
@@ -156,7 +161,7 @@ class CreateTransaction extends React.Component {
     }
     return updatedTransactionForm;
   }
-  inputChangedHandler = (event, inputIdentifier) => {
+  inputChangedHandler = (event, inputIdentifier, restArgs) => {
     let value = [NAKSHATRAM, POOJA, DATES, PAYMENT_MODE].includes(inputIdentifier) ? event : event.target.value;
     if (inputIdentifier === POOJA && this.state.transactionForm.pooja.elementConfig.placeholder === FIELD_PLACEHOLDERS.others) {
       value = event.target.value;
@@ -173,6 +178,10 @@ class CreateTransaction extends React.Component {
     if (inputIdentifier === PAYMENT_MODE) {
       updatedtransactionForm = this.getUpdatedTransacationForm(value, updatedtransactionForm);
     }
+    else if (inputIdentifier === DATES) {
+      updatedtransactionForm[DATES][SELECTED_DAYS] = restArgs[0];
+      updatedtransactionForm[DATES][DATEPICKER_MODE] = restArgs[1];
+    }
     this.setState({ transactionForm: updatedtransactionForm });
   }
   getIsFormValid = (updatedTransactionForm = this.state.transactionForm) => {
@@ -184,10 +193,16 @@ class CreateTransaction extends React.Component {
   }
   submitHandler = () => {
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
-      return { [`${item}`]: { value: this.state.transactionForm[item].value, name: this.state.transactionForm[item].elementConfig.placeholder } }
-    }).reduce((acc, item) => {
-      return Object.assign(acc, item);
-    });
+      const name = this.state.transactionForm[item].elementConfig.placeholder;
+      const itemValue = this.state.transactionForm[item];
+      let value = itemValue.value;
+      if (name === FIELD_PLACEHOLDERS.selectedDates) {
+        const selectedDays = itemValue[SELECTED_DAYS];
+        const selectedDates = getFormattedDate(value, itemValue[DATEPICKER_MODE])
+        value = `${selectedDates}${selectedDays.length === 7 ? '' : ` (${selectedDays.join(',')})`}`;
+      }
+      return { [`${item}`]: { value, name } }
+    }).reduce((acc, item) => Object.assign(acc, item));
     this.setState({ ...this.baseState });
     this.props.submit(transactionInformation);
   }

@@ -65,7 +65,7 @@ const transactionForm = (props) => {
             invalid={!formElement.config.valid}
             multiline={formElement.id === POOJA && formElement.config.elementType === INPUT}
             touched={formElement.config.touched}
-            changed={(event) => props.fieldChanged(event, formElement.id)}
+            changed={(event, ...restArgs) => props.fieldChanged(event, formElement.id, restArgs)}
             minDate={formElement.config.minDate}
           />
         </div>
