@@ -13,7 +13,6 @@ import {
   updateObject,
   checkValidity,
   convertToStartCase,
-  getFormattedDate
 } from '../../../shared/utility';
 import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS, SELECTED_DAYS, DATEPICKER_MODE } from '../../../../store/constants/transactions';
 import { Button } from '@material-ui/core';
@@ -193,15 +192,15 @@ class CreateTransaction extends React.Component {
   }
   submitHandler = () => {
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
-      const name = this.state.transactionForm[item].elementConfig.placeholder;
       const itemValue = this.state.transactionForm[item];
+      const name = itemValue.elementConfig.placeholder;
       let value = itemValue.value;
+      let currItem = { [`${item}`]: { value, name } };
       if (name === FIELD_PLACEHOLDERS.selectedDates) {
-        const selectedDays = itemValue[SELECTED_DAYS];
-        const selectedDates = getFormattedDate(value, itemValue[DATEPICKER_MODE])
-        value = `${selectedDates}${selectedDays.length === 7 ? '' : ` (${selectedDays.join(',')})`}`;
+        currItem[item][DATEPICKER_MODE] = itemValue[DATEPICKER_MODE]
+        currItem[item][SELECTED_DAYS] = itemValue[SELECTED_DAYS];
       }
-      return { [`${item}`]: { value, name } }
+      return currItem;
     }).reduce((acc, item) => Object.assign(acc, item));
     this.setState({ ...this.baseState });
     this.props.submit(transactionInformation);
