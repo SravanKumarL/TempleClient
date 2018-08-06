@@ -20,8 +20,8 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
-import { updateObject, convertToStartCase } from '../../shared/utility';
-import { SEARCH_OPERATIONS } from '../../../store/constants/transactions';
+import { updateObject, convertToStartCase, getFormattedDate } from '../../shared/utility';
+import { SEARCH_OPERATIONS, SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
 
 
@@ -159,6 +159,7 @@ const initialState = {
   snackOpen: false,
   activeTab: POOJAS,
   transactionInformation: [],
+  transaction: {},
   selectedTransaction: {},
   unchangedTransaction: {},
   dialogOpen: false,
@@ -197,11 +198,18 @@ class Transactions extends React.Component {
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
 
   printHandler = () => {
+    this.props.commitEntityTransaction(constants.add, constants.Transactions, this.state.transaction);
+    this.modalCloseHandler();
+    this.setState({ ...initialState });
+    printHtml.printElement(document.getElementById('transactionSummary'));
+  }
+  formSubmitHandler = (transactionInformation) => {
     const createdBy = this.props.user;
-    const { transactionInformation } = this.state;
-    let transaction = Object.keys(this.state.transactionInformation)
+    let transaction = Object.keys(transactionInformation)
       .reduce((acc, item) => {
-        return Object.assign(acc, { [`${item}`]: transactionInformation[`${item}`]['value'] });
+        let itemValue = transactionInformation[item];
+        let value = itemValue.value;
+        return Object.assign(acc, { [item]: value });
       }, {});
     transaction = { ...transaction, createdBy };
     if (this.state.activeTab === OTHERS) {
@@ -209,13 +217,14 @@ class Transactions extends React.Component {
     } else {
       transaction.others = false;
     }
-    this.props.commitEntityTransaction(constants.add, constants.Transactions, transaction);
-    this.modalCloseHandler();
-    this.setState({ ...initialState });
-    printHtml.printElement(document.getElementById('transactionSummary'));
-  }
-  formSubmitHandler = (transactionInformation) => {
-    this.setState({ modalOpen: true, transactionInformation });
+    let formattedTransactionInfo = _.cloneDeep(transactionInformation);
+    {
+      let dateValue = formattedTransactionInfo[FIELDS.DATES];
+      const selectedDates = getFormattedDate(dateValue.value, dateValue[DATEPICKER_MODE]);
+      const selectedDays = dateValue[SELECTED_DAYS];
+      dateValue.value = `${selectedDates}${selectedDays.length === 7 ? '' : ` (${selectedDays.join(',')})`}`;
+    }
+    this.setState({ modalOpen: true, transactionInformation: formattedTransactionInfo, transaction });
   }
   closeDialogHandler = () => {
     if (!this.state.editable)
