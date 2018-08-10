@@ -65,7 +65,7 @@ export const getCurrentDate = (date = new Date()) => {
 }
 export const getFormattedDate = (selectedDates, dateMode) => {
   if (dateMode === CALENDER_MODE.RANGE) {
-    return `${selectedDates[0]} - ${selectedDates[selectedDates.length - 1]}`;
+    return `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`;
   }
   else if (dateMode === CALENDER_MODE.MULTIPLE) {
     let sampledDates = selectedDates.slice(1, selectedDates.length - 2);

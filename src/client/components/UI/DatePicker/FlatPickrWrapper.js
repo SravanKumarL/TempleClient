@@ -36,13 +36,12 @@ class DatePickerWrapper extends Component {
   constructor(props) {
     super(props);
     this.defaultState = {
-      selectedDates: [getCurrentDate()],
+      selectedDates: props.value || [getCurrentDate()],
       selectedDays: getDaysOfWeek(),
       filteredRange: [getCurrentDate()],
       unFilteredRange: [getCurrentDate()],
       datePickerMode: SINGLE,
       mode: SINGLE,
-      closeOnSelect: true,
       getSelectedDates: this.getSelectedDates.bind(this)
     }
     this.state = { ...this.defaultState, defaultState: { ...this.defaultState }, prevProps: {} };
@@ -84,27 +83,38 @@ class DatePickerWrapper extends Component {
     this.setState((prevState) => {
       return ({
         ...this.defaultState, mode: selectedMode, datePickerMode: selectedMode,
-        closeOnSelect: selectedMode === SINGLE
       });
     });
     // this.liftStateUp();
   }
   onDatesSelected = (selectedDates, currentDateString, instance, data) => {
-    if (this.state.datePickerMode === RANGE && selectedDates.length === 2) {
-      let dates = [];
-      let i = new Date(selectedDates[0]);
-      while (moment(i, "DD/MM/YYYY") <= moment(selectedDates[1], "DD/MM/YYYY")) {
-        dates.push(new Date(i));
-        i = new Date(i.setDate(i.getDate() + 1));
-      }
-      dates = dates.map(date => getCurrentDate(date));
-      selectedDates = selectedDates.map(date => getCurrentDate(date));
-      this.setState({ unFilteredRange: dates, filteredRange: this.getFilteredDates(this.state.selectedDays, dates) });
-      if (this.isFilterApplied()) {
-        this.setState({ selectedDates: this.getFilteredDates(this.state.selectedDays, dates) });
+    if (this.state.datePickerMode === RANGE) {
+      if (selectedDates.length === 2) {
+        let dates = [];
+        let i = new Date(selectedDates[0]);
+        while (moment(i, "DD/MM/YYYY") <= moment(selectedDates[1], "DD/MM/YYYY")) {
+          dates.push(new Date(i));
+          i = new Date(i.setDate(i.getDate() + 1));
+        }
+        dates = dates.map(date => getCurrentDate(date));
+        selectedDates = selectedDates.map(date => getCurrentDate(date));
+        this.setState({ unFilteredRange: dates, filteredRange: this.getFilteredDates(this.state.selectedDays, dates) });
+        if (this.isFilterApplied()) {
+          this.setState({ selectedDates: this.getFilteredDates(this.state.selectedDays, dates) });
+        }
+        else {
+          this.setState({ selectedDates, unFilteredRange: dates, filteredRange: dates });
+        }
       }
       else {
-        this.setState({ selectedDates });
+        let stringedDates = selectedDates.map(date => getCurrentDate(date));
+        if (selectedDates.length === 0) {
+          stringedDates = [getCurrentDate()];
+        }
+        this.setState({
+          selectedDates: stringedDates,
+          unFilteredRange: stringedDates, filteredRange: stringedDates
+        });
       }
     }
     else {
@@ -204,11 +214,11 @@ class DatePickerWrapper extends Component {
   }
   render() {
     const { minDate, maxDate } = this.props;
-    const { mode, closeOnSelect, selectedDays, selectedDates } = this.state;
+    const { mode, selectedDays, selectedDates } = this.state;
     let { datePickerMode } = this.state;
     datePickerMode = this.props.mode || datePickerMode;
     let calendarOptions = {
-      mode: datePickerMode, allowInput: true, closeOnSelect: closeOnSelect,
+      mode: datePickerMode, allowInput: true,
       ignoredFocusElements: [document.getElementById('datePickerWrap'), document.getElementById('selection')],
       dateFormat: "d-m-Y", disableMobile: true
     };

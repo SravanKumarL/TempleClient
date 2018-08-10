@@ -180,7 +180,7 @@ class Reports extends React.Component {
   }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [], selectedPooja: '' }); }
+  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [getCurrentDate()], selectedPooja: '' }); }
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
