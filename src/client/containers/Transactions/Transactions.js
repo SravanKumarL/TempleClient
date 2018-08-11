@@ -179,7 +179,7 @@ class Transactions extends React.Component {
     if (nextProps.message !== prevState.message) {
       newState = { ...newState, message: nextProps.message, snackOpen: true };
     }
-    if (nextProps.selectedTransaction && nextProps.selectedTransaction !== prevState.unchangedTransaction) {
+    if (nextProps.selectedTransaction && (nextProps.selectedTransaction !== prevState.unchangedTransaction || nextProps.option !== prevState.option)) {
       if (nextProps.option && nextProps.option !== USE) {
         newState = { ...newState, dialogOpen: true };
       }

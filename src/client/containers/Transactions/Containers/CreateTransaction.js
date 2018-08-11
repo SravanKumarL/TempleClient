@@ -138,7 +138,10 @@ class CreateTransaction extends React.Component {
     }
     return { ...newState, transactionForm: newFormElement };
   }
-  formResetHandler = () => this.setState({ ...initialState });
+  formResetHandler = () => {
+    initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options; 
+    this.setState({ ...initialState })
+  };
   canPhoneNumberBeUpdated = (value) => (!(!Number(value) || value.charAt(value.length - 1) === '.' || value.length > 10));
   updatedFormElement = (inputIdentifier, value) => updateObject(this.state.transactionForm[inputIdentifier], {
     value: value,
