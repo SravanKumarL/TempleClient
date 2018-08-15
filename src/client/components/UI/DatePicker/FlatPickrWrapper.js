@@ -217,6 +217,13 @@ class DatePickerWrapper extends Component {
     const { mode, selectedDays, selectedDates } = this.state;
     let { datePickerMode } = this.state;
     datePickerMode = this.props.mode || datePickerMode;
+    const disable = [date => {
+      const { selectedDates } = this.state;
+      if (selectedDates.length >= 10 && selectedDates.indexOf(getCurrentDate(date)) === -1) {
+        return true;
+      }
+      return false;
+    }];
     let calendarOptions = {
       mode: datePickerMode, allowInput: true,
       ignoredFocusElements: [document.getElementById('datePickerWrap'), document.getElementById('selection')],
@@ -224,6 +231,9 @@ class DatePickerWrapper extends Component {
     };
     calendarOptions = minDate ? { ...calendarOptions, minDate } : calendarOptions;
     calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;
+    if (datePickerMode === MULTIPLE) {
+      calendarOptions = { ...calendarOptions, disable };
+    }
     return (
       <div>
         {this.props.mode ||
