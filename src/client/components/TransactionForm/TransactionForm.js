@@ -19,7 +19,7 @@ const styles = theme => ({
     color: 'white',
     justifyContent: 'space-between',
     [theme.breakpoints.up('lg')]: {
-
+      padding: 10,
     }
   },
   button: {
@@ -51,7 +51,7 @@ const styles = theme => ({
 const getForm = ({ formElementsArray, fieldChanged, showLabels }) => {
   return formElementsArray.map(formElement => (
     formElement &&
-    <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0, width: '100%', justifyContent: 'center', padding: '0px 32px' }} key={formElement.id}>
+    <div style={{ display: 'flex', flexDirection: 'column', flexShrink: 0, width: '100%', justifyContent: 'center', padding: '0px 15px' }} key={formElement.id}>
       {formElement.config.elementType !== RADIO && formElement.config.elementType !== DATE && <Typography variant='body1'> {formElement.config.elementConfig.placeholder} </Typography>}
       <Field
         disabled={formElement.config.disabled}
