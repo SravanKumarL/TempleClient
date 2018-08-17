@@ -31,14 +31,19 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit,
-    width: '20%',
     color: 'white',
+    height: '40px',
+    width: '40%',
     '&:hover': {
       boxShadow: '0px 0px 10px #000000',
       zIndex: 2,
       transition: 'all 200ms ease-in',
       transform: 'scale(1.1)',
     },
+    [theme.breakpoints.up('lg')]: {
+      height: '40px',
+      width: '200px',
+    }
   },
   container: {
     display: 'flex',
@@ -47,12 +52,12 @@ const styles = theme => ({
     width: '100%',
     alignItems: 'center',
     boxSizing: 'border-box',
-    boxShadow: theme.shadows[2],
+    [theme.breakpoints.up('lg')]: {
+      boxShadow: theme.shadows[2],
+    },
     backgroundColor: theme.palette.background.paper,
     overflow: 'auto',
-    [theme.breakpoints.up('sm')]: {
-      paddingTop: 10,
-    }
+    padding: '15px 0px'
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -63,8 +68,8 @@ const styles = theme => ({
   buttonsContainer: {
     display: 'flex',
     justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
+    flexShrink: 0,
+    margin: 5,
   },
 });
 
@@ -138,8 +143,9 @@ class CreateTransaction extends React.Component {
     }
     return { ...newState, transactionForm: newFormElement };
   }
+
   formResetHandler = () => {
-    initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options; 
+    initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
     this.setState({ ...initialState })
   };
   canPhoneNumberBeUpdated = (value) => (!(!Number(value) || value.charAt(value.length - 1) === '.' || value.length > 10));

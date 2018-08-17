@@ -88,7 +88,7 @@ class ReportsGrid extends React.Component {
         const OthersTotalComponent = () => (
             (searchCriteria.ReportName === constants.Management &&
                 <Fragment>
-                    <PaperedGrid rows={rows.filter(row => row.others)} columns={columns} title='Others' />
+                    <PaperedGrid style={{ margin: '0px 35px' }} rows={rows.filter(row => row.others)} columns={columns} title='Others' />
                     {Object.keys(totalAmount).length > 0 && <TotalPaper rows={rows} totalAmount={totalAmount} />}
                 </Fragment>)
         );

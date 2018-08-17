@@ -36,6 +36,7 @@ const styles = theme => ({
     alignItems: 'center',
     position: 'relative',
     flexShrink: 0,
+    marginBottom: 20
   },
   middlePane: {
     display: 'flex',
@@ -47,13 +48,11 @@ const styles = theme => ({
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
-      margin: 25,
     },
     [theme.breakpoints.up('lg')]: {
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
-      margin: 25,
       marginLeft: 'auto'
     },
   },
@@ -62,9 +61,7 @@ const styles = theme => ({
     flexGrow: 1,
     height: '100%',
     justifyContent: 'center',
-    // [theme.breakpoints.up('sm')]: {
-    //   paddingBottom: '1rem',
-    // }
+
 
   },
   leftPane: {
@@ -230,6 +227,7 @@ class Transactions extends React.Component {
     if (!this.state.editable)
       this.setState({ dialogOpen: false });
     this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
+    this.props.selectedTransactionChanged(null, '');
   }
   fieldEditedHandler = (event, inputIdentifier) => {
     let updates = { [inputIdentifier]: event.target.value };

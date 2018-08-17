@@ -50,7 +50,7 @@ const dialog = (props) => {
         <DialogTitle disableTypography style={{ background: '#37474f', marginBottom: 10 }} align='center' id="alert-dialog-slide-title">
           <Typography variant='title' style={classes.root}> {title} </Typography>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ overflowY: 'initial' }} >
           {children}
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
