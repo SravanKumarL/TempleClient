@@ -19,7 +19,7 @@ class RangeDatePicker extends React.Component {
             unFilteredRange: [new Date()],
             mode: RANGE,
         }
-        this.state = { ...this.defaultState, defaultState: { ...this.defaultState }, prevProps: {} };
+        this.state = { ...this.defaultState, defaultState: { ...this.defaultState } };
         this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
         this.openHandler = this.openHandler.bind(this);
         this.closeHandler = this.closeHandler.bind(this);
@@ -75,6 +75,13 @@ class RangeDatePicker extends React.Component {
             this.setState({ selectedDates: filteredRange, datePickerMode: MULTIPLE });
         }
     }
+    clearClickedHandler = () => this.setState({ ...this.defaultState });
+    componentDidUpdate(prevProps, prevState) {
+        const { onDateSelectionChanged } = this.props;
+        if (onDateSelectionChanged) {
+            onDateSelectionChanged(this.props.filteredRange);
+        }
+    }
     render() {
         let { onClearClicked, calendarOptions } = this.props;
         const { mode, selectedDates } = this.state;
@@ -83,8 +90,8 @@ class RangeDatePicker extends React.Component {
             disable: this.disableHandler, closeOnSelect: false
         };
         return (
-            <Flatpickr value={selectedDates}
-                options={newCalendarOptions} onChange={this.dateSlctnChngdHandler} onClearClicked={onClearClicked} />
+            <Flatpickr value={selectedDates} options={newCalendarOptions} onChange={this.dateSlctnChngdHandler}
+                onClearClicked={onClearClicked || this.clearClickedHandler} />
             // onClose={this.onClose} onOpen={this.onOpen} closeOnSelect={false}/>
         );
     }
