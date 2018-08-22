@@ -43,3 +43,6 @@ export const clearEntityMessages = 'CLEAR_ENTITY_MESSAGES';
 export const onFetchTotalSuccess= 'ON_FETCH_TOTAL_SUCCESS';
 export const onFetchTotalFailure='ON_FETCH_TOTAL_FAILURE';
 export const fetchTotal= 'FETCH_TOTAL';
+//DatePicker
+export const ON_DAY_CHANGED="ON_DAY_CHANGED";
+export const ON_DATE_CHANGED="ON_DATE_CHANGED";
