@@ -169,10 +169,10 @@ class EditTransactions extends React.Component {
     const transactionInfo = _.without(Object.keys(transaction).map(key => { const obj = key !== 'id' ? { name: key, value: transaction[key] } : null; return obj; }), null);
     return (
       <div className={classes.container}>
-        <Button style={{ margin: 10 }} variant='raised' color='primary' onClick={this.printClickedHandler}>
+        {!editable ? <Button style={{ margin: 10 }} variant='raised' color='primary' onClick={this.printClickedHandler}>
           <Print className={classes.leftIcon} />
           Print
-      </Button>
+      </Button> : null}
         {this.state.printNow ?
           <TransactionSummary
             open={this.state.modalOpen}
