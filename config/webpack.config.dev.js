@@ -1,6 +1,3 @@
-'use strict';
-
-const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -11,6 +8,8 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
+const workboxPlugin = require('workbox-webpack-plugin');
+const cleanPlugin = require('clean-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -96,6 +95,7 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+
     ],
   },
   module: {
@@ -193,6 +193,28 @@ module.exports = {
       inject: true,
       template: paths.appHtml,
     }),
+    new cleanPlugin(['build']),
+    // new InjectManifest({
+    //   // swSrc: path.join('src', 'sw.js'),
+    //   // swDest: '/src/my-service-worker.js',
+    //   include: [/\.html$/, /\.js$/, /\.css$/, /\.jpg$/, /\.png$/],
+    // }),
+    // new GenerateSW({
+    //   swDest: 'myservice-worker.js'
+    // }),
+    new workboxPlugin.InjectManifest({
+      swSrc: './src/sw.js',
+      swDest: 'sw.js'
+    }),
+    // new workboxPlugin.GenerateSW({
+    //   swDest: 'sw.js',
+    //   clientsClaim: true,
+    //   skipWaiting: true,
+    //   runtimeCaching: [{
+    //     urlPattern: new RegExp('https://temple-api-mongo.herokuapp.com'),
+    //     handler: 'staleWhileRevalidate'
+    //   }]
+    // }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
     // Makes some environment variables available to the JS code, for example:

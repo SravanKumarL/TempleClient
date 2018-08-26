@@ -159,7 +159,6 @@ const initialState = {
   transaction: {},
   selectedTransaction: {},
   unchangedTransaction: {},
-  dialogOpen: false,
   option: '',
   editable: false,
   updates: {},
@@ -177,9 +176,6 @@ class Transactions extends React.Component {
       newState = { ...newState, message: nextProps.message, snackOpen: true };
     }
     if (nextProps.selectedTransaction && (nextProps.selectedTransaction !== prevState.unchangedTransaction || nextProps.option !== prevState.option)) {
-      if (nextProps.option && nextProps.option !== USE) {
-        newState = { ...newState, dialogOpen: true };
-      }
       newState = { ...newState, selectedTransaction: nextProps.selectedTransaction, unchangedTransaction: nextProps.selectedTransaction, option: nextProps.option }
     }
     return newState;
@@ -224,10 +220,9 @@ class Transactions extends React.Component {
     this.setState({ modalOpen: true, transactionInformation: formattedTransactionInfo, transaction });
   }
   closeDialogHandler = () => {
-    if (!this.state.editable)
-      this.setState({ dialogOpen: false });
     this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
     this.props.selectedTransactionChanged(null, '');
+    this.props.openEditForm(false);
   }
   fieldEditedHandler = (event, inputIdentifier) => {
     let updates = { [inputIdentifier]: event.target.value };
@@ -247,15 +242,15 @@ class Transactions extends React.Component {
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
-    const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
+    const { classes, editFormOpen } = this.props;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, editable } = this.state;
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
     const secondaryText = editable ? 'Back' : 'Close';
     let dialog = (
       <Dialog
-        open={dialogOpen}
+        open={editFormOpen}
         primaryClicked={this.onEditClicked}
         primaryText={primaryText}
         secondaryText={secondaryText}
@@ -324,12 +319,13 @@ class Transactions extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     message: state.transactions.message,
     user: state.auth.user,
     selectedTransaction: state.transactions.selectedTransaction,
-    option: state.transactions.option
+    option: state.transactions.option,
+    editFormOpen: state.transactions.editFormOpen,
   }
 }
 

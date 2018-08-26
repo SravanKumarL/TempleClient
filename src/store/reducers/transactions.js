@@ -9,9 +9,12 @@ const initialState = {
   loading: false,
   totalCount: 0,
   selectedTransaction: null,
-  option: null
+  option: null,
+  editFormOpen: false,
 }
-
+export const openEditForm = (state, action) => {
+  return updateObject(state, { editFormOpen: action.payload });
+}
 export const addTransactionStarted = (state, action) => {
   return updateObject(state, { loading: true });
 }
@@ -55,6 +58,8 @@ export const selectedTransactionChanged = (state, action) => {
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.OPEN_EDIT_FORM:
+      return openEditForm(state, action);
     case actionTypes.ADD_TRANSACTION_START:
       return addTransactionStarted(state, action);
     case actionTypes.ADD_TRANSACTION_SUCCESS:
