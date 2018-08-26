@@ -50,11 +50,17 @@ class MultipleSelect extends React.Component {
   };
   handleClose = event => {
     this.setState({ open: false });
-    this.props.onClose();
+    const { onClose } = this.props;
+    if (onClose) {
+      onClose();
+    }
   }
   handleOpen = event => {
     this.setState({ open: true });
-    this.props.onOpen();
+    const { onOpen } = this.props;
+    if (onOpen) {
+      onOpen();
+    }
   }
   render() {
     const { classes, label, items, selItems } = this.props;

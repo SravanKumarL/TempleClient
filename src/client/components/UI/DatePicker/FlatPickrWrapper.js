@@ -6,36 +6,49 @@ import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import { CALENDER_MODE } from '../../../../store/constants/transactions';
 import { getDefaultCalendarOptions } from '../../../shared/utility';
 import RangeDatePicker from './RangeDatePicker';
-import SingleMultiDatePicker from './SingleMultiDatePicker';
+import { SingleDatePicker, MultiDatePicker } from './SingleMultiDatePicker';
 import DaysSelect from './DaysSelect';
+import { connect } from 'react-redux';
+import { onDatepickerReset } from '../../../../store/actions/datepicker';
+import isEqual from 'lodash/isEqual';
 
 const { RANGE, SINGLE, MULTIPLE } = CALENDER_MODE;
 class DatePickerWrapper extends React.Component {
     ignorableElements = [];
     defaultState = {
-        selectedDates: this.props.value || [new Date()],
         mode: SINGLE,
         calendarOptions: getDefaultCalendarOptions(SINGLE, this.props.minDate, this.props.maxDate,
-            this.ignorableElements)
+            this.ignorableElements),
+        reset: false
     }
     state = { ...this.defaultState };
+    resetDate = () => this.dateSlctnChngdHandler([new Date()]);
     modeSlctnChngdHandler = (selectedMode) => {
         this.setState((prevState) => {
             return ({
-                ...this.defaultState, mode: selectedMode
+                ...this.defaultState, mode: selectedMode, reset: true
             });
-        }, () => this.dateSlctnChngdHanlder([new Date()]));
+        }, this.resetDate);
+        this.props.onDatepickerReset();
     }
-    dateSlctnChngdHanlder = (selectedDates) => {
-        const { onDateSelectionChanged } = this.props;
-        this.setState({ selectedDates }, () => {
-            if (onDateSelectionChanged) {
-                onDateSelectionChanged(selectedDates, this.props.selectedDays, this.state.mode);
-            }
-        });
+    dateSlctnChngdHandler = (selectedDates) => {
+        const { onDateSelectionChanged, filteredDates } = this.props;
+        if (onDateSelectionChanged) {
+            onDateSelectionChanged(this.state.mode === RANGE ? filteredDates : selectedDates,
+                this.props.selectedDays, this.state.mode);
+        }
     }
-    daySelectMountHandler = () => this.ignorableElements.push(document.getElementById("dayMultiSelect"));
-    clearClickedHandler = () => this.setState(this.defaultState);
+    daySelectMountHandler = () => {
+        if (this.ignorableElements.length === 2) {
+            this.ignorableElements.push(document.getElementById("dayMultiSelect"));
+            this.setState((prevState) => ({
+                calendarOptions: { ...prevState.calendarOptions, ignoredFocusElements: this.ignorableElements }
+            }), () => {
+                this.defaultState.calendarOptions.ignoredFocusElements = this.ignorableElements
+            });
+        }
+    }
+    clearClickedHandler = () => this.modeSlctnChngdHandler(this.state.mode);
     componentDidMount() {
         this.ignorableElements = [document.getElementById('datePickerWrap'),
         document.getElementById('selection')];
@@ -45,23 +58,32 @@ class DatePickerWrapper extends React.Component {
             this.defaultState.calendarOptions.ignoredFocusElements = this.ignorableElements
         });
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (!isEqual(prevProps.value, this.props.value) && this.state.reset) {
+            console.log('resetting datepicker');
+            this.setState({ reset: false });
+        }
+    }
     render() {
-        const { mode, calendarOptions } = this.state;
+        const { mode, calendarOptions, reset } = this.state;
         let commonProps = {
-            calendarOptions, onDateSelectionChanged: this.dateSlctnChngdHanlder,
-            onClearClicked: this.clearClickedHandler
+            onDateSelectionChanged: this.dateSlctnChngdHandler,
+            onClearClicked: this.clearClickedHandler, value: this.props.value
         };
         return (
             <div>
                 <div id="selection" style={{ display: 'flex' }}>
                     <RadioButtonsGroup options={[SINGLE, MULTIPLE, RANGE]} label='Calendar mode' mode={mode}
                         onModeSelect={this.modeSlctnChngdHandler} />
-                    {mode === RANGE && <DaysSelect onDaysSelectionChanged={this.dayChngdEvent}
-                        onDaySelectMount={this.daySelectMountHandler} />}
+                    {mode === RANGE &&
+                        <div id="dayMultiSelect" style={{ display: 'flex' }}>
+                            <DaysSelect onDaySelectMount={this.daySelectMountHandler} />
+                        </div>}
                 </div>
                 <div id="datePickerWrap">
-                    {mode === RANGE ? <RangeDatePicker {...{ ...commonProps }} /> :
-                        <SingleMultiDatePicker {...{ ...commonProps, mode }} />}
+                    {mode === RANGE ? <RangeDatePicker {...{ ...commonProps, calendarOptions }} key={reset} /> :
+                        (mode === SINGLE ? <SingleDatePicker {...{ ...commonProps }} key={reset} /> :
+                            <MultiDatePicker {...{ ...commonProps }} key={reset} />)}
                 </div>
             </div>
         );
@@ -71,4 +93,12 @@ DatePickerWrapper.propTypes = {
     onDateSelectionChanged: PropTypes.func.isRequired,
     value: PropTypes.array.isRequired
 }
-export default DatePickerWrapper;
+const mapStateToProps = (state, ownProps) => ({
+    selectedDays: state.datePicker.selectedDays,
+    filteredDates: state.datePicker.filteredDates,
+    value: ownProps.value,
+    onDateSelectionChanged: ownProps.onDateSelectionChanged,
+    minDate: ownProps.minDate,
+    maxDate: ownProps.maxDate
+});
+export default connect(mapStateToProps, { onDatepickerReset })(DatePickerWrapper);

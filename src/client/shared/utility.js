@@ -81,6 +81,7 @@ export const filterDates = (selectedDays, unFilteredRange) => {
   }
   return unFilteredRange.filter(x => selectedDays.indexOf(daysOfWeek[x.getDay()]) !== -1);
 }
+export const isFilterApplied = selectedDays => selectedDays.length > 0 && selectedDays.length < 7;
 export const getAllDays = () => ['All days', ...getDaysOfTheWeek()];
 export const getDaysOfWeek = getDaysOfTheWeek;
 export const getDateDifference = (from, to) => {
@@ -97,12 +98,11 @@ export const getDateFromString = (dateString) => {
 export const convertToStartCase = (identifier) => {
   return startCase(toLower(identifier));
 }
-export const getDefaultCalendarOptions = (mode, minDate, maxDate, ignoredFocusElements = [], disableHandler) => {
-  const defDisableHandler = date => false;
+export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
   let calendarOptions = {
-    mode: mode, allowInput: true,
+    mode: mode, allowInput: true, defaultDate,
     ignoredFocusElements: ignoredFocusElements || [],
-    dateFormat: "d-m-Y", disableMobile: true, disable: disableHandler || defDisableHandler
+    dateFormat: "d-m-Y", disableMobile: true
   };
   calendarOptions = minDate ? { ...calendarOptions, minDate } : calendarOptions;
   calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;

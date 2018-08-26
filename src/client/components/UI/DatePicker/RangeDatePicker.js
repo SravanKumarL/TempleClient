@@ -2,40 +2,33 @@ import React from 'react';
 import Flatpickr from './Flatpickr'
 import { getCurrentDate } from '../../../shared/utility';
 import moment from 'moment';
-import _ from 'lodash';
 import { CALENDER_MODE } from '../../../../store/constants/transactions';
 import { connect } from 'react-redux';
-import { onDateChanged } from '../../../../store/actions/datepicker';
-
+import {
+    onDateChanged,
+    onFilterApplied,
+    onRangePickerClose,
+    onRangePickerOpen
+} from '../../../../store/actions/datepicker';
 const { RANGE, MULTIPLE } = CALENDER_MODE;
-const isFilterApplied = selectedDays => selectedDays.length > 0 && selectedDays.length < 7;
-const getRangeStartEnd = (unFilteredRange) => [unFilteredRange[0], unFilteredRange[unFilteredRange.length - 1]];
-
+const getRange = (dates) => dates.length === 1 ? dates : [dates[0], dates[dates.length - 1]];
 class RangeDatePicker extends React.Component {
     constructor(props) {
         super(props);
         this.defaultState = {
-            selectedDates: [new Date()],
-            unFilteredRange: [new Date()],
-            mode: RANGE,
+            reset: false
         }
-        this.state = { ...this.defaultState, defaultState: { ...this.defaultState } };
+        this.state = { ...this.defaultState };
         this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
-        this.openHandler = this.openHandler.bind(this);
-        this.closeHandler = this.closeHandler.bind(this);
+        // this.openHandler = this.openHandler.bind(this);
+        // this.closeHandler = this.closeHandler.bind(this);
     }
+    unFilteredRange = [new Date()];
     disableHandler = [
-        date => {
-            // const { selectedDates, selectedDays, filteredRange } = this.state;
-            // if (selectedDates.length >= 2 && isFilterApplied(selectedDays) &&
-            //     filteredRange.indexOf(getCurrentDate(date)) === -1) {
-            //     return false;
-            // }
-            // return true;
-            return false;
-        }
+        date => this.props.filteredDates.map(fdate => getCurrentDate(fdate)).indexOf(getCurrentDate(date)) === -1
     ];
     dateSlctnChngdHandler = (selectedDates, currentDateString, instance, data) => {
+        this.unFilteredRange = selectedDates;
         if (selectedDates.length === 2) {
             let dates = [];
             let i = new Date(selectedDates[0]);
@@ -44,60 +37,67 @@ class RangeDatePicker extends React.Component {
                 i = new Date(i.setDate(i.getDate() + 1));
             }
             this.props.onDateChanged(dates);
-            selectedDates = selectedDates.map(date => getCurrentDate(date));
-            this.setState({ selectedDates, unFilteredRange: dates });
         }
         else {
             this.props.onDateChanged(selectedDates);
             let stringedDates = selectedDates.map(date => getCurrentDate(date));
             if (selectedDates.length === 0) {
+                console.log('Inconsistency in datepicker occured');
                 stringedDates = [getCurrentDate()];
             }
-            this.setState({ selectedDates: stringedDates, unFilteredRange: stringedDates });
+            // this.setState({ selectedDates: stringedDates, unFilteredRange: stringedDates });
         }
     }
-    closeHandler = (selectedDates, dateStr, flatPickr) => {
-        const { unFilteredRange } = this.state;
-        const { selectedDays } = this.props;
-        if (isFilterApplied(selectedDays) && unFilteredRange.length > 1) {
-            selectedDates = getRangeStartEnd(unFilteredRange);
-            this.setState({ selectedDates, datePickerMode: RANGE });
+    clearClickedHandler = () => this.setState({ ...this.defaultState, reset: true },
+        () => {
+            this.props.onDateChanged(this.defaultState.selectedDates);
+            const { onClearClicked } = this.props;
+            if (onClearClicked) {
+                onClearClicked();
+            }
+        });
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.filtered) {
+            nextProps.onDateSelectionChanged();
+            nextProps.onFilterApplied();
         }
-        else {
-            this.setState({ selectedDates });
-        }
+        return nextState.reset !== this.state.reset || nextProps.mode !== this.props.mode;
     }
-    openHandler = (selDates, dateStr, flatPickr) => {
-        this.flatPickrInstance = flatPickr;
-        const { selectedDays, filteredRange } = this.props;
-        const { selectedDates } = this.state;
-        if (isFilterApplied(selectedDays) && selectedDates.length === 2) {
-            this.setState({ selectedDates: filteredRange, datePickerMode: MULTIPLE });
-        }
-    }
-    clearClickedHandler = () => this.setState({ ...this.defaultState });
     componentDidUpdate(prevProps, prevState) {
-        const { onDateSelectionChanged } = this.props;
-        if (onDateSelectionChanged) {
-            onDateSelectionChanged(this.props.filteredRange);
+        if (this.state.reset) {
+            this.setState({ reset: false });
         }
     }
     render() {
-        let { onClearClicked, calendarOptions } = this.props;
-        const { mode, selectedDates } = this.state;
-        const newCalendarOptions = {
-            ..._.cloneDeep(calendarOptions), mode,
+        let { calendarOptions, filteredDates, mode, onRangePickerClose, onRangePickerOpen } = this.props;
+        const { reset } = this.state;
+        const rangeCalendarOptions = {
+            ...calendarOptions, mode: RANGE, closeOnSelect: false, defaultDate: this.unFilteredRange
+        };
+        const multiCalendarOptions = {
+            ...calendarOptions, mode: MULTIPLE,
             disable: this.disableHandler, closeOnSelect: false
         };
         return (
-            <Flatpickr value={selectedDates} options={newCalendarOptions} onChange={this.dateSlctnChngdHandler}
-                onClearClicked={onClearClicked || this.clearClickedHandler} />
-            // onClose={this.onClose} onOpen={this.onOpen} closeOnSelect={false}/>
+            mode === RANGE ? <Flatpickr options={rangeCalendarOptions} key={reset}
+                onChange={this.dateSlctnChngdHandler} onClearClicked={this.clearClickedHandler}
+                onOpen={onRangePickerOpen} />
+                : <Flatpickr options={multiCalendarOptions} key={reset} value={filteredDates}
+                    onClearClicked={this.clearClickedHandler} onClose={onRangePickerClose} />
         );
     }
 }
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
     selectedDays: state.datePicker.selectedDays,
-    filteredRange: state.datePicker.filteredRange
+    isDayFilterApplied: state.datePicker.isDayFilterApplied,
+    filtered: state.datePicker.filtered,
+    filteredDates: state.datePicker.filteredDates,
+    mode: state.datePicker.mode,
+    onDateSelectionChanged: ownProps.onDateSelectionChanged,
+    value: ownProps.value,
+    onClearClicked: ownProps.onClearClicked,
 });
-export default connect(mapStateToProps, { onDateChanged })(RangeDatePicker);
+export default connect(mapStateToProps, {
+    onDateChanged,
+    onFilterApplied, onRangePickerClose, onRangePickerOpen
+})(RangeDatePicker);
