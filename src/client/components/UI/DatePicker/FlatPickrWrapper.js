@@ -66,6 +66,7 @@ class DatePickerWrapper extends React.Component {
     }
     render() {
         const { mode, calendarOptions, reset } = this.state;
+        const { minDate, maxDate } = this.props;
         let commonProps = {
             onDateSelectionChanged: this.dateSlctnChngdHandler,
             onClearClicked: this.clearClickedHandler, value: this.props.value
@@ -82,8 +83,8 @@ class DatePickerWrapper extends React.Component {
                 </div>
                 <div id="datePickerWrap">
                     {mode === RANGE ? <RangeDatePicker {...{ ...commonProps, calendarOptions }} key={reset} /> :
-                        (mode === SINGLE ? <SingleDatePicker {...{ ...commonProps }} key={reset} /> :
-                            <MultiDatePicker {...{ ...commonProps }} key={reset} />)}
+                        (mode === SINGLE ? <SingleDatePicker {...{ ...commonProps, minDate, maxDate }} key={reset} /> :
+                            <MultiDatePicker {...{ ...commonProps, minDate, maxDate }} key={reset} />)}
                 </div>
             </div>
         );

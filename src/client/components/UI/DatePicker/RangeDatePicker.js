@@ -12,11 +12,16 @@ import {
 } from '../../../../store/actions/datepicker';
 const { RANGE, MULTIPLE } = CALENDER_MODE;
 class RangeDatePicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
+    }
     disableHandler = [
         date => this.props.filteredDates.map(fdate => getCurrentDate(fdate)).indexOf(getCurrentDate(date)) === -1
     ];
     dateSlctnChngdHandler = (selectedDates, currentDateString, instance, data) => {
         if (selectedDates.length === 2 && this.props.mode === RANGE) {
+            this.skipping = selectedDates[1].getTime() - selectedDates[0].getTime();
             this.props.onDateChanged(selectedDates);
         }
     }
@@ -44,6 +49,7 @@ class RangeDatePicker extends React.Component {
             ...calendarOptions, mode: MULTIPLE,
             disable: this.disableHandler, closeOnSelect: false
         };
+        filteredDates = this.skipping > 0 ? filteredDates.reverse() : filteredDates;
         return (
             mode === RANGE ? <Flatpickr options={rangeCalendarOptions} key={reset}
                 onChange={this.dateSlctnChngdHandler} onClearClicked={this.clearClickedHandler}
