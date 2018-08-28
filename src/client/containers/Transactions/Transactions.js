@@ -20,7 +20,12 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
-import { updateObject, convertToStartCase, getFormattedDate } from '../../shared/utility';
+import {
+  updateObject,
+  convertToStartCase,
+  getFormattedDate,
+  getCurrentDate
+} from '../../shared/utility';
 import { SEARCH_OPERATIONS, SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
 
@@ -194,7 +199,10 @@ class Transactions extends React.Component {
     this.props.commitEntityTransaction(constants.add, constants.Transactions, this.state.transaction);
     this.modalCloseHandler();
     this.setState({ ...initialState });
-    printHtml.printElement(document.getElementById('transactionSummary'));
+    const printableElement = document.getElementById('transactionSummary');
+    const tableElement = document.getElementById('printHeader');
+    tableElement.style.marginBottom = '20px';
+    printHtml.printElement(printableElement);
   }
   formSubmitHandler = (transactionInformation) => {
     const createdBy = this.props.user;
@@ -222,10 +230,10 @@ class Transactions extends React.Component {
   closeDialogHandler = () => {
     this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
     this.props.selectedTransactionChanged(null, '');
-    this.props.openEditForm(false);
+    !this.state.editable && this.props.openEditForm(false);
   }
   fieldEditedHandler = (event, inputIdentifier) => {
-    let updates = { [inputIdentifier]: event.target.value };
+    let updates = { [inputIdentifier]: event.target ? event.target.value : event };
     const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, updates);
     this.setState((prevState) => {
       if (prevState.unchangedTransaction[inputIdentifier] === updates[inputIdentifier])
@@ -280,6 +288,16 @@ class Transactions extends React.Component {
       labelContainer: classes.labelContainer,
       label: classes.label
     };
+    const createdBy = {
+      name: 'Created By',
+      value: this.props.user,
+    };
+    const createdDate = {
+      name: 'Created Date',
+      value: getCurrentDate(),
+    }
+    transactionInformation.createdBy = createdBy;
+    transactionInformation.createdDate = createdDate;
     return (
       <div className={classes.panes} >
         <div className={classes.middlePane}>
@@ -304,7 +322,7 @@ class Transactions extends React.Component {
           />
           <TransactionSummary
             open={modalOpen}
-            transactionFields={transactionInformation}
+            transactionFields={Object.values(transactionInformation)}
             createdBy={this.props.user}
             print={this.printHandler}
             summaryClosed={this.modalCloseHandler} />

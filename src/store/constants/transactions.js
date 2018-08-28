@@ -20,7 +20,7 @@ export const FIELD_PLACEHOLDERS = {
     names: 'Names',
     gothram: 'Gothram',
     nakshatram: 'Nakshatram',
-    selectedDates: 'Selected date(s)',
+    selectedDates: 'Dates',
     chequeNo: 'Cheque No',
     bankName: 'Bank Name',
     pooja: 'Pooja',

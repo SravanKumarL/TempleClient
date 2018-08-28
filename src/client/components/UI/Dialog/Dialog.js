@@ -18,7 +18,7 @@ const dialog = (props) => {
       fontWeight: 500,
     }
   };
-  const { primaryDisabled, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
+  const { primaryDisabled, maxWidth, showButtons, open, title, primaryText, secondaryText, primaryClicked, secondaryClicked, primaryIcon, secondaryIcon, children } = props;
   let buttons = (
     <Button style={{ minWidth: 100, margin: 10 }} variant='raised' onClick={primaryClicked} color="error">
       {primaryIcon}
@@ -43,14 +43,15 @@ const dialog = (props) => {
     <div>
       <Dialog
         open={open}
+        maxWidth={maxWidth ? maxWidth : 'sm'}
         TransitionComponent={Transition}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle disableTypography style={{ background: '#37474f', marginBottom: 10 }} align='center' id="alert-dialog-slide-title">
+        <DialogTitle disableTypography style={{ background: '#37474f' }} align='center' id="alert-dialog-slide-title">
           <Typography variant='title' style={classes.root}> {title} </Typography>
         </DialogTitle>
-        <DialogContent >
+        <DialogContent style={{ padding: '0px 8px 8px 8px' }}>
           {children}
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>

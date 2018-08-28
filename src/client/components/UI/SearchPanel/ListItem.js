@@ -25,14 +25,20 @@ const styles = theme => ({
     paddingTop: '6px',
     paddingBottom: '6px',
     paddingLeft: 0,
+    maxWidth: 320, 
     '&:hover': {
-      backgroundColor: 'initial', 
+      backgroundColor: 'initial',
     }
   },
   container: {
     display: 'flex',
     flexGrow: 1,
-    height: 50,
+    height: 'auto',
+    minHeight: 50,
+    maxHeight: 200,
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
     alignItems: 'center',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.08)',
@@ -51,7 +57,11 @@ class CustomListItem extends React.Component {
     return (
       <div className={classes.container} onMouseOver={() => this.toggleIconButton(true)} onMouseOut={() => this.toggleIconButton(false)}>
         <ListItem onClick={() => this.props.optionClicked(USE, transaction)} className={classes.listItem} button disableRipple>
-          <ListItemText inset primary={transaction.names} />
+          <ListItemText style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }} inset primary={transaction.names} />
         </ListItem>
         <IconButton onClick={() => this.props.optionClicked(EDIT, transaction)} className={this.state.showIcon ? classes.showIconButton : classes.hideIconButton}>
           <Edit />

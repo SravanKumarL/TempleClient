@@ -119,7 +119,9 @@ class SearchPanel extends React.Component {
         <List component="nav" style={{ maxHeight: '87%', overflow: 'auto' }}>
           {transactions.map(transaction => {
             return (
-              <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{ display: 'flex' }}>
+              <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{
+                display: 'flex', 
+              }}>
                 <ListItem optionClicked={optionClicked} transaction={transaction} />
               </div>
             );
