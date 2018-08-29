@@ -38,7 +38,7 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
           <div>
             {Object.keys(transactionFields).map(id => {
               const field = transactionFields[id];
-              if (['Special Offerings', 'Created By', 'Created Date'].includes(field.name)) {
+              if (['Special Offerings', 'Created By', 'Created Date', 'Selected Dates', 'Id'].includes(field.name)) {
                 return null;
               }
               const placeholder = field.name;

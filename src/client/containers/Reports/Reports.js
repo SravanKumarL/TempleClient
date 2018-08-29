@@ -114,8 +114,8 @@ const styles = theme => ({
   centerTextbox: {
     display: 'flex',
     flexDirection: 'column',
-    height: '75vh',
-    width: '55vw',
+    height: '55vh',
+    width: '40vw',
     justifyContent: 'center',
     alignItems: 'center',
     border: '2px dashed #eee',
