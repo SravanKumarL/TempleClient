@@ -15,6 +15,7 @@ import { Command } from './CommandButton';
 import { ROLE } from '../../../../store/constants/auth';
 import { convertToStartCase } from '../../../shared/utility';
 import Typography from '@material-ui/core/Typography';
+import shortid from 'shortid';
 
 const EditRow = (props) => {
     return <TableEditRow.Row {...props} key={props.row.id} />
@@ -35,7 +36,7 @@ export default class DataGrid extends React.PureComponent {
             rowChanges: {},
             currentPage: 0,
             pageSize: constants.minimumPageSize,
-            pageSizes: [constants.minimumPageSize, 10, 0],
+            pageSizes: [constants.minimumPageSize, 2 * constants.minimumPageSize, 0],
             columnOrder: [],
         };
     }
@@ -63,7 +64,8 @@ export default class DataGrid extends React.PureComponent {
         this.setState({ currentPage });
     }
     changePageSize = pageSize => {
-        this.props.onPageSizeChanged(this.state.currentPage, pageSize);
+        pageSize = pageSize === 0 ? this.props.rows.length : pageSize;
+        this.props.onPageSizeChanged(this.state.currentPage + 1, this.state.pageSize, pageSize);
         this.setState({ pageSize });
     }
     commitChanges = (props) => {
@@ -100,7 +102,7 @@ export default class DataGrid extends React.PureComponent {
     changeColumnOrder = (order) => {
         this.setState({ columnOrder: order });
     };
-    getRowId = row => row.id;
+    getRowId = row => row !== 0 ? row.id : shortid.generate();
     checkIfNotEmptyAndUndefined = (value) => value && value !== '';
     //#endregion
 

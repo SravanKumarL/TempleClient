@@ -1,16 +1,16 @@
 import React from 'react';
 import PaperedGrid from './PaperedGrid';
 import constants from '../../../../store/sagas/constants';
-const getTotalRows = (rows, totalAmount) => {
-    const rowLength = rows.length;
-    const chequedRowLength = rows.filter(row => row.chequeNo).reduce((acc, currVal) => acc + currVal.chequeNo.toString().split(',').length, 0);
-    const cashRowLength = rowLength - chequedRowLength;
+const getTotalRows = (totalAmount) => {
+    const chequedRowLength = totalAmount.cheque.count;
+    const cashRowLength = totalAmount.cash.count;
+    const rowLength = chequedRowLength + cashRowLength;
     const categories = [constants.totalCashAmount, constants.totalChequeAmount, constants.totalAmount];
-    return [[cashRowLength, totalAmount.cash], [chequedRowLength, totalAmount.cheque], [rowLength, totalAmount.cheque + totalAmount.cash]]
+    return [[cashRowLength, totalAmount.cash.value], [chequedRowLength, totalAmount.cheque.value], [rowLength, totalAmount.cheque.value + totalAmount.cash.value]]
         .map((row, index) => ({ category: categories[index], totalPoojas: row[0], amount: row[1] }));
 }
-const TotalPaper = ({ rows, totalAmount }) => {
+const TotalPaper = ({ totalAmount }) => {
     const columns = [{ name: 'category', title: 'Category' }, { name: 'totalPoojas', title: 'TotalPoojas' }, { name: 'amount', title: 'Amount' }]
-    return (<PaperedGrid rows={getTotalRows(rows, totalAmount)} columns={columns} title='Total' />);
+    return (<PaperedGrid rows={getTotalRows(totalAmount)} columns={columns} title='Total' />);
 }
 export default TotalPaper;

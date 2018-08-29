@@ -56,7 +56,8 @@ const mergeRows = (state, payload) => {
     if (!payload || !payload.rows)
         return state.rows;
     else if (payload.printReq)
-        return [...payload.rows, ...state.rows.filter(row => row.others)].map(row => ({ ...row, id: shortid.generate() }));
+        return [...payload.rows, ...state.rows.filter(row => row.others)].map(row => row !== 0 ?
+            ({ ...row, id: shortid.generate() }) : row);
     else {
         let rows = _.cloneDeep(state.rows);
         if (rows.length === 0 && payload.totalCount)
@@ -66,18 +67,19 @@ const mergeRows = (state, payload) => {
         }
         const skip = (payload.pagingOptions && payload.pagingOptions.skip) || state.rows.length;
         const primaryKey = uniqueProp(payload.name);
-        if (!(state.rows.every(row => primaryKey in row) && payload.rows.every(row => primaryKey in row))) {
+        if (!(state.rows.filter(row => row !== 0).every(row => primaryKey in row) &&
+            payload.rows.every(row => primaryKey in row))) {
             if (payload.rows.length > 0) {
                 rows.splice(skip, payload.rows.length, ...payload.rows);
             }
-            return rows.map(row => ({ ...row, id: shortid.generate() }));
+            return rows.map(row => row !== 0 ? ({ ...row, id: shortid.generate() }) : row);
         }
         const prevRowKeys = state.rows.map(row => row[primaryKey]);
         const newRows = payload.rows.filter(row => prevRowKeys.indexOf(row[primaryKey]) === -1);
         if (newRows.length > 0) {
             rows.splice(skip, newRows.length, ...newRows);
         }
-        return rows.map(row => ({ ...row, id: row[primaryKey] }));
+        return rows.map(row => row !== 0 ? ({ ...row, id: row[primaryKey] }) : row);
     }
 }
 const changeRows = (payload, rows, commitSucessful = false) => {

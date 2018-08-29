@@ -13,7 +13,7 @@ const searchCriteriaChangedHandler = (nextProps, prevState) => {
     transaction();
     return {
         prevProps: { ...prevState.prevProps, searchCriteria, loading, othersFetched: false }, transaction,
-        showTotalOthers: false, othersFetchReq: false
+        showOthers: false, othersFetchReq: false
     };
 }
 
@@ -33,7 +33,7 @@ const loadingChangedHandler = (nextProps, prevState) => {
 const onOthersFetchedHandler = (nextProps, prevState) => {
     let stateUpdate = { prevProps: { ...prevState.prevProps, othersFetched: nextProps.othersFetched } };
     if (constants.minimumPageSize >= nextProps.totalCount)
-        stateUpdate = { ...stateUpdate, showTotalOthers: true };
+        stateUpdate = { ...stateUpdate, showOthers: true };
     return stateUpdate;
 }
 
@@ -56,21 +56,21 @@ class ReportsGrid extends React.Component {
         this.state = {
             prevProps: {},
             transaction: null,
-            showTotalOthers: false,
+            showOthers: false,
             othersFetchReq: false,
             fetchData: props => handleFetchData(props)
         }
-        this.checkShowTotalOthersHandler = this.checkShowTotalOthersHandler.bind(this);
+        this.checkShowOthersHandler = this.checkShowOthersHandler.bind(this);
     }
-    checkShowTotalOthersHandler = (currentPage, pageSize) => {
+    checkShowOthersHandler = (currentPage, pageSize) => {
         const { totalCount } = this.props;
         const lastPageNumber = Math.floor(totalCount / pageSize);
-        let showTotalOthers = false;
-        showTotalOthers = pageSize === 0 || pageSize >= totalCount; // For 'All' in pagesize, value of pagesize = 0
-        if (!showTotalOthers && currentPage) {
-            showTotalOthers = (currentPage + 1) >= lastPageNumber;
+        let showOthers = false;
+        showOthers = pageSize === 0 || pageSize >= totalCount; // For 'All' in pagesize, value of pagesize = 0
+        if (!showOthers && currentPage) {
+            showOthers = (currentPage + 1) >= lastPageNumber;
         }
-        this.setState({ showTotalOthers });
+        this.setState({ showOthers });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (prevState.prevProps.searchCriteria) {
@@ -84,19 +84,20 @@ class ReportsGrid extends React.Component {
     render() {
         const { searchCriteria, columns, totalAmount } = this.props;
         let { rows, ...restProps } = this.props;
-        const { showTotalOthers } = this.state;
+        const { showOthers } = this.state;
         const OthersTotalComponent = () => (
             (searchCriteria.ReportName === constants.Management &&
                 <Fragment>
-                    <PaperedGrid style={{ margin: '0px 35px' }} rows={rows.filter(row => row.others)} columns={columns} title='Others' />
-                    {Object.keys(totalAmount).length > 0 && <TotalPaper rows={rows} totalAmount={totalAmount} />}
+                    {showOthers && <PaperedGrid style={{ margin: '0px 35px' }}
+                        rows={rows.filter(row => row.others)} columns={columns} title='Others' />}
+                    {Object.keys(totalAmount).length > 0 && <TotalPaper totalAmount={totalAmount} />}
                 </Fragment>)
         );
         return (
             <Fragment>
-                <DataGridContainer {...restProps} rows={rows.filter(row => !row.others)} checkShowTotalOthers={this.checkShowTotalOthersHandler}
-                    OtherPrintComponents={OthersTotalComponent} />
-                {showTotalOthers && <OthersTotalComponent />}
+                <DataGridContainer {...restProps} rows={rows.filter(row => !row.others)}
+                    checkShowOthers={this.checkShowOthersHandler} OtherPrintComponents={OthersTotalComponent} />
+                <OthersTotalComponent />
             </Fragment>
         );
     }
