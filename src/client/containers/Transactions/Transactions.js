@@ -196,7 +196,9 @@ class Transactions extends React.Component {
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
 
   printHandler = () => {
-    this.props.commitEntityTransaction(constants.add, constants.Transactions, this.state.transaction);
+    const formattedDates = this.state.transactionInformation[FIELDS.DATES].value;
+    this.props.commitEntityTransaction(constants.add,
+      constants.Transactions, { ...this.state.transaction, [FIELDS.FORMATTED_DATES]: formattedDates });
     this.modalCloseHandler();
     this.setState({ ...initialState });
     const printableElement = document.getElementById('transactionSummary');

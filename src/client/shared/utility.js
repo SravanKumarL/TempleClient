@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { startCase, toLower, sampleSize, sortBy } from 'lodash';
+import { startCase, toLower/* , sampleSize, sortBy */ } from 'lodash';
 import { CALENDER_MODE } from '../../store/constants/transactions';
 export const updateObject = (oldObject, updatedObject) => {
   return {
@@ -67,11 +67,11 @@ export const getFormattedDate = (selectedDates, dateMode) => {
   if (dateMode === CALENDER_MODE.RANGE) {
     return `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`;
   }
-  else if (dateMode === CALENDER_MODE.MULTIPLE) {
-    let sampledDates = selectedDates.slice(1, selectedDates.length - 2);
-    return sortBy([selectedDates[0], ...sampleSize(sampledDates, 3), selectedDates[selectedDates.length - 1]]).join(',');
-  }
-  return selectedDates[0];
+  // else if (dateMode === CALENDER_MODE.MULTIPLE) {
+  //   let sampledDates = selectedDates.slice(1, selectedDates.length - 2);
+  //   return sortBy([selectedDates[0], ...sampleSize(sampledDates, 3), selectedDates[selectedDates.length - 1]]).join(',');
+  // }
+  return selectedDates.join(', ');
 }
 
 export const getDaysOfWeek = () => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
