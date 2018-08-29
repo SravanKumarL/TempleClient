@@ -16,6 +16,7 @@ import constants from '../../../store/sagas/constants'
 import ReportsGrid from '../DataGrid/reportsGrid';
 import createContainer from '../../hoc/createContainer/createContainer';
 import { REPORT_TYPES } from '../../../store/constants/reports';
+import report from '../../../assets/mainReport.svg';
 
 const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
 
@@ -111,11 +112,18 @@ const styles = theme => ({
     justifyContent: 'center',
   },
   centerTextbox: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '75vh',
+    width: '55vw',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '2px dashed #eee',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
-      height: '30vh',
-      width: '50vw',
-      border: '4px dashed #eee',
+      height: '50vh',
+      width: '75vw',
+      border: '2px dashed #eee',
       justifyContent: 'center',
       alignItems: 'center',
     }
@@ -260,7 +268,8 @@ class Reports extends React.Component {
           </div> :
           <div className={classes.centerTextboxContainer}>
             <div className={classes.centerTextbox}>
-              <Typography variant='subheading' className={classes.centerText}> Select a report... </Typography>
+              <img style={{ width: '100%', height: '100%', flexGrow: 1 }} src={report} alt="Reports" />
+              <Typography variant='title' className={classes.centerText} align='center'>Please select a Report to continue... </Typography>
             </div>
           </div>
         }
