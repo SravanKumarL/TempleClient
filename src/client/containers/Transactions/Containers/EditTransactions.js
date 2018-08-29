@@ -11,10 +11,10 @@ import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionSummary from '../../../components/TransactionSummary/TransacationSummary';
 import printHtml from 'print-html-element';
 import { FIELD_PLACEHOLDERS, NAKSHATRAMS } from '../../../../store/constants/transactions';
-const displayNames = { ...FIELD_PLACEHOLDERS, selectedDates: 'Dates', createdBy: 'Created By', createdDate: 'Created Date' };
+const displayNames = { ...FIELD_PLACEHOLDERS, selectedDates: 'Selected Dates', createdBy: 'Created By', createdDate: 'Created Date', formattedDates: 'Dates' };
 
 const { INPUT, MULTISELECT, NUMBER } = FIELD_TYPES;
-const { ID, OTHERS } = FIELDS;
+const { ID, OTHERS, DATES } = FIELDS;
 const styles = (theme) => ({
   root: {
     width: '100%',
@@ -152,11 +152,11 @@ class EditTransactions extends React.Component {
   }
   render() {
     const { classes, fieldChanged, editable } = this.props;
-    const { editForm, transaction } = this.state;
-
+    const { editForm } = this.state;
+    let { transaction } = this.state;
     let fields = !editable ? Object.keys(transaction) : Object.keys(transaction).filter(field => Object.keys(editForm).indexOf(field) === -1);
-    if (!transaction.others) fields = fields.filter(field => field !== OTHERS);
-    fields = fields.filter(field => field !== ID);
+    if (!transaction.others) fields = fields.filter(field => field === OTHERS ? null : field);
+    fields = fields.filter(field => (field === ID || field === DATES) ? null : field);
     let transactions = _.pick(transaction, fields);
     const readFieldState = {
       elementType: INPUT,
@@ -175,7 +175,7 @@ class EditTransactions extends React.Component {
     Object.keys(transactions).forEach((field =>
       transactions[field] = { ...readFieldState, elementConfig: { ...readFieldState.elementConfig, placeholder: convertToStartCase(field) }, value: transactions[field] }));
     const resultantEditForm = editable ? ({ ...editForm, ...transactions }) : transactions;
-    const transactionInfo = _.without(Object.keys(transaction).map(key => { const obj = key !== 'id' ? { name: displayNames[key], value: transaction[key] } : null; return obj; }), null);
+    const transactionInfo = _.without(Object.keys(transaction).map(key => { const obj = (key !== 'id' || key !== 'selectedDates') ? { name: displayNames[key], value: transaction[key] } : null; return obj; }), null);
     return (
       <div className={classes.container}>
         {!editable ? <Button style={{ margin: 10 }} variant='raised' color='primary' onClick={this.printClickedHandler}>
