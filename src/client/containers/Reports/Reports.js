@@ -25,9 +25,11 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
+    overflow: 'auto',
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row',
       flexGrow: 1,
+      overflow: 'auto'
     }
   },
   container: {
@@ -114,12 +116,11 @@ const styles = theme => ({
   centerTextbox: {
     display: 'flex',
     flexDirection: 'column',
-    height: '55vh',
-    width: '40vw',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '40vh',
+    width: '30vw',
     border: '2px dashed #eee',
-    [theme.breakpoints.down('sm')]: {
+    marginBottom: '10vh',
+      [theme.breakpoints.down('sm')]: {
       display: 'flex',
       height: '50vh',
       width: '75vw',

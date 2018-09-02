@@ -1,4 +1,3 @@
-
 export {
   authUser,
   authSuccess,
@@ -21,7 +20,9 @@ export {
   searchTransactionsSuccess,
   searchTransactionsFail,
   selectedTransactionChanged,
-  openEditForm
+  openEditForm,
+  usedTransactionChanged,
+  editedTransactionChanged
 } from './transactions.js';
 
 export {

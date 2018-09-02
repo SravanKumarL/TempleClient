@@ -4,7 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RadioButtonsGroup from '../RadioGroup/RadioGroup';
 import { CALENDER_MODE } from '../../../../store/constants/transactions';
-import { getDefaultCalendarOptions } from '../../../shared/utility';
+import { getDefaultCalendarOptions, getCurrentDate } from '../../../shared/utility';
 import RangeDatePicker from './RangeDatePicker';
 import { SingleDatePicker, MultiDatePicker } from './SingleMultiDatePicker';
 import DaysSelect from './DaysSelect';
@@ -33,8 +33,10 @@ class DatePickerWrapper extends React.Component {
     }
     dateSlctnChngdHandler = (selectedDates) => {
         const { onDateSelectionChanged, filteredDates } = this.props;
+        let currentFilteredDates = filteredDates && filteredDates.map(date => getCurrentDate(date));
+        let currentSelectedDates = selectedDates && selectedDates.map(date => getCurrentDate(date));
         if (onDateSelectionChanged) {
-            onDateSelectionChanged(this.state.mode === RANGE ? filteredDates : selectedDates,
+            onDateSelectionChanged(this.state.mode === RANGE ? currentFilteredDates : currentSelectedDates,
                 this.props.selectedDays, this.state.mode);
         }
     }

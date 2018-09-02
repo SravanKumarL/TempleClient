@@ -15,7 +15,7 @@ const constants = {
     totalCashAmount: 'Total Cash Amount (Rs)',
     totalChequeAmount: 'Total Cheque Amount (Rs)',
     totalAmount: 'Total Amount Received (Rs)',
-    minimumPageSize: 5,
+    minimumPageSize: 10,
 }
 
 export const transactionType = {

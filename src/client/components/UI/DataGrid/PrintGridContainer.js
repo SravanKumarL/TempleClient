@@ -32,11 +32,15 @@ const PrintGridContainer = ({ searchCriteria, rows, columns, children }) => {
     )
     return (searchCriteria && searchCriteria.ReportName === constants.Pooja ?
         Object.keys(printRows).map(key =>
-            (<div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} key={key}>
+            (<div style={{ display: 'flex', pageBreakBefore: 'always', flexDirection: 'column', flexGrow: 1 }} key={key}>
                 <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
                     Pooja Report of {key}
                 </Typography>
                 <PrintGridWrapped rows={printRows[key]} columns={printColumns} />
-            </div>)) : <PrintGridWrapped rows={printRows} columns={printColumns} />);
+            </div>)) :
+        <div style={{ display: 'flex', pageBreakBefore: 'always', transform: 'scale(1)', flexDirection: 'column', flexGrow: 1 }}>
+            <PrintGridWrapped rows={printRows} columns={printColumns} />
+        </div>
+    );
 }
 export default PrintGridContainer;

@@ -8,7 +8,9 @@ const initialState = {
   searchedTransactions: [],
   loading: false,
   totalCount: 0,
-  selectedTransaction: null,
+  // selectedTransaction: null,
+  usedTransaction: null,
+  editedTransaction: null,
   option: null,
   editFormOpen: false,
 }
@@ -53,8 +55,14 @@ export const onTransactionFailed = (state, action) => {
 export const onTransactionCommitted = (state, action) => {
   return updateObject(state, { message: action.payload.message });
 }
-export const selectedTransactionChanged = (state, action) => {
-  return updateObject(state, { selectedTransaction: action.transaction, option: action.option });
+// export const selectedTransactionChanged = (state, action) => {
+//   return updateObject(state, { selectedTransaction: action.transaction, option: action.option });
+// }
+export const usedTransactionChanged = (state, action) => {
+  return updateObject(state, { usedTransaction: action.transaction, option: action.option });
+}
+export const editedTransactionChanged = (state, action) => {
+  return updateObject(state, { editedTransaction: action.transaction, option: action.option });
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -86,8 +94,12 @@ const reducer = (state = initialState, action) => {
     case actionTypes.ON_TRANSACTION_FAILED:
       return onTransactionFailed(state, action);
 
-    case actionTypes.SELECTED_TRANSACTION_CHANGED:
-      return selectedTransactionChanged(state, action);
+    // case actionTypes.SELECTED_TRANSACTION_CHANGED:
+    //   return selectedTransactionChanged(state, action);
+    case actionTypes.USED_TRANSACTION_CHANGED:
+      return usedTransactionChanged(state, action);
+    case actionTypes.EDITED_TRANSACTION_CHANGED:
+      return editedTransactionChanged(state, action);
     default:
       return state;
   }

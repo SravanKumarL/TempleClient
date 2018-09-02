@@ -12,7 +12,7 @@ export const formStateConfig = () => {
     [POOJA]: createSelectField(POOJA, SINGLESELECT, null, '', { required: true }),
     [DATES]: createDate(DATES, DATE, getCurrentDate(), { required: false }),
     [NUMBER_OF_DAYS]: { ...(createTextField(NUMBER_OF_DAYS, INPUT, { required: true }, '1')), valid: true, disabled: true },
-    [AMOUNT]: { ...createTextField(AMOUNT, NUMBER, { required: true, minLength: 1 }), disabled: true },
+    [AMOUNT]: { ...createTextField(AMOUNT, NUMBER, { required: true, minLength: 1 }), disabled: true, valid: ()  => this[POOJA].value > 0 },
     [PAYMENT_MODE]: { ...(createSelectField(PAYMENT_MODE, RADIO, [PAYMENT_MODES.CASH, PAYMENT_MODES.CHEQUE], PAYMENT_MODES.CASH, { required: true })), valid: true },
   }
 }

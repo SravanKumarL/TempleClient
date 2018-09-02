@@ -8,13 +8,13 @@ export default class PrintHeader extends React.PureComponent {
         <div style={{ display: 'flex' }}>
           <img src={Logo} style={{ height: 90, width: 90 }} alt='Logo' />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography variant='title' align='center'>
+            <Typography style={{color: 'black'}} variant='title' align='center'>
               Sri Sringeri Jagadguru Mahasamsthanam
            </Typography>
-            <Typography variant='body2' align='center'>
+            <Typography style={{color: 'black'}} variant='body2' align='center'>
               Sri Sringeri Shankara Math, Nallakunta, Hyderabad - 44 (T.S.)
            </Typography>
-            <Typography variant='caption' align='center'>
+            <Typography style={{color: 'black'}} variant='caption' align='center'>
               Tel: 040-27677783
            </Typography>
           </div>

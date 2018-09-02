@@ -143,9 +143,9 @@ class EditTransactions extends React.Component {
   printHandler = () => {
     this.modalCloseHandler();
     const printableElement = document.getElementById('transactionSummary');
-    const headerElement = document.getElementById('printHeader');
-    headerElement.style.marginTop = '60px';
-    headerElement.style.marginBottom = '60px';
+    // const headerElement = document.getElementById('printHeader');
+    // headerElement.style.marginTop = '60px';
+    // headerElement.style.marginBottom = '60px';
     printHtml.printElement(printableElement);
 
     // printHtml.printElement(document.getElementById('transactionSummary'));

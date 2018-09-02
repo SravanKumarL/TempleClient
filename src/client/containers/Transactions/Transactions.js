@@ -26,11 +26,11 @@ import {
   getFormattedDate,
   getCurrentDate
 } from '../../shared/utility';
-import { SEARCH_OPERATIONS, SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
+import { SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
 
 
-const { USE } = SEARCH_OPERATIONS;
+// const { USE } = SEARCH_OPERATIONS;
 const { POOJAS, OTHERS } = TABS;
 
 const styles = theme => ({
@@ -162,7 +162,9 @@ const initialState = {
   activeTab: POOJAS,
   transactionInformation: [],
   transaction: {},
-  selectedTransaction: {},
+  // selectedTransaction: {},
+  editedTransaction: {},
+  usedTransaction: {},
   unchangedTransaction: {},
   option: '',
   editable: false,
@@ -180,8 +182,11 @@ class Transactions extends React.Component {
     if (nextProps.message !== prevState.message) {
       newState = { ...newState, message: nextProps.message, snackOpen: true };
     }
-    if (nextProps.selectedTransaction && (nextProps.selectedTransaction !== prevState.unchangedTransaction || nextProps.option !== prevState.option)) {
-      newState = { ...newState, selectedTransaction: nextProps.selectedTransaction, unchangedTransaction: nextProps.selectedTransaction, option: nextProps.option }
+    if (nextProps.usedTransaction && (nextProps.usedTransaction !== prevState.unchangedUsedTransaction)) {
+      newState = { ...newState, usedTransaction: nextProps.usedTransaction, unchangedUsedTransaction: nextProps.usedTransaction }
+    }
+    if (nextProps.editedTransaction && (nextProps.editedTransaction !== prevState.unchangedEditedTransaction)) {
+      newState = { ...newState, editedTransaction: nextProps.editedTransaction, unchangedEditedTransaction: nextProps.editedTransaction }
     }
     return newState;
   }
@@ -202,8 +207,8 @@ class Transactions extends React.Component {
     this.modalCloseHandler();
     this.setState({ ...initialState });
     const printableElement = document.getElementById('transactionSummary');
-    const tableElement = document.getElementById('printHeader');
-    tableElement.style.marginBottom = '20px';
+    // const tableElement = document.getElementById('printHeader');
+    // tableElement.style.marginBottom = '20px';
     printHtml.printElement(printableElement);
   }
   formSubmitHandler = (transactionInformation) => {
@@ -231,29 +236,30 @@ class Transactions extends React.Component {
   }
   closeDialogHandler = () => {
     this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
-    this.props.selectedTransactionChanged(null, '');
+    this.props.usedTransactionChanged(null, '');
+    this.props.editedTransactionChanged(null, '');
     !this.state.editable && this.props.openEditForm(false);
   }
   fieldEditedHandler = (event, inputIdentifier) => {
     let updates = { [inputIdentifier]: event.target ? event.target.value : event };
-    const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, updates);
+    const updatedEditedTransaction = updateObject(this.state.editedTransaction, updates);
     this.setState((prevState) => {
-      if (prevState.unchangedTransaction[inputIdentifier] === updates[inputIdentifier])
+      if (prevState.unchangedEditedTransaction[inputIdentifier] === updates[inputIdentifier])
         updates = _.pickBy(prevState.updates, (value, key) => key !== inputIdentifier);
       else
         updates = { ...prevState.updates, ...updates };
-      return { selectedTransaction: updatedSelectedTransaction, updates };
+      return { editedTransaction: updatedEditedTransaction, updates };
     });
   }
   onEditClicked = () => {
-    const { updates, selectedTransaction, editable } = this.state;
+    const { updates, editedTransaction, editable } = this.state;
     if (editable && updates && Object.keys(updates).length > 0)
-      this.props.commitEntityTransaction(constants.edit, constants.Transactions, updates, selectedTransaction);
+      this.props.commitEntityTransaction(constants.edit, constants.Transactions, updates, editedTransaction);
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
     const { classes, editFormOpen } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, editable } = this.state;
+    const { activeTab, modalOpen, transactionInformation, usedTransaction, editedTransaction, editable } = this.state;
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
@@ -271,8 +277,7 @@ class Transactions extends React.Component {
         cancelled={this.closeDialogHandler}>
         <EditTransactions
           editable={editable}
-          // transactionFormFields={editForm}
-          transaction={selectedTransaction}
+          transaction={editedTransaction}
           fieldChanged={this.fieldEditedHandler}
         />
       </Dialog>
@@ -320,7 +325,7 @@ class Transactions extends React.Component {
             ref={node => (this.CreateTransaction = node)}
             submit={this.formSubmitHandler}
             activeTab={activeTab}
-            selectedTransaction={selectedTransaction && option === USE ? selectedTransaction : null}
+            selectedTransaction={usedTransaction}
           />
           <TransactionSummary
             open={modalOpen}
@@ -346,6 +351,8 @@ const mapStateToProps = (state) => {
     selectedTransaction: state.transactions.selectedTransaction,
     option: state.transactions.option,
     editFormOpen: state.transactions.editFormOpen,
+    editedTransaction: state.transactions.editedTransaction,
+    usedTransaction: state.transactions.usedTransaction,
   }
 }
 
