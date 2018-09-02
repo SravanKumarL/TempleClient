@@ -34,7 +34,7 @@ const PrintGridContainer = ({ searchCriteria, rows, columns, children }) => {
         Object.keys(printRows).map(key =>
             (<div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }} key={key}>
                 <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
-                    {key}
+                    Pooja Report of {key}
                 </Typography>
                 <PrintGridWrapped rows={printRows[key]} columns={printColumns} />
             </div>)) : <PrintGridWrapped rows={printRows} columns={printColumns} />);

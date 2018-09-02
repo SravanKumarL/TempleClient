@@ -16,6 +16,7 @@ export const FIELDS = {
 }
 export const SELECTED_DAYS = 'selectedDays';
 export const DATEPICKER_MODE = 'datepickerMode';
+export const ALL_DAYS = 'All days';
 export const FIELD_PLACEHOLDERS = {
     phoneNumber: 'Phone Number',
     names: 'Names',

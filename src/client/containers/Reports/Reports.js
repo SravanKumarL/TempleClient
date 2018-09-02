@@ -254,8 +254,7 @@ class Reports extends React.Component {
     const { reportOpen, selectedGenerateOption, searchObj } = this.state;
     const { classes } = this.props;
     const selectedReportName = selectedGenerateOption.name;
-    let title = `${selectedReportName === POOJA ? (searchObj.pooja.split(',').length > 1 ? '' : ('of ' + searchObj.pooja)) :
-      (selectedReportName === MANAGEMENT ? 'generated on ' + getCurrentDate() : '')}`;
+    let title = selectedReportName === MANAGEMENT ? 'generated on ' + getCurrentDate() : '';
     return (
       <div className={classes.root}>
         <div className={classes.container}>
