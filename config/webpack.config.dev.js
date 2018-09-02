@@ -8,8 +8,8 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
-const workboxPlugin = require('workbox-webpack-plugin');
-const cleanPlugin = require('clean-webpack-plugin');
+// const workboxPlugin = require('workbox-webpack-plugin');
+// const cleanPlugin = require('clean-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -193,7 +193,7 @@ module.exports = {
       inject: true,
       template: paths.appHtml,
     }),
-    new cleanPlugin(['build']),
+    // new cleanPlugin(['build']),
     // new InjectManifest({
     //   // swSrc: path.join('src', 'sw.js'),
     //   // swDest: '/src/my-service-worker.js',
@@ -202,10 +202,10 @@ module.exports = {
     // new GenerateSW({
     //   swDest: 'myservice-worker.js'
     // }),
-    new workboxPlugin.InjectManifest({
-      swSrc: './src/sw.js',
-      swDest: 'sw.js'
-    }),
+    // // new workboxPlugin.InjectManifest({
+    //   swSrc: './src/sw.js',
+    //   swDest: 'sw.js'
+    // }),
     // new workboxPlugin.GenerateSW({
     //   swDest: 'sw.js',
     //   clientsClaim: true,
