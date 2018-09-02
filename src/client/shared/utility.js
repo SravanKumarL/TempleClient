@@ -73,9 +73,17 @@ export const getFormattedDate = (selectedDates, dateMode) => {
   // }
   return selectedDates.join(',');
 }
-
-export const getDaysOfWeek = () => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
+const getDaysOfTheWeek = () => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+export const filterDates = (selectedDays, unFilteredRange) => {
+  let daysOfWeek = getDaysOfTheWeek();
+  if (selectedDays.length === 0 || selectedDays.length >= 7) {
+    return unFilteredRange;
+  }
+  return unFilteredRange.filter(x => selectedDays.indexOf(daysOfWeek[x.getDay()]) !== -1);
+}
+export const isFilterApplied = selectedDays => selectedDays.length > 0 && selectedDays.length < 7;
+export const getAllDays = () => ['All days', ...getDaysOfTheWeek()];
+export const getDaysOfWeek = getDaysOfTheWeek;
 export const getDateDifference = (from, to) => {
   const fromDate = moment(from); //todays date
   const toDate = moment(to); // another date
@@ -83,10 +91,24 @@ export const getDateDifference = (from, to) => {
   const days = duration.asDays();
   return days;
 }
-
+export const getDateFromString = (dateString) => {
+  const parts = dateString.split('-');
+  return new Date(Date.parse(`${parts[2]}-${parts[1]}-${parts[0]}`));
+}
 export const convertToStartCase = (identifier) => {
   return startCase(toLower(identifier));
 }
+export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
+  let calendarOptions = {
+    mode: mode, allowInput: true, defaultDate,
+    ignoredFocusElements: ignoredFocusElements || [],
+    dateFormat: "d-m-Y", disableMobile: true
+  };
+  calendarOptions = minDate ? { ...calendarOptions, minDate } : calendarOptions;
+  calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;
+  return calendarOptions;
+}
+
 
 /* eslint-disable */
 const required = value => (value ? undefined : 'Required')

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './client/App';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -13,6 +13,18 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import reducer from './store/reducers/index';
 import red from '@material-ui/core/colors/red';
 import { watchAuth } from './store/sagas';
+
+//Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('SW registered: ', registration);
+      registration.pushManager.subscribe({ userVisibleOnly: true });
+    }).catch(registrationError => {
+      console.log('SW registration failed: ', registrationError);
+    });
+  });
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -51,7 +63,6 @@ const app = (
       </BrowserRouter>
     </Provider>
   </div>
-
 );
 ReactDOM.render(app, document.getElementById('root'));
-registerServiceWorker();
+// registerServiceWorker();

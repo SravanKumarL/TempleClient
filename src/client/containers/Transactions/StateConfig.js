@@ -18,6 +18,7 @@ export const formStateConfig = () => {
 }
 export const createDate = (field, type, minDate, validation) => {
   const newField = createTextField(field, type, validation, [getCurrentDate()]);
+  newField.valid = true;
   newField.minDate = minDate;
   newField[SELECTED_DAYS] = getDaysOfWeek();
   newField[DATEPICKER_MODE] = CALENDER_MODE.SINGLE;

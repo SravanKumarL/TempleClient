@@ -1,15 +1,27 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "BookMySeva",
+  "name": "BookMySeva 1.0 - A temple ticket management software",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "icon-192px.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512px.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
+
   ],
   "start_url": "./index.html",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#60315f",
+  "background_color": "#37474f",
+  "scope": ".",
+  "description": "It is a ticket management software",
+  "dir": "ltr",
+  "lang": "en-US",
+  "orientation": "portrait-primary"
+ 
 }

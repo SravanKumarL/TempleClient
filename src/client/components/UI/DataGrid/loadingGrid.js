@@ -16,7 +16,7 @@ const styles=theme=>({
 });
 const LoadingGrid = ({ columns, error, classes }) => (
     <div className={classes.grid}>
-        <Paper>
+        <Paper style={{margin: '100px 35px'}}>
             <Grid rows={[]} columns={columns}>
                 <FilteringState />
                 <EditingState onCommitChanges={onCommitChanges} />

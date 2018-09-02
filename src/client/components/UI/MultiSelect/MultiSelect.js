@@ -73,7 +73,6 @@ const styles = theme => ({
       fontFamily: 'inherit',
       fontSize: 'inherit',
       margin: 0,
-      marginLeft: 5,
       outline: 0,
     },
     '.Select-placeholder, .Select--single .Select-value': {

@@ -4,6 +4,7 @@ export const FIELDS = {
     GOTHRAM: 'gothram',
     NAKSHATRAM: 'nakshatram',
     DATES: 'selectedDates',
+    FORMATTED_DATES: 'formattedDates',
     CHEQUE_NO: 'chequeNo',
     BANK_NAME: 'bankName',
     POOJA: 'pooja',
@@ -14,13 +15,14 @@ export const FIELDS = {
     ID: 'id',
 }
 export const SELECTED_DAYS = 'selectedDays';
-export const DATEPICKER_MODE='datepickerMode';
+export const DATEPICKER_MODE = 'datepickerMode';
+export const ALL_DAYS = 'All days';
 export const FIELD_PLACEHOLDERS = {
     phoneNumber: 'Phone Number',
     names: 'Names',
     gothram: 'Gothram',
     nakshatram: 'Nakshatram',
-    selectedDates: 'Selected date(s)',
+    selectedDates: 'Dates',
     chequeNo: 'Cheque No',
     bankName: 'Bank Name',
     pooja: 'Pooja',

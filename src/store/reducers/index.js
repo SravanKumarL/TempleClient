@@ -3,12 +3,14 @@ import { reducer as form } from 'redux-form';
 
 import auth from './auth';
 import transactions from './transactions';
-import {entity} from './entity';
+import { entity } from './entity';
+import datePicker from './datepicker';
 export default combineReducers({
   auth,
   form,
   transactions,
-  poojas:entity('poojas'),
-  reports:entity('reports'),
-  users:entity('users')
+  poojas: entity('poojas'),
+  reports: entity('reports'),
+  users: entity('users'),
+  datePicker
 });

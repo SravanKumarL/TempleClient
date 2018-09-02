@@ -71,11 +71,6 @@ export function* handleFetchData(action) {
     const { collection, searchCriteria, refetch } = action.payload;
     let { pagingOptions, printReq } = action.payload;
     const reportName = searchCriteria ? searchCriteria.ReportName : undefined;
-    let skip, take = undefined;
-    if (pagingOptions) {
-        skip = pagingOptions.skip;
-        take = pagingOptions.take;
-    }
     if (collection === constants.Transactions) {
         yield* transactionSagas.getTransactionsSaga(action);
     }
@@ -94,12 +89,17 @@ export function* handleFetchData(action) {
                 //If Count has already been fetched
                 const { toFetch, newPagingOptions } = yield* checkFetch(collection, fetchCount, pagingOptions, printReq);
                 pagingOptions = newPagingOptions || pagingOptions;
+                let take, skip = undefined;
+                if (pagingOptions) {
+                    take = pagingOptions.take;
+                    skip = pagingOptions.skip;
+                }
                 const fetchOthers = yield* checkFetchOthers(collection, reportName, !fetchCount);
                 if (fetchOthers || toFetch) {
                     if (collection === constants.Reports && searchCriteria) {
                         response = yield axios({
                             method: 'post',
-                            data: { ...searchCriteria, take, skip },
+                            data: { ...searchCriteria, take: take, skip: skip },
                             url: `/${collection}?fetchCount=${fetchCount || fetchOthers}&fetchOthers=${fetchOthers}`,
                             headers
                         });
@@ -207,14 +207,14 @@ const checkFetch = function* (collection, toFetchCount, pagingOptions, printReq)
         return { toFetch: true };
     const rowState = yield select(getRowState(collection));
     if (pagingOptions && pagingOptions.skip && pagingOptions.take) {
+        const oldPagingOptions = { ...pagingOptions };
         const rows = rowState.rows;
-        const slicedRows = rows.filter(row => row === 0 || !row.others).slice(pagingOptions.skip,
-            pagingOptions.skip + pagingOptions.take);
+        const slicedRows = rows.slice(oldPagingOptions.skip, oldPagingOptions.skip + oldPagingOptions.take);
         let skip = slicedRows.indexOf(0);//Check for any previously filled rows
         if (skip === -1)
             return { toFetch: false }
-        const take = pagingOptions.take - skip;
-        skip += pagingOptions.skip;
+        const take = oldPagingOptions.take - skip;
+        skip += oldPagingOptions.skip;
         const newPagingOptions = { skip, take };
         return { toFetch: true, newPagingOptions };
     }

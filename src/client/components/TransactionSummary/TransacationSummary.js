@@ -1,13 +1,9 @@
-import React from 'react';
-
+import React, { Fragment } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import Dialog from '../../components/UI/Dialog/Dialog';
+import PrintHeader from './PrintHeader';
+import { getCurrentDate } from '../../shared/utility';
+import { Typography } from '@material-ui/core';
 
 const styles = (theme) => ({
   root: {
@@ -19,19 +15,13 @@ const styles = (theme) => ({
   },
 });
 
-const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: '#eee',
-    color: 'black !important',
-    fontWeight: 'bold',
-    fontSize: 18
-  },
-  body: {
-    fontSize: 14,
-  },
-}))(TableCell);
-
-const transactionSummary = ({ classes, open, transactionFields, summaryClosed, print, createdBy }) => {
+const currentDate = getCurrentDate().toString();
+const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summaryClosed, print }) => {
+  const createdDate = transactionFields.filter(id => id.name.toLowerCase() === 'created date' && id)[0];
+  const createdBy = transactionFields.filter(id => id.name.toLowerCase() === 'created by' && id)[0];
+  // const createdDate = '27-08-18';
+  // const createdBy = 'admin';
+  const capitalizedFields = ['Names', 'Gothram', 'Nakshatram', 'Pooja', 'Payment Mode', 'Bank Name'];
   return (
     <Dialog
       open={open}
@@ -40,33 +30,40 @@ const transactionSummary = ({ classes, open, transactionFields, summaryClosed, p
       secondaryText='Cancel'
       secondaryClicked={summaryClosed}
       cancelled={summaryClosed}
+      maxWidth='xs'
       title='Transaction Summary'>
-      <Paper id='transactionSummary' component='div' className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead >
-            <TableRow>
-              <CustomTableCell>Title</CustomTableCell>
-              <CustomTableCell>Value</CustomTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <div id='transactionSummary'>
+        <PrintHeader style={{ marginTop: 30 }} id='printHeader' />
+        <div style={{ border: '1px solid #cad0d7', width: '100%', maxWidth: 360, marginTop: 30 }} id='printTable' className={classes.table}>
+          <div>
             {Object.keys(transactionFields).map(id => {
               const field = transactionFields[id];
+              if (['Special Offerings', 'Created By', 'Created Date', 'Selected Dates', 'Id'].includes(field.name)) {
+                return null;
+              }
               const placeholder = field.name;
+              const value = capitalizedFields.includes(field.name) ? field.value.toUpperCase() : field.value;
               return (
-                <TableRow key={id}>
-                  <TableCell style={{ fontSize: 16 }} >{placeholder}:</TableCell>
-                  <TableCell style={{ whiteSpace: 'pre-wrap', fontSize: 16, wordWrap: 'break-word' }}>{field.value}</TableCell>
-                </TableRow>
+                <div style={{ display: 'flex', borderBottom: '1px solid #cad0d7' }} key={id}>
+                  <div style={{ width: '110px', fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}   :</div>
+                  <div style={{ whiteSpace: 'pre-wrap', width: '210px', fontSize: 16, margin: '10px 0px', wordWrap: 'break-word', maxHeight: 75, overflow: 'hidden' }}>{value}</div>
+                </div>
               );
             })}
-            <TableRow key={createdBy}>
-              <TableCell>Created By:</TableCell>
-              <TableCell>{createdBy}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </Paper>
+          </div>
+        </div>
+        <div style={{ marginTop: '100px', display: 'flex', alignItems: 'flex-end', flexDirection: 'column', paddingRight: '10px' }}>
+          <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Created By: {createdBy && createdBy.value}   </Typography>
+          <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Created On: {createdDate && createdDate.value}   </Typography>
+          {currentDate !== createdDate.value.toString() ?
+            <Fragment>
+              <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Modified On: {getCurrentDate()}   </Typography>
+              <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Modified By: {modifiedBy} </Typography>
+            </Fragment>
+            : null
+          }
+        </div>
+      </div>
     </Dialog>
   )
 };
