@@ -20,7 +20,8 @@ export {
   searchTransactionsStarted,
   searchTransactionsSuccess,
   searchTransactionsFail,
-  selectedTransactionChanged
+  selectedTransactionChanged,
+  openEditForm
 } from './transactions.js';
 
 export {

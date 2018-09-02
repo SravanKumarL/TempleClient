@@ -20,7 +20,12 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
-import { updateObject, convertToStartCase, getFormattedDate } from '../../shared/utility';
+import {
+  updateObject,
+  convertToStartCase,
+  getFormattedDate,
+  getCurrentDate
+} from '../../shared/utility';
 import { SEARCH_OPERATIONS, SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
 
@@ -36,6 +41,7 @@ const styles = theme => ({
     alignItems: 'center',
     position: 'relative',
     flexShrink: 0,
+    marginBottom: 20
   },
   middlePane: {
     display: 'flex',
@@ -47,13 +53,11 @@ const styles = theme => ({
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
-      margin: 25,
     },
     [theme.breakpoints.up('lg')]: {
       alignItems: 'center',
       minWidth: '535px',
       maxWidth: '535px',
-      margin: 25,
       marginLeft: 'auto'
     },
   },
@@ -62,9 +66,7 @@ const styles = theme => ({
     flexGrow: 1,
     height: '100%',
     justifyContent: 'center',
-    // [theme.breakpoints.up('sm')]: {
-    //   paddingBottom: '1rem',
-    // }
+
 
   },
   leftPane: {
@@ -162,7 +164,6 @@ const initialState = {
   transaction: {},
   selectedTransaction: {},
   unchangedTransaction: {},
-  dialogOpen: false,
   option: '',
   editable: false,
   updates: {},
@@ -179,10 +180,7 @@ class Transactions extends React.Component {
     if (nextProps.message !== prevState.message) {
       newState = { ...newState, message: nextProps.message, snackOpen: true };
     }
-    if (nextProps.selectedTransaction && nextProps.selectedTransaction !== prevState.unchangedTransaction) {
-      if (nextProps.option && nextProps.option !== USE) {
-        newState = { ...newState, dialogOpen: true };
-      }
+    if (nextProps.selectedTransaction && (nextProps.selectedTransaction !== prevState.unchangedTransaction || nextProps.option !== prevState.option)) {
       newState = { ...newState, selectedTransaction: nextProps.selectedTransaction, unchangedTransaction: nextProps.selectedTransaction, option: nextProps.option }
     }
     return newState;
@@ -198,10 +196,15 @@ class Transactions extends React.Component {
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
 
   printHandler = () => {
-    this.props.commitEntityTransaction(constants.add, constants.Transactions, this.state.transaction);
+    const formattedDates = this.state.transactionInformation[FIELDS.DATES].value;
+    this.props.commitEntityTransaction(constants.add,
+      constants.Transactions, { ...this.state.transaction, [FIELDS.FORMATTED_DATES]: formattedDates });
     this.modalCloseHandler();
     this.setState({ ...initialState });
-    printHtml.printElement(document.getElementById('transactionSummary'));
+    const printableElement = document.getElementById('transactionSummary');
+    const tableElement = document.getElementById('printHeader');
+    tableElement.style.marginBottom = '20px';
+    printHtml.printElement(printableElement);
   }
   formSubmitHandler = (transactionInformation) => {
     const createdBy = this.props.user;
@@ -227,12 +230,12 @@ class Transactions extends React.Component {
     this.setState({ modalOpen: true, transactionInformation: formattedTransactionInfo, transaction });
   }
   closeDialogHandler = () => {
-    if (!this.state.editable)
-      this.setState({ dialogOpen: false });
     this.setState((prevState) => ({ updates: {}, editable: false, selectedTransaction: prevState.unchangedTransaction }));
+    this.props.selectedTransactionChanged(null, '');
+    !this.state.editable && this.props.openEditForm(false);
   }
   fieldEditedHandler = (event, inputIdentifier) => {
-    let updates = { [inputIdentifier]: event.target.value };
+    let updates = { [inputIdentifier]: event.target ? event.target.value : event };
     const updatedSelectedTransaction = updateObject(this.state.selectedTransaction, updates);
     this.setState((prevState) => {
       if (prevState.unchangedTransaction[inputIdentifier] === updates[inputIdentifier])
@@ -249,15 +252,15 @@ class Transactions extends React.Component {
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
-    const { classes } = this.props;
-    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, dialogOpen, editable } = this.state;
+    const { classes, editFormOpen } = this.props;
+    const { activeTab, modalOpen, transactionInformation, selectedTransaction, option, editable } = this.state;
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
     const secondaryText = editable ? 'Back' : 'Close';
     let dialog = (
       <Dialog
-        open={dialogOpen}
+        open={editFormOpen}
         primaryClicked={this.onEditClicked}
         primaryText={primaryText}
         secondaryText={secondaryText}
@@ -287,6 +290,16 @@ class Transactions extends React.Component {
       labelContainer: classes.labelContainer,
       label: classes.label
     };
+    const createdBy = {
+      name: 'Created By',
+      value: this.props.user,
+    };
+    const createdDate = {
+      name: 'Created Date',
+      value: getCurrentDate(),
+    }
+    transactionInformation.createdBy = createdBy;
+    transactionInformation.createdDate = createdDate;
     return (
       <div className={classes.panes} >
         <div className={classes.middlePane}>
@@ -311,7 +324,7 @@ class Transactions extends React.Component {
           />
           <TransactionSummary
             open={modalOpen}
-            transactionFields={transactionInformation}
+            transactionFields={Object.values(transactionInformation)}
             createdBy={this.props.user}
             print={this.printHandler}
             summaryClosed={this.modalCloseHandler} />
@@ -326,12 +339,13 @@ class Transactions extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     message: state.transactions.message,
     user: state.auth.user,
     selectedTransaction: state.transactions.selectedTransaction,
-    option: state.transactions.option
+    option: state.transactions.option,
+    editFormOpen: state.transactions.editFormOpen,
   }
 }
 

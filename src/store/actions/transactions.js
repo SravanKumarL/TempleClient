@@ -1,6 +1,11 @@
 import * as actionTypes from './actionTypes';
 
-
+export const openEditForm = (status) => {
+  return {
+    type: actionTypes.OPEN_EDIT_FORM,
+    payload: status
+  }
+} 
 export const addTransactionStarted = () => {
   return {
     type: actionTypes.ADD_TRANSACTION_START,

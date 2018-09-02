@@ -74,6 +74,7 @@ class MobileSearchPanel extends React.Component {
   optionClickedHandler = (option, transaction) => {
     this.setState({ searchValue: '' });
     this.props.closed();
+    this.props.openEditForm(true);
     this.props.selectedTransactionChanged(transaction, option);
   }
   inputChangeHandler = (event) => {
@@ -104,7 +105,7 @@ class MobileSearchPanel extends React.Component {
     }
     if (transactions && transactions.length > 0) {
       transactionsList = (
-        <List component="nav" style={{ maxHeight: '87%', overflow: 'auto' }}>
+        <List component="nav">
           {transactions.map(transaction => {
             return (
               <div key={`${transaction.phoneNumber}_${transaction.id}`} style={{ display: 'flex', width: '80%', margin: '0 auto' }}>

@@ -27,6 +27,7 @@ class SearchTransaction extends React.Component {
   constructor() {
     super();
     this.baseState = this.state;
+    this.optionClickedHandler = this.optionClickedHandler.bind(this);
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -39,7 +40,10 @@ class SearchTransaction extends React.Component {
     return null;
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
-  closeSearchPanelHandler = () => this.setState({ searchPanelOpen: false, count: 0, searchedTransactions: null });
+  closeSearchPanelHandler = () => {
+    this.props.selectedTransactionChanged(null, '');
+    this.setState({ searchPanelOpen: false, count: 0, searchedTransactions: null });
+  }
   panelExitHandler = () => this.setState({ ...initialState });
   searchValueChangedHandler = (event) => {
     const value = event.target.value;
@@ -59,8 +63,10 @@ class SearchTransaction extends React.Component {
   optionClickedHandler = (option, transaction) => {
     if (option === USE) {
       this.setState({ ...this.baseState })
+      return this.props.selectedTransactionChanged(transaction, option);
     }
     this.props.selectedTransactionChanged(transaction, option);
+    return this.props.openEditForm(true);
   }
   render() {
     const { searchTextError, showSearchButton, searchPanelOpen, searchedTransactions } = this.state;
