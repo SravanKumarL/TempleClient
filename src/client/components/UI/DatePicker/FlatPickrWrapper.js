@@ -60,7 +60,6 @@ class DatePickerWrapper extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (!isEqual(prevProps.value, this.props.value) && this.state.reset) {
-            console.log('resetting datepicker');
             this.setState({ reset: false });
         }
     }
