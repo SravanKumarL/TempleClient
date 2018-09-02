@@ -206,6 +206,7 @@ class Transactions extends React.Component {
       constants.Transactions, { ...this.state.transaction, [FIELDS.FORMATTED_DATES]: formattedDates });
     this.modalCloseHandler();
     this.setState({ ...initialState });
+    this.CreateTransaction.formResetHandler();
     const printableElement = document.getElementById('transactionSummary');
     // const tableElement = document.getElementById('printHeader');
     // tableElement.style.marginBottom = '20px';
@@ -322,7 +323,7 @@ class Transactions extends React.Component {
             </Tabs>
           </Fade>
           <CreateTransaction
-            ref={node => (this.CreateTransaction = node)}
+            onRef={node => (this.CreateTransaction = node)}
             submit={this.formSubmitHandler}
             activeTab={activeTab}
             selectedTransaction={usedTransaction}

@@ -86,6 +86,10 @@ class CreateTransaction extends React.Component {
     this.formResetHandler = this.formResetHandler.bind(this);
     this.getUpdatedTransacationForm = this.getUpdatedTransacationForm.bind(this);
   }
+  componentDidMount() 
+  {
+    this.props.onRef(this);
+  }
   state = { ...JSON.parse(JSON.stringify(initialState)) };
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
