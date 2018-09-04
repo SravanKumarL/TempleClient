@@ -5,7 +5,7 @@ const { INPUT, DATE, MULTISELECT, RADIO, SINGLESELECT, NUMBER } = FIELD_TYPES;
 
 export const formStateConfig = () => {
   return {
-    [PHONE_NUMBER]: createTextField(PHONE_NUMBER, NUMBER, { required: true, minLenght: 8, maxLength: 10 }),
+    [PHONE_NUMBER]: createTextField(PHONE_NUMBER, NUMBER, { required: true, minLength: 8, maxLength: 10 }),
     [NAMES]: createTextField(NAMES, INPUT, { required: true }),
     [GOTHRAM]: createTextField(GOTHRAM, INPUT, { required: true }),
     [NAKSHATRAM]: { ...createSelectField(NAKSHATRAM, MULTISELECT, NAKSHATRAMS), required: false },
