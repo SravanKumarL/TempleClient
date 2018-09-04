@@ -25,7 +25,7 @@ class RangeDatePicker extends React.Component {
             this.props.onDateChanged(selectedDates);
         }
         else if (selectedDates.length === 0) {
-            this.props.onDatepickerReset();
+            this.props.onDatepickerReset([]);
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
