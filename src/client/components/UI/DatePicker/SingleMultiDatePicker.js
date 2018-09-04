@@ -1,10 +1,15 @@
 import React from 'react';
 import Flatpickr from './Flatpickr';
-import { getCurrentDate, getDefaultCalendarOptions } from '../../../shared/utility';
 import { CALENDER_MODE } from '../../../../store/constants/transactions';
+import { connect } from 'react-redux';
+import {
+    onDatepickerReset,
+    onSingleMultiDateChanged
+} from '../../../../store/actions/datepicker';
+import { getCurrentDate } from '../../../shared/utility';
 const { SINGLE, MULTIPLE } = CALENDER_MODE;
 const maxMultipleDates = 10;
-const getDatePicker = mode => class SingleMultiDatePicker extends React.Component {
+class SingleMultiDatePicker extends React.Component {
     disableHandler = date => {
         if (this.fpInstance && this.fpInstance.selectedDates.length >= maxMultipleDates &&
             this.fpInstance.selectedDates.map(selDate => selDate.toLocaleDateString())
@@ -13,47 +18,37 @@ const getDatePicker = mode => class SingleMultiDatePicker extends React.Componen
         }
         return false;
     };
-    state = { reset: false };
-    dateSelectionChangedHandler = selectedDates => {
-        const { onDateSelectionChanged } = this.props;
-        if (onDateSelectionChanged) {
-            onDateSelectionChanged(selectedDates);
-        }
-    }
     onReady = (selectedDates, currentDateString, instance, data) => {
         this.fpInstance = instance;
     }
-    dateSelectionChangedHandler = this.dateSelectionChangedHandler.bind(this);
     disableHandler = this.disableHandler.bind(this);
     onReady = this.onReady.bind(this);
-    calendarOptions = {
-        ...getDefaultCalendarOptions(mode, this.props.value || [getCurrentDate()],
-            this.props.minDate, this.props.maxDate, this.props.ignoredFocusElements),
-        disable: [this.disableHandler]
-    };
-    clearClickedHandler = () => {
-        this.setState(prevState => ({ reset: !prevState.reset }), () => {
-            const { onClearClicked } = this.props;
-            if (onClearClicked) {
-                onClearClicked();
-            }
-        });
+    calendarOptions = { ...this.props.calendarOptions, disable: [this.disableHandler], mode: this.props.mode };
+    dateSelectionChangedHandler = selectedDates => {
+        this.props.onSingleMultiDateChanged(selectedDates);
+        const { onDateSelectionChanged } = this.props;
+        if (onDateSelectionChanged) {
+            onDateSelectionChanged();
+        }
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return this.state.reset !== nextState.reset;
-    }
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.reset) {
-            this.setState({ reset: false });
-        }
+        return this.props.reset !== nextProps.reset;
     }
     render() {
         return (
-            <Flatpickr options={this.calendarOptions} key={this.state.reset}
-                onClearClicked={this.clearClickedHandler} onChange={this.dateSelectionChangedHandler}
-                onReady={this.onReady} />
+            <Flatpickr options={this.calendarOptions} key={this.props.reset}
+                onClearClicked={this.props.onClearClicked} onChange={this.dateSelectionChangedHandler}
+                onReady={this.onReady} value={this.props.filteredDates.map(date => getCurrentDate(date))} />
         );
     }
 }
+const mapStateToProps = state => ({
+    filteredDates: state.datePicker.filteredDates,
+    calendarOptions: state.datePicker.calendarOptions,
+    reset: state.datePicker.reset
+});
+const SingleMultiDatePickerWrapper = connect(mapStateToProps,
+    { onSingleMultiDateChanged, onDatepickerReset })(SingleMultiDatePicker);
+const getDatePicker = mode => props => <SingleMultiDatePickerWrapper mode={mode} {...props} />
 export const SingleDatePicker = getDatePicker(SINGLE);
 export const MultiDatePicker = getDatePicker(MULTIPLE);

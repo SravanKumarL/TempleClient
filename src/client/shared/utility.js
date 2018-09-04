@@ -100,7 +100,7 @@ export const convertToStartCase = (identifier) => {
 }
 export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
   let calendarOptions = {
-    mode: mode, allowInput: true, defaultDate,
+    mode: mode, allowInput: true, defaultDate: defaultDate || [getCurrentDate()],
     ignoredFocusElements: ignoredFocusElements || [],
     dateFormat: "d-m-Y", disableMobile: true
   };
@@ -108,7 +108,12 @@ export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, i
   calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;
   return calendarOptions;
 }
-
+export const pushIgnoredFocusElements = (calendarOptions, newIgnoredElements) => {
+  return {
+    ...calendarOptions, ignoredFocusElements: [...(calendarOptions.ignoredFocusElements || []),
+    ...(newIgnoredElements || [])]
+  };
+}
 
 /* eslint-disable */
 const required = value => (value ? undefined : 'Required')

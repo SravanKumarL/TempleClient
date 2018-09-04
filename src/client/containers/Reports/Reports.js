@@ -120,7 +120,7 @@ const styles = theme => ({
     width: '30vw',
     border: '2px dashed #eee',
     marginBottom: '10vh',
-      [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('sm')]: {
       display: 'flex',
       height: '50vh',
       width: '75vw',
@@ -140,7 +140,7 @@ const styles = theme => ({
 const initialState = {
   modalOpen: false,
   selectedOption: {},
-  selectedDates: [getCurrentDate()],
+  selectedDates: [new Date()],
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',
@@ -189,7 +189,13 @@ class Reports extends React.Component {
   }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [getCurrentDate()], selectedPooja: '' }); }
+  optionClickedHandler = (option) => {
+    this.props.onDatepickerReset(initialState.selectedDates);
+    this.setState({
+      selectedOption: option, modalOpen: true,
+      selectedDates: [...initialState.selectedDates], selectedPooja: ''
+    });
+  }
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');

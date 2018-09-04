@@ -45,5 +45,13 @@ export {
 
 export {
   onDayChanged,
-  onDateChanged
+  onDateChanged,
+  onDatepickerReset,
+  onDaySlctnClose,
+  onDaySlctnOpen,
+  onFilterApplied,
+  onRangePickerClose,
+  onRangePickerOpen,
+  onSingleMultiDateChanged,
+  setCalendarOptions
 } from './datepicker'

@@ -24,14 +24,10 @@ class RangeDatePicker extends React.Component {
             this.skipping = selectedDates[1].getTime() - selectedDates[0].getTime();
             this.props.onDateChanged(selectedDates);
         }
-    }
-    clearClickedHandler = () => {
-        this.props.onDatepickerReset();
-        const { onClearClicked } = this.props;
-        if (onClearClicked) {
-            onClearClicked();
+        else if (selectedDates.length === 0) {
+            this.props.onDatepickerReset();
         }
-    };
+    }
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.filtered) {
             nextProps.onDateSelectionChanged();
@@ -43,7 +39,7 @@ class RangeDatePicker extends React.Component {
         let { calendarOptions, filteredDates, unfilteredRange, mode, onRangePickerClose,
             onRangePickerOpen, reset } = this.props;
         const rangeCalendarOptions = {
-            ...calendarOptions, mode: RANGE, closeOnSelect: false, defaultDate: unfilteredRange
+            ...calendarOptions, mode: RANGE, closeOnSelect: false
         };
         const multiCalendarOptions = {
             ...calendarOptions, mode: MULTIPLE,
@@ -52,24 +48,23 @@ class RangeDatePicker extends React.Component {
         filteredDates = this.skipping > 0 ? filteredDates.reverse() : filteredDates;
         return (
             mode === RANGE ? <Flatpickr options={rangeCalendarOptions} key={reset}
-                onChange={this.dateSlctnChngdHandler} onClearClicked={this.clearClickedHandler}
-                onOpen={onRangePickerOpen} />
-                : <Flatpickr options={multiCalendarOptions} key={reset} value={filteredDates}
-                    onClearClicked={this.clearClickedHandler} onClose={onRangePickerClose} />
+                onChange={this.dateSlctnChngdHandler} onClearClicked={this.props.onClearClicked}
+                onOpen={onRangePickerOpen} value={unfilteredRange.map(date => getCurrentDate(date))} />
+                : <Flatpickr options={multiCalendarOptions} key={reset}
+                    value={filteredDates.map(date => getCurrentDate(date))} onClearClicked={this.props.onClearClicked}
+                    onClose={onRangePickerClose} />
         );
     }
 }
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = state => ({
     selectedDays: state.datePicker.selectedDays,
+    calendarOptions: state.datePicker.calendarOptions,
     reset: state.datePicker.reset,
     isDayFilterApplied: state.datePicker.isDayFilterApplied,
     unfilteredRange: state.datePicker.unfilteredRange,
     filtered: state.datePicker.filtered,
     filteredDates: state.datePicker.filteredDates,
     mode: state.datePicker.mode,
-    onDateSelectionChanged: ownProps.onDateSelectionChanged,
-    value: ownProps.value,
-    onClearClicked: ownProps.onClearClicked,
 });
 export default connect(mapStateToProps, {
     onDateChanged, onDatepickerReset,

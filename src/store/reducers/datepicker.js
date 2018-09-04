@@ -1,4 +1,10 @@
-import { getDaysOfWeek, filterDates, getAllDays, isFilterApplied } from '../../client/shared/utility';
+import {
+    getDaysOfWeek,
+    filterDates,
+    getAllDays,
+    isFilterApplied,
+    getDefaultCalendarOptions,
+} from '../../client/shared/utility';
 import {
     ON_DAY_CHANGED,
     ON_DATE_CHANGED,
@@ -7,7 +13,9 @@ import {
     ON_DAY_SLCTN_OPEN,
     ON_FILTER_APPLIED,
     ON_RANGE_PICKER_CLOSE,
-    ON_RANGE_PICKER_OPEN
+    ON_RANGE_PICKER_OPEN,
+    ON_SINGLE_MULTI_DATE_CHANGED,
+    SET_CALENDAR_OPTIONS,
 } from '../actions/actionTypes';
 import { createSelector } from 'reselect';
 import { ALL_DAYS, CALENDER_MODE } from '../constants/transactions';
@@ -35,13 +43,14 @@ const getFilteredDates = createSelector(getSelectedDays, getRangeOfDates,
 const defaultState = {
     selectedDays: getDaysOfWeek(), filteredDates: [new Date()], filtered: false,
     isDayFilterApplied: false, mode: RANGE, unfilteredRange: [new Date()], reset: false,
+    calendarOptions: getDefaultCalendarOptions(RANGE),
 };
 const datePicker = (state = defaultState, action) => {
     switch (action.type) {
         case ON_DAY_SLCTN_CLOSE:
             return { ...state, selectedDays: state.selectedDays.filter(day => day !== ALL_DAYS) };
         case ON_DAY_SLCTN_OPEN:
-            if (state.selectedDays.length === 7) {
+            if (state.selectedDays.length === 7 || state.selectedDays.length === 0) {
                 return { ...state, selectedDays: getAllDays() };
             }
             return state;
@@ -64,10 +73,25 @@ const datePicker = (state = defaultState, action) => {
                 ...state, filteredDates, filtered: true, unfilteredRange,
                 mode: (state.isDayFilterApplied && filteredDates.length > 1) ? MULTIPLE : RANGE
             };
+        case ON_SINGLE_MULTI_DATE_CHANGED:
+            return { ...state, filteredDates: action.payload.selectedDates || state.filteredDates };
         case ON_FILTER_APPLIED:
             return { ...state, filtered: false };
+        case SET_CALENDAR_OPTIONS:
+            const newState = {
+                ...state, calendarOptions: {
+                    ...state.calendarOptions,
+                    ...(action.payload.calendarOptions || {})
+                }
+            };
+            return newState;
         case ON_DATEPICKER_RESET:
-            return { ...defaultState, reset: !state.reset };
+            const defaultFilteredDates = action.payload.defaultDates || defaultState.filteredDates;
+            const defaultUnFilteredDates = action.payload.defaultDates || defaultState.unfilteredRange;
+            return {
+                ...defaultState, reset: !state.reset,
+                filteredDates: defaultFilteredDates, unfilteredRange: defaultUnFilteredDates
+            };
         default:
             return state;
     }

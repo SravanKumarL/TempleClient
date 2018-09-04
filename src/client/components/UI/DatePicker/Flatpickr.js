@@ -157,6 +157,7 @@ class DateTimePicker extends Component {
             inputRef={node => { this.node = node }}
             className={classes.textFieldInput}
             type='input'
+            placeholder='Select Date..'
             readOnly={true}
             defaultValue={defaultValue}
             disableUnderline

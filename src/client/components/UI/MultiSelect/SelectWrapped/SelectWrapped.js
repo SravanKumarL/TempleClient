@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Typography from '@material-ui/core/Typography';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
@@ -7,12 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
 import Option from '../Option/Option';
-import { withStyles } from '@material-ui/core/styles';
-const chipStyles = {
-  chip: {
-    'zIndex': 2
-  }
-}
+
 const SelectWrapped = (props) => {
   const { classes, removeChip, onChange, onClearAll, ...other } = props;
   const handleSelect = (change) => {
@@ -51,14 +45,14 @@ const SelectWrapped = (props) => {
       removeChip(value);
     };
     if (removeChip) {
-      const StyledChip = withStyles(chipStyles)(({ classes }) =>
-        (<Chip classes={{ root: classes.chip }}
+      return (
+        <Chip
           tabIndex={-1}
           label={label}
-          // className={classes.chip}
+          className={classes.chip}
           onDelete={valueRemove}
-        />));
-      return <StyledChip />;
+        />
+      );
     }
     return <div className="Select-value">{label}</div>;
   }
