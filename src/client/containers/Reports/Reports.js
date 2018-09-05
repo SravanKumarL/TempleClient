@@ -19,7 +19,41 @@ import { REPORT_TYPES } from '../../../store/constants/reports';
 import report from '../../../assets/mainReport.svg';
 
 const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
-
+const ModalDialog = ({
+  modalOpen,
+  selectedOption,
+  selectedDates,
+  selectedPooja,
+  generateDisabled,
+  generateReportHandler,
+  closeHandler,
+  closeDialogHandler,
+  poojaDetails,
+  dateSelectionChangedHandler,
+  poojaSelected
+}) => {
+  return (
+    <Dialog
+      open={modalOpen}
+      primaryClicked={generateReportHandler}
+      handleClose={closeHandler}
+      primaryText='Generate Report'
+      secondaryText='Close'
+      secondaryClicked={closeDialogHandler}
+      title={selectedOption.name}
+      primaryDisabled={generateDisabled}
+      cancelled={closeDialogHandler}>
+      <ReportCriteria
+        poojas={poojaDetails}
+        title={selectedOption.name}
+        selectedDates={selectedDates}
+        dateSelectionChanged={dateSelectionChangedHandler}
+        poojaSelected={poojaSelected}
+        selectedPooja={selectedPooja}
+      />
+    </Dialog>
+  );
+}
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -200,31 +234,7 @@ class Reports extends React.Component {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
   }
-  getModal = () => {
-    const { modalOpen, selectedOption, selectedDates, selectedPooja, generateDisabled } = this.state;
 
-    return (
-      <Dialog
-        open={modalOpen}
-        primaryClicked={this.generateReportHandler.bind(this)}
-        handleClose={this.closeHandler}
-        primaryText='Generate Report'
-        secondaryText='Close'
-        secondaryClicked={this.closeDialogHandler}
-        title={selectedOption.name}
-        primaryDisabled={generateDisabled}
-        cancelled={this.closeDialogHandler}>
-        <ReportCriteria
-          poojas={this.state.poojaDetails}
-          title={selectedOption.name}
-          selectedDates={selectedDates}
-          dateSelectionChanged={this.dateSelectionChangedHandler}
-          poojaSelected={this.poojaSelected}
-          selectedPooja={selectedPooja}
-        />
-      </Dialog>
-    );
-  }
   getButtons = () => {
     const { classes } = this.props;
     const options = [
@@ -258,15 +268,27 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedGenerateOption, searchObj } = this.state;
+    const { reportOpen, selectedGenerateOption, poojaDetails, generateDisabled, searchObj, modalOpen, selectedOption, selectedPooja, selectedDates } = this.state;
     const { classes } = this.props;
     const selectedReportName = selectedGenerateOption.name;
-    let title = selectedReportName === MANAGEMENT ? 'generated on ' + getCurrentDate() : '';
+    let title = selectedReportName === MANAGEMENT ? '- ' + getCurrentDate() : '';
     return (
       <div className={classes.root}>
         <div className={classes.container}>
           {this.getButtons()}
-          {this.getModal()}
+          <ModalDialog
+            modalOpen={modalOpen}
+            selectedOption={selectedOption}
+            selectedDates={selectedDates}
+            selectedPooja={selectedPooja}
+            generateDisabled={generateDisabled}
+            poojaDetails={poojaDetails}
+            poojaSelected={this.poojaSelected}
+            closeHandler={this.closeHandler}
+            closeDialogHandler={this.closeDialogHandler}
+            generateReportHandler={this.generateReportHandler.bind(this)}
+            dateSelectionChangedHandler={this.dateSelectionChangedHandler}
+          ></ModalDialog>
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
