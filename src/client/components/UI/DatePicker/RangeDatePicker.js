@@ -16,16 +16,20 @@ class RangeDatePicker extends React.Component {
         super(props);
         this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
     }
+    lastSelectedDate = [];
     disableHandler = [
         date => this.props.filteredDates.map(fdate => getCurrentDate(fdate)).indexOf(getCurrentDate(date)) === -1
     ];
     dateSlctnChngdHandler = (selectedDates, currentDateString, instance, data) => {
         if (selectedDates.length === 2 && this.props.mode === RANGE) {
             this.skipping = selectedDates[1].getTime() - selectedDates[0].getTime();
+            this.lastSelectedDate = this.skipping > 0 ? selectedDates[1] : selectedDates[0]; 
+                // As a fallback to constantly refreshed parents
             this.props.onDateChanged(selectedDates);
         }
+        // As a fallback to constantly refreshed parents
         else if (selectedDates.length === 0) {
-            this.props.onDatepickerReset([]);
+            this.props.onDatepickerReset([this.lastSelectedDate]);
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
