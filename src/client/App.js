@@ -8,22 +8,16 @@ import createContainer from './hoc/createContainer/createContainer';
 
 import classes from './App.css';
 import PrivateRoute from './hoc/Router/PropsRoute';
-import { TABS } from '../store/constants/board';
 
-const { TRANSACTIONS } = TABS;
 class App extends Component {
-  state = {
-    activeTab: TRANSACTIONS,
-  }
   componentDidMount() {
     this.props.autoSignIn();
   }
-  activeTabChangedHandler = (activeTab) => { this.setState({ activeTab }); }
   handleLogin = () => this.props.history.push('/');
   render() {
     const layout = () => (
-      <Layout activeTab={this.state.activeTab} activeTabChanged={this.activeTabChangedHandler}>
-        <Board activeTab={this.state.activeTab} role={this.props.role} resetEntity={this.props.resetEntity} />
+      <Layout>
+        <Board />
       </Layout>
     );
     let routes = (
@@ -38,7 +32,7 @@ class App extends Component {
     );
   }
 }
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
     role: state.auth.role

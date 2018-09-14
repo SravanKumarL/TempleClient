@@ -17,6 +17,8 @@ import Drawer from '@material-ui/core/Drawer';
 import List from './List';
 import MobileSearchPanel from '../../UI/MobileSearchPanel/MobileSearchPanel';
 import { SEARCH_OPERATIONS } from '../../../../store/constants/transactions';
+import { withRouter } from 'react-router-dom';
+import createContainer from '../../../hoc/createContainer/createContainer';
 
 const { USE } = SEARCH_OPERATIONS;
 const drawerWidth = 240;
@@ -122,8 +124,17 @@ class MyAppBar extends React.Component {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
+  activeTabChangedHandler = (activeTab) => {
+    this.handleClose();
+    this.handleDrawerToggle();
+    this.props.changeBoardTab(activeTab);
+  }
+  handleLogout = () => {
+    this.props.history.replace('/');
+    this.props.authLogout();
+  }
   render() {
-    const { classes, theme, logout, role, activeTabChanged, activeTab } = this.props;
+    const { classes, theme, logout, role, activeTab } = this.props;
     const { anchorEl, drawerOpen, searchPanelOpen } = this.state;
     const open = Boolean(anchorEl);
 
@@ -210,13 +221,19 @@ class MyAppBar extends React.Component {
               keepMounted: true, // Better open performance on mobile.
             }}
           >
-            <List itemClicked={activeTabChanged} role={role} />
+            <List itemClicked={this.activeTabChangedHandler} role={role} />
           </Drawer>
         </Hidden>
       </div>
     );
   }
 }
-
-export default withStyles(styles, { withTheme: true })(MyAppBar);
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user,
+    role: state.auth.role,
+    activeTab: state.board.activeTab,
+  }
+}
+export default withRouter(createContainer(withStyles(styles, { withTheme: true })(MyAppBar), mapStateToProps));
 

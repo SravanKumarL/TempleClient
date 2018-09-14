@@ -5,6 +5,7 @@ import auth from './auth';
 import transactions from './transactions';
 import { entity } from './entity';
 import datePicker from './datepicker';
+import board from './board';
 export default combineReducers({
   auth,
   form,
@@ -12,5 +13,6 @@ export default combineReducers({
   poojas: entity('poojas'),
   reports: entity('reports'),
   users: entity('users'),
-  datePicker
+  datePicker,
+  board
 });

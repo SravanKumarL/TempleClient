@@ -54,4 +54,8 @@ export {
   onRangePickerOpen,
   onSingleMultiDateChanged,
   setCalendarOptions
-} from './datepicker'
+} from './datepicker';
+
+export {
+  changeBoardTab
+} from './board'
