@@ -87,8 +87,11 @@ const datePicker = (state = defaultState, action) => {
             };
             return newState;
         case ON_DATEPICKER_RESET:
-            const defaultFilteredDates = parseDateObject(action.payload.defaultDates || defaultState.filteredDates);
-            const defaultUnFilteredDates = parseDateObject(action.payload.defaultDates || defaultState.unfilteredRange);
+            const payloadDates = action.payload.defaultDates;
+            const defaultFilteredDates = parseDateObject((payloadDates && payloadDates.length > 0) ? payloadDates
+                : defaultState.filteredDates);
+            const defaultUnFilteredDates = parseDateObject((payloadDates && payloadDates.length > 0) ? payloadDates
+                : defaultState.unfilteredRange);
             return {
                 ...defaultState, reset: !state.reset,
                 filteredDates: defaultFilteredDates, unfilteredRange: defaultUnFilteredDates

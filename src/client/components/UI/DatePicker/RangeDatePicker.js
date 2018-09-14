@@ -15,21 +15,31 @@ class RangeDatePicker extends React.Component {
     constructor(props) {
         super(props);
         this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
+        this.daySelectMouseOverHandler = this.daySelectMouseOverHandler.bind(this);
     }
     lastSelectedDate = [];
     disableHandler = [
         date => this.props.filteredDates.map(fdate => getCurrentDate(fdate)).indexOf(getCurrentDate(date)) === -1
     ];
+    daySelectMouseOverHandler = e => {
+        // As a fallback to constantly refreshed parents
+        this.lastSelectedDate = e.target.dateObj;
+    }
     dateSlctnChngdHandler = (selectedDates, currentDateString, instance, data) => {
         if (selectedDates.length === 2 && this.props.mode === RANGE) {
             this.skipping = selectedDates[1].getTime() - selectedDates[0].getTime();
-            this.lastSelectedDate = this.skipping > 0 ? selectedDates[1] : selectedDates[0]; 
-                // As a fallback to constantly refreshed parents
+            // this.lastSelectedDate = this.skipping > 0 ? selectedDates[1] : selectedDates[0];
             this.props.onDateChanged(selectedDates);
         }
         // As a fallback to constantly refreshed parents
         else if (selectedDates.length === 0) {
             this.props.onDatepickerReset([this.lastSelectedDate]);
+        }
+    }
+    readyHandler = (selectedDates, currentDateString, instance, data) => {
+        // As a fallback to constantly refreshed parents
+        if (this.props.addFallBack) {
+            instance.innerContainer.children[0].children[1].addEventListener('mouseover', this.daySelectMouseOverHandler);
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -51,7 +61,7 @@ class RangeDatePicker extends React.Component {
         };
         filteredDates = this.skipping > 0 ? filteredDates.reverse() : filteredDates;
         return (
-            mode === RANGE ? <Flatpickr options={rangeCalendarOptions} key={reset}
+            mode === RANGE ? <Flatpickr options={rangeCalendarOptions} key={reset} onReady={this.readyHandler}
                 onChange={this.dateSlctnChngdHandler} onClearClicked={this.props.onClearClicked}
                 onOpen={onRangePickerOpen} value={unfilteredRange.map(date => getCurrentDate(date))} />
                 : <Flatpickr options={multiCalendarOptions} key={reset}

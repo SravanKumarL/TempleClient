@@ -69,7 +69,7 @@ class DatePickerWrapper extends React.Component {
     }
     render() {
         const { mode } = this.state;
-        const { reset } = this.props;
+        const { reset, addFallBack } = this.props;
         let commonProps = {
             onDateSelectionChanged: this.dateSlctnChngdHandler,
             onClearClicked: this.clearClickedHandler
@@ -85,7 +85,7 @@ class DatePickerWrapper extends React.Component {
                         </div>}
                 </div>
                 <div id="datePickerWrap">
-                    {mode === RANGE ? <RangeDatePicker {...commonProps} key={reset} /> :
+                    {mode === RANGE ? <RangeDatePicker {...commonProps} key={reset} addFallBack={addFallBack} /> :
                         (mode === SINGLE ? <SingleDatePicker {...commonProps} key={reset} /> :
                             <MultiDatePicker {...commonProps} key={reset} />)}
                 </div>

@@ -25,7 +25,8 @@ const styles = theme => ({
 
 })
 const input = (props) => {
-  const { elementConfig, elementType, changed, value, label, disabled, multiline, showLabels, minDate, maxDate } = props;
+  const { elementConfig, elementType, changed, value, label, disabled, multiline,
+    showLabels, minDate, maxDate, addFallBack } = props;
   let inputElement = null;
   switch (elementType) {
     case INPUT:
@@ -81,7 +82,7 @@ const input = (props) => {
       break;
     case DATE:
       inputElement = <FlatPickrWrapper value={value} onDateSelectionChanged={changed}
-        minDate={minDate} maxDate={maxDate} />
+        minDate={minDate} maxDate={maxDate} addFallBack={addFallBack || false} />
       break;
     default:
       inputElement = <Input

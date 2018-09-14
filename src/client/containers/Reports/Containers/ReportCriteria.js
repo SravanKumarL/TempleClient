@@ -40,6 +40,7 @@ const ReportCriteria = (props) => {
         changed={dateSelectionChanged}
         maxDate={pooja ? undefined : getCurrentDate()}
         value={selectedDates}
+        addFallBack={true}
       />
     </div>
   );
