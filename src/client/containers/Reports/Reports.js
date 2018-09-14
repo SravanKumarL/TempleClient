@@ -9,7 +9,7 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase, getCurrentDate } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate, parseDateObject } from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
@@ -174,7 +174,7 @@ const styles = theme => ({
 const initialState = {
   modalOpen: false,
   selectedOption: {},
-  selectedDates: [new Date()],
+  selectedDates: [getCurrentDate()],
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',
@@ -213,7 +213,11 @@ class Reports extends React.Component {
     this.props.resetEntity(constants.Reports);
     let searchObj = {};
     if (this.state.selectedOption.name) {
-      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
+      searchObj = {
+        ReportName: this.state.selectedOption.name.split(' ')[0],
+        selectedDates: parseDateObject(this.state.selectedDates).map(parsedDate => getCurrentDate(parsedDate)),
+        id: uuidV1()
+      };
       if (searchObj.ReportName === POOJA)
         searchObj = { ...searchObj, pooja: this.state.selectedPooja };
       else if (searchObj.ReportName === MANAGEMENT)

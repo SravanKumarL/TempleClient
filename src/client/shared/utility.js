@@ -95,6 +95,29 @@ export const getDateFromString = (dateString) => {
   const parts = dateString.split('-');
   return new Date(Date.parse(`${parts[2]}-${parts[1]}-${parts[0]}`));
 }
+export const parseDateObject = dateObject => {
+  if (!dateObject)
+    return dateObject;
+  else {
+    return [...dateObject].map(val => {
+      //Handle date strings of dd-mm-yy format
+      if (typeof val === 'string') {
+        if (Number.isNaN(Date.parse(val))) {
+          try {
+            return getDateFromString(val);
+          }
+          catch (ex) {
+            return dateObject;
+          }
+        }
+        else {
+          return new Date(Date.parse(val));
+        }
+      }
+      return new Date(val);
+    });
+  }
+}
 export const convertToStartCase = (identifier) => {
   return startCase(toLower(identifier));
 }

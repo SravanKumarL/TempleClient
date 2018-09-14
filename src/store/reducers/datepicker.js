@@ -4,6 +4,7 @@ import {
     getAllDays,
     isFilterApplied,
     getDefaultCalendarOptions,
+    parseDateObject
 } from '../../client/shared/utility';
 import {
     ON_DAY_CHANGED,
@@ -86,8 +87,8 @@ const datePicker = (state = defaultState, action) => {
             };
             return newState;
         case ON_DATEPICKER_RESET:
-            const defaultFilteredDates = action.payload.defaultDates || defaultState.filteredDates;
-            const defaultUnFilteredDates = action.payload.defaultDates || defaultState.unfilteredRange;
+            const defaultFilteredDates = parseDateObject(action.payload.defaultDates || defaultState.filteredDates);
+            const defaultUnFilteredDates = parseDateObject(action.payload.defaultDates || defaultState.unfilteredRange);
             return {
                 ...defaultState, reset: !state.reset,
                 filteredDates: defaultFilteredDates, unfilteredRange: defaultUnFilteredDates

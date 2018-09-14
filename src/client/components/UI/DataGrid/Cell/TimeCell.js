@@ -18,8 +18,8 @@ export default class TimeCell extends React.Component {
         `${Number(time.split(':')[0]) - 12}:${time.split(':').slice(1).join(':')} PM` :
         `${time} AM`;
     state = {
-        from: this.props.defaultValue || this.getCurrentTime(),
-        to: this.props.defaultValue || this.getCurrentTime()
+        from: this.props.defaultValue || '',
+        to: this.props.defaultValue || ''
     }
     changeHandler = (value, label) => {
         this.setState({ [label.toLowerCase()]: value }, () => {

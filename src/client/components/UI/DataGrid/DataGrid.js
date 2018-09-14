@@ -10,9 +10,9 @@ import {
     PagingPanel, DragDropProvider, TableColumnReordering, TableColumnVisibility, GroupingPanel, Toolbar
 } from '@devexpress/dx-react-grid-material-ui';
 import DeleteDialog from './DeleteRowDialog';
-import constants from '../../../../store/sagas/constants';
+import constants, { Time } from '../../../../store/sagas/constants';
 import { Command } from './CommandButton';
-import { ROLE } from '../../../../store/constants/auth';
+import { ROLE, USER } from '../../../../store/constants/auth';
 import { convertToStartCase } from '../../../shared/utility';
 import Typography from '@material-ui/core/Typography';
 import shortid from 'shortid';
@@ -55,15 +55,25 @@ export default class DataGrid extends React.PureComponent {
     changeSorting = sorting => this.setState({ sorting });
     changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
     toggleSave = save => this.setState({ enableSaveButton: save });
+    getNewRow = collection => {
+        switch (collection) {
+            case constants.Users:
+                return { [USER.ROLE]: ROLE.USER };
+            case constants.Poojas:
+                return { [Time.TIME]: '' };
+            default:
+                return {};
+        }
+    }
     changeAddedRows = addedRows => {
         const addedRow = addedRows[0] || {};
         const colCount = this.props.columns.filter(col => col !== 'id').length;
         this.setState({
             // Add a row with user as default row in case of users table
-            addedRows: addedRows.map(row => (Object.keys(row).length > 0 ? row :
-                (this.props.collection === constants.Users ? { role: ROLE.USER } : {}))),
+            addedRows: addedRows.map(row =>
+                (Object.keys(row).length > 0 ? row : this.getNewRow(this.props.collection))),
             enableSaveButton: Object.keys(addedRow).length === colCount &&
-                Object.keys(addedRow).every(prop => this.checkIfNotEmptyAndUndefined(addedRow[prop]))
+                Object.keys(addedRow).every(prop => prop === Time.TIME || this.checkIfNotEmptyAndUndefined(addedRow[prop]))
         });
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
@@ -183,7 +193,7 @@ export default class DataGrid extends React.PureComponent {
                             showEditCommand={!readOnly}
                             showDeleteCommand={!readOnly}
                             commandComponent={props => (<Command collection={collection} saveEnabled={enableSaveButton}
-                               toggleSave={this.toggleSave} {...props} />)}
+                                toggleSave={this.toggleSave} {...props} />)}
                         />}
                     <TableColumnVisibility />
                     <PagingPanel

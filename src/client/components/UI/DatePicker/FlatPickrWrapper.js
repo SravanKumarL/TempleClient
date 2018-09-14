@@ -9,7 +9,7 @@ import {
     getCurrentDate,
     pushIgnoredFocusElements,
     getDaysOfWeek,
-    getDateFromString
+    parseDateObject
 } from '../../../shared/utility';
 import RangeDatePicker from './RangeDatePicker';
 import { SingleDatePicker, MultiDatePicker } from './SingleMultiDatePicker';
@@ -25,8 +25,8 @@ class DatePickerWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.initialValue = [new Date()];
-        if (typeof props.value !== 'object' && typeof props.value !== 'undefined') {
-            this.initialValue = getDateFromString(props.value);
+        if (props.value) {
+            this.initialValue = parseDateObject(props.value); //Convert into date object
         }
     }
     defaultState = {
