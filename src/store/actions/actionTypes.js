@@ -30,7 +30,6 @@ export const ON_TRANSACTION_FAILED = 'ON_TRANSACTION_FAILED';
 // export const SELECTED_TRANSACTION_CHANGED = 'SELECTED_TRANSACTION_CHANGED';
 export const EDITED_TRANSACTION_CHANGED = 'EDITD_TRANSACTION_CHANGED';
 export const USED_TRANSACTION_CHANGED = 'USED_TRANSACTION_CHANGED';
-
 //Entity
 export const resetEntity = 'RESET_ENTITY';
 export const commitEntityTransaction = 'COMMIT_ENTITY_TRANSACTION';
@@ -47,7 +46,6 @@ export const clearEntityMessages = 'CLEAR_ENTITY_MESSAGES';
 export const onFetchTotalSuccess = 'ON_FETCH_TOTAL_SUCCESS';
 export const onFetchTotalFailure = 'ON_FETCH_TOTAL_FAILURE';
 export const fetchTotal = 'FETCH_TOTAL';
-
 //DatePicker
 export const ON_DAY_CHANGED = "ON_DAY_CHANGED";
 export const ON_DATE_CHANGED = "ON_DATE_CHANGED";
@@ -59,9 +57,3 @@ export const ON_RANGE_PICKER_CLOSE = "ON_RANGE_PICKER_CLOSE";
 export const ON_RANGE_PICKER_OPEN = "ON_RANGE_PICKER_OPEN";
 export const ON_SINGLE_MULTI_DATE_CHANGED = "ON_SINGLE_MULTI_DATE_CHANGED";
 export const SET_CALENDAR_OPTIONS = "SET_CALENDAR_OPTIONS";
-
-//Board
-export const CHANGE_BOARD_TAB = "CHANGE_BOARD_TAB";
-
-//Create Transaction
-export const CHANGE_TRANSACTIONS_TAB = "CHANGE_TRANSACTIONS_TAB";

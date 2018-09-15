@@ -13,14 +13,11 @@ export const PropsRoute = ({ component, ...rest }) => {
     }} />
   );
 }
-class PrivateRoute extends React.PureComponent {
-  render() {
-    const { component, redirectComponent, isLoggedIn, ...rest } = this.props;
-    return (
-      <Route {...rest} render={routeProps => {
-        return isLoggedIn ? (renderMergedProps(component, routeProps, rest)) : renderMergedProps(redirectComponent, routeProps, rest);
-      }} />);
-  }
-}
+const PrivateRoute = ({ component, redirectComponent, isLoggedIn, ...rest }) => {
+  return (
+    <Route {...rest} render={routeProps => {
+      return isLoggedIn ? (renderMergedProps(component, routeProps, rest)) : renderMergedProps(redirectComponent, routeProps, rest);
+    }} />);
+};
 
 export default PrivateRoute;
