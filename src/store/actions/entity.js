@@ -32,6 +32,7 @@ export const onFetchTotalSuccess = (responseData, name) => {
     return {
         type: actionTypes.onFetchTotalSuccess, payload: {
             name, totalAmount: responseData.totalAmount,
+            cheques: responseData.cheques
         }
     };
 }
