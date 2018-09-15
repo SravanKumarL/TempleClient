@@ -115,8 +115,9 @@ class MyAppBar extends React.Component {
   optionClickedHander = (option, selectedTransaction) => {
     if (option !== USE) {
       this.setState({ dialogOpen: true });
+      this.props.editedTransactionChanged(selectedTransaction);
     }
-    this.props.selectedTransactionChanged({ option, selectedTransaction, });
+    this.props.usedTransactionChanged(selectedTransaction);
   }
   handleClose = () => {
     this.setState({ anchorEl: null });

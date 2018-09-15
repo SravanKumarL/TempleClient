@@ -47,6 +47,7 @@ const styles = theme => ({
     display: 'flex',
     paddingLeft: 36,
     paddingRight: 36,
+    paddingBottom: 18,
     marginTop: 10,
   },
   textFieldRoot: {

@@ -75,7 +75,10 @@ class MobileSearchPanel extends React.Component {
     this.setState({ searchValue: '' });
     this.props.closed();
     this.props.openEditForm(true);
-    this.props.selectedTransactionChanged(transaction, option);
+    if(option === USE) {
+      this.props.usedTransactionChanged(transaction)
+    }
+    this.props.editedTransactionChanged(transaction)
   }
   inputChangeHandler = (event) => {
     const { value } = event.target;

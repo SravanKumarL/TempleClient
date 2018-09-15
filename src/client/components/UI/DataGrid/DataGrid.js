@@ -10,9 +10,9 @@ import {
     PagingPanel, DragDropProvider, TableColumnReordering, TableColumnVisibility, GroupingPanel, Toolbar
 } from '@devexpress/dx-react-grid-material-ui';
 import DeleteDialog from './DeleteRowDialog';
-import constants from '../../../../store/sagas/constants';
+import constants, { Time } from '../../../../store/sagas/constants';
 import { Command } from './CommandButton';
-import { ROLE } from '../../../../store/constants/auth';
+import { ROLE, USER } from '../../../../store/constants/auth';
 import { convertToStartCase } from '../../../shared/utility';
 import Typography from '@material-ui/core/Typography';
 import shortid from 'shortid';
@@ -38,6 +38,7 @@ export default class DataGrid extends React.PureComponent {
             pageSize: constants.minimumPageSize,
             pageSizes: [constants.minimumPageSize, 2 * constants.minimumPageSize, 0],
             columnOrder: [],
+            enableSaveButton: false
         };
     }
     //#region Grouping Handlers
@@ -53,9 +54,26 @@ export default class DataGrid extends React.PureComponent {
     //#region Change Handlers
     changeSorting = sorting => this.setState({ sorting });
     changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
+    toggleSave = save => this.setState({ enableSaveButton: save });
+    getNewRow = collection => {
+        switch (collection) {
+            case constants.Users:
+                return { [USER.ROLE]: ROLE.USER };
+            case constants.Poojas:
+                return { [Time.TIME]: '' };
+            default:
+                return {};
+        }
+    }
     changeAddedRows = addedRows => {
+        const addedRow = addedRows[0] || {};
+        const colCount = this.props.columns.filter(col => col !== 'id').length;
         this.setState({
-            addedRows: addedRows.map(row => (Object.keys(row).length ? row : (this.props.collection === constants.Users ? { role: ROLE.user } : {})))
+            // Add a row with user as default row in case of users table
+            addedRows: addedRows.map(row =>
+                (Object.keys(row).length > 0 ? row : this.getNewRow(this.props.collection))),
+            enableSaveButton: Object.keys(addedRow).length === colCount &&
+                Object.keys(addedRow).every(prop => prop === Time.TIME || this.checkIfNotEmptyAndUndefined(addedRow[prop]))
         });
     }
     changeRowChanges = rowChanges => this.setState({ rowChanges });
@@ -72,8 +90,7 @@ export default class DataGrid extends React.PureComponent {
         const { added, changed, deleted } = props;
         const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
             this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
-        if (added && ((this.props.collection !== constants.Users && Object.keys(added[0]).length > 0) ||
-            (Object.keys(rows[0]).filter(key => key !== 'id').every(prop => this.checkIfNotEmptyAndUndefined(added[0][prop]))))) {
+        if (added && (/* (this.props.collection !== constants.Users && */ Object.keys(added[0]).length > 0)) {
             this.props.setAndCommitTransaction(constants.add, this.props.collection, added[0]);
         }
         if (changed && Object.keys(changed).some(key => (changed[key]))) {
@@ -122,6 +139,7 @@ export default class DataGrid extends React.PureComponent {
             currentPage,
             pageSize,
             pageSizes,
+            enableSaveButton,
             columnOrder } = this.state;
         return (
             <React.Fragment>
@@ -174,7 +192,8 @@ export default class DataGrid extends React.PureComponent {
                             showAddCommand={!addedRows.length && !readOnly}
                             showEditCommand={!readOnly}
                             showDeleteCommand={!readOnly}
-                            commandComponent={props => (<Command collection={collection} {...props} />)}
+                            commandComponent={props => (<Command collection={collection} saveEnabled={enableSaveButton}
+                                toggleSave={this.toggleSave} {...props} />)}
                         />}
                     <TableColumnVisibility />
                     <PagingPanel

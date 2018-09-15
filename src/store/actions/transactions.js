@@ -74,10 +74,22 @@ export const searchTransactionsFail = (error) => {
   }
 }
 
-export const selectedTransactionChanged = (transaction, option) => {
+// export const selectedTransactionChanged = (transaction, option) => {
+//   return {
+//     type: actionTypes.SELECTED_TRANSACTION_CHANGED,
+//     transaction,
+//     option,
+//   }
+// }
+export const usedTransactionChanged = (transaction, option) => {
   return {
-    type: actionTypes.SELECTED_TRANSACTION_CHANGED,
+    type: actionTypes.USED_TRANSACTION_CHANGED,
     transaction,
-    option,
+  }
+}
+export const editedTransactionChanged = (transaction, option) => {
+  return {
+    type: actionTypes.EDITED_TRANSACTION_CHANGED,
+    transaction,
   }
 }

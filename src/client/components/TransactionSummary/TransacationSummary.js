@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import PrintHeader from './PrintHeader';
-import { getCurrentDate } from '../../shared/utility';
 import { Typography } from '@material-ui/core';
+import { getCurrentDate } from '../../shared/utility';
 
 const styles = (theme) => ({
   root: {
@@ -15,7 +15,6 @@ const styles = (theme) => ({
   },
 });
 
-const currentDate = getCurrentDate().toString();
 const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summaryClosed, print }) => {
   const createdDate = transactionFields.filter(id => id.name.toLowerCase() === 'created date' && id)[0];
   const createdBy = transactionFields.filter(id => id.name.toLowerCase() === 'created by' && id)[0];
@@ -33,32 +32,38 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
       maxWidth='xs'
       title='Transaction Summary'>
       <div id='transactionSummary'>
-        <PrintHeader style={{ marginTop: 30 }} id='printHeader' />
-        <div style={{ border: '1px solid #cad0d7', width: '100%', maxWidth: 360, marginTop: 30 }} id='printTable' className={classes.table}>
+        <PrintHeader style={{ marginTop: 5 }} id='printHeader' />
+        <div style={{ border: '1px solid #cad0d7', width: '100%', maxWidth: 360, marginTop: 10 }} id='printTable' className={classes.table}>
           <div>
             {Object.keys(transactionFields).map(id => {
               const field = transactionFields[id];
               if (['Special Offerings', 'Created By', 'Created Date', 'Selected Dates', 'Id'].includes(field.name)) {
                 return null;
               }
+              // if (field.name.toLowerCase() === 'dates') {
+              //   let newDateArray = field.value.split(',');
+              //   newDateArray = newDateArray.map(date => getFormattedDate(date));
+              //   field.value = newDateArray.join(',');
+              // }
               const placeholder = field.name;
               const value = capitalizedFields.includes(field.name) ? field.value.toUpperCase() : field.value;
+              const maxHeight = placeholder === 'Dates' ? 100 : 75;
               return (
-                <div style={{ display: 'flex', borderBottom: '1px solid #cad0d7' }} key={id}>
-                  <div style={{ width: '110px', fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}   :</div>
-                  <div style={{ whiteSpace: 'pre-wrap', width: '210px', fontSize: 16, margin: '10px 0px', wordWrap: 'break-word', maxHeight: 75, overflow: 'hidden' }}>{value}</div>
+                <div style={{ display: 'flex', color: 'black', borderBottom: '1px solid #cad0d7' }} key={id}>
+                  <div style={{ width: '110px', color: 'black',fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}</div>
+                  <div style={{ whiteSpace: 'pre-wrap',color: 'black', width: '210px', fontSize: 16, margin: '10px 0px', wordWrap: 'break-word', maxHeight , overflow: 'hidden' }}>{placeholder === 'Amount' ? `₹ ${value}` : value} </div>
                 </div>
               );
             })}
           </div>
         </div>
-        <div style={{ marginTop: '100px', display: 'flex', alignItems: 'flex-end', flexDirection: 'column', paddingRight: '10px' }}>
-          <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Created By: {createdBy && createdBy.value}   </Typography>
-          <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Created On: {createdDate && createdDate.value}   </Typography>
-          {currentDate !== createdDate.value.toString() ?
+        <div style={{ marginTop: '30px', display: 'flex', alignItems: 'flex-end', flexDirection: 'column', paddingRight: '10px' }}>
+          <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Created By: {createdBy && createdBy.value}   </Typography>
+          <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Created On: {createdDate && createdDate.value}   </Typography>
+          { modifiedBy ?
             <Fragment>
-              <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Modified On: {getCurrentDate()}   </Typography>
-              <Typography style={{ padding: 5, fontWeight: 'bold' }} variant='caption'>Modified By: {modifiedBy} </Typography>
+              <Typography style={{ padding: 5,color: 'black', fontWeight: 'bold' }} variant='caption'>Modified By: {modifiedBy} </Typography>
+              <Typography style={{ padding: 5, color: 'black',fontWeight: 'bold' }} variant='caption'>Modified On: {getCurrentDate()}   </Typography>
             </Fragment>
             : null
           }

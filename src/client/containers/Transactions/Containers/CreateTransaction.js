@@ -86,6 +86,9 @@ class CreateTransaction extends React.Component {
     this.formResetHandler = this.formResetHandler.bind(this);
     this.getUpdatedTransacationForm = this.getUpdatedTransacationForm.bind(this);
   }
+  componentDidMount() {
+    this.props.onRef(this);
+  }
   state = { ...JSON.parse(JSON.stringify(initialState)) };
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
@@ -145,8 +148,9 @@ class CreateTransaction extends React.Component {
   }
 
   formResetHandler = () => {
+    this.props.onDatepickerReset();
     initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
-    this.setState({ ...initialState })
+    this.setState({ ...initialState });
   };
   canPhoneNumberBeUpdated = (value) => (!(!Number(value) || value.charAt(value.length - 1) === '.' || value.length > 10));
   updatedFormElement = (inputIdentifier, value) => updateObject(this.state.transactionForm[inputIdentifier], {

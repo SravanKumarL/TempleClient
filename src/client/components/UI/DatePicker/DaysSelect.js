@@ -1,14 +1,13 @@
 import React from 'react';
 import difference from 'lodash/difference';
-// import sortBy from 'lodash/sortBy';
 import MultipleSelect from './MultiSelect';
-import { getAllDays } from '../../../shared/utility';
+import { getAllDays, pushIgnoredFocusElements } from '../../../shared/utility';
 import {
     onDayChanged,
     onDaySlctnOpen,
-    onDaySlctnClose
+    onDaySlctnClose,
+    setCalendarOptions
 } from '../../../../store/actions/datepicker';
-// import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { ALL_DAYS } from '../../../../store/constants/transactions';
 class DaysSelect extends React.Component {
@@ -28,10 +27,9 @@ class DaysSelect extends React.Component {
         this.props.onDaysSelectedChanged(selectedDays);
     }
     componentDidMount() {
-        const { onDaySelectMount } = this.props;
-        if (onDaySelectMount) {
-            onDaySelectMount();
-        }
+        const newCalendarOptions = pushIgnoredFocusElements(this.props.calendarOptions,
+            [document.getElementById("dayMultiSelect")]);
+        this.props.setCalendarOptions(newCalendarOptions);
     }
     render() {
         let { selectedDays, onDaySlctnOpen, onDaySlctnClose } = this.props;
@@ -44,9 +42,10 @@ class DaysSelect extends React.Component {
 }
 const mapDispatchToProps = {
     onDaysSelectedChanged: onDayChanged,
-    onDaySlctnOpen, onDaySlctnClose
+    onDaySlctnOpen, onDaySlctnClose, setCalendarOptions
 }
 const mapStateToProps = state => ({
-    selectedDays: state.datePicker.selectedDays
+    selectedDays: state.datePicker.selectedDays,
+    calendarOptions: state.datePicker.calendarOptions
 });
 export default connect(mapStateToProps, mapDispatchToProps)(DaysSelect);

@@ -95,12 +95,35 @@ export const getDateFromString = (dateString) => {
   const parts = dateString.split('-');
   return new Date(Date.parse(`${parts[2]}-${parts[1]}-${parts[0]}`));
 }
+export const parseDateObject = dateObject => {
+  if (!dateObject)
+    return dateObject;
+  else {
+    return [...dateObject].map(val => {
+      //Handle date strings of dd-mm-yy format
+      if (typeof val === 'string') {
+        if (Number.isNaN(Date.parse(val))) {
+          try {
+            return getDateFromString(val);
+          }
+          catch (ex) {
+            return dateObject;
+          }
+        }
+        else {
+          return new Date(Date.parse(val));
+        }
+      }
+      return new Date(val);
+    });
+  }
+}
 export const convertToStartCase = (identifier) => {
   return startCase(toLower(identifier));
 }
 export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
   let calendarOptions = {
-    mode: mode, allowInput: true, defaultDate,
+    mode: mode, allowInput: true, defaultDate: defaultDate || [getCurrentDate()],
     ignoredFocusElements: ignoredFocusElements || [],
     dateFormat: "d-m-Y", disableMobile: true
   };
@@ -108,7 +131,12 @@ export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, i
   calendarOptions = maxDate ? { ...calendarOptions, maxDate } : calendarOptions;
   return calendarOptions;
 }
-
+export const pushIgnoredFocusElements = (calendarOptions, newIgnoredElements) => {
+  return {
+    ...calendarOptions, ignoredFocusElements: [...(calendarOptions.ignoredFocusElements || []),
+    ...(newIgnoredElements || [])]
+  };
+}
 
 /* eslint-disable */
 const required = value => (value ? undefined : 'Required')

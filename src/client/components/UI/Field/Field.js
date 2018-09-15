@@ -2,11 +2,11 @@ import React from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import withStyles from '@material-ui/core/styles/withStyles';
 import purple from '@material-ui/core/colors/purple';
-import DatePickerWrapper from '../DatePicker/FlatPickrWrapper';
 import Input from '../TextField/TextField';
 import RadioGroup from '../RadioGroup/RadioGroup';
 import MultiSelect from '../MultiSelect/MultiSelect';
 import { FIELD_TYPES } from '../../../../store/constants/transactions';
+import FlatPickrWrapper from '../DatePicker/FlatPickrWrapper';
 
 const { SINGLESELECT, MULTISELECT, NUMBER, INPUT, RADIO, DATE } = FIELD_TYPES;
 const styles = theme => ({
@@ -25,7 +25,8 @@ const styles = theme => ({
 
 })
 const input = (props) => {
-  const { elementConfig, elementType, changed, value, label, disabled, multiline, showLabels, minDate, maxDate } = props;
+  const { elementConfig, elementType, changed, value, label, disabled, multiline,
+    showLabels, minDate, maxDate, addFallBack } = props;
   let inputElement = null;
   switch (elementType) {
     case INPUT:
@@ -80,8 +81,8 @@ const input = (props) => {
       />
       break;
     case DATE:
-      inputElement = <DatePickerWrapper value={value} onDateSelectionChanged={changed}
-        minDate={minDate} maxDate={maxDate} />
+      inputElement = <FlatPickrWrapper value={value} onDateSelectionChanged={changed}
+        minDate={minDate} maxDate={maxDate} addFallBack={addFallBack || false} />
       break;
     default:
       inputElement = <Input

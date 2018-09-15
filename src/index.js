@@ -15,16 +15,16 @@ import red from '@material-ui/core/colors/red';
 import { watchAuth } from './store/sagas';
 
 //Register service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/sw.js').then(registration => {
-      console.log('SW registered: ', registration);
-      registration.pushManager.subscribe({ userVisibleOnly: true });
-    }).catch(registrationError => {
-      console.log('SW registration failed: ', registrationError);
-    });
-  });
-}
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', function () {
+//     navigator.serviceWorker.register('/sw.js').then(registration => {
+//       console.log('SW registered: ', registration);
+//       registration.pushManager.subscribe({ userVisibleOnly: true });
+//     }).catch(registrationError => {
+//       console.log('SW registration failed: ', registrationError);
+//     });
+//   });
+// }
 
 const theme = createMuiTheme({
   palette: {
@@ -33,10 +33,6 @@ const theme = createMuiTheme({
       main: '#60315f'
     },
     secondary: red,
-    // secondary: {
-    //   // main: '#52af92'
-    //   main: red,
-    // },
     error: red,
     contrastThreshold: 3,
     tonalOffset: 0.2,

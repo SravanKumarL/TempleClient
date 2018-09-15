@@ -9,7 +9,7 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase, getCurrentDate } from '../../shared/utility';
+import { convertToStartCase, getCurrentDate, parseDateObject } from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
@@ -19,15 +19,51 @@ import { REPORT_TYPES } from '../../../store/constants/reports';
 import report from '../../../assets/mainReport.svg';
 
 const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
-
+const ModalDialog = ({
+  modalOpen,
+  selectedOption,
+  selectedDates,
+  selectedPooja,
+  generateDisabled,
+  generateReportHandler,
+  closeHandler,
+  closeDialogHandler,
+  poojaDetails,
+  dateSelectionChangedHandler,
+  poojaSelected
+}) => {
+  return (
+    <Dialog
+      open={modalOpen}
+      primaryClicked={generateReportHandler}
+      handleClose={closeHandler}
+      primaryText='Generate Report'
+      secondaryText='Close'
+      secondaryClicked={closeDialogHandler}
+      title={selectedOption.name}
+      primaryDisabled={generateDisabled}
+      cancelled={closeDialogHandler}>
+      <ReportCriteria
+        poojas={poojaDetails}
+        title={selectedOption.name}
+        selectedDates={selectedDates}
+        dateSelectionChanged={dateSelectionChangedHandler}
+        poojaSelected={poojaSelected}
+        selectedPooja={selectedPooja}
+      />
+    </Dialog>
+  );
+}
 const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
+    overflow: 'auto',
     [theme.breakpoints.up('sm')]: {
       flexDirection: 'row',
       flexGrow: 1,
+      overflow: 'auto'
     }
   },
   container: {
@@ -114,11 +150,10 @@ const styles = theme => ({
   centerTextbox: {
     display: 'flex',
     flexDirection: 'column',
-    height: '55vh',
-    width: '40vw',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '40vh',
+    width: '30vw',
     border: '2px dashed #eee',
+    marginBottom: '10vh',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       height: '50vh',
@@ -178,7 +213,11 @@ class Reports extends React.Component {
     this.props.resetEntity(constants.Reports);
     let searchObj = {};
     if (this.state.selectedOption.name) {
-      searchObj = { ReportName: this.state.selectedOption.name.split(' ')[0], selectedDates: this.state.selectedDates, id: uuidV1() };
+      searchObj = {
+        ReportName: this.state.selectedOption.name.split(' ')[0],
+        selectedDates: parseDateObject(this.state.selectedDates).map(parsedDate => getCurrentDate(parsedDate)),
+        id: uuidV1()
+      };
       if (searchObj.ReportName === POOJA)
         searchObj = { ...searchObj, pooja: this.state.selectedPooja };
       else if (searchObj.ReportName === MANAGEMENT)
@@ -188,36 +227,18 @@ class Reports extends React.Component {
   }
   dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
-  optionClickedHandler = (option) => { this.setState({ selectedOption: option, modalOpen: true, selectedDates: [getCurrentDate()], selectedPooja: '' }); }
+  optionClickedHandler = (option) => {
+    this.props.onDatepickerReset(initialState.selectedDates);
+    this.setState({
+      selectedOption: option, modalOpen: true,
+      selectedDates: [...initialState.selectedDates], selectedPooja: ''
+    });
+  }
   getReportHandler = () => {
     this.closeHandler();
     this.props.history.push('/reports/managementReport');
   }
-  getModal = () => {
-    const { modalOpen, selectedOption, selectedDates, selectedPooja, generateDisabled } = this.state;
 
-    return (
-      <Dialog
-        open={modalOpen}
-        primaryClicked={this.generateReportHandler.bind(this)}
-        handleClose={this.closeHandler}
-        primaryText='Generate Report'
-        secondaryText='Close'
-        secondaryClicked={this.closeDialogHandler}
-        title={selectedOption.name}
-        primaryDisabled={generateDisabled}
-        cancelled={this.closeDialogHandler}>
-        <ReportCriteria
-          poojas={this.state.poojaDetails}
-          title={selectedOption.name}
-          selectedDates={selectedDates}
-          dateSelectionChanged={this.dateSelectionChangedHandler}
-          poojaSelected={this.poojaSelected}
-          selectedPooja={selectedPooja}
-        />
-      </Dialog>
-    );
-  }
   getButtons = () => {
     const { classes } = this.props;
     const options = [
@@ -251,15 +272,27 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedGenerateOption, searchObj } = this.state;
+    const { reportOpen, selectedGenerateOption, poojaDetails, generateDisabled, searchObj, modalOpen, selectedOption, selectedPooja, selectedDates } = this.state;
     const { classes } = this.props;
     const selectedReportName = selectedGenerateOption.name;
-    let title = selectedReportName === MANAGEMENT ? 'generated on ' + getCurrentDate() : '';
+    let title = selectedReportName === MANAGEMENT ? '- ' + getCurrentDate() : '';
     return (
       <div className={classes.root}>
         <div className={classes.container}>
           {this.getButtons()}
-          {this.getModal()}
+          <ModalDialog
+            modalOpen={modalOpen}
+            selectedOption={selectedOption}
+            selectedDates={selectedDates}
+            selectedPooja={selectedPooja}
+            generateDisabled={generateDisabled}
+            poojaDetails={poojaDetails}
+            poojaSelected={this.poojaSelected}
+            closeHandler={this.closeHandler}
+            closeDialogHandler={this.closeDialogHandler}
+            generateReportHandler={this.generateReportHandler.bind(this)}
+            dateSelectionChangedHandler={this.dateSelectionChangedHandler}
+          ></ModalDialog>
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>

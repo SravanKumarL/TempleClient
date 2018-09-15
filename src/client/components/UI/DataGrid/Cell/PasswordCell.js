@@ -10,12 +10,12 @@ class PasswordCellBase extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: '',
+            // value: '',
             showPassword: false
         };
     }
     handlePasswordChange = e => {
-        this.setState({ value: e.target.value });
+        // this.setState({ value: e.target.value });
         this.props.onValueChange(e.target.value);
     };
     handleMouseDownPassword = event => {
@@ -31,7 +31,7 @@ class PasswordCellBase extends React.Component {
                 <Input
                     id="adornment-password"
                     type={this.state.showPassword ? 'text' : 'password'}
-                    value={this.state.value}
+                    // value={this.props.value || ''}
                     onChange={this.handlePasswordChange}
                     endAdornment={
                         <InputAdornment position="end">

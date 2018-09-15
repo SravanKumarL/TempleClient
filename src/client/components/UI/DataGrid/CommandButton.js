@@ -9,7 +9,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import classNames from 'classnames';
 import IconButton from '@material-ui/core/IconButton';
 
-export const Command = ({ id, collection, onExecute }) => {
+export const Command = ({ id, collection, onExecute, saveEnabled, toggleSave }) => {
     const classes = {
         button: {
             margin: 8,
@@ -26,6 +26,12 @@ export const Command = ({ id, collection, onExecute }) => {
     };
     const { ADD, EDIT, DELETE, CANCEL, COMMIT } = OPERATIONS;
     const { EDIT_ROW, DELETE_ROW, SAVE_CHANGES, CREATE_ROW, CANCEL_CHANGES } = TABLE;
+    const clickHandler = e => {
+        if (id === CANCEL || id === EDIT) {
+            toggleSave(id === EDIT);
+        }
+        onExecute(e);
+    }
     let Icon;
     let color = 'default';
     let title = '';
@@ -56,7 +62,7 @@ export const Command = ({ id, collection, onExecute }) => {
             Icon = CancelIcon;
             break;
     }
-    return (<IconButton title={title} color={color} onClick={onExecute}>
+    return (<IconButton title={title} color={color} onClick={clickHandler} disabled={id === COMMIT && !saveEnabled}>
         <Icon />
     </IconButton>);
 }
