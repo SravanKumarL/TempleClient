@@ -5,6 +5,7 @@ import constants, { uniqueProp } from '../sagas/constants';
 const initialState = {
     columns: [], rows: [], loading: false, error: '', message: '', change: {}, prevRows: [],
     printReq: false, totalCount: 0, othersTotalCount: 0, totalAmount: {}, countFetched: false, othersFetched: false,
+    cheques: []
 };
 export const entity = (name) => (state = initialState, action) => {
     const { payload } = action;
@@ -24,7 +25,10 @@ export const entity = (name) => (state = initialState, action) => {
                 othersFetched: payload.othersFetched || state.othersFetched,
             };
         case actionTypes.onFetchTotalSuccess:
-            return { ...fetchState, totalAmount: payload.totalAmount || state.totalAmount };
+            return {
+                ...fetchState, totalAmount: payload.totalAmount || state.totalAmount,
+                cheques: payload.cheques || state.cheques
+            };
         case actionTypes.onFetchTotalFailure:
             return { ...fetchState, totalAmount: {}, error: action.payload.error };
         case actionTypes.onFetchEntitySchemaSuccess:

@@ -12,6 +12,7 @@ const constants = {
     pooja: 'pooja',
     Management: 'Management',
     Users: 'users',
+    chequeNo: 'chequeNo',
     totalCashAmount: 'Total Cash Amount (Rs)',
     totalChequeAmount: 'Total Cheque Amount (Rs)',
     totalAmount: 'Total Amount Received (Rs)',

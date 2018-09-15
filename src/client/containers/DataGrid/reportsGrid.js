@@ -82,7 +82,7 @@ class ReportsGrid extends React.Component {
         }
     }
     render() {
-        const { searchCriteria, columns, totalAmount } = this.props;
+        const { searchCriteria, columns, totalAmount, cheques } = this.props;
         let { rows, ...restProps } = this.props;
         const { showOthers } = this.state;
         const OthersTotalComponent = () => (
@@ -90,7 +90,7 @@ class ReportsGrid extends React.Component {
                 <Fragment>
                     {showOthers && <PaperedGrid style={{ margin: '2vh 2vw' }}
                         rows={rows.filter(row => row.others)} columns={columns} title='Others' />}
-                    {Object.keys(totalAmount).length > 0 && <TotalPaper totalAmount={totalAmount} />}
+                    {Object.keys(totalAmount).length > 0 && <TotalPaper totalAmount={totalAmount} cheques={cheques} />}
                 </Fragment>)
         );
         return (
@@ -104,8 +104,8 @@ class ReportsGrid extends React.Component {
 }
 const mapStateToProps = (state, ownProps) => {
     let resultantProps = sharedMapStateToProps(state, ownProps);
-    const { othersFetched, totalAmount, othersTotalCount } = state[ownProps.collection];
-    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount };
+    const { othersFetched, totalAmount, othersTotalCount, cheques } = state[ownProps.collection];
+    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount, cheques };
     return resultantProps;
 }
 export default createContainer(ReportsGrid, mapStateToProps);
