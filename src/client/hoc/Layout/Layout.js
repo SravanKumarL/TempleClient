@@ -30,15 +30,18 @@ const styles = theme => ({
   },
 });
 
-const layout = ({ classes, children }) => {
-  return (
-    <div className={classes.appFrame}>
-      <AppBar />
-      <main className={classes.content}>
-        {children}
-      </main>
-    </div>
-  );
+class Layout extends React.PureComponent {
+  render() {
+    const { classes, children } = this.props;
+    return (
+      <div className={classes.appFrame}>
+        <AppBar />
+        <main className={classes.content}>
+          {children}
+        </main>
+      </div>
+    );
+  }
 }
 
-export default withStyles(styles)(layout);
+export default withStyles(styles)(Layout);

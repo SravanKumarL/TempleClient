@@ -62,3 +62,6 @@ export const SET_CALENDAR_OPTIONS = "SET_CALENDAR_OPTIONS";
 
 //Board
 export const CHANGE_BOARD_TAB = "CHANGE_BOARD_TAB";
+
+//Create Transaction
+export const CHANGE_TRANSACTIONS_TAB = "CHANGE_TRANSACTIONS_TAB";

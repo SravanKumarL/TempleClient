@@ -9,25 +9,27 @@ import createContainer from './hoc/createContainer/createContainer';
 import classes from './App.css';
 import PrivateRoute from './hoc/Router/PropsRoute';
 
+class AppLayout extends React.Component {
+  render() {
+    return (
+      <Layout>
+        <Board />
+      </Layout>
+    );
+  }
+}
+
 class App extends Component {
   componentDidMount() {
     this.props.autoSignIn();
   }
   handleLogin = () => this.props.history.push('/');
   render() {
-    const layout = () => (
-      <Layout>
-        <Board />
-      </Layout>
-    );
-    let routes = (
-      <Switch>
-        <PrivateRoute path='/' redirectComponent={Authentication} component={layout} isLoggedIn={this.props.isAuthenticated} />
-      </Switch>
-    );
     return (
       <div className={classes.App}>
-        {routes}
+        <Switch>
+          <PrivateRoute path='/' redirectComponent={Authentication} component={AppLayout} isLoggedIn={this.props.isAuthenticated} />
+        </Switch>
       </div>
     );
   }

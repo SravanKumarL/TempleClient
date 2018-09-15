@@ -8,9 +8,6 @@ import _ from 'lodash';
 import { FIELD_TYPES } from '../../../../store/constants/transactions';
 
 const { MULTISELECT } = FIELD_TYPES;
-
-
-
 const ITEM_HEIGHT = 48;
 
 const styles = theme => ({

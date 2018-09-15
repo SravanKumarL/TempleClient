@@ -59,3 +59,7 @@ export {
 export {
   changeBoardTab
 } from './board'
+
+export {
+  changeTransactionsTab
+} from './createTransaction'

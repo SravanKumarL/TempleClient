@@ -8,8 +8,7 @@ import Receipt from '@material-ui/icons/Receipt';
 import Pages from '@material-ui/icons/Pages';
 import Event from '@material-ui/icons/Event';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-
-import Transactions from '../../containers/Transactions_new/CreateTransactions/CreateTransaction';
+import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
 import Poojas from '../Poojas/Poojas';
 import constants from '../../../store/sagas/constants';
