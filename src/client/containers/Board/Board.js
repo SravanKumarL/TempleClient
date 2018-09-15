@@ -8,7 +8,6 @@ import Receipt from '@material-ui/icons/Receipt';
 import Pages from '@material-ui/icons/Pages';
 import Event from '@material-ui/icons/Event';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-
 import Transactions from '../../containers/Transactions/Transactions';
 import Reports from '../../containers/Reports/Reports';
 import Poojas from '../Poojas/Poojas';
@@ -18,6 +17,7 @@ import { ROLE } from '../../../store/constants/auth';
 import { TABS } from '../../../store/constants/board';
 import { convertToStartCase } from '../../shared/utility';
 import PoojasUsersGrid from '../DataGrid/poojasUsersGrid';
+import createContainer from '../../hoc/createContainer/createContainer';
 
 
 
@@ -109,29 +109,14 @@ const styles = theme => ({
   }
 });
 
-class SimpleTabs extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeTab: props.activeTab,
-      prevActiveTab: null,
-    }
-  }
-  static getDerivedStateFromProps = (nextProps, prevState) => {
-    if (nextProps.activeTab !== prevState.prevActiveTab) {
-      return { ...prevState, prevActiveTab: nextProps.activeTab, activeTab: nextProps.activeTab };
-    }
-    return null;
-  }
-
+class SimpleTabs extends React.PureComponent {
   handleChange = (event, value) => {
-    this.setState({ activeTab: value });
+    this.props.changeBoardTab(value);
     // [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
   };
 
   render() {
-    const { classes, role } = this.props;
-    const { activeTab } = this.state;
+    const { classes, role, activeTab } = this.props;
     const newTabClasses = {
       textColorInherit: classes.rootInherit,
       selected: classes.rootInheritSelected,
@@ -179,9 +164,14 @@ class SimpleTabs extends React.Component {
     );
   }
 }
-
+const mapStateToProps = (state) => {
+  return {
+    activeTab: state.board.activeTab,
+    role: state.auth.role
+  }
+};
 SimpleTabs.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SimpleTabs);
+export default createContainer(withStyles(styles)(SimpleTabs), mapStateToProps);
