@@ -20,7 +20,6 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
-import newTabClasses from '../../shared/tabClasses';
 import {
   updateObject,
   convertToStartCase,
@@ -290,13 +289,13 @@ class Transactions extends React.Component {
         <Snackbar open={this.state.snackOpen} close={this.closeSnackHandler} message={this.props.message} />
       );
     }
-    // const newTabClasses = {
-    //   textColorInherit: classes.rootInherit,
-    //   selected: classes.rootInheritSelected,
-    //   wrapper: classes.wrapper,
-    //   labelContainer: classes.labelContainer,
-    //   label: classes.label
-    // };
+    const newTabClasses = {
+      textColorInherit: classes.rootInherit,
+      selected: classes.rootInheritSelected,
+      wrapper: classes.wrapper,
+      labelContainer: classes.labelContainer,
+      label: classes.label
+    };
     const createdBy = {
       name: 'Created By',
       value: this.props.user,
@@ -319,8 +318,8 @@ class Transactions extends React.Component {
             }} value={activeTab}
               onChange={this.tabChangeHandler}
             >
-              <Tab classes={newTabClasses(classes)} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
-              <Tab classes={newTabClasses(classes)} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
+              <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
+              <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
             </Tabs>
           </Fade>
           <CreateTransaction

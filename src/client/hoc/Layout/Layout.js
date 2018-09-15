@@ -1,7 +1,9 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import withStyles from '@material-ui/core/styles/withStyles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import AppBar from '../../components/Navigation/AppBar/AppBar';
+import createContainer from '../createContainer/createContainer';
 
 const styles = theme => ({
   appFrame: {
@@ -30,18 +32,35 @@ const styles = theme => ({
   },
 });
 
-class Layout extends React.PureComponent {
+class Layout extends React.Component {
+  handleLogout = () => {
+    this.props.history.replace('/');
+    this.props.authLogout();
+  }
   render() {
-    const { classes, children } = this.props;
+    const { classes, role, activeTabChanged, activeTab } = this.props;
     return (
       <div className={classes.appFrame}>
-        <AppBar />
+        <AppBar
+          activeTab = {activeTab}
+          logout={this.handleLogout}
+          role={role}
+          activeTabChanged={activeTabChanged}
+        />
         <main className={classes.content}>
-          {children}
+          {this.props.children}
         </main>
       </div>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    user: state.auth.user,
+    role: state.auth.role,
+  }
+}
 
-export default withStyles(styles)(Layout);
+Layout = withStyles(styles)(Layout);
+
+export default withRouter(createContainer(Layout, mapStateToProps)); 
