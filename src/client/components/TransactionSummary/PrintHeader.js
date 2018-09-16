@@ -15,7 +15,7 @@ export default class PrintHeader extends React.PureComponent {
               Sri Sringeri Shankara Math, Nallakunta, Hyderabad - 44 (T.S.)
            </Typography>
             <Typography style={{color: 'black'}} variant='caption' align='center'>
-              Tel: 040-27677783
+              Tel: 040-27667783
            </Typography>
           </div>
         </div>
