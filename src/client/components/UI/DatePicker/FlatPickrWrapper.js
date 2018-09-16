@@ -26,7 +26,7 @@ class DatePickerWrapper extends React.Component {
         super(props);
         this.initialValue = [new Date()];
         if (props.value) {
-            this.initialValue = parseDateObject(props.value); //Convert into date object
+            this.initialValue = parseDateObject(props.value) || this.initialValue; //Convert into date object
         }
     }
     defaultState = {
@@ -36,7 +36,7 @@ class DatePickerWrapper extends React.Component {
     onResetDate = () => {
         const { onDateSelectionChanged } = this.props;
         if (onDateSelectionChanged) {
-            onDateSelectionChanged([new Date()], getDaysOfWeek(), this.defaultState.mode);
+            onDateSelectionChanged([getCurrentDate()], getDaysOfWeek(), this.defaultState.mode);
         }
     }
     modeSlctnChngdHandler = (selectedMode) => {
