@@ -148,7 +148,7 @@ class CreateTransaction extends React.Component {
   }
 
   formResetHandler = () => {
-    this.props.onDatepickerReset();
+    this.props.onDatepickerReset([], true);
     initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
     this.setState({ ...initialState });
   };

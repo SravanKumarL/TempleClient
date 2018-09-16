@@ -44,7 +44,8 @@ const getFilteredDates = createSelector(getSelectedDays, getRangeOfDates,
 const defaultState = {
     selectedDays: getDaysOfWeek(), filteredDates: [new Date()], filtered: false,
     isDayFilterApplied: false, mode: RANGE, unfilteredRange: [new Date()], reset: false,
-    calendarOptions: getDefaultCalendarOptions(RANGE),
+    calendarOptions: getDefaultCalendarOptions(RANGE), hardReset: false, 
+    rangePickerReset:false
 };
 const datePicker = (state = defaultState, action) => {
     switch (action.type) {
@@ -56,7 +57,7 @@ const datePicker = (state = defaultState, action) => {
             }
             return state;
         case ON_RANGE_PICKER_CLOSE:
-            return { ...state, mode: RANGE, reset: !state.reset };
+            return { ...state, mode: RANGE, rangePickerReset: !state.rangePickerReset };
         case ON_RANGE_PICKER_OPEN:
             return { ...state, mode: (state.isDayFilterApplied && state.filteredDates.length > 1) ? MULTIPLE : RANGE }
         case ON_DAY_CHANGED:
@@ -94,6 +95,7 @@ const datePicker = (state = defaultState, action) => {
                 : defaultState.unfilteredRange);
             return {
                 ...defaultState, reset: !state.reset,
+                hardReset: action.payload.hardReset ? !state.hardReset : state.hardReset,
                 filteredDates: defaultFilteredDates, unfilteredRange: defaultUnFilteredDates
             };
         default:

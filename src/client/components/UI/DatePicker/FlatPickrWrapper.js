@@ -67,6 +67,11 @@ class DatePickerWrapper extends React.Component {
         }
         return this.state.mode !== nextState.mode;
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.hardReset !== this.props.hardReset) {
+            this.setState(this.defaultState);
+        }
+    }
     render() {
         const { mode } = this.state;
         const { reset, addFallBack } = this.props;
@@ -101,6 +106,7 @@ const mapStateToProps = state => ({
     selectedDays: state.datePicker.selectedDays,
     filteredDates: state.datePicker.filteredDates,
     calendarOptions: state.datePicker.calendarOptions,
-    reset: state.datePicker.reset
+    reset: state.datePicker.reset,
+    hardReset: state.datePicker.hardReset
 });
 export default connect(mapStateToProps, { onDatepickerReset, setCalendarOptions })(DatePickerWrapper);

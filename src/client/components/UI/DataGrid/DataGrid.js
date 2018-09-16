@@ -98,7 +98,12 @@ export default class DataGrid extends React.PureComponent {
             const changedId = changesObj[0];
             const changes = changesObj[1];
             const changedObj = rows.filter(row => row.id === changedId)[0];
-            if (Object.keys(changes).some(changedField => changes[changedField] !== changedObj[changedField].toString())) {
+            if (Object.keys(changes).some(changedField => {
+                if (changedField in changedObj) {
+                    return changes[changedField] !== changedObj[changedField].toString();
+                }
+                return true;
+            })) {
                 this.props.setAndCommitTransaction(constants.edit, this.props.collection, changes, changedObj);
             }
         }

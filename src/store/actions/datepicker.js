@@ -16,7 +16,8 @@ export const onDateChanged = (selectedDates = []) => ({
 });
 export const onDaySlctnOpen = () => ({ type: ON_DAY_SLCTN_OPEN });
 export const onDaySlctnClose = () => ({ type: ON_DAY_SLCTN_CLOSE });
-export const onDatepickerReset = defaultDates => ({ type: ON_DATEPICKER_RESET, payload: { defaultDates } });
+export const onDatepickerReset = (defaultDates, hardReset = false) =>
+    ({ type: ON_DATEPICKER_RESET, payload: { defaultDates, hardReset } });
 export const onFilterApplied = () => ({ type: ON_FILTER_APPLIED });
 export const onRangePickerClose = () => ({ type: ON_RANGE_PICKER_CLOSE });
 export const onRangePickerOpen = () => ({ type: ON_RANGE_PICKER_OPEN });
