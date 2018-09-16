@@ -27,10 +27,10 @@ const TotalPaper = ({ totalAmount, cheques }) => {
     return (
         <Fragment>
             {/* <PaperedGrid rows={getCashRow(cash)} columns={cashAndTotalColumns} title='Cash' /> */}
-            <PaperedGrid rows={cheques} columns={chequeColumns}
-                title='Cheque Details' showHeader={true} />
             <PaperedGrid rows={getTotalRow(totalAmount)} columns={cashAndTotalColumns}
                 title='Total' showHeader={true} />
+            <PaperedGrid rows={cheques} columns={chequeColumns}
+                title='Cheque Details' showHeader={true} />
         </Fragment>
     );
 }
