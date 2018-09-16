@@ -14,7 +14,7 @@ export const withPoojaDetails = (WrappedComponent) => {
     static getDerivedStateFromProps(nextProps) {
       if (nextProps.poojaDetails) {
         const poojaDetails = nextProps.poojaDetails.map(item => ({
-          [`${item.poojaName}`]: item.amount,
+          [`${item.poojaName}`]: { amount: item.amount, time: item.time },
         }))
           .reduce(function (acc, item) {
             return Object.assign(acc, item);

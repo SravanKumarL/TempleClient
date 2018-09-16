@@ -30,7 +30,6 @@ import { SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants
 import { TABS } from '../../../store/constants/transactions';
 
 
-// const { USE } = SEARCH_OPERATIONS;
 const { POOJAS, OTHERS } = TABS;
 
 const styles = theme => ({

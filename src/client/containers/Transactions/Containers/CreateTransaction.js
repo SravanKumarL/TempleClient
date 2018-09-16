@@ -18,7 +18,7 @@ import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS, SELECTED_DAYS, 
 import { Button } from '@material-ui/core';
 
 
-const { NAMES, GOTHRAM, PHONE_NUMBER, NAKSHATRAM, POOJA, DATES, NUMBER_OF_DAYS, AMOUNT, PAYMENT_MODE, CHEQUE_NO, BANK_NAME } = FIELDS;
+const { NAMES, GOTHRAM, PHONE_NUMBER, NAKSHATRAM, POOJA, DATES, NUMBER_OF_DAYS, AMOUNT, PAYMENT_MODE, CHEQUE_NO, BANK_NAME, TIME } = FIELDS;
 const { CHEQUE } = PAYMENT_MODES;
 const { INPUT, SINGLESELECT, NUMBER } = FIELD_TYPES;
 
@@ -131,9 +131,13 @@ class CreateTransaction extends React.Component {
           value: newFormElement[DATES].value.length,
         }),
         [AMOUNT]: updateObject(newFormElement[AMOUNT], {
-          value: newFormElement[DATES].value.length * poojaDetails[newFormElement[POOJA].value] || 0,
+          value: newFormElement[DATES].value.length * (poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].amount : 0) || 0,
           disabled: true,
         }),
+        [TIME]: updateObject(newFormElement[TIME], {
+          value: poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].time : '12:00 AM to 12:00 AM',
+          disabled: true,
+        })
       });
     } else {
       newFormElement = updateObject(newFormElement, {

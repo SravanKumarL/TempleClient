@@ -11,6 +11,7 @@ export const FIELDS = {
     OTHERS: 'others',
     PAYMENT_MODE: 'paymentMode',
     NUMBER_OF_DAYS: 'numberOfDays',
+    TIME: 'time',
     AMOUNT: 'amount',
     ID: 'id',
 }
@@ -30,6 +31,7 @@ export const FIELD_PLACEHOLDERS = {
     paymentMode: 'Payment Mode',
     numberOfDays: 'Number of Days',
     amount: 'Amount',
+    time: 'Time',
     id: 'Id',
 };
 
