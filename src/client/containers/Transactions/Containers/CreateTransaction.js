@@ -97,8 +97,7 @@ class CreateTransaction extends React.Component {
     let newState = { ...prevState };
     if (!_.isEqual(nextProps.poojaDetails, newState.poojaDetails)) {
       const options = Object.keys(poojaDetails).map(key => {
-        const newkey = convertToStartCase(key);
-        return { value: newkey, label: newkey }
+        return { value: key, label: convertToStartCase(key) }
       });
       newState.poojaDetails = nextProps.poojaDetails;
       newState.transactionForm.pooja.elementConfig.options = options;
