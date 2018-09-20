@@ -190,8 +190,7 @@ class Reports extends React.Component {
     let newState = { ...prevState };
     if (poojaDetails) {
       const options = poojaDetails.map(pooja => {
-        const newkey = convertToStartCase(pooja.poojaName);
-        return { value: newkey, label: newkey }
+        return { value: pooja.poojaName, label: convertToStartCase(pooja.poojaName) }
       });
       newState = { ...newState, poojaDetails: options };
     }

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { startCase, toLower/* , sampleSize, sortBy */ } from 'lodash';
+import { capitalize, toLower/* , sampleSize, sortBy */ } from 'lodash';
 import { CALENDER_MODE } from '../../store/constants/transactions';
 export const updateObject = (oldObject, updatedObject) => {
   return {
@@ -102,7 +102,11 @@ export const parseDateObject = dateObject => {
     return [...dateObject].map(val => {
       //Handle date strings of dd-mm-yy format
       if (typeof val === 'string') {
-        if (Number.isNaN(Date.parse(val))) {
+        const mmddyy = Date.parse(val);
+        
+        //Check if string doesn't parse with Date.parse. If so check it's month and day with original string
+        if (Number.isNaN(mmddyy) || Number(new Date(mmddyy).getDate()) !== Number(val.split('-')[0])
+          || Number(new Date(mmddyy).getMonth()) !== Number(val.split('-')[1])) {
           try {
             return getDateFromString(val);
           }
@@ -119,7 +123,7 @@ export const parseDateObject = dateObject => {
   }
 }
 export const convertToStartCase = (identifier) => {
-  return startCase(toLower(identifier));
+  return toLower(identifier).replace(/\w+/g, capitalize);
 }
 export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
   let calendarOptions = {
