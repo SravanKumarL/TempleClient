@@ -48,10 +48,12 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
               const placeholder = field.name;
               const value = capitalizedFields.includes(field.name) ? field.value.toUpperCase() : field.value;
               const maxHeight = placeholder === 'Dates' ? 100 : 75;
+              const customFontSize = placeholder === 'Amount' ? 20 : 16;
+              const customFontWeight = placeholder === 'Amount' ? 'bold' : 'inherit';
               return (
                 <div style={{ display: 'flex', color: 'black', borderBottom: '1px solid #cad0d7' }} key={id}>
                   <div style={{ width: '110px', color: 'black',fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}</div>
-                  <div style={{ whiteSpace: 'pre-wrap',color: 'black', width: '210px', fontSize: 16, margin: '10px 0px', wordWrap: 'break-word', maxHeight , overflow: 'hidden' }}>{placeholder === 'Amount' ? `₹ ${value}` : value} </div>
+                  <div style={{ whiteSpace: 'pre-wrap',color: 'black', width: '210px', fontSize: customFontSize, fontWeight:customFontWeight, margin: '10px 0px', wordWrap: 'break-word', maxHeight , overflow: 'hidden' }}>{placeholder === 'Amount' ? `₹ ${value}` : value} </div>
                 </div>
               );
             })}
