@@ -9,7 +9,12 @@ import ImportContacts from '@material-ui/icons/ImportContacts';
 import uuidV1 from 'uuid/v1';
 import Dialog from '../../components/UI/Dialog/Dialog';
 import ReportCriteria from './Containers/ReportCriteria';
-import { convertToStartCase, getCurrentDate, parseDateObject } from '../../shared/utility';
+import {
+  convertToStartCase,
+  getCurrentDate,
+  parseDateObject,
+  getFormattedDate
+} from '../../shared/utility';
 import Blue from '@material-ui/core/colors/blue';
 import Green from '@material-ui/core/colors/green';
 import constants from '../../../store/sagas/constants'
@@ -17,6 +22,7 @@ import ReportsGrid from '../DataGrid/reportsGrid';
 import createContainer from '../../hoc/createContainer/createContainer';
 import { REPORT_TYPES } from '../../../store/constants/reports';
 import report from '../../../assets/mainReport.svg';
+import { CALENDER_MODE } from '../../../store/constants/transactions';
 
 const { POOJA, MANAGEMENT, ACCOUNTS } = REPORT_TYPES;
 const ModalDialog = ({
@@ -175,6 +181,8 @@ const initialState = {
   modalOpen: false,
   selectedOption: {},
   selectedDates: [getCurrentDate()],
+  selectedDays: [],
+  datePickerMode: CALENDER_MODE.SINGLE,
   poojaDetails: null,
   reportOpen: false,
   selectedPooja: '',
@@ -224,7 +232,8 @@ class Reports extends React.Component {
     }
     this.setState({ reportOpen: true, modalOpen: false, searchObj, selectedGenerateOption: this.state.selectedOption });
   }
-  dateSelectionChangedHandler = (selectedDates) => this.setState({ selectedDates });
+  dateSelectionChangedHandler = (selectedDates, selectedDays, datePickerMode) =>
+    this.setState({ selectedDates, selectedDays, datePickerMode });
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
   optionClickedHandler = (option) => {
     this.props.onDatepickerReset(initialState.selectedDates);
@@ -271,10 +280,11 @@ class Reports extends React.Component {
     );
   }
   render() {
-    const { reportOpen, selectedGenerateOption, poojaDetails, generateDisabled, searchObj, modalOpen, selectedOption, selectedPooja, selectedDates } = this.state;
+    const { reportOpen, selectedGenerateOption, poojaDetails, generateDisabled, searchObj,
+      modalOpen, selectedOption, selectedPooja, selectedDates, datePickerMode, selectedDays } = this.state;
     const { classes } = this.props;
     const selectedReportName = selectedGenerateOption.name;
-    let title = selectedReportName === MANAGEMENT ? '- ' + getCurrentDate() : '';
+    let title = 'generated for ' + getFormattedDate(selectedDates, datePickerMode, selectedDays)
     return (
       <div className={classes.root}>
         <div className={classes.container}>
@@ -295,7 +305,8 @@ class Reports extends React.Component {
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
-            <ReportsGrid title={`${selectedReportName} Report ${title}`} collection={constants.Reports} searchCriteria={searchObj} readOnly={true} />
+            <ReportsGrid title={`${selectedReportName} Report ${title}`} collection={constants.Reports}
+              searchCriteria={searchObj} readOnly={true} printTitle={title}/>
           </div> :
           <div className={classes.centerTextboxContainer}>
             <div className={classes.centerTextbox}>

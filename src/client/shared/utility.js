@@ -63,9 +63,13 @@ export const getCurrentDate = (date = new Date()) => {
   today = `${dd}-${mm}-${yyyy}`;
   return today;
 }
-export const getFormattedDate = (selectedDates, dateMode) => {
+export const getFormattedDate = (selectedDates, dateMode, days) => {
   if (dateMode === CALENDER_MODE.RANGE) {
-    return `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`;
+    let formattedDate = `${selectedDates[0]} to ${selectedDates[selectedDates.length - 1]}`;
+    if (days && days.length > 0 && days.length < 7) {
+      return `${formattedDate} (${days})`;
+    }
+    return formattedDate;
   }
   // else if (dateMode === CALENDER_MODE.MULTIPLE) {
   //   let sampledDates = selectedDates.slice(1, selectedDates.length - 2);
@@ -103,7 +107,7 @@ export const parseDateObject = dateObject => {
       //Handle date strings of dd-mm-yy format
       if (typeof val === 'string') {
         const mmddyy = Date.parse(val);
-        
+
         //Check if string doesn't parse with Date.parse. If so check it's month and day with original string
         if (Number.isNaN(mmddyy) || Number(new Date(mmddyy).getDate()) !== Number(val.split('-')[0])
           || Number(new Date(mmddyy).getMonth()) !== Number(val.split('-')[1])) {
