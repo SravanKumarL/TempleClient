@@ -20,9 +20,11 @@ const TotalPaper = ({ totalAmount, cheques }) => {
     const cashAndTotalColumns = [{ name: 'category', title: 'Category' },
     { name: 'total', title: 'Total' },
     { name: 'amount', title: 'Amount' }]
-    const chequeColumns = [{ name: 'chequeNo', title: 'Cheque No' },
-    { name: 'bankName', title: 'Bank Name' },
-    { name: 'amount', title: 'Amount' }]
+    const chequeColumns = [
+        { name: 'pooja', title: 'Pooja Name' },
+        { name: 'chequeNo', title: 'Cheque No' },
+        { name: 'bankName', title: 'Bank Name' },
+        { name: 'amount', title: 'Amount' }]
     // const { cash } = totalAmount;
     return (
         <Fragment>

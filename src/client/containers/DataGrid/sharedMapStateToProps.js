@@ -1,6 +1,6 @@
 import { getFormattedColumns, convertToStartCase } from '../../shared/utility';
 const sharedMapStateToProps = (state, ownProps) => {
-    const { columns, collection, readOnly, title } = ownProps;
+    const { columns, collection, readOnly, title, printTitle } = ownProps;
     let formattedColumns = [];
     let readOnlyProp = false;
     if (readOnly !== undefined)
@@ -13,7 +13,7 @@ const sharedMapStateToProps = (state, ownProps) => {
     formattedColumns = formattedColumns.map(column => ({ ...column, title: convertToStartCase(column.title) }));
     return {
         loading, rows, columns: formattedColumns, error, message, collection, title,
-        readOnly: readOnlyProp, printReq, totalCount, countFetched
+        readOnly: readOnlyProp, printReq, totalCount, countFetched, printTitle: printTitle || ''
     };
 }
 export default sharedMapStateToProps;
