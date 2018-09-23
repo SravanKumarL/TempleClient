@@ -11,7 +11,7 @@ const PrintGrid = ({ rows, columns }) => (
         <TableHeaderRow />
     </Grid>
 );
-const PrintGridContainer = ({ searchCriteria, rows, columns, children, printTitle }) => {
+const PrintGridContainer = ({ searchCriteria, rows, columns, children, printTitle, signature }) => {
     let pooja = '';
     let printRows = [...rows];
     let printColumns = [...columns];
@@ -35,15 +35,17 @@ const PrintGridContainer = ({ searchCriteria, rows, columns, children, printTitl
         Object.keys(printRows).map(key =>
             (<div style={{ display: 'flex', pageBreakBefore: 'always', flexDirection: 'column', flexGrow: 1 }} key={key}>
                 <Typography variant='headline' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
-                    Pooja Report of {key} {printTitle} 
+                    Pooja Report of {key} {printTitle}
                 </Typography>
                 <PrintGridWrapped rows={printRows[key]} columns={printColumns} />
+                {signature}
             </div>)) :
         <div style={{ display: 'flex', pageBreakBefore: 'always', flexDirection: 'column', flexGrow: 1 }}>
             <Typography variant='title' align='center' style={{ marginBottom: 20, marginTop: 20, fontWeight: 400 }}>
                 {searchCriteria.ReportName} Report {printTitle}
             </Typography>
             <PrintGridWrapped rows={printRows} columns={printColumns} />
+            {signature}
         </div>
     );
 }

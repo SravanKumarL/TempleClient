@@ -105,7 +105,8 @@ class ReportsGrid extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     let resultantProps = sharedMapStateToProps(state, ownProps);
     const { othersFetched, totalAmount, othersTotalCount, cheques } = state[ownProps.collection];
-    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount, cheques };
+    const user = state.auth.user;
+    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount, cheques, user };
     return resultantProps;
 }
 export default createContainer(ReportsGrid, mapStateToProps);
