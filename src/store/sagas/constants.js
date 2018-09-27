@@ -33,7 +33,7 @@ export const Time = {
 }
 export const AMOUNT = 'amount';
 export const ManagementReport = ['pooja', 'total poojas', 'total amount'];
-export const PoojaReport = ['names', 'gothram', 'nakshatram', 'pooja', 'Selected Dates'];
+export const PoojaReport = ['names', 'gothram', 'nakshatram', 'pooja'/* , 'Selected Dates' */];
 export const AccountReport = ['names', 'phoneNumber', 'pooja', 'chequeNo', 'bankName', 'createdDate', 'amount'];
 export default constants;
 export const reportMapping = {

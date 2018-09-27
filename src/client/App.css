@@ -54,4 +54,6 @@ textarea {
 
 td {
   font-size: 15px !important;
+  white-space: initial !important;
+  text-overflow: initial !important;
 }

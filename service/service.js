@@ -6,7 +6,7 @@ const stopService = (code) => {
         buildProc.kill();
     if (server) {
         server.close();
-        logger.fatal('Temple client serving at port 3000 is closed');
+        logger.fatal('Temple client serving at port 80 is closed');
     }
     logger.fatal('Process exited with code ' + code);
 };
@@ -71,7 +71,7 @@ new Promise((resolve, reject) => {
     });
     app.use('/static', express.static(path.join(__dirname, '../build/static')));
     app.use(express.static(path.join(__dirname, '../build')));
-    server = app.listen(3000, () => logger.info('Temple Client listening to port 3000'));
+    server = app.listen(80, () => logger.info('Temple Client listening to port 80'));
 }, (err) => {
     buildProc.send('kill');
 });

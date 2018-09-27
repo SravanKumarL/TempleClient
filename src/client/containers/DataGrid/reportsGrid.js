@@ -84,11 +84,11 @@ class ReportsGrid extends React.Component {
     render() {
         const { searchCriteria, columns, totalAmount, cheques } = this.props;
         let { rows, ...restProps } = this.props;
-        const { showOthers } = this.state;
+        // const { showOthers } = this.state;
         const OthersTotalComponent = () => (
             (searchCriteria.ReportName === constants.Management &&
                 <Fragment>
-                    {showOthers && <PaperedGrid style={{ margin: '2vh 2vw' }}
+                    {/* showOthers &&  */<PaperedGrid style={{ margin: '2vh 2vw' }}
                         rows={rows.filter(row => row.others)} columns={columns} title='Others' />}
                     {Object.keys(totalAmount).length > 0 && <TotalPaper totalAmount={totalAmount} cheques={cheques} />}
                 </Fragment>)
