@@ -132,6 +132,7 @@ class CreateTransaction extends React.Component {
         [AMOUNT]: updateObject(newFormElement[AMOUNT], {
           value: newFormElement[DATES].value.length * (poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].amount : 0) || 0,
           disabled: true,
+          valid: true,  
         }),
         [TIME]: updateObject(newFormElement[TIME], {
           value: poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].time : '12:00 AM to 12:00 AM',
@@ -153,7 +154,8 @@ class CreateTransaction extends React.Component {
   formResetHandler = () => {
     this.props.onDatepickerReset([], true);
     initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
-    this.setState({ ...initialState });
+    const newState = JSON.parse(JSON.stringify(initialState));
+    this.setState({ ...newState });
   };
   canPhoneNumberBeUpdated = (value) => (!(!Number(value) || value.charAt(value.length - 1) === '.' || value.length > 10));
   updatedFormElement = (inputIdentifier, value) => updateObject(this.state.transactionForm[inputIdentifier], {

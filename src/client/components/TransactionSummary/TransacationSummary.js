@@ -15,7 +15,7 @@ const styles = (theme) => ({
   },
 });
 
-const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summaryClosed, print }) => {
+const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summaryClosed, print, isPrinted }) => {
   const createdDate = transactionFields.filter(id => id.name.toLowerCase() === 'created date' && id)[0];
   const createdBy = transactionFields.filter(id => id.name.toLowerCase() === 'created by' && id)[0];
   // const createdDate = '27-08-18';
@@ -25,8 +25,8 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
     <Dialog
       open={open}
       primaryClicked={print}
-      primaryText='Save & Print'
-      secondaryText='Cancel'
+      primaryText={isPrinted ? 'Print Duplicate' : 'Save & Print'}
+      secondaryText={isPrinted ? 'Close' : 'Cancel'}
       secondaryClicked={summaryClosed}
       cancelled={summaryClosed}
       maxWidth='xs'
@@ -37,7 +37,7 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
           <div>
             {Object.keys(transactionFields).map(id => {
               const field = transactionFields[id];
-              if (['Special Offerings', 'Created By', 'Created Date', 'Selected Dates', 'Id'].includes(field.name)) {
+              if (['Created By', 'Created Date', 'Selected Dates', 'Id'].includes(field.name)) {
                 return null;
               }
               // if (field.name.toLowerCase() === 'dates') {
@@ -52,8 +52,8 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
               const customFontWeight = placeholder === 'Amount' ? 'bold' : 'inherit';
               return (
                 <div style={{ display: 'flex', color: 'black', borderBottom: '1px solid #cad0d7' }} key={id}>
-                  <div style={{ width: '110px', color: 'black',fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}</div>
-                  <div style={{ whiteSpace: 'pre-wrap',color: 'black', width: '210px', fontSize: customFontSize, fontWeight:customFontWeight, margin: '10px 0px', wordWrap: 'break-word', maxHeight , overflow: 'hidden' }}>{placeholder === 'Amount' ? `₹ ${value}` : value} </div>
+                  <div style={{ width: '110px', color: 'black', fontSize: 14, margin: 10, borderLeft: '1px solid $cad0d7' }} >{placeholder}</div>
+                  <div style={{ whiteSpace: 'pre-wrap', color: 'black', width: '210px', fontSize: customFontSize, fontWeight: customFontWeight, margin: '10px 0px', wordWrap: 'break-word', maxHeight, overflow: 'hidden' }}>{placeholder === 'Amount' ? `₹ ${value}` : value} </div>
                 </div>
               );
             })}
@@ -62,10 +62,10 @@ const transactionSummary = ({ classes, open, modifiedBy, transactionFields, summ
         <div style={{ marginTop: '30px', display: 'flex', alignItems: 'flex-end', flexDirection: 'column', paddingRight: '10px' }}>
           <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Created By: {createdBy && createdBy.value}   </Typography>
           <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Created On: {createdDate && createdDate.value}   </Typography>
-          { modifiedBy ?
+          {modifiedBy ?
             <Fragment>
-              <Typography style={{ padding: 5,color: 'black', fontWeight: 'bold' }} variant='caption'>Modified By: {modifiedBy} </Typography>
-              <Typography style={{ padding: 5, color: 'black',fontWeight: 'bold' }} variant='caption'>Modified On: {getCurrentDate()}   </Typography>
+              <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Modified By: {modifiedBy} </Typography>
+              <Typography style={{ padding: 5, color: 'black', fontWeight: 'bold' }} variant='caption'>Modified On: {getCurrentDate()}   </Typography>
             </Fragment>
             : null
           }

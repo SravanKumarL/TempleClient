@@ -93,3 +93,16 @@ export const editedTransactionChanged = (transaction, option) => {
     transaction,
   }
 }
+export const canBePrintedChanged = (status) => {
+  return {
+    type: actionTypes.CAN_BE_PRINTED_CHANGED,
+    payload: status,
+  }
+}
+
+export const isPrintedChanged = (status) => {
+  return {
+    type: actionTypes.IS_PRINTED_CHANGED,
+    payload: status,
+  }
+}

@@ -22,7 +22,9 @@ export {
   selectedTransactionChanged,
   openEditForm,
   usedTransactionChanged,
-  editedTransactionChanged
+  editedTransactionChanged,
+  canBePrintedChanged,
+  isPrintedChanged
 } from './transactions.js';
 
 export {

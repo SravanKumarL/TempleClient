@@ -8,6 +8,8 @@ const initialState = {
   searchedTransactions: [],
   loading: false,
   totalCount: 0,
+  canBePrinted: false,
+  isPrinted: false,
   // selectedTransaction: null,
   usedTransaction: null,
   editedTransaction: null,
@@ -64,6 +66,13 @@ export const usedTransactionChanged = (state, action) => {
 export const editedTransactionChanged = (state, action) => {
   return updateObject(state, { editedTransaction: action.transaction, option: action.option });
 }
+export const canBePrintedChanged = (state, action) => {
+  return updateObject(state, { canBePrinted: action.payload });
+}
+
+export const isPrintedChanged = (state, action) => {
+  return updateObject(state, { isPrinted: action.payload });
+}
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.OPEN_EDIT_FORM:
@@ -100,6 +109,10 @@ const reducer = (state = initialState, action) => {
       return usedTransactionChanged(state, action);
     case actionTypes.EDITED_TRANSACTION_CHANGED:
       return editedTransactionChanged(state, action);
+    case actionTypes.CAN_BE_PRINTED_CHANGED:
+      return canBePrintedChanged(state, action);
+    case actionTypes.IS_PRINTED_CHANGED:
+      return isPrintedChanged(state, action);
     default:
       return state;
   }

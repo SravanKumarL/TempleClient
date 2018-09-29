@@ -26,9 +26,13 @@ import {
   getFormattedDate,
   getCurrentDate
 } from '../../shared/utility';
-import { SELECTED_DAYS, DATEPICKER_MODE, FIELDS } from '../../../store/constants/transactions';
+import {
+  SELECTED_DAYS,
+  DATEPICKER_MODE,
+  FIELDS,
+  DIALOG_OPERATIONS
+} from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
-
 
 const { POOJAS, OTHERS } = TABS;
 
@@ -174,6 +178,7 @@ class Transactions extends React.Component {
   constructor() {
     super();
     this.printHandler = this.printHandler.bind(this);
+    this.modalCloseHandler = this.modalCloseHandler.bind(this);
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -196,20 +201,29 @@ class Transactions extends React.Component {
 
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
-  modalCloseHandler = () => this.setState({ modalOpen: false });
+  modalCloseHandler = (operation) => () => {
+    if (operation === 'close') {
+      this.props.isPrintedChanged(false);
+      this.setState({ modalOpen: false });
+      this.CreateTransaction.formResetHandler();
+      return;
+      // return this.setState({ ...initialState });
+    }
+    return this.setState({ modalOpen: false })
+  };
   tabChangeHandler = (event, value) => { this.setState({ activeTab: value, }); }
 
   printHandler = () => {
     const formattedDates = this.state.transactionInformation[FIELDS.DATES].value;
+    if (this.props.isPrinted) {
+      this.props.canBePrintedChanged(true);
+      return;
+    }
     this.props.commitEntityTransaction(constants.add,
       constants.Transactions, { ...this.state.transaction, [FIELDS.FORMATTED_DATES]: formattedDates });
-    this.modalCloseHandler();
-    this.setState({ ...initialState });
-    this.CreateTransaction.formResetHandler();
-    const printableElement = document.getElementById('transactionSummary');
-    // const tableElement = document.getElementById('printHeader');
-    // tableElement.style.marginBottom = '20px';
-    printHtml.printElement(printableElement);
+    // this.modalCloseHandler();
+    // this.setState({ ...initialState });
+
   }
   formSubmitHandler = (transactionInformation) => {
     const createdBy = this.props.user;
@@ -258,12 +272,20 @@ class Transactions extends React.Component {
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
-    const { classes, editFormOpen } = this.props;
+    const { classes, editFormOpen, canBePrinted, isPrinted } = this.props;
     const { activeTab, modalOpen, transactionInformation, usedTransaction, editedTransaction, editable } = this.state;
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
     const secondaryText = editable ? 'Back' : 'Close';
+    if (canBePrinted) {
+      this.props.canBePrintedChanged(false);
+      this.props.isPrintedChanged(true);
+      const printableElement = document.getElementById('transactionSummary');
+      // const tableElement = document.getElementById('printHeader');
+      // tableElement.style.marginBottom = '20px';
+      printHtml.printElement(printableElement);
+    }
     let dialog = (
       <Dialog
         open={editFormOpen}
@@ -329,10 +351,11 @@ class Transactions extends React.Component {
           />
           <TransactionSummary
             open={modalOpen}
+            isPrinted={isPrinted}
             transactionFields={Object.values(transactionInformation)}
             createdBy={this.props.user}
             print={this.printHandler}
-            summaryClosed={this.modalCloseHandler} />
+            summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
           {message}
         </div>
         <div className={classes.rightPane}>
@@ -353,6 +376,8 @@ const mapStateToProps = (state) => {
     editFormOpen: state.transactions.editFormOpen,
     editedTransaction: state.transactions.editedTransaction,
     usedTransaction: state.transactions.usedTransaction,
+    canBePrinted: state.transactions.canBePrinted,
+    isPrinted: state.transactions.isPrinted,
   }
 }
 

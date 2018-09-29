@@ -21,6 +21,7 @@ export function* addTransactionSaga(action) {
         headers
       });
       yield put(actions.addTransactionSuccess(response.data.message));
+      yield put(actions.canBePrintedChanged(true));
     }
 
   } catch (error) {

@@ -15,6 +15,7 @@ export const FIELDS = {
     AMOUNT: 'amount',
     ID: 'id',
 }
+export const DIALOG_OPERATIONS = { CLOSE: 'close', CANCEL: 'cancel' };
 export const SELECTED_DAYS = 'selectedDays';
 export const DATEPICKER_MODE = 'datepickerMode';
 export const ALL_DAYS = 'All days';
@@ -24,7 +25,7 @@ export const FIELD_PLACEHOLDERS = {
     gothram: 'Gothram',
     nakshatram: 'Nakshatram',
     selectedDates: 'Dates',
-    chequeNo: 'Cheque No', 
+    chequeNo: 'Cheque No',
     bankName: 'Bank Name',
     pooja: 'Pooja',
     others: 'Special Offerings',
