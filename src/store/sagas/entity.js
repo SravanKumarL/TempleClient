@@ -136,9 +136,10 @@ export function* handleFetchTotal(action) {
             const headers = {
                 'authorization': `${token}`,
             }
+            const forAllUsers = yield select(state => state.ManagementReport.forAllUsers);
             const totalAmountResponse = yield axios({
                 method: 'post',
-                data: { ...searchCriteria },
+                data: { ...searchCriteria, forAllUsers },
                 url: `/${collection}/totalAmount`,
                 headers
             });
