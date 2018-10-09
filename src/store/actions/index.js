@@ -42,7 +42,7 @@ export {
   resetEntity,
   fetchTotal,
   onFetchTotalFailure,
-  onFetchTotalSuccess
+  onFetchTotalSuccess,
 } from './entity'
 
 export {
@@ -57,3 +57,5 @@ export {
   onSingleMultiDateChanged,
   setCalendarOptions
 } from './datepicker'
+
+export { onMgmtReportAllUsersToggled, resetAllUsersCheck } from './managementReport'

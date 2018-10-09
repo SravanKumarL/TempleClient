@@ -82,7 +82,7 @@ class ReportsGrid extends React.Component {
         }
     }
     render() {
-        const { searchCriteria, columns, totalAmount, cheques } = this.props;
+        const { searchCriteria, columns, totalAmount, cheques, defaultSorting } = this.props;
         let { rows, ...restProps } = this.props;
         // const { showOthers } = this.state;
         const OthersTotalComponent = () => (
@@ -95,7 +95,7 @@ class ReportsGrid extends React.Component {
         );
         return (
             <Fragment>
-                <DataGridContainer {...restProps} rows={rows.filter(row => !row.others)}
+                <DataGridContainer {...restProps} rows={rows.filter(row => !row.others)} defaultSorting={defaultSorting}
                     checkShowOthers={this.checkShowOthersHandler} OtherPrintComponents={OthersTotalComponent} />
                 <OthersTotalComponent />
             </Fragment>
@@ -105,8 +105,9 @@ class ReportsGrid extends React.Component {
 const mapStateToProps = (state, ownProps) => {
     let resultantProps = sharedMapStateToProps(state, ownProps);
     const { othersFetched, totalAmount, othersTotalCount, cheques } = state[ownProps.collection];
+    const { defaultSorting } = ownProps;
     const user = state.auth.user;
-    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount, cheques, user };
+    resultantProps = { ...resultantProps, totalAmount, othersFetched, othersTotalCount, cheques, user, defaultSorting };
     return resultantProps;
 }
 export default createContainer(ReportsGrid, mapStateToProps);

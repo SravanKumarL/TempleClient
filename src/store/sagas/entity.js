@@ -88,6 +88,7 @@ export function* handleFetchData(action) {
                 const fetchCount = yield* checkFetchCount(collection);
                 //If Count has already been fetched
                 const { toFetch, newPagingOptions } = yield* checkFetch(collection, fetchCount, pagingOptions, printReq);
+                const forAllUsers = yield select(state => state.ManagementReport.forAllUsers);
                 pagingOptions = newPagingOptions || pagingOptions;
                 let take, skip = undefined;
                 if (pagingOptions) {
@@ -99,7 +100,7 @@ export function* handleFetchData(action) {
                     if (collection === constants.Reports && searchCriteria) {
                         response = yield axios({
                             method: 'post',
-                            data: { ...searchCriteria, take: take, skip: skip },
+                            data: { ...searchCriteria, take: take, skip: skip, forAllUsers },
                             url: `/${collection}?fetchCount=${fetchCount || fetchOthers}&fetchOthers=${fetchOthers}`,
                             headers
                         });

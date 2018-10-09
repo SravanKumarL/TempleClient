@@ -35,7 +35,9 @@ const ModalDialog = ({
   closeDialogHandler,
   poojaDetails,
   dateSelectionChangedHandler,
-  poojaSelected
+  forAllUsersChangedHandler,
+  poojaSelected,
+  forAllUsers
 }) => {
   return (
     <Dialog
@@ -53,8 +55,10 @@ const ModalDialog = ({
         title={selectedOption.name}
         selectedDates={selectedDates}
         dateSelectionChanged={dateSelectionChangedHandler}
+        forAllUsersChangedHandler={forAllUsersChangedHandler}
         poojaSelected={poojaSelected}
         selectedPooja={selectedPooja}
+        forAllUsers={forAllUsers}
       />
     </Dialog>
   );
@@ -231,7 +235,7 @@ class Reports extends React.Component {
     }
     this.setState(prevState => ({
       reportOpen: true, modalOpen: false, searchObj,
-      selectedGenerateOption: this.state.selectedOption, generateClicked: !prevState.generateClicked
+      selectedGenerateOption: this.state.selectedOption, generateClicked: !prevState.generateClicked,
     }));
   }
   dateSelectionChangedHandler = (selectedDates, selectedDays, datePickerMode) => {
@@ -241,10 +245,14 @@ class Reports extends React.Component {
   poojaSelected = (selectedPooja) => this.setState({ selectedPooja });
   optionClickedHandler = (option) => {
     this.props.onDatepickerReset(initialState.selectedDates);
+    this.props.resetAllUsersCheck();
     this.setState({
       selectedOption: option, modalOpen: true,
       selectedDates: [...initialState.selectedDates], selectedPooja: ''
     });
+  }
+  forAllUsersChangedHandler = e => {
+    this.props.onMgmtReportAllUsersToggled(e.target.checked, 'reports');
   }
   getButtons = () => {
     const { classes } = this.props;
@@ -287,7 +295,7 @@ class Reports extends React.Component {
   render() {
     const { reportOpen, selectedGenerateOption, poojaDetails, generateDisabled, searchObj,
       modalOpen, selectedOption, selectedPooja, selectedDates, printTitle } = this.state;
-    const { classes, user } = this.props;
+    const { classes, user, forAllUsers } = this.props;
     const signature = (<div style={{ alignSelf: 'flex-end' }}>
       <Typography variant='caption' align='right' style={signatureStyle}>
         Generated on : <strong>{getCurrentDate()}</strong>
@@ -297,6 +305,7 @@ class Reports extends React.Component {
       </Typography>
     </div>);
     const selectedReportName = selectedGenerateOption.name;
+    const defaultSorting = selectedReportName === POOJA ? [{ columnName: 'gothram', direction: 'asc' }] : [];
     return (
       <div className={classes.root}>
         <div className={classes.container}>
@@ -313,12 +322,14 @@ class Reports extends React.Component {
             closeDialogHandler={this.closeDialogHandler}
             generateReportHandler={this.generateReportHandler.bind(this)}
             dateSelectionChangedHandler={this.dateSelectionChangedHandler}
+            forAllUsersChangedHandler={this.forAllUsersChangedHandler}
+            forAllUsersChecked={forAllUsers}
           ></ModalDialog>
         </div>
         {reportOpen ?
           <div className={classes.dataGrid}>
             <ReportsGrid title={`${selectedReportName} Report ${printTitle}`} collection={constants.Reports}
-              searchCriteria={searchObj} readOnly={true} printTitle={printTitle} signature={signature} />
+              searchCriteria={searchObj} readOnly={true} printTitle={printTitle} signature={signature} defaultSorting={defaultSorting} />
             {signature}
           </div> :
           <div className={classes.centerTextboxContainer}>
@@ -341,7 +352,7 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     role: state.auth.role,
     poojaDetails: state.poojas.rows,
+    forAllUsers: state.ManagementReport.forAllUsers
   }
 }
-
 export default createContainer(withStyles(styles)(Reports), mapStateToProps);

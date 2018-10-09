@@ -30,7 +30,7 @@ export default class DataGrid extends React.PureComponent {
             delDialogOpen: false,
             deletingRows: [],
             isGrouped: false,
-            sorting: [],
+            // sorting: props.defaultSorting || [],
             editingRowIds: [],
             addedRows: [],
             rowChanges: {},
@@ -52,7 +52,7 @@ export default class DataGrid extends React.PureComponent {
     //#endregion
 
     //#region Change Handlers
-    changeSorting = sorting => this.setState({ sorting });
+    // changeSorting = sorting => this.setState({ sorting });
     changeEditingRowIds = editingRowIds => this.setState({ editingRowIds });
     toggleSave = save => this.setState({ enableSaveButton: save });
     getNewRow = collection => {
@@ -129,13 +129,13 @@ export default class DataGrid extends React.PureComponent {
     //#endregion
 
     render() {
-        const { columns, rows, setAndCommitTransaction, collection,
+        const { columns, rows, setAndCommitTransaction, collection, defaultSorting,
             readOnly, displayFilter, title, totalCount } = this.props;
         // const rows = this.props.rows.every(row => ('id' in row)) ? this.props.rows :
         //     this.props.rows.map((row, index) => ({ ...row, id: index + 1 }));
         const {
             delDialogOpen,
-            sorting,
+            // sorting,
             isGrouped,
             deletingRows,
             editingRowIds,
@@ -156,8 +156,9 @@ export default class DataGrid extends React.PureComponent {
                     <FilteringState />
                     {/* {!readOnly && <SelectionState />} */}
                     <SortingState
-                        sorting={sorting}
-                        onSortingChange={this.changeSorting}
+                        // sorting={sorting}
+                        // onSortingChange={this.changeSorting}
+                        defaultSorting={defaultSorting || []}
                     />
                     <GroupingState onGroupingChange={this.handleGroupingChange} />
                     <PagingState

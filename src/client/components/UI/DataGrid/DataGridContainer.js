@@ -131,7 +131,8 @@ export default class DataGridContainer extends React.PureComponent {
             title,
             OtherPrintComponents,
             printTitle,
-            signature
+            signature,
+            defaultSorting
         } = this.props;
         const {
             isPrintClicked,
@@ -150,10 +151,10 @@ export default class DataGridContainer extends React.PureComponent {
                     <Paper id="paperGrid">
                         {(rows && columns && rows.length > 0 && columns.length > 0 && isPrintClicked) ?
                             <PrintGridContainer rows={rows} columns={columns} searchCriteria={searchCriteria}
-                                printTitle={printTitle} signature={signature}>
+                                printTitle={printTitle} signature={signature} defaultSorting={defaultSorting}>
                                 {OtherPrintComponents ? <OtherPrintComponents /> : null}
                             </PrintGridContainer> :
-                            <DataGrid rows={rows}
+                            <DataGrid rows={rows} defaultSorting={defaultSorting}
                                 columns={columns} collection={collection} setAndCommitTransaction={this.setAndCommitTransaction.bind(this)}
                                 readOnly={readOnly} displayFilter={displayFilter} onCurrentPageChanged={this.currentPageChangedHandler}
                                 onPageSizeChanged={this.pageSizeChangedHandler} totalCount={totalCount} title={title} />}

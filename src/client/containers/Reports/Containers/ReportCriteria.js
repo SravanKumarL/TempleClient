@@ -4,7 +4,11 @@ import Field from '../../../components/UI/Field/Field';
 import { getCurrentDate } from '../../../shared/utility';
 import { FIELD_TYPES, FIELDS } from '../../../../store/constants/transactions';
 import MultiSelect from './SearchMultiSelectList';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { REPORT_TYPES } from '../../../../store/constants/reports';
 
+const { MANAGEMENT } = REPORT_TYPES;
 const { DATE } = FIELD_TYPES;
 const { POOJA } = FIELDS;
 
@@ -14,7 +18,8 @@ const ReportCriteria = (props) => {
     if (poojaSelected)
       poojaSelected(event);
   }
-  const { title, dateSelectionChanged, poojas, selectedPooja, selectedDates } = props;
+  const { title, dateSelectionChanged, poojas, selectedPooja, selectedDates,
+    forAllUsersChangedHandler, forAllUsers } = props;
   const heading = `Select From Date and To Date to generate ${title}`;
   let pooja = null;
   if (title.trim().toLowerCase() === POOJA) {
@@ -46,6 +51,10 @@ const ReportCriteria = (props) => {
         value={selectedDates}
         addFallBack={true}
       />
+      {title === MANAGEMENT &&
+        <FormControlLabel control={<Checkbox defaultChecked={false} value='true'
+          onChange={forAllUsersChangedHandler} checked={forAllUsers} />}
+          label='FOR ALL USERS' />}
     </div>
   );
 }
