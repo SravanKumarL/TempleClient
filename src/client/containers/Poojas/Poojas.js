@@ -4,12 +4,13 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import constants from '../../../store/sagas/constants';
 const styles = theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    overflow: 'auto',
   },
 })
-const Poojas= ({classes})=>(
+const Poojas = ({ classes }) => (
   <div className={classes.root}>
-    <PoojasUsersGrid collection={constants.Poojas}/>
+    <PoojasUsersGrid collection={constants.Poojas} />
   </div>
 )
 export default withStyles(styles)(Poojas);

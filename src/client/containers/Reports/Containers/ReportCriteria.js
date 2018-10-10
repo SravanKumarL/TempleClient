@@ -42,7 +42,7 @@ const ReportCriteria = (props) => {
   }
   return (
     <div style={{ display: 'flex', flexGrow: 1, flexDirection: 'column' }}>
-      <Typography variant='subheading' align='center'>{heading}</Typography>
+      <Typography style={{ padding: 5 }} variant='subheading' align='center'>{heading}</Typography>
       {pooja}
       <Field
         elementType={DATE}

@@ -52,6 +52,7 @@ class CheckboxList extends React.Component {
     const { classes, poojas } = this.props;
     return (
       <div className={classes.root}>
+        
         <List>
           {poojas.map(pooja => (
             <ListItem
