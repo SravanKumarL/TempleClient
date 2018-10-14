@@ -27,8 +27,13 @@ const styles = theme => ({
 });
 
 class CheckboxList extends React.Component {
+  constructor() {
+    super();
+    this.selectAllHandler = this.selectAllHandler.bind(this);
+  }
   state = {
     checked: [],
+    selectAll: false,
   };
 
   handleToggle = value => () => {
@@ -47,35 +52,66 @@ class CheckboxList extends React.Component {
       checked: newChecked,
     });
   };
-
+  selectAllHandler = () => {
+    if (this.state.selectAll) {
+      this.props.changed('');
+      return this.setState({
+        checked: [],
+        selectAll: false,
+      });
+    }
+    const checked = this.props.poojas.map(pooja => pooja.value);
+    this.props.changed(checked.join(','));
+    return this.setState({ checked, selectAll: true });
+  }
   render() {
     const { classes, poojas } = this.props;
     return (
-      <div className={classes.root}>
-        
-        <List>
-          {poojas.map(pooja => (
-            <ListItem
-              key={pooja.value}
-              role={undefined}
-              button
-              style={{ height: 40 }}
-              onClick={this.handleToggle(pooja.value)}
-              className={classes.listItem}
-            >
-              <Checkbox
-                checked={this.state.checked.some(item => item === pooja.value)}
-                tabIndex={-1}
-                disableRipple
-                classes={{
-                  root: classes.checkroot,
-                  checked: classes.checked,
-                }}
-              />
-              <ListItemText primary={pooja.label} />
-            </ListItem>
-          ))}
-        </List>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <ListItem
+          key='Select All'
+          role={undefined}
+          button
+          style={{ height: 28, padding: 0 }}
+          onClick={this.selectAllHandler}
+          className={classes.listItem}
+        >
+          <Checkbox
+            checked={this.state.selectAll}
+            tabIndex={-1}
+            disableRipple
+            classes={{
+              root: classes.checkroot,
+              checked: classes.checked,
+            }}
+          />
+          <ListItemText primary='Select All' />
+        </ListItem>
+        <div className={classes.root}>
+          <List>
+            {poojas.map(pooja => (
+              <ListItem
+                key={pooja.value}
+                role={undefined}
+                button
+                style={{ height: 40 }}
+                onClick={this.handleToggle(pooja.value)}
+                className={classes.listItem}
+              >
+                <Checkbox
+                  checked={this.state.checked.some(item => item === pooja.value)}
+                  tabIndex={-1}
+                  disableRipple
+                  classes={{
+                    root: classes.checkroot,
+                    checked: classes.checked,
+                  }}
+                />
+                <ListItemText primary={pooja.label} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
       </div>
     );
   }
