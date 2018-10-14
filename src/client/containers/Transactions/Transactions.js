@@ -35,6 +35,7 @@ import {
   DIALOG_OPERATIONS
 } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
+import { Hidden } from '@material-ui/core';
 
 const { POOJAS, OTHERS } = TABS;
 
@@ -364,7 +365,9 @@ class Transactions extends React.Component {
               summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
             {message}
           </div>
-          <RecentTransaction />
+          <Hidden mdDown>
+            <RecentTransaction />
+          </Hidden> 
           <div className={classes.rightPane}>
             <SearchTransaction onRef={node => this.SearchTransaction = node} />
           </div>
