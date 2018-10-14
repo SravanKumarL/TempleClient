@@ -1,7 +1,7 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../client/shared/utility';
-
-const recentList = localStorage.getItem('recentList');
+const currentUser = sessionStorage.getItem('user');
+const recentList = localStorage.getItem(currentUser);
 
 const initialState = {
   message: null,
@@ -87,8 +87,13 @@ export const addToRecentList = (state, action) => {
     currentRecentList.pop();
   }
   currentRecentList.unshift(action.payload);
-  localStorage.setItem('recentList', JSON.stringify(currentRecentList));
+  const currentUser = sessionStorage.getItem('user');
+  localStorage.setItem(currentUser, JSON.stringify(currentRecentList));
   return updateObject(state, { recentList: currentRecentList });
+}
+
+export const loadRecentList = (state, action) => {
+  return updateObject(state, { recentList: action.payload ? action.payload : [] });
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -132,6 +137,8 @@ const reducer = (state = initialState, action) => {
       return isPrintedChanged(state, action);
     case actionTypes.ADD_TO_RECENT_LIST:
       return addToRecentList(state, action);
+    case actionTypes.LOAD_RECENT_LIST:
+      return loadRecentList(state, action);
     default:
       return state;
   }

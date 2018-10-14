@@ -24,6 +24,8 @@ export function* signInSaga(action) {
     sessionStorage.setItem('expirationDate', expirationDate);
     sessionStorage.setItem('user', response.data.user);
     sessionStorage.setItem('role', response.data.role);
+    const recentList = localStorage.getItem(response.data.user);
+    yield put(actions.loadRecentList(JSON.parse(recentList)));
     yield put(actions.authSuccess(response.data.token, response.data.user, response.data.role));
   }
   catch (error) {

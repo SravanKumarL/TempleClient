@@ -107,6 +107,13 @@ export const addToRecentList = (transaction) => {
   }
 }
 
+export const loadRecentList = (recentList) => {
+  return {
+    type: actionTypes.LOAD_RECENT_LIST,
+    payload: recentList,
+  }
+}
+
 export const searchReset = () => {
   return {
     type: actionTypes.SEARCH_TRANSACTIONS_RESET,

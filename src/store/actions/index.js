@@ -27,6 +27,7 @@ export {
   canBePrintedChanged,
   isPrintedChanged,
   addToRecentList,
+  loadRecentList
 } from './transactions.js';
 
 export {
