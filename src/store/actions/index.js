@@ -20,11 +20,13 @@ export {
   searchTransactionsSuccess,
   searchTransactionsFail,
   selectedTransactionChanged,
+  searchReset,
   openEditForm,
   usedTransactionChanged,
   editedTransactionChanged,
   canBePrintedChanged,
-  isPrintedChanged
+  isPrintedChanged,
+  addToRecentList,
 } from './transactions.js';
 
 export {

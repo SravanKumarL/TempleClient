@@ -20,6 +20,7 @@ export function* addTransactionSaga(action) {
         data: action.payload.change,
         headers
       });
+      yield put(actions.addToRecentList(action.payload.change));
       yield put(actions.addTransactionSuccess(response.data.message));
       yield put(actions.canBePrintedChanged(true));
     }

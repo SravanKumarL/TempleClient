@@ -4,7 +4,6 @@ import Pageview from '@material-ui/icons/Pageview';
 import Restore from '@material-ui/icons/Restore';
 import classNames from 'classnames';
 import _ from 'lodash';
-
 import withPoojaDetails from '../../../hoc/withPoojaDetails/withPoojaDetails';
 import createContainer from '../../../hoc/createContainer/createContainer';
 import TransactionForm from '../../../components/TransactionForm/TransactionForm';
@@ -14,7 +13,14 @@ import {
   checkValidity,
   convertToStartCase,
 } from '../../../shared/utility';
-import { FIELDS, FIELD_TYPES, PAYMENT_MODES, FIELD_PLACEHOLDERS, SELECTED_DAYS, DATEPICKER_MODE } from '../../../../store/constants/transactions';
+import {
+  FIELDS,
+  FIELD_TYPES,
+  PAYMENT_MODES,
+  FIELD_PLACEHOLDERS,
+  SELECTED_DAYS,
+  DATEPICKER_MODE,
+} from '../../../../store/constants/transactions';
 import { Button } from '@material-ui/core';
 
 
@@ -83,6 +89,7 @@ class CreateTransaction extends React.Component {
   constructor() {
     super();
     this.inputChangedHandler = this.inputChangedHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
     this.formResetHandler = this.formResetHandler.bind(this);
     this.getUpdatedTransacationForm = this.getUpdatedTransacationForm.bind(this);
   }
@@ -132,7 +139,7 @@ class CreateTransaction extends React.Component {
         [AMOUNT]: updateObject(newFormElement[AMOUNT], {
           value: newFormElement[DATES].value.length * (poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].amount : 0) || 0,
           disabled: true,
-          valid: true,  
+          valid: true,
         }),
         [TIME]: updateObject(newFormElement[TIME], {
           value: poojaDetails[newFormElement[POOJA].value] ? poojaDetails[newFormElement[POOJA].value].time : '12:00 AM to 12:00 AM',
@@ -209,6 +216,9 @@ class CreateTransaction extends React.Component {
     return formIsValid;
   }
   submitHandler = () => {
+    if (!this.getIsFormValid()) {
+      return;
+    }
     const transactionInformation = Object.keys(this.state.transactionForm).map(item => {
       const itemValue = this.state.transactionForm[item];
       const name = itemValue.elementConfig.placeholder;

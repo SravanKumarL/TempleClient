@@ -1,6 +1,8 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../client/shared/utility';
 
+const recentList = localStorage.getItem('recentList');
+
 const initialState = {
   message: null,
   error: null,
@@ -15,6 +17,7 @@ const initialState = {
   editedTransaction: null,
   option: null,
   editFormOpen: false,
+  recentList: (recentList && JSON.parse(recentList)) || [],
 }
 export const openEditForm = (state, action) => {
   return updateObject(state, { editFormOpen: action.payload });
@@ -48,6 +51,13 @@ export const searchTransactionsSuccess = (state, action) => {
     totalCount: action.totalCount || state.totalCount
   });
 }
+export const searchTransactionsReset = (state, action) => {
+  return updateObject(state, {
+    searchedTransactions: initialState.searchedTransactions,
+    totalCount: initialState.totalCount,
+  });
+}
+
 export const searchTransactionsFail = (state, action) => {
   return updateObject(state, { error: action.error, loading: false });
 }
@@ -57,9 +67,6 @@ export const onTransactionFailed = (state, action) => {
 export const onTransactionCommitted = (state, action) => {
   return updateObject(state, { message: action.payload.message });
 }
-// export const selectedTransactionChanged = (state, action) => {
-//   return updateObject(state, { selectedTransaction: action.transaction, option: action.option });
-// }
 export const usedTransactionChanged = (state, action) => {
   return updateObject(state, { usedTransaction: action.transaction, option: action.option });
 }
@@ -72,6 +79,16 @@ export const canBePrintedChanged = (state, action) => {
 
 export const isPrintedChanged = (state, action) => {
   return updateObject(state, { isPrinted: action.payload });
+}
+
+export const addToRecentList = (state, action) => {
+  const currentRecentList = [...state.recentList];
+  if (currentRecentList.length >= 14) {
+    currentRecentList.pop();
+  }
+  currentRecentList.unshift(action.payload);
+  localStorage.setItem('recentList', JSON.stringify(currentRecentList));
+  return updateObject(state, { recentList: currentRecentList });
 }
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -97,14 +114,14 @@ const reducer = (state = initialState, action) => {
       return searchTransactionsSuccess(state, action);
     case actionTypes.SEARCH_TRANSACTIONS_FAIL:
       return searchTransactionsFail(state, action);
+    case actionTypes.SEARCH_TRANSACTIONS_RESET:
+      return searchTransactionsReset(state, action);
 
     case actionTypes.ON_TRANSACTION_COMMITTED:
       return onTransactionCommitted(state, action);
     case actionTypes.ON_TRANSACTION_FAILED:
       return onTransactionFailed(state, action);
 
-    // case actionTypes.SELECTED_TRANSACTION_CHANGED:
-    //   return selectedTransactionChanged(state, action);
     case actionTypes.USED_TRANSACTION_CHANGED:
       return usedTransactionChanged(state, action);
     case actionTypes.EDITED_TRANSACTION_CHANGED:
@@ -113,6 +130,8 @@ const reducer = (state = initialState, action) => {
       return canBePrintedChanged(state, action);
     case actionTypes.IS_PRINTED_CHANGED:
       return isPrintedChanged(state, action);
+    case actionTypes.ADD_TO_RECENT_LIST:
+      return addToRecentList(state, action);
     default:
       return state;
   }

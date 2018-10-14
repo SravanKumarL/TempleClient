@@ -20,6 +20,8 @@ import constants from '../../../store/sagas/constants';
 import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
+import RecentTransaction from './Containers/RecentTransaction';
+import { HotKeys } from 'react-hotkeys';
 import {
   updateObject,
   convertToStartCase,
@@ -67,10 +69,7 @@ const styles = theme => ({
   panes: {
     display: 'flex',
     flexGrow: 1,
-    height: '100%',
     justifyContent: 'center',
-
-
   },
   leftPane: {
     display: 'flex',
@@ -79,7 +78,6 @@ const styles = theme => ({
     display: 'none',
     [theme.breakpoints.up('lg')]: {
       display: 'flex',
-      marginLeft: 'auto',
     }
   },
   container: {
@@ -165,7 +163,6 @@ const initialState = {
   activeTab: POOJAS,
   transactionInformation: [],
   transaction: {},
-  // selectedTransaction: {},
   editedTransaction: {},
   usedTransaction: {},
   unchangedTransaction: {},
@@ -181,6 +178,14 @@ class Transactions extends React.Component {
     this.modalCloseHandler = this.modalCloseHandler.bind(this);
   }
   state = { ...initialState };
+  keyMap = {
+    'submit': 'alt+s',
+    'reset': 'alt+r',
+  }
+  handlers = {
+    'submit': () => this.CreateTransaction.submitHandler(),
+    'reset': () => this.CreateTransaction.formResetHandler(),
+  }
   static getDerivedStateFromProps(nextProps, prevState) {
     let newState = { ...prevState };
     if (nextProps.message !== prevState.message) {
@@ -328,41 +333,44 @@ class Transactions extends React.Component {
     transactionInformation.createdBy = createdBy;
     transactionInformation.createdDate = createdDate;
     return (
-      <div className={classes.panes} >
-        <div className={classes.middlePane}>
-          <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
-            <Tabs classes={{
-              root: classes.root,
-              flexContainer: classes.flexContainer,
-              indicator: classes.span,
-              scroller: classes.scroller,
-            }} value={activeTab}
-              onChange={this.tabChangeHandler}
-            >
-              <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
-              <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
-            </Tabs>
-          </Fade>
-          <CreateTransaction
-            onRef={node => (this.CreateTransaction = node)}
-            submit={this.formSubmitHandler}
-            activeTab={activeTab}
-            selectedTransaction={usedTransaction}
-          />
-          <TransactionSummary
-            open={modalOpen}
-            isPrinted={isPrinted}
-            transactionFields={Object.values(transactionInformation)}
-            createdBy={this.props.user}
-            print={this.printHandler}
-            summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
-          {message}
-        </div>
-        <div className={classes.rightPane}>
-          <SearchTransaction />
-        </div>
-        {dialog}
-      </div >
+      <HotKeys style={{ display: 'flex' }} keyMap={this.keyMap} handlers={this.handlers}>
+        <div className={classes.panes} >
+          <div className={classes.middlePane}>
+            <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
+              <Tabs classes={{
+                root: classes.root,
+                flexContainer: classes.flexContainer,
+                indicator: classes.span,
+                scroller: classes.scroller,
+              }} value={activeTab}
+                onChange={this.tabChangeHandler}
+              >
+                <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
+                <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
+              </Tabs>
+            </Fade>
+            <CreateTransaction
+              onRef={node => (this.CreateTransaction = node)}
+              submit={this.formSubmitHandler}
+              activeTab={activeTab}
+              selectedTransaction={usedTransaction}
+            />
+            <TransactionSummary
+              open={modalOpen}
+              isPrinted={isPrinted}
+              transactionFields={Object.values(transactionInformation)}
+              createdBy={this.props.user}
+              print={this.printHandler}
+              summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
+            {message}
+          </div>
+          <RecentTransaction />
+          <div className={classes.rightPane}>
+            <SearchTransaction onRef={node => this.SearchTransaction = node} />
+          </div>
+          {dialog}
+        </div >
+      </HotKeys>
     );
   }
 }

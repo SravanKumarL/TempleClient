@@ -28,16 +28,20 @@ class SearchTransaction extends React.Component {
     super();
     this.baseState = this.state;
     this.optionClickedHandler = this.optionClickedHandler.bind(this);
+    this.openSearchPanelHandler = this.openSearchPanelHandler.bind(this);
   }
   state = { ...initialState };
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.searchedTransactions !== prevState.prevSearchedTransactions) {
       return {
         searchedTransactions: nextProps.searchedTransactions, prevSearchedTransactions: nextProps.searchedTransactions,
-        count: nextProps.searchedTransactions.length
+        count: nextProps.searchedTransactions.length,
       };
     }
     return null;
+  }
+  componentWillUnmount() {
+    this.props.searchReset();
   }
   openSearchPanelHandler = () => this.setState({ showSearchButton: false, searchPanelOpen: true, });
   closeSearchPanelHandler = () => {

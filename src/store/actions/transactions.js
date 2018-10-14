@@ -5,7 +5,7 @@ export const openEditForm = (status) => {
     type: actionTypes.OPEN_EDIT_FORM,
     payload: status
   }
-} 
+}
 export const addTransactionStarted = () => {
   return {
     type: actionTypes.ADD_TRANSACTION_START,
@@ -74,13 +74,6 @@ export const searchTransactionsFail = (error) => {
   }
 }
 
-// export const selectedTransactionChanged = (transaction, option) => {
-//   return {
-//     type: actionTypes.SELECTED_TRANSACTION_CHANGED,
-//     transaction,
-//     option,
-//   }
-// }
 export const usedTransactionChanged = (transaction, option) => {
   return {
     type: actionTypes.USED_TRANSACTION_CHANGED,
@@ -104,5 +97,18 @@ export const isPrintedChanged = (status) => {
   return {
     type: actionTypes.IS_PRINTED_CHANGED,
     payload: status,
+  }
+}
+
+export const addToRecentList = (transaction) => {
+  return {
+    type: actionTypes.ADD_TO_RECENT_LIST,
+    payload: transaction,
+  }
+}
+
+export const searchReset = () => {
+  return {
+    type: actionTypes.SEARCH_TRANSACTIONS_RESET,
   }
 }
