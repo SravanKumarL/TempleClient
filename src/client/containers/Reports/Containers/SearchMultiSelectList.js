@@ -13,6 +13,7 @@ const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 500,
+    minWidth: 500,
     maxHeight: 200,
     minHeight: 200,
     overflow: 'auto',
