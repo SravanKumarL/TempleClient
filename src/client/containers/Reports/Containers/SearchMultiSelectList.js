@@ -112,7 +112,7 @@ class CheckboxList extends React.Component {
     const { classes } = this.props;
     let { poojas } = this.props;
     poojas = poojas.filter(pooja => {
-      return pooja.value.toLowerCase().includes(this.state.searchValue) ? pooja : null;
+      return pooja.value.toLowerCase().includes(this.state.searchValue.toLowerCase()) ? pooja : null;
     });
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
