@@ -6,12 +6,15 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import green from '@material-ui/core/colors/green';
-
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 500,
     maxHeight: 200,
+    minHeight: 200,
     overflow: 'auto',
     margin: '5px 0px',
     border: '1px solid #cad0d7',
@@ -24,6 +27,43 @@ const styles = theme => ({
     },
   },
   checked: {},
+  bootstrapRoot: {
+    'label + &': {
+      marginTop: theme.spacing.unit * 3,
+    },
+  },
+  bootstrapInput: {
+    borderRadius: 4,
+    backgroundColor: theme.palette.common.white,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    padding: '10px 12px',
+    transition: theme.transitions.create(['border-color', 'box-shadow']),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    '&:focus': {
+      borderColor: '#80bdff',
+      boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+    },
+  },
+  bootstrapFormLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  margin: {
+    margin: theme.spacing.unit,
+  },
 });
 
 class CheckboxList extends React.Component {
@@ -34,6 +74,7 @@ class CheckboxList extends React.Component {
   state = {
     checked: [],
     selectAll: false,
+    searchValue: '',
   };
 
   handleToggle = value => () => {
@@ -64,15 +105,42 @@ class CheckboxList extends React.Component {
     this.props.changed(checked.join(','));
     return this.setState({ checked, selectAll: true });
   }
+  searchValueChangedHandler = (event) => {
+    this.setState({ searchValue: event.target.value });
+  }
   render() {
-    const { classes, poojas } = this.props;
+    const { classes } = this.props;
+    let { poojas } = this.props;
+    poojas = poojas.filter(pooja => {
+      return pooja.value.toLowerCase().includes(this.state.searchValue) ? pooja : null;
+    });
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <FormControl className={classes.margin}>
+          <InputLabel shrink htmlFor="bootstrap-input" className={classes.bootstrapFormLabel}>
+            Search a Pooja...
+        </InputLabel>
+          <Input
+            id="bootstrap-input"
+            disableUnderline
+            value={this.state.searchValue}
+            onChange={this.searchValueChangedHandler}
+            classes={{
+              root: classes.bootstrapRoot,
+              input: classes.bootstrapInput,
+            }}
+          />
+        </FormControl>
+        {/* <TextField
+          type='text' label='Search a pooja...' value={this.state.searchValue}
+          changed={this.searchValueChangedHandler}
+          showLabels={true}
+        /> */}
         <ListItem
           key='Select All'
           role={undefined}
           button
-          style={{ height: 28, padding: 0 }}
+          style={{ height: 28, padding: 0, marginTop: 8 }}
           onClick={this.selectAllHandler}
           className={classes.listItem}
         >
