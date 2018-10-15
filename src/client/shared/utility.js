@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { capitalize, toLower/* , sampleSize, sortBy */ } from 'lodash';
 import { CALENDER_MODE } from '../../store/constants/transactions';
+import idb from 'idb';
+
 export const updateObject = (oldObject, updatedObject) => {
   return {
     ...oldObject,
@@ -196,4 +198,69 @@ export const getFormattedColumns = (columns) => {
   return [];
 }
 export const checkIfObject = (obj) => obj !== null && typeof obj === 'object';
+
+//Indexed DB Utility
+
+export function writeData(st, data) {
+  const dbPromise = idb.open('user-store', 1, function (db) {
+    if (!db.objectStoreNames.contains('users')) {
+      db.createObjectStore('users', {keyPath: 'user'});
+    }
+  });
+  return dbPromise
+    .then(function(db) {
+      var tx = db.transaction(st, 'readwrite');
+      var store = tx.objectStore(st);
+      store.put(data);
+      return tx.complete;
+    });
+}
+
+export function readAllData(st) {
+  const dbPromise = idb.open('user-store', 1, function (db) {
+    if (!db.objectStoreNames.contains('users')) {
+      db.createObjectStore('users', {keyPath: 'user'});
+    }
+  });
+  return dbPromise
+    .then(function(db) {
+      var tx = db.transaction(st, 'readonly');
+      var store = tx.objectStore(st);
+      return store.getAll();
+    });
+}
+
+export function clearAllData(st) {
+  const dbPromise = idb.open('user-store', 1, function (db) {
+    if (!db.objectStoreNames.contains('users')) {
+      db.createObjectStore('users', {keyPath: 'user'});
+    }
+  });
+  return dbPromise
+    .then(function(db) {
+      var tx = db.transaction(st, 'readwrite');
+      var store = tx.objectStore(st);
+      store.clear();
+      return tx.complete;
+    });
+}
+
+export function deleteItemFromData(st, id) {
+  const dbPromise = idb.open('user-store', 1, function (db) {
+    if (!db.objectStoreNames.contains('users')) {
+      db.createObjectStore('users', {keyPath: 'user'});
+    }
+  });
+  dbPromise
+    .then(function(db) {
+      var tx = db.transaction(st, 'readwrite');
+      var store = tx.objectStore(st);
+      store.delete(id);
+      return tx.complete;
+    })
+    .then(function() {
+      console.log('Item deleted!');
+    });
+}
+
   /* eslintenable */

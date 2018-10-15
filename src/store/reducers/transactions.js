@@ -1,7 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../../client/shared/utility';
-const currentUser = sessionStorage.getItem('user');
-const recentList = localStorage.getItem(currentUser);
+import { updateObject, writeData } from '../../client/shared/utility';
+// const recentList = 
 
 const initialState = {
   message: null,
@@ -17,7 +16,7 @@ const initialState = {
   editedTransaction: null,
   option: null,
   editFormOpen: false,
-  recentList: (recentList && JSON.parse(recentList)) || [],
+  recentList: [],
 }
 export const openEditForm = (state, action) => {
   return updateObject(state, { editFormOpen: action.payload });
@@ -82,13 +81,14 @@ export const isPrintedChanged = (state, action) => {
 }
 
 export const addToRecentList = (state, action) => {
-  const currentRecentList = [...state.recentList];
+  let currentRecentList = [...state.recentList];
   if (currentRecentList.length >= 14) {
-    currentRecentList.pop();
+    currentRecentList.splice(-1, 1);
   }
-  currentRecentList.unshift(action.payload);
+  currentRecentList.splice(0, 0, action.payload);
   const currentUser = sessionStorage.getItem('user');
-  localStorage.setItem(currentUser, JSON.stringify(currentRecentList));
+  const list = { user: currentUser, recentList: currentRecentList };
+  writeData('users', list);
   return updateObject(state, { recentList: currentRecentList });
 }
 

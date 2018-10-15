@@ -109,7 +109,7 @@ class CreateTransaction extends React.Component {
       newState.poojaDetails = nextProps.poojaDetails;
       newState.transactionForm.pooja.elementConfig.options = options;
     }
-    if (selectedTransaction && !_.isEqual(selectedTransaction, prevState.selectedTransaction)) {
+    if (selectedTransaction) {
       newFormElement = updateObject(prevState.transactionForm, {
         phoneNumber: { ...prevState.transactionForm.phoneNumber, value: selectedTransaction.phoneNumber, valid: checkValidity(PHONE_NUMBER, selectedTransaction.phoneNumber), touched: true },
         names: { ...prevState.transactionForm.names, value: selectedTransaction.names, valid: checkValidity(NAMES, selectedTransaction.names), touched: true },
@@ -160,6 +160,8 @@ class CreateTransaction extends React.Component {
 
   formResetHandler = () => {
     this.props.onDatepickerReset([], true);
+    this.props.usedTransactionChanged(null, '');
+    this.props.editedTransactionChanged(null, '');
     initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
     const newState = JSON.parse(JSON.stringify(initialState));
     this.setState({ ...newState });

@@ -3,6 +3,7 @@ import { delay } from 'redux-saga';
 
 import * as actions from '../actions';
 import axios from '../../axios/transactions';
+import { readAllData } from '../../client/shared/utility';
 
 
 export function* signInSaga(action) {
@@ -24,8 +25,9 @@ export function* signInSaga(action) {
     sessionStorage.setItem('expirationDate', expirationDate);
     sessionStorage.setItem('user', response.data.user);
     sessionStorage.setItem('role', response.data.role);
-    const recentList = localStorage.getItem(response.data.user);
-    yield put(actions.loadRecentList(JSON.parse(recentList)));
+    const currentUserRecentListData = yield readAllData('users');
+    const recentList = currentUserRecentListData[0].user === response.data.user ? currentUserRecentListData[0].recentList : [];
+    yield put(actions.loadRecentList(recentList));
     yield put(actions.authSuccess(response.data.token, response.data.user, response.data.role));
   }
   catch (error) {

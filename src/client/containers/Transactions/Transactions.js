@@ -21,12 +21,12 @@ import classNames from 'classnames';
 import EditTransactions from './Containers/EditTransactions';
 import printHtml from 'print-html-element';
 import RecentTransaction from './Containers/RecentTransaction';
-import { HotKeys } from 'react-hotkeys';
 import {
   updateObject,
   convertToStartCase,
   getFormattedDate,
-  getCurrentDate
+  getCurrentDate,
+  readAllData
 } from '../../shared/utility';
 import {
   SELECTED_DAYS,
@@ -180,28 +180,29 @@ class Transactions extends React.Component {
   }
   state = { ...initialState };
   componentDidMount() {
-    window.addEventListener('keydown', this.keyDownHandler)
+    window.addEventListener('keydown', this.keyDownHandler);
+    const currentUser = sessionStorage.getItem('user');
+    readAllData('users').then(res => {
+      if (res[0].user === currentUser) {
+        this.props.loadRecentList(res[0].recentList);
+      } else {
+        return [];
+      }
+    })
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.keyDownHandler);
   }
   keyDownHandler = (event) => {
-    if (event.altKey ) {
+    if (event.altKey) {
       event.keyCode === 83 && this.CreateTransaction.submitHandler();
       event.keyCode === 82 && this.CreateTransaction.formResetHandler();
-      event.keyCode === 88 && this.printHandler();
-      // event.keyCode === 18 && this.modalCloseHandler();
-      // event.keyCode === 72 && this.SearchTransaction.openSearchPanelHandler();
     }
-    
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     let newState = { ...prevState };
     if (nextProps.message !== prevState.message) {
       newState = { ...newState, message: nextProps.message, snackOpen: true };
-    }
-    if (nextProps.usedTransaction && (nextProps.usedTransaction !== prevState.unchangedUsedTransaction)) {
-      newState = { ...newState, usedTransaction: nextProps.usedTransaction, unchangedUsedTransaction: nextProps.usedTransaction }
     }
     if (nextProps.editedTransaction && (nextProps.editedTransaction !== prevState.unchangedEditedTransaction)) {
       newState = { ...newState, editedTransaction: nextProps.editedTransaction, unchangedEditedTransaction: nextProps.editedTransaction }
@@ -219,6 +220,7 @@ class Transactions extends React.Component {
     if (operation === 'close') {
       this.props.isPrintedChanged(false);
       this.setState({ modalOpen: false });
+      this.props.usedTransactionChanged(null, '');
       this.CreateTransaction.formResetHandler();
       return;
       // return this.setState({ ...initialState });
@@ -235,8 +237,6 @@ class Transactions extends React.Component {
     }
     this.props.commitEntityTransaction(constants.add,
       constants.Transactions, { ...this.state.transaction, [FIELDS.FORMATTED_DATES]: formattedDates });
-    // this.modalCloseHandler();
-    // this.setState({ ...initialState });
 
   }
   formSubmitHandler = (transactionInformation) => {
@@ -260,6 +260,7 @@ class Transactions extends React.Component {
       const selectedDays = dateValue[SELECTED_DAYS];
       dateValue.value = `${selectedDates}${selectedDays.length === 7 ? '' : ` (${selectedDays.join(',')})`}`;
     }
+    this.props.usedTransactionChanged(null, '');
     this.setState({ modalOpen: true, transactionInformation: formattedTransactionInfo, transaction });
   }
   closeDialogHandler = () => {
@@ -286,8 +287,8 @@ class Transactions extends React.Component {
     this.setState((prevState) => ({ editable: !prevState.editable, updates: {} }));
   }
   render() {
-    const { classes, editFormOpen, canBePrinted, isPrinted } = this.props;
-    const { activeTab, modalOpen, transactionInformation, usedTransaction, editedTransaction, editable } = this.state;
+    const { classes, editFormOpen, canBePrinted, isPrinted, usedTransaction } = this.props;
+    const { activeTab, modalOpen, transactionInformation, editedTransaction, editable } = this.state;
     const PrimaryIcon = editable ? Save : ModeEdit;
     const primaryText = editable ? 'Save' : 'Edit';
     const SecondaryIcon = editable ? Undo : Close;
@@ -296,8 +297,6 @@ class Transactions extends React.Component {
       this.props.canBePrintedChanged(false);
       this.props.isPrintedChanged(true);
       const printableElement = document.getElementById('transactionSummary');
-      // const tableElement = document.getElementById('printHeader');
-      // tableElement.style.marginBottom = '20px';
       printHtml.printElement(printableElement);
     }
     let dialog = (
@@ -342,46 +341,46 @@ class Transactions extends React.Component {
     transactionInformation.createdBy = createdBy;
     transactionInformation.createdDate = createdDate;
     return (
-      <HotKeys style={{ display: 'flex' }} keyMap={this.keyMap} handlers={this.handlers}>
-        <div className={classes.panes} >
-          <div className={classes.middlePane}>
-            <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
-              <Tabs classes={{
-                root: classes.root,
-                flexContainer: classes.flexContainer,
-                indicator: classes.span,
-                scroller: classes.scroller,
-              }} value={activeTab}
-                onChange={this.tabChangeHandler}
-              >
-                <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
-                <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
-              </Tabs>
-            </Fade>
-            <CreateTransaction
-              onRef={node => (this.CreateTransaction = node)}
-              submit={this.formSubmitHandler}
-              activeTab={activeTab}
-              selectedTransaction={usedTransaction}
-            />
-            <TransactionSummary
-              open={modalOpen}
-              isPrinted={isPrinted}
-              transactionFields={Object.values(transactionInformation)}
-              createdBy={this.props.user}
-              print={this.printHandler}
-              summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
-            {message}
-          </div>
-          <Hidden mdDown>
-            <RecentTransaction />
-          </Hidden> 
-          <div className={classes.rightPane}>
-            <SearchTransaction onRef={node => (this.SearchTransaction = node)} />
-          </div>
-          {dialog}
-        </div >
-      </HotKeys>
+      // <HotKeys style={{ display: 'flex' }} keyMap={this.keyMap} handlers={this.handlers}>
+      <div className={classes.panes} >
+        <div className={classes.middlePane}>
+          <Fade in={activeTab === POOJAS || activeTab === OTHERS} timeout={500} mountOnEnter unmountOnExit>
+            <Tabs classes={{
+              root: classes.root,
+              flexContainer: classes.flexContainer,
+              indicator: classes.span,
+              scroller: classes.scroller,
+            }} value={activeTab}
+              onChange={this.tabChangeHandler}
+            >
+              <Tab classes={newTabClasses} value={POOJAS} label={convertToStartCase(POOJAS)} icon={<Event />} />
+              <Tab classes={newTabClasses} value={OTHERS} label={convertToStartCase(OTHERS)} icon={<Description />} />
+            </Tabs>
+          </Fade>
+          <CreateTransaction
+            onRef={node => (this.CreateTransaction = node)}
+            submit={this.formSubmitHandler}
+            activeTab={activeTab}
+            selectedTransaction={usedTransaction}
+          />
+          <TransactionSummary
+            open={modalOpen}
+            isPrinted={isPrinted}
+            transactionFields={Object.values(transactionInformation)}
+            createdBy={this.props.user}
+            print={this.printHandler}
+            summaryClosed={this.modalCloseHandler(isPrinted ? DIALOG_OPERATIONS.CLOSE : DIALOG_OPERATIONS.CANCEL)} />
+          {message}
+        </div>
+        <Hidden mdDown>
+          <RecentTransaction />
+        </Hidden>
+        <div className={classes.rightPane}>
+          <SearchTransaction onRef={node => (this.SearchTransaction = node)} />
+        </div>
+        {dialog}
+      </div >
+      // </HotKeys>
     );
   }
 }
