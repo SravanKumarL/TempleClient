@@ -179,13 +179,21 @@ class Transactions extends React.Component {
     this.modalCloseHandler = this.modalCloseHandler.bind(this);
   }
   state = { ...initialState };
-  keyMap = {
-    'submit': 'alt+s',
-    'reset': 'alt+r',
+  componentDidMount() {
+    window.addEventListener('keydown', this.keyDownHandler)
   }
-  handlers = {
-    'submit': () => this.CreateTransaction.submitHandler(),
-    'reset': () => this.CreateTransaction.formResetHandler(),
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.keyDownHandler);
+  }
+  keyDownHandler = (event) => {
+    if (event.altKey ) {
+      event.keyCode === 83 && this.CreateTransaction.submitHandler();
+      event.keyCode === 82 && this.CreateTransaction.formResetHandler();
+      event.keyCode === 88 && this.printHandler();
+      // event.keyCode === 18 && this.modalCloseHandler();
+      // event.keyCode === 72 && this.SearchTransaction.openSearchPanelHandler();
+    }
+    
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     let newState = { ...prevState };
@@ -207,7 +215,7 @@ class Transactions extends React.Component {
 
   modalOpenHandler = () => this.setState({ modalOpen: true });
 
-  modalCloseHandler = (operation) => () => {
+  modalCloseHandler = (operation = DIALOG_OPERATIONS.CANCEL) => () => {
     if (operation === 'close') {
       this.props.isPrintedChanged(false);
       this.setState({ modalOpen: false });
@@ -369,7 +377,7 @@ class Transactions extends React.Component {
             <RecentTransaction />
           </Hidden> 
           <div className={classes.rightPane}>
-            <SearchTransaction onRef={node => this.SearchTransaction = node} />
+            <SearchTransaction onRef={node => (this.SearchTransaction = node)} />
           </div>
           {dialog}
         </div >
