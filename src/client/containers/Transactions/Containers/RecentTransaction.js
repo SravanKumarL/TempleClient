@@ -10,7 +10,8 @@ const styles = {
     flexDirection: 'column',
     margin: '2vh 0px 0px 3vh',
     marginRight: '15%',
-    height: '83vh'
+    height: '83vh',
+    maxWidth: 320,
   },
   header: {
     display: 'flex',
