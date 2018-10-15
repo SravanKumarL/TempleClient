@@ -26,8 +26,10 @@ export function* signInSaga(action) {
     sessionStorage.setItem('user', response.data.user);
     sessionStorage.setItem('role', response.data.role);
     const currentUserRecentListData = yield readAllData('users');
-    const recentList = currentUserRecentListData[0].user === response.data.user ? currentUserRecentListData[0].recentList : [];
-    yield put(actions.loadRecentList(recentList));
+    if (currentUserRecentListData.length > 0) {
+      const recentList =  currentUserRecentListData[0].user === response.data.user ? currentUserRecentListData[0].recentList : [];
+      yield put(actions.loadRecentList(recentList));
+    }
     yield put(actions.authSuccess(response.data.token, response.data.user, response.data.role));
   }
   catch (error) {

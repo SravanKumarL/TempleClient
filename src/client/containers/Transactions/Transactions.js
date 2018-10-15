@@ -183,7 +183,7 @@ class Transactions extends React.Component {
     window.addEventListener('keydown', this.keyDownHandler);
     const currentUser = sessionStorage.getItem('user');
     readAllData('users').then(res => {
-      if (res[0].user === currentUser) {
+      if (res.length > 0 && res[0].user === currentUser) {
         this.props.loadRecentList(res[0].recentList);
       } else {
         return [];
