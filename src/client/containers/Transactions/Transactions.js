@@ -32,7 +32,8 @@ import {
   SELECTED_DAYS,
   DATEPICKER_MODE,
   FIELDS,
-  DIALOG_OPERATIONS
+  DIALOG_OPERATIONS,
+  SEARCH_OPERATIONS
 } from '../../../store/constants/transactions';
 import { TABS } from '../../../store/constants/transactions';
 import { Hidden } from '@material-ui/core';
@@ -197,7 +198,11 @@ class Transactions extends React.Component {
     if (event.altKey) {
       event.keyCode === 83 && this.CreateTransaction.submitHandler();
       event.keyCode === 82 && this.CreateTransaction.formResetHandler();
+      event.keyCode === 85 && this.useMostRecentTransaction();
     }
+  }
+  useMostRecentTransaction = () => {
+    this.props.usedTransactionChanged(this.props.recentList[0] || null, SEARCH_OPERATIONS.USE);
   }
   static getDerivedStateFromProps(nextProps, prevState) {
     let newState = { ...prevState };
@@ -396,6 +401,7 @@ const mapStateToProps = (state) => {
     usedTransaction: state.transactions.usedTransaction,
     canBePrinted: state.transactions.canBePrinted,
     isPrinted: state.transactions.isPrinted,
+    recentList: state.transactions.recentList,
   }
 }
 
