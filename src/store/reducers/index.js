@@ -6,13 +6,16 @@ import transactions from './transactions';
 import { entity } from './entity';
 import datePicker from './datepicker';
 import ManagementReport from './managementReport';
+import constants from '../sagas/constants';
+import nativeDatePicker from './nativeDatePicker';
 export default combineReducers({
   auth,
   form,
   transactions,
-  poojas: entity('poojas'),
-  reports: entity('reports'),
-  users: entity('users'),
+  [constants.Poojas]: entity(constants.Poojas),
+  [constants.Reports]: entity(constants.Reports),
+  [constants.Users]: entity(constants.Users),
   datePicker,
+  nativeDatePicker,
   ManagementReport
 });

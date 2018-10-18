@@ -4,7 +4,8 @@ import {
     getAllDays,
     isFilterApplied,
     getDefaultCalendarOptions,
-    parseDateObject
+    parseDateObject,
+    fillRange
 } from '../../client/shared/utility';
 import {
     ON_DAY_CHANGED,
@@ -20,7 +21,7 @@ import {
 } from '../actions/actionTypes';
 import { createSelector } from 'reselect';
 import { ALL_DAYS, CALENDER_MODE } from '../constants/transactions';
-import moment from 'moment';
+
 const { RANGE, MULTIPLE } = CALENDER_MODE;
 const getDays = state => state.selectedDays;
 const getDatesInRange = state => {
@@ -28,13 +29,7 @@ const getDatesInRange = state => {
     if (unfilteredRange.length === 1) {
         return unfilteredRange;
     }
-    let dates = [];
-    let i = new Date(unfilteredRange[0]);
-    while (moment(i, "DD/MM/YYYY") <= moment(unfilteredRange[1], "DD/MM/YYYY")) {
-        dates.push(new Date(i));
-        i = new Date(i.setDate(i.getDate() + 1));
-    }
-    return dates;
+    return fillRange(unfilteredRange[0], unfilteredRange[1]);
 }
 const getRangeOfDates = createSelector(getDatesInRange, rangeOfDates => rangeOfDates);
 const getSelectedDays = createSelector(getDays, days => days);
@@ -44,8 +39,8 @@ const getFilteredDates = createSelector(getSelectedDays, getRangeOfDates,
 const defaultState = {
     selectedDays: getDaysOfWeek(), filteredDates: [new Date()], filtered: false,
     isDayFilterApplied: false, mode: RANGE, unfilteredRange: [new Date()], reset: false,
-    calendarOptions: getDefaultCalendarOptions(RANGE), hardReset: false, 
-    rangePickerReset:false
+    calendarOptions: getDefaultCalendarOptions(RANGE), hardReset: false,
+    rangePickerReset: false
 };
 const datePicker = (state = defaultState, action) => {
     switch (action.type) {

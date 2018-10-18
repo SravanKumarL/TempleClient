@@ -4,6 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import AppBar from '../../components/Navigation/AppBar/AppBar';
 import createContainer from '../createContainer/createContainer';
+import constants from '../../../store/sagas/constants';
 
 const styles = theme => ({
   appFrame: {
@@ -35,6 +36,10 @@ const styles = theme => ({
 class Layout extends React.Component {
   handleLogout = () => {
     this.props.history.replace('/');
+    this.props.onDatepickerReset([], true);
+    this.props.nativeHardResetDatePicker();
+    [constants.Poojas, constants.Users, constants.Transactions].forEach(entity => this.props.resetEntity(entity));
+    this.props.resetAllUsersCheck();
     this.props.authLogout();
   }
   render() {
@@ -42,7 +47,7 @@ class Layout extends React.Component {
     return (
       <div className={classes.appFrame}>
         <AppBar
-          activeTab = {activeTab}
+          activeTab={activeTab}
           logout={this.handleLogout}
           role={role}
           activeTabChanged={activeTabChanged}

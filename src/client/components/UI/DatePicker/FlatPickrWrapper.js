@@ -9,30 +9,41 @@ import {
     getCurrentDate,
     pushIgnoredFocusElements,
     getDaysOfWeek,
-    parseDateObject
+    parseDateObject,
 } from '../../../shared/utility';
-import RangeDatePicker from './RangeDatePicker';
-import { SingleDatePicker, MultiDatePicker } from './SingleMultiDatePicker';
+// import RangeDatePicker from './RangeDatePicker';
+import { /* SingleDatePicker, */ MultiDatePicker } from './SingleMultiDatePicker';
 import DaysSelect from './DaysSelect';
 import { connect } from 'react-redux';
 import {
     onDatepickerReset,
     setCalendarOptions,
+    onSingleMultiDateChanged,
+    onDateChanged
 } from '../../../../store/actions/datepicker';
-
+import SingleDatePicker from './native/singleDatePicker';
+import RangePicker from './native/rangePicker';
+import {
+    onNativeChangeLifted,
+    nativeSetDefaultDate,
+    nativeSoftResetDatePicker,
+    nativeHardResetDatePicker
+} from '../../../../store/actions/nativeDatePicker';
 const { RANGE, SINGLE, MULTIPLE } = CALENDER_MODE;
+
 class DatePickerWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.initialValue = [new Date()];
+        this.dateSlctnChngdHandler = this.dateSlctnChngdHandler.bind(this);
         if (props.value) {
             this.initialValue = parseDateObject(props.value) || this.initialValue; //Convert into date object
         }
+        this.defaultState = {
+            mode: SINGLE,
+        }
+        this.state = { ...this.defaultState };
     }
-    defaultState = {
-        mode: SINGLE,
-    }
-    state = { ...this.defaultState };
     onResetDate = () => {
         const { onDateSelectionChanged } = this.props;
         if (onDateSelectionChanged) {
@@ -40,15 +51,18 @@ class DatePickerWrapper extends React.Component {
         }
     }
     modeSlctnChngdHandler = (selectedMode) => {
-        this.setState({ mode: selectedMode });
+        this.setState({ ...this.defaultState, mode: selectedMode });
         this.props.onDatepickerReset(this.initialValue);
+        this.props.nativeSoftResetDatePicker();
         this.props.setCalendarOptions(this.defaultCalendarOptions);
     }
     dateSlctnChngdHandler = () => {
-        const { onDateSelectionChanged, filteredDates } = this.props;
+        const { onDateSelectionChanged, filteredDates, nativeFilteredDates } = this.props;
+        const resFilteredDates = this.state.mode === MULTIPLE ? filteredDates : nativeFilteredDates;
         if (onDateSelectionChanged) {
-            onDateSelectionChanged(filteredDates.map(date => getCurrentDate(date)), this.props.selectedDays,
+            onDateSelectionChanged(resFilteredDates.map(date => getCurrentDate(date)), this.props.selectedDays,
                 this.state.mode);
+            this.props.onNativeChangeLifted();
         }
     }
     clearClickedHandler = () => this.modeSlctnChngdHandler(this.state.mode);
@@ -59,22 +73,30 @@ class DatePickerWrapper extends React.Component {
             [document.getElementById('datePickerWrap'), document.getElementById('selection')]);
         this.props.onDatepickerReset(this.initialValue);
         this.props.setCalendarOptions(this.defaultCalendarOptions);
+        this.props.nativeSetDefaultDate(['from', 'to', 'singleDate']
+            .reduce((acc, id) => ({ ...acc, [id]: this.initialValue[0] }), {}));
+    }
+    componentWillUnmount() {
+        this.props.nativeHardResetDatePicker();
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.reset !== nextProps.reset) {
             this.onResetDate();
             return true;
         }
-        return this.state.mode !== nextState.mode;
+        return this.state.mode !== nextState.mode || this.props.nativeChanged !== nextProps.nativeChanged;
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.hardReset !== this.props.hardReset) {
             this.setState(this.defaultState);
         }
+        else if (this.props.nativeChanged) {
+            this.dateSlctnChngdHandler();
+        }
     }
     render() {
         const { mode } = this.state;
-        const { reset, addFallBack } = this.props;
+        const { reset/* , addFallBack */ } = this.props;
         let commonProps = {
             onDateSelectionChanged: this.dateSlctnChngdHandler,
             onClearClicked: this.clearClickedHandler
@@ -90,9 +112,14 @@ class DatePickerWrapper extends React.Component {
                         </div>}
                 </div>
                 <div id="datePickerWrap">
-                    {mode === RANGE ? <RangeDatePicker {...commonProps} key={reset} addFallBack={addFallBack} /> :
+                    {mode === RANGE ? <RangePicker />
+                        : (mode === SINGLE ? <SingleDatePicker />
+                            : <MultiDatePicker {...commonProps} key={reset} />)}
+
+
+                    {/* {mode === RANGE ? <RangeDatePicker {...commonProps} key={reset} addFallBack={addFallBack} /> :
                         (mode === SINGLE ? <SingleDatePicker {...commonProps} key={reset} /> :
-                            <MultiDatePicker {...commonProps} key={reset} />)}
+                            <MultiDatePicker {...commonProps} key={reset} />)} */}
                 </div>
             </div>
         );
@@ -107,6 +134,13 @@ const mapStateToProps = state => ({
     filteredDates: state.datePicker.filteredDates,
     calendarOptions: state.datePicker.calendarOptions,
     reset: state.datePicker.reset,
-    hardReset: state.datePicker.hardReset
+    hardReset: state.datePicker.hardReset,
+    nativeFilteredDates: state.nativeDatePicker.filteredDates,
+    nativeChanged: state.nativeDatePicker.changed
 });
-export default connect(mapStateToProps, { onDatepickerReset, setCalendarOptions })(DatePickerWrapper);
+export default connect(mapStateToProps, {
+    onDatepickerReset, setCalendarOptions,
+    onSingleMultiDateChanged, onDateChanged,
+    onNativeChangeLifted, nativeSetDefaultDate,
+    nativeSoftResetDatePicker, nativeHardResetDatePicker
+})(DatePickerWrapper);

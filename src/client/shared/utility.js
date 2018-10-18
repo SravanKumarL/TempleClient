@@ -90,12 +90,16 @@ export const filterDates = (selectedDays, unFilteredRange) => {
 export const isFilterApplied = selectedDays => selectedDays.length > 0 && selectedDays.length < 7;
 export const getAllDays = () => ['All days', ...getDaysOfTheWeek()];
 export const getDaysOfWeek = getDaysOfTheWeek;
+export const toISODateFormat = date => date.toISOString().split('T')[0];
 export const getDateDifference = (from, to) => {
-  const fromDate = moment(from); //todays date
-  const toDate = moment(to); // another date
-  const duration = moment.duration(toDate.diff(fromDate));
-  const days = duration.asDays();
-  return days;
+  // const fromDate = moment(from); //todays date
+  // const toDate = moment(to); // another date
+  // const duration = moment.duration(toDate.diff(fromDate));
+  // const days = duration.asDays();
+  // return days;
+  const momentFrom = moment(toISODateFormat(from));
+  const momentTo = moment(toISODateFormat(to));
+  return momentTo.diff(momentFrom, 'days');
 }
 export const getDateFromString = (dateString) => {
   const parts = dateString.split('-');
@@ -130,6 +134,15 @@ export const parseDateObject = dateObject => {
 }
 export const convertToStartCase = (identifier) => {
   return toLower(identifier).replace(/\w+/g, capitalize);
+}
+export const fillRange = (from, To) => {
+  let dates = [];
+  let i = new Date(from);
+  while (getDateDifference(i, To) >= 0) {
+    dates.push(new Date(i));
+    i = new Date(i.setDate(i.getDate() + 1));
+  }
+  return dates;
 }
 export const getDefaultCalendarOptions = (mode, defaultDate, minDate, maxDate, ignoredFocusElements = []) => {
   let calendarOptions = {

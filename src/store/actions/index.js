@@ -62,3 +62,14 @@ export {
 } from './datepicker'
 
 export { onMgmtReportAllUsersToggled, resetAllUsersCheck } from './managementReport'
+
+export {
+  onNativeChangeLifted,
+  onNativeRangeToDateChanged,
+  onNativeSingleDateChanged,
+  onNativeRangeFromDateChanged,
+  nativeSoftResetDatePicker,
+  nativeHardResetDatePicker,
+  nativeSetDefaultDate,
+  onNativeRangeNumberOfDaysChanged
+} from './nativeDatePicker';

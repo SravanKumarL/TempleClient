@@ -18,6 +18,7 @@ import { ROLE } from '../../../store/constants/auth';
 import { TABS } from '../../../store/constants/board';
 import { convertToStartCase } from '../../shared/utility';
 import PoojasUsersGrid from '../DataGrid/poojasUsersGrid';
+import createContainer from '../../hoc/createContainer/createContainer';
 
 
 
@@ -126,7 +127,10 @@ class SimpleTabs extends React.Component {
 
   handleChange = (event, value) => {
     this.setState({ activeTab: value });
-    // [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
+    [constants.Poojas, constants.Reports, constants.Users].forEach(entity => this.props.resetEntity(entity));
+    this.props.onDatepickerReset([], true);
+    this.props.nativeHardResetDatePicker();
+    this.props.resetAllUsersCheck();
   };
 
   render() {
@@ -184,4 +188,4 @@ SimpleTabs.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SimpleTabs);
+export default createContainer(withStyles(styles)(SimpleTabs));

@@ -162,6 +162,7 @@ class CreateTransaction extends React.Component {
     this.props.onDatepickerReset([], true);
     this.props.usedTransactionChanged(null, '');
     this.props.editedTransactionChanged(null, '');
+    this.props.nativeHardResetDatePicker();
     initialState.transactionForm[POOJA].elementConfig.options = this.state.transactionForm[POOJA].elementConfig.options;
     const newState = JSON.parse(JSON.stringify(initialState));
     this.setState({ ...newState });
