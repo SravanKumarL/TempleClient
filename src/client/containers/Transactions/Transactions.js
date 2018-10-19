@@ -263,7 +263,7 @@ class Transactions extends React.Component {
       let dateValue = formattedTransactionInfo[FIELDS.DATES];
       const selectedDates = getFormattedDate(dateValue.value, dateValue[DATEPICKER_MODE]);
       const selectedDays = dateValue[SELECTED_DAYS];
-      dateValue.value = `${selectedDates}${selectedDays.length === 7 ? '' : ` (${selectedDays.join(',')})`}`;
+      dateValue.value = `${selectedDates}${selectedDays.length >= 7 || selectedDays.length === 0 ? '' : ` (${selectedDays.join(',')})`}`;
     }
     this.props.usedTransactionChanged(null, '');
     this.setState({ modalOpen: true, transactionInformation: formattedTransactionInfo, transaction });

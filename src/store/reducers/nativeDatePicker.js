@@ -24,7 +24,7 @@ const parseDate = (value, defaultDate) => (!value || value === '') ? defaultDate
 const onSingleDateChanged = (value, defaultDate) => {
     const dateValue = (!value || value === '') ? defaultDate : new Date(Date.parse(value));
     if (getDateDifference(new Date(), dateValue) >= 0) {
-        return { singleDate: dateValue, changed: true };
+        return { singleDate: dateValue, filteredDates: [dateValue], changed: true };
     }
     return {};
 }
@@ -39,10 +39,13 @@ const onFromDateChanged = (value, state, defaultDate) => {
         return { fromDate, numberOfDays: filteredDates.length, changed: true, filteredDates };
     }
 }
-const onNumberOfDaysChanged = (value, state, defaultNumber) => {
+const onNumberOfDaysChanged = (value, blur, state, defaultNumber) => {
     const { fromDate, selectedDays } = state;
     const numberOfDays = Number(value) || defaultNumber;
-    if (numberOfDays < 1) {
+    if (!blur && (!value || value === '')) {
+        return { numberOfDays: '', changed: true };
+    }
+    else if (numberOfDays < 1) {
         return {};
     }
     else {
@@ -72,7 +75,7 @@ const defaultState = {
     changed: false, selectedDays: getDaysOfWeek(), filteredDates: [new Date()]
 };
 const nativeDatePicker = (state = { ...defaultState, defaultState }, action) => {
-    const { value, defaultValues } = action;
+    const { value, defaultValues, blur } = action;
     switch (action.type) {
         case ON_NATIVE_SINGLE_DATE_CHANGED:
             return { ...state, ...onSingleDateChanged(value, state.defaultState.singleDate) };
@@ -81,7 +84,7 @@ const nativeDatePicker = (state = { ...defaultState, defaultState }, action) => 
         case ON_NATIVE_RANGE_FROM_DATE_CHANGED:
             return { ...state, ...onFromDateChanged(value, state, state.defaultState.fromDate) };
         case ON_NATIVE_RANGE_NUMBEROFDAYS_DATE_CHANGED:
-            return { ...state, ...onNumberOfDaysChanged(value, state, state.defaultState.numberOfDays) };
+            return { ...state, ...onNumberOfDaysChanged(value, blur, state, state.defaultState.numberOfDays) };
         case ON_DAY_CHANGED:
             const { selectedDays } = action.payload;
             return { ...state, ...onDayChanged(selectedDays || state.defaultState.selectedDays, state) };

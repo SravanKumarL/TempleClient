@@ -18,7 +18,8 @@ export const NativeRangePicker = withStyles(NativePickerTheme)(({ onNativeRangeF
             <TextField label='Number of Days' value={numberOfDays} className={classes.textField}
                 InputLabelProps={{
                     shrink: true,
-                }} type='number' onChange={e => onNativeRangeNumberOfDaysChanged(e.target.value)} />
+                }} type='number' onChange={e => onNativeRangeNumberOfDaysChanged(e.target.value)}
+                onBlur={e => onNativeRangeNumberOfDaysChanged(e.target.value, true)} />
         </div>
     ));
 const mapStateToProps = state => ({
