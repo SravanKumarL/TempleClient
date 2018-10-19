@@ -23,12 +23,13 @@ export const NativeDatePicker = withStyles(NativePickerTheme)(({ onChange, value
             shrink: true,
         }}
         onChange={onChange}
+        onBlur={e => onChange(e, true)}
     />));
 const mapStateToProps = state => ({
     value: state.nativeDatePicker.singleDate
 });
 const mapDispatchToProps = dispatch => ({
-    onChange: event => dispatch(onNativeSingleDateChanged(event.target.value))
+    onChange: (event, blur) => dispatch(onNativeSingleDateChanged(event.target.value, blur))
 });
 const SingleDatePicker = connect(mapStateToProps, mapDispatchToProps)(NativeDatePicker);
 export default SingleDatePicker;

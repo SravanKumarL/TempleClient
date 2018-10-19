@@ -21,22 +21,49 @@ const getFilteredDates = createSelector([getRangeOfDates, getSelectedDays], (ran
 
 const parseDate = (value, defaultDate) => (!value || value === '') ? defaultDate : new Date(Date.parse(value));
 
-const onSingleDateChanged = (value, defaultDate) => {
+const onSingleDateChanged = (value, blur, defaultDate) => {
     const dateValue = (!value || value === '') ? defaultDate : new Date(Date.parse(value));
-    if (getDateDifference(new Date(), dateValue) >= 0) {
+    if (blur) {
+        if (getDateDifference(new Date(), dateValue) < 0) {
+            return { singleDate: defaultDate, filteredDates: [defaultDate], changed: true };
+        }
         return { singleDate: dateValue, filteredDates: [dateValue], changed: true };
     }
-    return {};
+    return { singleDate: dateValue, changed: true };
 }
-const onFromDateChanged = (value, state, defaultDate) => {
+const onFromDateChanged = (value, blur, state, defaultState) => {
+    const defaultDate = defaultState.fromDate;
+    const defaultNumber = defaultState.numberOfDays;
+    const defaultFilteredDates = defaultState.filteredDates;
     const { toDate, selectedDays } = state;
     const fromDate = parseDate(value, defaultDate);
     const numberOfDays = getDateDifference(fromDate, toDate);
     if (numberOfDays < 0 || getDateDifference(new Date(), fromDate) < 0) {
-        return {};
+        if (blur) {
+            return { fromDate: defaultDate, numberOfDays: defaultNumber, changed: true, filteredDates: defaultFilteredDates };
+        }
+        return { fromDate, changed: true };
     } else {
         const filteredDates = getFilteredDates({ fromDate, toDate, selectedDays });
         return { fromDate, numberOfDays: filteredDates.length, changed: true, filteredDates };
+    }
+}
+const onToDateChanged = (value, blur, state, defaultState) => {
+    const defaultDate = defaultState.toDate;
+    const defaultNumber = defaultState.numberOfDays;
+    const defaultFilteredDates = defaultState.filteredDates;
+    const toDate = parseDate(value, defaultDate);
+    const { fromDate, selectedDays } = state;
+    const numberOfDays = getDateDifference(fromDate, toDate);
+    if (numberOfDays < 0 || getDateDifference(new Date(), toDate) < 0) {
+        if (blur) {
+            return { toDate: defaultDate, numberOfDays: defaultNumber, changed: true, filteredDates: defaultFilteredDates };
+        }
+        return { toDate, changed: true };
+    }
+    else {
+        const filteredDates = getFilteredDates({ fromDate, toDate, selectedDays });
+        return { toDate, numberOfDays: filteredDates.length, changed: true, filteredDates };
     }
 }
 const onNumberOfDaysChanged = (value, blur, state, defaultNumber) => {
@@ -54,18 +81,6 @@ const onNumberOfDaysChanged = (value, blur, state, defaultNumber) => {
         return { numberOfDays: filteredDates.length, toDate, changed: true, filteredDates };
     }
 }
-const onToDateChanged = (value, state, defaultDate) => {
-    const toDate = parseDate(value, defaultDate);
-    const { fromDate, selectedDays } = state;
-    const numberOfDays = getDateDifference(fromDate, toDate);
-    if (numberOfDays < 0 || getDateDifference(new Date(), toDate) < 0) {
-        return {};
-    }
-    else {
-        const filteredDates = getFilteredDates({ fromDate, toDate, selectedDays });
-        return { toDate, numberOfDays: filteredDates.length, changed: true, filteredDates };
-    }
-}
 const onDayChanged = (selectedDays, state) => {
     const filteredDates = getFilteredDates({ ...state, selectedDays });
     return { filteredDates, selectedDays, changed: true, numberOfDays: filteredDates.length };
@@ -78,11 +93,11 @@ const nativeDatePicker = (state = { ...defaultState, defaultState }, action) => 
     const { value, defaultValues, blur } = action;
     switch (action.type) {
         case ON_NATIVE_SINGLE_DATE_CHANGED:
-            return { ...state, ...onSingleDateChanged(value, state.defaultState.singleDate) };
+            return { ...state, ...onSingleDateChanged(value, blur, state.defaultState.singleDate) };
         case ON_NATIVE_RANGE_TO_DATE_CHANGED:
-            return { ...state, ...onToDateChanged(value, state, state.defaultState.toDate) };
+            return { ...state, ...onToDateChanged(value, blur, state, state.defaultState) };
         case ON_NATIVE_RANGE_FROM_DATE_CHANGED:
-            return { ...state, ...onFromDateChanged(value, state, state.defaultState.fromDate) };
+            return { ...state, ...onFromDateChanged(value, blur, state, state.defaultState) };
         case ON_NATIVE_RANGE_NUMBEROFDAYS_DATE_CHANGED:
             return { ...state, ...onNumberOfDaysChanged(value, blur, state, state.defaultState.numberOfDays) };
         case ON_DAY_CHANGED:

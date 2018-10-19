@@ -1,5 +1,5 @@
 import {
-    getDaysOfWeek,
+    // getDaysOfWeek,
     filterDates,
     getAllDays,
     isFilterApplied,
@@ -22,6 +22,7 @@ import {
 import { createSelector } from 'reselect';
 import { ALL_DAYS, CALENDER_MODE } from '../constants/transactions';
 
+const allDays = 'All Days';
 const { RANGE, MULTIPLE } = CALENDER_MODE;
 const getDays = state => state.selectedDays;
 const getDatesInRange = state => {
@@ -37,7 +38,7 @@ const getFilteredDates = createSelector(getSelectedDays, getRangeOfDates,
     (selectedDays, rangeOfDates) => filterDates(selectedDays, rangeOfDates));
 
 const defaultState = {
-    selectedDays: getDaysOfWeek(), filteredDates: [new Date()], filtered: false,
+    selectedDays: /* getDaysOfWeek() */[allDays], filteredDates: [new Date()], filtered: false,
     isDayFilterApplied: false, mode: RANGE, unfilteredRange: [new Date()], reset: false,
     calendarOptions: getDefaultCalendarOptions(RANGE), hardReset: false,
     rangePickerReset: false
@@ -45,9 +46,12 @@ const defaultState = {
 const datePicker = (state = defaultState, action) => {
     switch (action.type) {
         case ON_DAY_SLCTN_CLOSE:
-            return { ...state, selectedDays: state.selectedDays.filter(day => day !== ALL_DAYS) };
+            return {
+                ...state, selectedDays: (state.selectedDays.length === 0 || state.selectedDays.length >= 7)
+                    ? [allDays] : state.selectedDays.filter(day => day !== ALL_DAYS)
+            };
         case ON_DAY_SLCTN_OPEN:
-            if (state.selectedDays.length === 7 || state.selectedDays.length === 0) {
+            if (state.selectedDays.length === 7 || state.selectedDays.length === 0 || state.selectedDays[0] === allDays) {
                 return { ...state, selectedDays: getAllDays() };
             }
             return state;

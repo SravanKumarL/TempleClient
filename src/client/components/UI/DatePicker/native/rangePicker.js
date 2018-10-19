@@ -13,8 +13,8 @@ export const NativeRangePicker = withStyles(NativePickerTheme)(({ onNativeRangeF
     onNativeRangeNumberOfDaysChanged, classes,
     toDate, fromDate, numberOfDays }) => (
         <div style={{ display: 'flex', flexDirection: "row", flexGrow: 1 }}>
-            <NativeDatePicker onChange={e => onNativeRangeFromDateChanged(e.target.value)} label='From' value={fromDate} />
-            <NativeDatePicker onChange={e => onNativeRangeToDateChanged(e.target.value)} label='To' value={toDate} />
+            <NativeDatePicker onChange={(e, blur) => onNativeRangeFromDateChanged(e.target.value, blur)} label='From' value={fromDate} />
+            <NativeDatePicker onChange={(e, blur) => onNativeRangeToDateChanged(e.target.value, blur)} label='To' value={toDate} />
             <TextField label='Number of Days' value={numberOfDays} className={classes.textField}
                 InputLabelProps={{
                     shrink: true,
