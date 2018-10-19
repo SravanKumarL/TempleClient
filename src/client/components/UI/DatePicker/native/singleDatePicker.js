@@ -9,12 +9,13 @@ export const NativePickerTheme = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        width: 200,
+        width: '100%',
     }
 });
 export const NativeDatePicker = withStyles(NativePickerTheme)(({ onChange, value,
     classes, label }) =>
     (<TextField
+        fullWidth
         label={label || "Select Date.."}
         type="date"
         value={toISODateFormat(value)}
