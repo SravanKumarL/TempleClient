@@ -1,0 +1,60 @@
+.App {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+}
+
+image,
+embed,
+video,
+object {
+  max-width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
+input:disabled {
+  background: #EEEEEE;
+}
+
+table > thead:first-of-type {
+  background: #eee;
+}
+
+th {
+  color: rgba(0, 0, 0, 0.87) !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+}
+
+textarea:disabled {
+  background: #EEEEEE;
+}
+
+/* input[type="number"]:disabled {
+  background: #dddddd;
+} */
+
+textarea {
+  /* height: 2rem;
+  margin: 1rem; */
+  height: auto !important;
+  padding: 12px 0px 16px 10px !important;
+  margin-bottom: 12px !important;
+}
+
+td {
+  font-size: 15px !important;
+  white-space: initial !important;
+  text-overflow: initial !important;
+  text-transform: uppercase !important;
+}

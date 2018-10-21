@@ -1,0 +1,46 @@
+Github maintainenance -- Sravan
+
+Loading Indicator for login
+
+Node with oauth 2.0 authentication ---- Sravan
+
+Transaction--- Multiple DatePicker, consecutive range of dates .1 feb to 10 feb no of dates 10
+React Select - chips bug, if same value is selected again is being removed.
+
+Reports,
+
+Users
+
+Poojas 
+
+Update / delete capabilities
+
+Transitions / animations
+
+Color modifications
+
+
+Print 
+Dot matrix and other printers research fast printing
+Can we execute a batch file like the current implementation --- Sravan
+
+Can we propose a better solution???
+
+Data grid implementation --- Sravan
+
+Filter, 
+Edit cells, 
+Pagination, 
+
+Code Principles
+
+Local UI State - State within the component 
+API UI Data - Redux store
+Middleware - Sagas --- 4 actions 
+Actions: 
+export const ADD_POOJA = 'ADD_POOJA';
+export const ADD_POOJA_START = 'ADD_POOJA_START';
+export const ADD_POOJA_SUCCESS = 'ADD_POOJA_SUCCESS';
+export const ADD_POOJA_FAIL = 'ADD_POOJA_FAIL';
+
+

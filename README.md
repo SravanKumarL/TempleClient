@@ -1,2 +1,1 @@
-# TempleClient
 Code for TempleClient
